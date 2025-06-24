@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সালাতের গুরুত্ব: একটি ইন্টারেক্টিভ খুতবা (নিয়ন থিম)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cyber Neon -->
+    <!-- Application Structure Plan: The SPA is designed with a thematic, non-linear structure to make the sermon's content digestible and engaging. It starts with a relatable problem-solution narrative, then moves to an interactive classification of people regarding prayer (using tabs and a chart), followed by real-life anecdotes presented in cards, a grid of rewards, and a final call to action. This structure enhances usability by breaking down a long text into focused, interactive sections, allowing users to explore content based on interest rather than a forced linear progression. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Classification of Muslims into three groups (non-praying, inconsistent, steadfast). Goal: Compare & Inform. Viz/Method: Interactive Tabs and a Doughnut Chart (Chart.js). Interaction: User clicks on a tab to see the description of the group. Justification: Tabs organize detailed text, and the chart provides a quick visual summary of the perceived proportions mentioned ('many' vs 'very few'), making the point more impactful.
+        - Report Info: Benefits of prayer (cure for anxiety, light on Judgment day, etc.). Goal: Inform & Motivate. Viz/Method: Grid of styled info-cards. Interaction: Static display for easy scanning. Justification: Cards break down benefits into digestible, visually appealing points, like an infographic.
+        - Report Info: Various anecdotes. Goal: Organize & Narrate. Viz/Method: Styled content blocks within a main section. Interaction: User scrolls through distinct stories. Justification: Separates stories for clarity and prevents a monotonous wall of text.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+        }
+        .neon-text {
+            color: #fff;
+            text-shadow:
+                0 0 7px #fff,
+                0 0 10px #fff,
+                0 0 21px #fff,
+                0 0 42px #0fa,
+                0 0 82px #0fa,
+                0 0 92px #0fa,
+                0 0 102px #0fa,
+                0 0 151px #0fa;
+        }
+        .neon-heading {
+             color: #E6E6FA;
+             text-shadow: 0 0 5px #00BFFF, 0 0 10px #00BFFF, 0 0 20px #00BFFF, 0 0 40px #00BFFF;
+        }
+        .neon-box {
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px #00BFFF, inset 0 0 10px #00BFFF;
+        }
+        .nav-active {
+            color: #00BFFF;
+            font-weight: 700;
+            text-shadow: 0 0 8px #00BFFF;
+        }
+        .tab-active {
+            background-color: #00BFFF;
+            color: #0d1117;
+            box-shadow: 0 0 15px #00BFFF;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 280px;
+            width: 280px;
+        }
+    </style>
+</head>
+<body class="bg-[#0d1117] text-[#c9d1d9]">
+
+    <!-- Header & Navigation -->
+    <header class="bg-[#161b22]/80 backdrop-blur-sm shadow-lg sticky top-0 z-50 border-b border-[#00BFFF]/30">
+        <div class="container mx-auto px-4">
+            <nav class="flex justify-between items-center py-4">
+                <h1 class="text-xl md:text-2xl font-bold neon-text">সালাতের প্রতি আহ্বান</h1>
+                <div class="hidden md:flex space-x-6 text-white" id="nav-menu">
+                    <a href="#introduction" class="hover:text-[#00BFFF] transition duration-300">ভূমিকা</a>
+                    <a href="#classification" class="hover:text-[#00BFFF] transition duration-300">শ্রেণীবিভাগ</a>
+                    <a href="#stories" class="hover:text-[#00BFFF] transition duration-300">বাস্তব ঘটনাবলী</a>
+                    <a href="#rewards" class="hover:text-[#00BFFF] transition duration-300">পুরস্কার</a>
+                    <a href="#duty" class="hover:text-[#00BFFF] transition duration-300">করণীয়</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Section 1: Introduction -->
+        <section id="introduction" class="py-16 md:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold neon-heading mb-4">যাদের সংখ্যা বিশের অধিক নয়</h2>
+                <p class="text-lg text-gray-400 mb-12 max-w-3xl mx-auto">শেখ খালিদ আল-রাশেদের এই মর্মস্পর্শী খুতবাটি সালাতের গুরুত্ব এবং আমাদের জীবনে এর প্রভাব তুলে ধরে। এটি শুধু একটি ইবাদত নয়, বরং আমাদের সকল সমস্যার চূড়ান্ত সমাধান।</p>
+                
+                <div class="bg-[#161b22] p-8 rounded-xl shadow-2xl neon-box">
+                    <h3 class="text-2xl font-bold text-[#00BFFF] mb-6">আমাদের সমস্যার প্রকৃত সমাধান</h3>
+                    <p class="text-left text-gray-300 leading-relaxed mb-6">
+                        এক যুবক অসংখ্য দুশ্চিন্তা, জীবনের প্রতি ক্ষেত্রে ব্যর্থতা এবং শারীরিক যন্ত্রণা নিয়ে এসেছিলেন। পৃথিবীর সকল চিকিৎসার দরজা তার জন্য বন্ধ মনে হচ্ছিল। তাকে একটি মাত্র চিকিৎসা দেওয়া হয়েছিল যা তার জীবন বদলে দিতে পারত।
+                    </p>
+                    <div class="text-left bg-[#0d1117] p-6 rounded-lg">
+                        <p class="font-semibold text-lg text-gray-200">
+                            সেই চিকিৎসাটি ছিল: <span class="text-[#00BFFF] font-bold">"দিনে ও রাতে পাঁচ ওয়াক্ত সালাত।"</span> যে ব্যক্তি মসজিদে গিয়ে যেখানে আযান দেওয়া হয় সেখানে সালাত আদায় করে, কিয়ামতের দিন তা তার জন্য নূর, আলো এবং প্রমাণ হবে। আর যে তা নষ্ট করে, আল্লাহ তাকে কিয়ামতের দিন নষ্ট করে দেবেন।
+                        </p>
+                        <blockquote class="mt-4 border-l-4 border-[#00BFFF] pl-4 text-gray-400">
+                            "আর যে আমার স্মরণ থেকে মুখ ফিরিয়ে নেবে, তার জন্য রয়েছে এক সংকীর্ণ জীবন এবং আমি তাকে কিয়ামতের দিন অন্ধ অবস্থায় উঠাব।" <span class="font-medium">- সূরা ত্বহা: ১২৪</span>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Classification of People -->
+        <section id="classification" class="bg-[#161b22] py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold neon-heading">সালাতের ব্যাপারে মানুষের শ্রেণীবিভাগ</h2>
+                    <p class="mt-4 text-lg text-gray-400 max-w-3xl mx-auto">খুতবা অনুসারে, সালাতের সাথে সম্পর্কের ভিত্তিতে মুসলিমদের তিনটি প্রধান ভাগে ভাগ করা যায়। এই বিভাগগুলো আমাদের সমাজের একটি বাস্তব চিত্র তুলে ধরে এবং আমাদেরকে আত্মজিজ্ঞাসার সুযোগ করে দেয়।</p>
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <!-- Tabs -->
+                    <div class="w-full md:w-1/2">
+                        <div class="flex flex-col space-y-2 mb-4">
+                            <button class="tab-btn p-4 text-lg font-semibold rounded-lg transition duration-300 text-left" onclick="changeTab(0, this)">১ম শ্রেণী: সম্পূর্ণ উদাসীন</button>
+                            <button class="tab-btn p-4 text-lg font-semibold rounded-lg transition duration-300 text-left" onclick="changeTab(1, this)">২য় শ্রেণী: অলস ও অনিয়মিত</button>
+                            <button class="tab-btn p-4 text-lg font-semibold rounded-lg transition duration-300 text-left" onclick="changeTab(2, this)">৩য় শ্রেণী: অবিচল ও নিষ্ঠাবান</button>
+                        </div>
+                        <div id="tab-content" class="p-6 bg-[#0d1117] rounded-lg min-h-[200px] border border-gray-700">
+                            <!-- Content will be injected by JS -->
+                        </div>
+                    </div>
+                    <!-- Chart -->
+                    <div class="w-full md:w-1/2">
+                        <div class="chart-container">
+                            <canvas id="prayerHabitChart"></canvas>
+                        </div>
+                         <p class="text-center mt-4 text-gray-400">উম্মতের মধ্যে সালাত আদায়ের অভ্যাসের একটি কাল্পনিক চিত্র</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Real Stories -->
+        <section id="stories" class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold neon-heading">বাস্তব জীবনের ঘটনাবলী</h2>
+                    <p class="mt-4 text-lg text-gray-400 max-w-3xl mx-auto">শেখ খালিদ আল-রাশেদ কিছু বাস্তব ঘটনা বর্ণনা করেছেন যা সালাত ত্যাগ করার ভয়াবহ পরিণতি এবং তা সংরক্ষণের পুরস্কারকে স্পষ্টভাবে তুলে ধরে।</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-[#161b22] p-6 rounded-xl shadow-lg border border-gray-700 hover:border-[#00BFFF] transition duration-300 hover:shadow-2xl hover:shadow-[#00BFFF]/20">
+                        <h3 class="font-bold text-xl mb-3 text-[#00BFFF]">চাকরির সন্ধান ও সালাত</h3>
+                        <p class="text-gray-300 leading-relaxed">তিনজন যুবক চাকরির খোঁজে বের হয়েছিল, কিন্তু তাদের সালাতের অবস্থা ছিল ভয়াবহ। একজন全く সালাত পড়ত না, দ্বিতীয়জন শুধু জুমার সালাত পড়ত, আর তৃতীয়জন দিনে মাত্র দুই ওয়াক্ত। তাদের এই ঘটনা প্রমাণ করে যে, আল্লাহর সাথে সম্পর্ক ঠিক না রেখে দুনিয়াবি সাফল্য খোঁজা নিরর্থক।</p>
+                    </div>
+                    <div class="bg-[#161b22] p-6 rounded-xl shadow-lg border border-gray-700 hover:border-[#00BFFF] transition duration-300 hover:shadow-2xl hover:shadow-[#00BFFF]/20">
+                        <h3 class="font-bold text-xl mb-3 text-[#00BFFF]">স্কুলের ছাত্রীর স্বীকারোক্তি</h3>
+                        <p class="text-gray-300 leading-relaxed">এক শিক্ষিকা শুনতে পান তার এক ছাত্রী বলছে যে সে বা তার পরিবারের কেউই সালাত আদায় করে না। এটি সমাজের তৃণমূল পর্যায়ে সালাতের প্রতি অবহেলার একটি দুঃখজনক চিত্র।</p>
+                    </div>
+                    <div class="bg-[#161b22] p-6 rounded-xl shadow-lg border border-gray-700 hover:border-[#00BFFF] transition duration-300 hover:shadow-2xl hover:shadow-[#00BFFF]/20">
+                        <h3 class="font-bold text-xl mb-3 text-[#00BFFF]">মৃত্যুর পরের অবস্থা</h3>
+                        <p class="text-gray-300 leading-relaxed">এক বেনামাজীর মৃত্যুর পর তার চেহারা কালো হয়ে গিয়েছিল, যা দেখে গোসলদানকারীরা ভয় পেয়েছিল। বিপরীত দিকে, এক নেককার যুবকের মৃত্যুর পর তার দেহ থেকে কস্তুরীর সুগন্ধ বের হচ্ছিল এবং তার মুখে হাসি ছিল।</p>
+                    </div>
+                     <div class="bg-[#161b22] p-6 rounded-xl shadow-lg border border-gray-700 hover:border-[#00BFFF] transition duration-300 hover:shadow-2xl hover:shadow-[#00BFFF]/20">
+                        <h3 class="font-bold text-xl mb-3 text-[#00BFFF]">আল্লাহর উপর তাওয়াক্কুল</h3>
+                        <p class="text-gray-300 leading-relaxed">এক ব্যক্তি দ্রব্যমূল্যের ঊর্ধ্বগতি নিয়ে অভিযোগ করলে একজন صالح ব্যক্তি বলেন, "আমার কোনো পরোয়া নেই যদি এক দানা যবের দাম এক দিনারও হয়। আমার কাজ হলো তাঁর ইবাদত করা, আর তাঁর কাজ হলো আমাকে রিযিক দেওয়া।"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Rewards of Guarding Salat -->
+        <section id="rewards" class="bg-[#161b22] py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold neon-heading">সালাত সংরক্ষণের পুরস্কার</h2>
+                    <p class="mt-4 text-lg text-gray-400 max-w-3xl mx-auto">যারা সালাতে অবিচল থাকে, আল্লাহ তাদের জন্য দুনিয়া ও আখিরাতে অসংখ্য পুরস্কারের প্রতিশ্রুতি দিয়েছেন।</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-[#0d1117] p-6 rounded-lg border border-gray-700 text-center">
+                        <div class="text-4xl mb-3 neon-text">💡</div>
+                        <h3 class="text-xl font-bold mb-2 text-[#00BFFF]">নূর ও প্রমাণ</h3>
+                        <p class="text-gray-400">কিয়ামতের দিন সালাত তার আদায়কারীর জন্য নূর, আলো এবং মুক্তির প্রমাণ হবে।</p>
+                    </div>
+                    <div class="bg-[#0d1117] p-6 rounded-lg border border-gray-700 text-center">
+                        <div class="text-4xl mb-3 neon-text">🛡️</div>
+                        <h3 class="text-xl font-bold mb-2 text-[#00BFFF]">দুশ্চিন্তা থেকে মুক্তি</h3>
+                        <p class="text-gray-400">সালাত মানুষকে অধৈর্য ও দুশ্চিন্তা থেকে রক্ষা করে এবং মানসিক প্রশান্তি দান করে।</p>
+                    </div>
+                    <div class="bg-[#0d1117] p-6 rounded-lg border border-gray-700 text-center">
+                        <div class="text-4xl mb-3 neon-text">🌿</div>
+                        <h3 class="text-xl font-bold mb-2 text-[#00BFFF]">রিযিকের নিশ্চয়তা</h3>
+                        <p class="text-gray-400">আল্লাহ নিজে সালাত প্রতিষ্ঠাকারীর রিযিকের দায়িত্ব নেন।</p>
+                    </div>
+                    <div class="bg-[#0d1117] p-6 rounded-lg border border-gray-700 text-center">
+                        <div class="text-4xl mb-3 neon-text">🌟</div>
+                        <h3 class="text-xl font-bold mb-2 text-[#00BFFF]">উত্তম চরিত্র</h3>
+                        <p class="text-gray-400">সালাত অশ্লীল ও মন্দ কাজ থেকে বিরত রাখে এবং উত্তম চরিত্র গঠনে সহায়তা করে।</p>
+                    </div>
+                    <div class="bg-[#0d1117] p-6 rounded-lg border border-gray-700 text-center">
+                        <div class="text-4xl mb-3 neon-text">🔑</div>
+                        <h3 class="text-xl font-bold mb-2 text-[#00BFFF]">জান্নাতের চাবিকাঠি</h3>
+                        <p class="text-gray-400">যে ব্যক্তি সালাত সংরক্ষণ করে, আল্লাহ তাকে জান্নাতে প্রবেশ করানোর অঙ্গীকার করেন।</p>
+                    </div>
+                     <div class="bg-[#0d1117] p-6 rounded-lg border border-gray-700 text-center">
+                        <div class="text-4xl mb-3 neon-text">🕊️</div>
+                        <h3 class="text-xl font-bold mb-2 text-[#00BFFF]">উত্তম পরিণতি</h3>
+                        <p class="text-gray-400">সালাত সংরক্ষণ উত্তম মৃত্যুর নিশ্চয়তা দেয় এবং আল্লাহর হেফাযতে রাখে।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Call to Action -->
+        <section id="duty" class="py-16 md:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold neon-heading mb-6">আমাদের করণীয়</h2>
+                <p class="text-lg text-gray-400 mb-12 max-w-3xl mx-auto">এই আলোচনার পর আমাদের উপর কিছু দায়িত্ব বর্তায়। শুধু শোনা নয়, বরং জীবনে বাস্তবায়ন করাই মূল লক্ষ্য।</p>
+
+                <div class="bg-[#161b22] p-8 rounded-xl shadow-2xl text-left border border-gray-700">
+                    <ul class="space-y-4 text-lg text-gray-300 list-inside list-disc">
+                        <li>সালাতে সর্বদা অবিচল ও নিষ্ঠাবান থাকা।</li>
+                        <li>সাত বছর বয়স হলে সন্তানদের সালাতের আদেশ দেওয়া এবং দশ বছর বয়সে প্রয়োজনে শাসন করা।</li>
+                        <li>একটি ইবাদতকারী ও সৎ প্রজন্ম তৈরি করার জন্য কাজ করা।</li>
+                        <li>আল্লাহর কাছে সর্বদা হেদায়েত ও ইস্তিকামাতের জন্য দোয়া করা।</li>
+                    </ul>
+                    <blockquote class="mt-8 border-l-4 border-[#00BFFF] pl-6 text-gray-400 italic text-center text-xl leading-loose">
+                        পুরুষ তৈরি করা অপরিহার্য, যেমন অস্ত্র তৈরি করা<br>
+                        এবং বীর তৈরি করা একটি জ্ঞান যা সৎ ব্যক্তিরা শিখিয়েছেন<br>
+                        ...<br>
+                        যে "সালাতের দিকে এসো" এর সাথে বিশ্বাসঘাতকতা করে,<br>
+                        সে "জিহাদের দিকে এসো" এর সাথেও বিশ্বাসঘাতকতা করে।
+                    </blockquote>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#161b22] text-white text-center py-6 border-t border-gray-800">
+        <p>&copy; ২০২৫। শেখ খালিদ আল-রাশেদের খুতবার উপর ভিত্তি করে তৈরি।</p>
+        <p class="text-sm text-gray-500">মূল উৎস: ইসলামওয়েব</p>
+    </footer>
+
+    <script>
+        const tabContents = [
+            {
+                title: "সম্পূর্ণ উদাসীন",
+                content: "এই শ্রেণীর মানুষ দিনে বা রাতে কোনো সালাত আদায় করে না, রুকু বা সিজদাও করে না। খুতবায় তাদের অবস্থা নিয়ে গভীর উদ্বেগ প্রকাশ করা হয়েছে এবং তাদেরকে আল্লাহর আদেশের প্রতি চরম অবাধ্য হিসেবে গণ্য করা হয়েছে। তাদের জীবনের কোনো আমল কবুল হবে না যদি না তারা সালাত প্রতিষ্ঠা করে।"
+            },
+            {
+                title: "অলস ও অনিয়মিত",
+                content: "এই শ্রেণীর মানুষ সালাত আদায় করে, কিন্তু তারা অলসতা করে, দেরিতে পড়ে এবং খেয়ালখুশি মতো আদায় করে। তারা আল্লাহর এই বাণীকে ভুলে যায়: 'সুতরাং দুর্ভোগ সেই সালাত আদায়কারীদের জন্য, যারা তাদের সালাত সম্পর্কে উদাসীন।' [সূরা আল-মাউন: ৪-৫]। তাদের এই অবহেলা তাদেরকে আল্লাহর রহমত থেকে দূরে সরিয়ে দেয়।"
+            },
+            {
+                title: "অবিচল ও নিষ্ঠাবান",
+                content: "তারা সংখ্যায় খুবই কম। তারা তাদের বিছানা ও প্রবৃত্তির উপর বিজয়ী হয়ে আল্লাহর ডাকে সাড়া দেয়, বিশেষ করে ফজরের সালাতে। তারাই হলো আল্লাহর নৈকট্যপ্রাপ্ত বান্দা, যাদের জন্য রয়েছে নূর, প্রমাণ এবং দুনিয়া ও আখিরাতে সাফল্য। আল্লাহ বলেন, 'তারাই তো জান্নাতে সম্মানিত হবে।' [সূরা আল-মা'আরিজ: ৩৫]"
+            }
+        ];
+
+        const tabContentContainer = document.getElementById('tab-content');
+        const tabButtons = document.querySelectorAll('.tab-btn');
+
+        function changeTab(index, button) {
+            tabContentContainer.innerHTML = `
+                <h3 class="text-xl font-bold text-[#00BFFF] mb-2">${tabContents[index].title}</h3>
+                <p class="text-gray-300 leading-relaxed">${tabContents[index].content}</p>
+            `;
+            tabButtons.forEach(btn => btn.classList.remove('tab-active'));
+            button.classList.add('tab-active');
+        }
+        
+        changeTab(0, tabButtons[0]);
+
+        const ctx = document.getElementById('prayerHabitChart').getContext('2d');
+        const prayerHabitChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['সম্পূর্ণ উদাসীন', 'অলস ও অনিয়মিত', 'অবিচল ও নিষ্ঠাবান'],
+                datasets: [{
+                    label: 'সালাতের প্রতি মানুষের отношение',
+                    data: [30, 65, 5], 
+                    backgroundColor: [
+                        '#DC3545',
+                        '#FFC107',
+                        '#00BFFF' 
+                    ],
+                    borderColor: '#161b22',
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                           font: {
+                                family: "'Noto Sans Bengali', sans-serif"
+                           },
+                           color: '#c9d1d9'
+                        }
+                    },
+                    tooltip: {
+                         bodyFont: {
+                            family: "'Noto Sans Bengali', sans-serif"
+                         },
+                         titleFont: {
+                            family: "'Noto Sans Bengali', sans-serif"
+                         }
+                    }
+                }
+            }
+        });
+
+        const navLinks = document.querySelectorAll('#nav-menu a');
+        const sections = document.querySelectorAll('main section');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('nav-active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('nav-active');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

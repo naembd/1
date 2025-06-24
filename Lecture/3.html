@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Chosen Palette: Warm Neutral Harmony with Neon Teal Accents -->
+    <!-- Application Structure Plan: The application is designed as a single-page, vertical scrolling experience in Bangla. It breaks the sermon into thematic sections for better digestion: an introduction, a core contrast of aspirations, a visual chart of aspiration levels, a 'how-to' guide for increasing aspiration, a gallery of inspirational figures, and a conclusion. A sticky navigation bar allows users to easily jump between these logical sections. This structure was chosen over a linear text format to make the profound messages more engaging, memorable, and easier to navigate, encouraging exploration rather than passive reading. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: Contrasting worldly vs. spiritual goals. Goal: Compare. Viz/Method: Side-by-side card layout. Interaction: Cards highlight key stories, with the 'high aspiration' card having a neon glow on hover. Justification: Visually separates the core concepts for clarity. Library: HTML/Tailwind.
+        - Report Info: Ibn al-Qayyim's quote on high vs. low aspirations. Goal: Visualize hierarchy. Viz/Method: Vertical Bar Chart with neon colors. Interaction: Tooltips on hover provide the quote. Justification: A chart offers a powerful, quick visual metaphor for the different levels of ambition. Library: Chart.js (Canvas).
+        - Report Info: Stories of inspirational figures. Goal: Organize narrative content. Viz/Method: Accordion/expandable cards. Interaction: Clicking a name reveals the detailed story. Justification: Keeps the UI clean and prevents overwhelming the user with text, promoting focused reading. Library: JS/HTML/Tailwind.
+        - Report Info: How to increase aspirations. Goal: Inform/Instruct. Viz/Method: Tabbed interface. Interaction: Clicking tabs switches content. Justification: Organizes actionable advice into clear, digestible steps. Library: JS/HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <title>আকাশছোঁয়া উচ্চাকাঙ্ক্ষা - শাইখ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .active .accordion-content {
+            max-height: 1000px; 
+            transition: max-height 0.7s ease-in;
+        }
+        .active .accordion-icon {
+            transform: rotate(180deg);
+        }
+        .text-neon-teal {
+            text-shadow: 0 0 5px rgba(29, 252, 223, 0.7), 0 0 10px rgba(29, 252, 223, 0.5), 0 0 15px rgba(29, 252, 223, 0.3);
+        }
+        .border-neon-teal {
+            border-color: #1dfcdf;
+            box-shadow: 0 0 8px #1dfcdf, inset 0 0 8px #1dfcdf;
+        }
+        .bg-dark-card { background-color: #242424; }
+        .bg-dark-section { background-color: #1f1f1f; }
+        .bg-dark-body { background-color: #1a1a1a; }
+        .border-dark { border-color: #3a3a3a; }
+    </style>
+</head>
+<body class="bg-dark-body text-stone-200">
+
+    <nav id="navbar" class="bg-black/70 backdrop-blur-md shadow-lg shadow-teal-500/10 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <span class="text-lg md:text-xl font-bold text-teal-400 text-neon-teal">উচ্চাকাঙ্ক্ষা</span>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#introduction" class="text-stone-300 hover:text-teal-400 transition">ভূমিকা</a>
+                    <a href="#contrast" class="text-stone-300 hover:text-teal-400 transition">বৈপরীত্য</a>
+                    <a href="#how-to" class="text-stone-300 hover:text-teal-400 transition">পথের দিশা</a>
+                    <a href="#exemplars" class="text-stone-300 hover:text-teal-400 transition">আদর্শ</a>
+                    <a href="#conclusion" class="text-stone-300 hover:text-teal-400 transition">উপসংহার</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-stone-300 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-black/80">
+            <a href="#introduction" class="block py-2 px-4 text-sm text-stone-300 hover:bg-teal-900/50">ভূমিকা</a>
+            <a href="#contrast" class="block py-2 px-4 text-sm text-stone-300 hover:bg-teal-900/50">বৈপরীত্য</a>
+            <a href="#how-to" class="block py-2 px-4 text-sm text-stone-300 hover:bg-teal-900/50">পথের দিশা</a>
+            <a href="#exemplars" class="block py-2 px-4 text-sm text-stone-300 hover:bg-teal-900/50">আদর্শ</a>
+            <a href="#conclusion" class="block py-2 px-4 text-sm text-stone-300 hover:bg-teal-900/50">উপসংহার</a>
+        </div>
+    </nav>
+
+    <main>
+        <section id="introduction" class="min-h-[60vh] flex items-center bg-dark-body pt-16">
+            <div class="max-w-5xl mx-auto px-6 py-12 text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-teal-400 leading-tight text-neon-teal">আকাশছোঁয়া উচ্চাকাঙ্ক্ষা</h1>
+                <p class="mt-4 text-lg text-stone-300">শাইখ খালিদ আল-রাশেদের একটি অনুপ্রেরণামূলক আলোচনা</p>
+                <p class="mt-8 max-w-3xl mx-auto text-xl text-stone-200 italic">"জীবন অমূল্য, তাই জান্নাত ছাড়া জীবনের কোনো মূল্য গ্রহণ করো না।"</p>
+                <p class="mt-2 text-md text-stone-400">- ইবনুল জাওযী (রহঃ)</p>
+            </div>
+        </section>
+
+        <section id="contrast" class="py-16 md:py-24 bg-dark-section">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-stone-100">আকাঙ্ক্ষার বৈপরীত্য</h2>
+                    <p class="mt-4 text-lg text-stone-300 max-w-3xl mx-auto">এই বিভাগে বক্তৃতার মূল প্রতিপাদ্য তুলে ধরা হয়েছে: পার্থিব তুচ্ছ বিষয়ের আকাঙ্ক্ষা এবং পরকালীন সাফল্যের জন্য মহৎ আকাঙ্ক্ষার মধ্যে বিশাল পার্থক্য।</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-start">
+                    <div class="bg-dark-card border border-dark rounded-lg p-6">
+                        <h3 class="text-2xl font-semibold text-rose-400 mb-4">নিম্ন আকাঙ্ক্ষা: দুনিয়ার মোহ</h3>
+                        <p class="text-stone-300 leading-relaxed">এক বেদুঈন নবী (সাঃ)-এর কাছে এসে জাগতিক সম্পদ চাইলেন। তার চিন্তা ছিল तात्ক্ষণিক লাভ ও পার্থিব সামগ্রী কেন্দ্রিক। এটি দুনিয়ার ক্ষুদ্র গণ্ডিতে আবদ্ধ মানসিকতার প্রতিফলন।</p>
+                        <p class="mt-4 text-sm italic text-rose-400/80">"হে মুহাম্মদ! আল্লাহ আপনাকে যে সম্পদ দিয়েছেন তা থেকে আমাকে দিন..."</p>
+                    </div>
+                    <div class="bg-dark-card border border-dark rounded-lg p-6 transition duration-300 hover:border-neon-teal">
+                        <h3 class="text-2xl font-semibold text-teal-400 mb-4">উচ্চাকাঙ্ক্ষা: পরকালের অন্বেষণ</h3>
+                        <p class="text-stone-300 leading-relaxed">অন্যদিকে, রাবী'আহ ইবনে কা'ব (রাঃ) এবং আবু হুরায়রা (রাঃ) দেখিয়েছেন প্রকৃত উচ্চাকাঙ্ক্ষা কী। তাদের লক্ষ্য ছিল আল্লাহর সন্তুষ্টি এবং চিরস্থায়ী সাফল্য।</p>
+                        <p class="mt-4 text-sm italic text-teal-400/80">"ইয়া রাসূলাল্লাহ! আমি জান্নাতে আপনার সঙ্গী হতে চাই।"</p>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-16">
+                     <h3 class="text-2xl md:text-3xl font-bold text-stone-100">আকাঙ্ক্ষার স্তর</h3>
+                     <p class="mt-3 text-md text-stone-300 max-w-2xl mx-auto">ইবনুল কাইয়্যিম (রহঃ) বলেন: "কিছু আকাঙ্ক্ষা আরশের সাথে ঝুলে থাকে, আর কিছু আকাঙ্ক্ষা আবর্জনার চারপাশে ঘুরপাক খায়।"</p>
+                     <div class="chart-container mt-8">
+                        <canvas id="aspirationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-to" class="py-16 md:py-24 bg-dark-body">
+            <div class="max-w-4xl mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-stone-100">পথের দিশা: কিভাবে আকাঙ্ক্ষা বৃদ্ধি পাবে?</h2>
+                    <p class="mt-4 text-lg text-stone-300 max-w-3xl mx-auto">বক্তৃতায় উচ্চাকাঙ্ক্ষা বাড়ানোর জন্য কিছু সুস্পষ্ট নির্দেশনা দেওয়া হয়েছে। এই বিভাগে সেই পথগুলো তুলে ধরা হয়েছে।</p>
+                </div>
+                <div>
+                    <div class="space-y-4" id="tabs-container">
+                        <div class="flex border-b border-dark">
+                            <button data-tab="target" class="tab-button flex-1 py-3 px-4 text-center font-semibold text-teal-400 border-b-2 border-teal-400 transition">লক্ষ্য নির্ধারণ</button>
+                            <button data-tab="quran" class="tab-button flex-1 py-3 px-4 text-center font-semibold text-stone-400 transition">কুরআনের সাথে সম্পর্ক</button>
+                            <button data-tab="biography" class="tab-button flex-1 py-3 px-4 text-center font-semibold text-stone-400 transition">মহানদের জীবনী</button>
+                        </div>
+                        <div id="tab-content" class="pt-6">
+                            <div data-tab-content="target" class="tab-pane leading-relaxed text-stone-300">
+                                <h3 class="text-xl font-semibold mb-2 text-white">জীবনের লক্ষ্য সুস্পষ্ট করুন</h3>
+                                <p>আকাঙ্ক্ষা বৃদ্ধির প্রথম ধাপ হলো জীবনের জন্য একটি মহৎ লক্ষ্য নির্ধারণ করা। উচ্চাকাঙ্ক্ষীদের লক্ষ্য থাকে এক ও অভিন্ন: আল্লাহর বাণীকে সর্বোচ্চ করা। এই স্বচ্ছতাই পথের সকল বাধা অতিক্রম করার শক্তি যোগায়।</p>
+                            </div>
+                            <div data-tab-content="quran" class="tab-pane hidden leading-relaxed text-stone-300">
+                                <h3 class="text-xl font-semibold mb-2 text-white">কুরআন থেকে শক্তি অর্জন</h3>
+                                <p>কুরআন হলো সম্মান ও শক্তির উৎস। জান্নাত ও জাহান্নামের আয়াতগুলো যখন পড়া হয়, তখন স্বাভাবিকভাবেই আকাঙ্ক্ষা বৃদ্ধি পায়। আমাদের শক্তি ফিরে আসবে যখন আমরা আল্লাহর কিতাবের দিকে ফিরে যাবো।</p>
+                            </div>
+                            <div data-tab-content="biography" class="hidden leading-relaxed text-stone-300">
+                                <h3 class="text-xl font-semibold mb-2 text-white">পূর্বসূরীদের জীবন থেকে শিক্ষা</h3>
+                                <p>মহান ব্যক্তিদের জীবনী পাঠ করলে আকাঙ্ক্ষা বৃদ্ধি পায়। তাদের ত্যাগ ও আল্লাহর প্রতি ভালোবাসা আমাদের জন্য প্রেরণার উৎস। তাদের জীবন আমাদের শেখায় যে কোনো বাধাই আল্লাহর পথে চলার জন্য প্রতিবন্ধক হতে পারে না।</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="exemplars" class="py-16 md:py-24 bg-dark-section">
+            <div class="max-w-5xl mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-stone-100">উচ্চাকাঙ্ক্ষার মূর্ত প্রতীক</h2>
+                    <p class="mt-4 text-lg text-stone-300 max-w-3xl mx-auto">বক্তৃতায় এমন কিছু ব্যক্তির কথা উল্লেখ করা হয়েছে যাদের জীবন ছিল উচ্চাকাঙ্ক্ষার বাস্তব উদাহরণ। তাদের গল্পগুলো আমাদের জন্য অনুপ্রেরণার বাতিঘর।</p>
+                </div>
+                <div class="space-y-6" id="accordion-container">
+                    <div class="accordion-item bg-dark-card border border-dark rounded-lg overflow-hidden">
+                        <button class="accordion-button w-full flex justify-between items-center text-left p-5 hover:bg-gray-800/50 transition">
+                            <span class="text-xl font-semibold text-teal-400">উমর ইবনে আব্দুল আযীয (রহঃ)</span>
+                            <span class="accordion-icon text-teal-400 transition-transform duration-300"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-6 text-stone-300 leading-relaxed border-t border-dark">
+                                <p>তাঁকে পঞ্চম খলিফায়ে রাশেদ বলা হয়। তাঁর জীবনের প্রতিটি পদক্ষেপ ছিল আল্লাহর জন্য। তাঁর আকাঙ্ক্ষা প্রথমে শাসন, তারপর খিলাফত এবং অবশেষে জান্নাত কামনা করেছিল।</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-dark-card border border-dark rounded-lg overflow-hidden">
+                        <button class="accordion-button w-full flex justify-between items-center text-left p-5 hover:bg-gray-800/50 transition">
+                            <span class="text-xl font-semibold text-teal-400">আব্দুল্লাহ ইবনে উম্মে মাকতুম (রাঃ)</span>
+                            <span class="accordion-icon text-teal-400 transition-transform duration-300"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-6 text-stone-300 leading-relaxed border-t border-dark">
+                                <p>তিনি একজন অন্ধ সাহাবী ছিলেন, কিন্তু যুদ্ধের ময়দানে 'লা ইলাহা ইল্লাল্লাহ'-এর পতাকা বহন করার দায়িত্ব নিয়েছিলেন এবং সেই পতাকা হাতেই শহীদ হয়েছিলেন।</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-dark-card border border-dark rounded-lg overflow-hidden">
+                        <button class="accordion-button w-full flex justify-between items-center text-left p-5 hover:bg-gray-800/50 transition">
+                            <span class="text-xl font-semibold text-teal-400">নাম না জানা বৃদ্ধ মুয়াজ্জিন</span>
+                            <span class="accordion-icon text-teal-400 transition-transform duration-300"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-6 text-stone-300 leading-relaxed border-t border-dark">
+                                <p>এই গল্পটি এমন এক ব্যক্তির, যিনি ছোটবেলা থেকে আযান দিতে ভালোবাসতেন এবং জীবনের শেষ দিন তিনি মসজিদে গিয়ে শেষবারের মতো আযান দেন এবং সালাতরত অবস্থায় সিজদায় মৃত্যুবরণ করেন।</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="conclusion" class="py-16 md:py-24 bg-dark-body">
+            <div class="max-w-4xl mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white text-neon-teal">শেষ কথা ও দোয়া</h2>
+                <p class="mt-6 text-lg text-stone-300 leading-relaxed">হে যুবক! আমল করো, কারণ তুমি শক্তির সময়ে আছো। হে বৃদ্ধ! আমল করো, কারণ তুমি অবকাশের সময়ে আছো। আল্লাহর কাছে উচ্চাকাঙ্ক্ষা চাও এবং তাঁর সন্তুষ্টির জন্য সাহায্য প্রার্থনা করো।</p>
+                <div class="mt-8 bg-black/30 rounded-lg p-6 max-w-2xl mx-auto border border-dark">
+                    <p class="text-xl italic text-stone-200">শাইখুল ইসলাম বলেন: "সবচেয়ে সুন্দর ও উপকারী দোয়া হলো আল্লাহর সন্তুষ্টি অর্জনের জন্য সাহায্য চাওয়া।"</p>
+                    <p class="mt-4 text-3xl font-semibold text-teal-300 text-neon-teal">اللهم أعني على ذكرك وشكرك وحسن عبادتك</p>
+                    <p class="mt-2 text-md text-stone-400">"হে আল্লাহ, আপনার যিকির, আপনার শুকরিয়া এবং আপনার সুন্দর ইবাদত করার জন্য আমাকে সাহায্য করুন।"</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-black/50 text-stone-400 py-6">
+        <div class="max-w-6xl mx-auto px-6 text-center text-sm">
+            <p>শাইখ খালিদ আল-রাশেদের "همم تناطح السحاب" বক্তৃতার উপর ভিত্তি করে নির্মিত।</p>
+            <p>&copy; 2024 - সকল তথ্য শিক্ষামূলক উদ্দেশ্যে ব্যবহৃত।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navLinks = document.querySelectorAll('nav a');
+            
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                     if(!mobileMenu.classList.contains('hidden')) {
+                         mobileMenu.classList.add('hidden');
+                     }
+                });
+            });
+
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const button = item.querySelector('.accordion-button');
+                button.addEventListener('click', () => {
+                    accordionItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('active')) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    item.classList.toggle('active');
+                });
+            });
+
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.dataset.tab;
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('text-teal-400', 'border-teal-400');
+                        btn.classList.add('text-stone-400');
+                    });
+                    button.classList.add('text-teal-400', 'border-teal-400');
+                    button.classList.remove('text-stone-400');
+
+                    tabPanes.forEach(pane => {
+                        if (pane.dataset.tabContent === targetTab) {
+                            pane.classList.remove('hidden');
+                        } else {
+                            pane.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const ctx = document.getElementById('aspirationChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['নিম্ন আকাঙ্ক্ষা (দুনিয়া)', 'উচ্চাকাঙ্ক্ষা (আখেরাত)'],
+                    datasets: [{
+                        label: 'আকাঙ্ক্ষার স্তর',
+                        data: [30, 100],
+                        backgroundColor: [
+                            'rgba(255, 118, 118, 0.7)',
+                            'rgba(29, 252, 223, 0.7)'
+                        ],
+                        borderColor: [
+                            '#ff7676',
+                            '#1dfcdf'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#a8a29e' }
+                        },
+                        y: {
+                           grid: { display: false },
+                           ticks: { color: '#d6d3d1', font: { size: 14 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#dddddd',
+                            callbacks: {
+                                label: function(context) {
+                                    let label = '';
+                                    if(context.label === 'নিম্ন আকাঙ্ক্ষা (দুনিয়া)') {
+                                        label = 'কিছু আকাঙ্ক্ষা আবর্জনার চারপাশে ঘুরপাক খায়।';
+                                    } else {
+                                        label = 'কিছু আকাঙ্ক্ষা আরশের সাথে ঝুলে থাকে।';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আল-মাহদী: শেষ যুগের প্রতীক্ষিত নেতা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Desert Calm -->
+    <!-- Application Structure Plan: The application uses a tab-based navigation system on a single page to break down the dense lecture into thematic sections. A new 'Deep Exploration' tab has been added to house Gemini API-powered features like a Q&A and a reflective text generator. This centralizes AI interactions, keeping the original structure clean while adding a new layer of engagement. This design transforms a linear sermon into a multi-faceted interactive learning tool. -->
+    <!-- Visualization & Content Choices: Report Info: A detailed religious sermon. Goal: To inform, organize, and engage, now with AI-powered exploration. Viz/Presentation Method: Existing structure of cards and accordions is preserved. The new 'Deep Exploration' section uses styled input fields, buttons with loading states, and dedicated containers for AI-generated text. Interaction: Users click tabs, accordions, and now, can input questions or click buttons to trigger Gemini API calls, receiving dynamic text in response. Justification: This enhancement adds significant value by allowing personalized inquiry and generating new, relevant content, moving beyond static information presentation. Library/Method: Vanilla JS for all interactions and API calls, Tailwind CSS for styling. Unicode characters for icons. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background-color: #FDFBF5;
+            color: #3D405B;
+        }
+        .nav-active {
+            background-color: #81B29A;
+            color: #F4F1DE;
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .nav-link {
+            transition: all 0.3s ease-in-out;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            background-color: #F4F1DE;
+            border: 1px solid #E07A5F;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        .details-content {
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+            max-height: 0;
+        }
+        details[open] .details-content {
+            max-height: 1000px;
+        }
+        details summary {
+            cursor: pointer;
+        }
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #FFF;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#3D405B]">আল-মাহদী</h1>
+            <p class="text-lg text-[#E07A5F] mt-2">শেষ যুগের প্রতীক্ষিত নেতা ও ন্যায়বিচারের প্রতীক</p>
+        </header>
+
+        <nav class="sticky top-0 z-10 bg-[#FDFBF5]/80 backdrop-blur-md mb-8 py-2 rounded-lg shadow-sm">
+            <ul class="flex flex-wrap justify-center gap-2 md:gap-4">
+                <li><button class="nav-link px-3 py-2 md:px-4 rounded-md text-sm md:text-base font-semibold" data-tab="introduction">ভূমিকা</button></li>
+                <li><button class="nav-link px-3 py-2 md:px-4 rounded-md text-sm md:text-base font-semibold" data-tab="proofs">প্রমাণ</button></li>
+                <li><button class="nav-link px-3 py-2 md:px-4 rounded-md text-sm md:text-base font-semibold" data-tab="features">বৈশিষ্ট্য</button></li>
+                <li><button class="nav-link px-3 py-2 md:px-4 rounded-md text-sm md:text-base font-semibold" data-tab="signs">পূর্বাভাস</button></li>
+                 <li><button class="nav-link px-3 py-2 md:px-4 rounded-md text-sm md:text-base font-semibold" data-tab="gemini-explore">গভীর অন্বেষণ ✨</button></li>
+                <li><button class="nav-link px-3 py-2 md:px-4 rounded-md text-sm md:text-base font-semibold" data-tab="conclusion">করণীয়</button></li>
+            </ul>
+        </nav>
+
+        <main id="content-container">
+
+            <section id="introduction" class="content-section">
+                 <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-[#3D405B] mb-4 border-b-2 border-[#81B29A] pb-2">কে এই মাহদী?</h2>
+                    <p class="text-base leading-relaxed mb-4">
+                        এই বিভাগে প্রতীক্ষিত ইমাম মাহদী (আঃ) সম্পর্কে একটি প্রাথমিক ধারণা দেওয়া হয়েছে। তিনি কে, কোথা থেকে আসবেন এবং তাঁর মূল উদ্দেশ্য কী, সে সম্পর্কে আলোচনা করা হয়েছে। কিয়ামতের অন্যতম বড় আলামত হিসেবে তাঁর আগমন বিশ্বকে ন্যায় ও ইনসাফে পরিপূর্ণ করবে।
+                    </p>
+                    <p class="text-base leading-relaxed">
+                        কিয়ামতের বড় আলামতগুলোর মধ্যে অন্যতম হলো প্রতীক্ষিত মাহদীর আগমন। তিনি রাসূলুল্লাহ সাল্লাল্লাহু আলাইহি ওয়া সাল্লামের বংশ থেকে হবেন। তাঁর নাম হবে রাসূলের নামের মতো এবং তাঁর পিতার নাম হবে রাসূলের পিতার নামের মতো। তিনি পৃথিবীতে ন্যায় ও করুণা প্রতিষ্ঠা করবেন, যেমনটি তা জুলুম ও অত্যাচারে পরিপূর্ণ ছিল। তাঁর আগমনের বিষয়ে অনেক হাদিস বর্ণিত হয়েছে এবং তাওরাত ও ইনজিলেও তাঁর উল্লেখ রয়েছে। তিনি সাত বা আট বছর অবস্থান করবেন এবং তাঁর সময়ে মুসলমানরা নিরাপত্তা ও রিজিকের প্রশস্ততার মধ্যে জীবনযাপন করবে।
+                    </p>
+                </div>
+            </section>
+
+            <section id="proofs" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                     <h2 class="text-2xl font-bold text-[#3D405B] mb-4 border-b-2 border-[#81B29A] pb-2">আগমনের প্রমাণ</h2>
+                    <p class="text-base leading-relaxed mb-6">
+                        ইমাম মাহদীর আগমন কোনো কাল্পনিক ধারণা নয়, বরং কুরআন ও সহীহ হাদিস দ্বারা প্রমাণিত একটি সত্য। এই বিভাগে আমরা পবিত্র কুরআন ও সুন্নাহর আলোকে তাঁর আগমনের সপক্ষে থাকা বিভিন্ন দলিলের উপর আলোকপাত করব। ব্যবহারকারীরা সহজেই এই দুই ধরনের প্রমাণের মধ্যে তথ্য দেখতে পারবেন।
+                    </p>
+                    <div id="hadith-container">
+                        <h3 class="text-xl font-bold text-[#E07A5F] mb-4">সুন্নাহর আলোকে প্রমাণ</h3>
+                        <div class="space-y-4">
+                            <details class="bg-gray-50 p-4 rounded-lg">
+                                <summary class="font-semibold flex justify-between items-center">
+                                    <span>১. আহলে বাইত থেকে তাঁর আগমন</span>
+                                    <span class="text-xl transform transition-transform duration-300 details-arrow">▼</span>
+                                </summary>
+                                <div class="details-content mt-2 text-gray-700">
+                                    <p>আলী (রাঃ) থেকে বর্ণিত, রাসূলুল্লাহ (সাঃ) বলেছেন: “মাহদী আমাদের আহলে বাইত থেকে হবে। আল্লাহ তাকে এক রাতের মধ্যে ঠিক করে দেবেন।” (ইবনে মাজাহ, আহমদ)</p>
+                                </div>
+                            </details>
+                            <details class="bg-gray-50 p-4 rounded-lg">
+                                <summary class="font-semibold flex justify-between items-center">
+                                    <span>২. শারীরিক বর্ণনা ও শাসনকাল</span>
+                                    <span class="text-xl transform transition-transform duration-300 details-arrow">▼</span>
+                                </summary>
+                                <div class="details-content mt-2 text-gray-700">
+                                    <p>আবু সাঈদ খুদরী (রাঃ) থেকে বর্ণিত, রাসূলুল্লাহ (সাঃ) বলেছেন: “মাহদী আমার থেকে, প্রশস্ত কপালবিশিষ্ট, উঁচু নাকবিশিষ্ট... তিনি পৃথিবীকে ন্যায় ও ইনসাফে পরিপূর্ণ করে দেবেন যেমনটি তা জুলুম ও অত্যাচারে পরিপূর্ণ থাকবে। তিনি সাত বছর রাজত্ব করবেন।” (আলবানী সনদটিকে হাসান বলেছেন)</p>
+                                </div>
+                            </details>
+                             <details class="bg-gray-50 p-4 rounded-lg">
+                                <summary class="font-semibold flex justify-between items-center">
+                                    <span>৩. ঈসা (আঃ) এর সাথে সাক্ষাৎ</span>
+                                    <span class="text-xl transform transition-transform duration-300 details-arrow">▼</span>
+                                </summary>
+                                <div class="details-content mt-2 text-gray-700">
+                                    <p>আবু উমামা (রাঃ) থেকে বর্ণিত হাদিসে এসেছে যে, যখন ইমাম মাহদী ফজরের নামায পড়ানোর জন্য এগিয়ে যাবেন, তখন ঈসা ইবনে মারইয়াম (আঃ) অবতরণ করবেন। ঈসা (আঃ) ইমাম মাহদীর পেছনে নামায পড়বেন, যা এই উম্মতের জন্য একটি মহান সম্মান। (হাকেম, ইবনে মাজাহ)</p>
+                                </div>
+                            </details>
+                            <details class="bg-gray-50 p-4 rounded-lg">
+                                <summary class="font-semibold flex justify-between items-center">
+                                    <span>৪. বংশ পরিচয়</span>
+                                    <span class="text-xl transform transition-transform duration-300 details-arrow">▼</span>
+                                </summary>
+                                <div class="details-content mt-2 text-gray-700">
+                                    <p>উম্মে সালামা (রাঃ) থেকে বর্ণিত, তিনি বলেন: “আমি রাসূলুল্লাহ (সাঃ)-কে বলতে শুনেছি: ‘মাহদী আমার বংশ থেকে, ফাতেমার সন্তানদের থেকে হবে’।” (আবু দাউদ, হাকেম)</p>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="features" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-[#3D405B] mb-4 border-b-2 border-[#81B29A] pb-2">নাম ও বৈশিষ্ট্য</h2>
+                     <p class="text-base leading-relaxed mb-6">
+                        হাদিসে ইমাম মাহদীর শারীরিক গঠন, নাম এবং চারিত্রিক বৈশিষ্ট্য সম্পর্কে বিস্তারিত বর্ণনা রয়েছে। এই অংশে আমরা তাঁর সেইসব অনন্য বৈশিষ্ট্যগুলো তুলে ধরব, যা তাঁকে চিনতে সহায়ক হবে।
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="card p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-[#3D405B] mb-2">নাম ও বংশ</h3>
+                            <p class="text-sm">তাঁর নাম হবে মুহাম্মাদ, পিতার নাম আব্দুল্লাহ। তিনি নবী (সাঃ) এর কন্যা ফাতিমা (রাঃ) এর বংশ থেকে আসবেন।</p>
+                        </div>
+                        <div class="card p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-[#3D405B] mb-2">শারীরিক গঠন</h3>
+                            <p class="text-sm">তিনি হবেন প্রশস্ত কপালবিশিষ্ট, উঁচু ও সরু নাকবিশিষ্ট, শ্যামলা বর্ণের এবং মাঝারি গড়নের যুবক। তাঁর চুল কাঁধ পর্যন্ত লম্বা হবে।</p>
+                        </div>
+                         <div class="card p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-[#3D405B] mb-2">চারিত্রিক গুণাবলী</h3>
+                            <p class="text-sm">তিনি আল্লাহর প্রতি অত্যন্ত বিনয়ী হবেন। তিনি পৃথিবীকে ন্যায় ও ইনসাফ দ্বারা পরিপূর্ণ করবেন।</p>
+                        </div>
+                        <div class="card p-4 rounded-lg">
+                            <h3 class="text-lg font-bold text-[#3D405B] mb-2">রাজত্ব ও সাহায্যকারী</h3>
+                            <p class="text-sm">তিনি সাত বা আট বছর রাজত্ব করবেন। পূর্ব দিক থেকে কালো পতাকাবাহী একটি দল তাঁকে সাহায্য করতে আসবে।</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="signs" class="content-section">
+                 <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-[#3D405B] mb-4 border-b-2 border-[#81B29A] pb-2">আগমনের পূর্ববর্তী আলামত</h2>
+                    <p class="text-base leading-relaxed mb-6">
+                        ইমাম মাহদীর আবির্ভাবের আগে পৃথিবীতে কিছু নির্দিষ্ট আলামত প্রকাশ পাবে। এই আলামতগুলো তাঁর আগমনের সময় নিকটবর্তী হওয়ার ইঙ্গিত দেয়। এখানে হাদিসে বর্ণিত তেমন কিছু গুরুত্বপূর্ণ আলামত তুলে ধরা হলো। প্রতিটি কার্ডে ক্লিক করে বিস্তারিত জানতে পারবেন।
+                    </p>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        
+                        <div class="card text-center p-6 rounded-lg">
+                            <div class="text-4xl mb-2">📈</div>
+                            <h3 class="font-bold text-lg mb-2">সুদের বিস্তার</h3>
+                            <p class="text-sm">এমন সময় আসবে যখন কেউই সুদ থেকে বাঁচতে পারবে না। যে সরাসরি খাবে না, তার গায়েও এর ধুলো লাগবে।</p>
+                        </div>
+                        <div class="card text-center p-6 rounded-lg">
+                            <div class="text-4xl mb-2">🤝</div>
+                            <h3 class="font-bold text-lg mb-2">আমানতের খেয়ানত</h3>
+                            <p class="text-sm">যখন অযোগ্য ব্যক্তির হাতে দায়িত্ব অর্পণ করা হবে, তখন কিয়ামতের অপেক্ষা করতে বলা হয়েছে।</p>
+                        </div>
+                        <div class="card text-center p-6 rounded-lg">
+                            <div class="text-4xl mb-2">⚖️</div>
+                            <h3 class="font-bold text-lg mb-2">জুলুমের বিস্তার</h3>
+                            <p class="text-sm">পৃথিবী জুলুম ও অত্যাচারে ভরে যাবে। মানুষ অত্যাচার থেকে বাঁচার জন্য কোনো আশ্রয়স্থল খুঁজে পাবে না।</p>
+                        </div>
+                         <div class="card text-center p-6 rounded-lg">
+                            <div class="text-4xl mb-2">🕌</div>
+                            <h3 class="font-bold text-lg mb-2">মসজিদে নববীর পরিবর্তন</h3>
+                            <p class="text-sm">হাদিসে এসেছে, দাজ্জাল মসজিদে নববীকে একটি ‘সাদা প্রাসাদ’ হিসেবে দেখবে, যা এর বাহ্যিক চাকচিক্যের ইঙ্গিত দেয়।</p>
+                        </div>
+                         <div class="card text-center p-6 rounded-lg">
+                            <div class="text-4xl mb-2">⚔️</div>
+                            <h3 class="font-bold text-lg mb-2">স্বৈরাচারী শাসক</h3>
+                            <p class="text-sm">স্বৈরাচারী রাজাদের শাসন চলবে, যারা অনুগতদের হত্যা করবে ও ভয় দেখাবে।</p>
+                        </div>
+                         <div class="card text-center p-6 rounded-lg">
+                            <div class="text-4xl mb-2">🕋</div>
+                            <h3 class="font-bold text-lg mb-2">বায়তুল্লাহর অসম্মান</h3>
+                            <p class="text-sm">বায়তুল্লাহর অসম্মান তার অধিবাসীরাই করবে এবং রুকন ও মাকামের মাঝে একজনের হাতে বাই‘আত গ্রহণ করা হবে।</p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            
+            <section id="gemini-explore" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-[#3D405B] mb-4 border-b-2 border-[#81B29A] pb-2">গভীর অন্বেষণ ✨ <span class="text-sm font-normal">(Gemini দ্বারা চালিত)</span></h2>
+                    <p class="text-base leading-relaxed mb-6">
+                        এই বিভাগে আপনি ইমাম মাহদী সম্পর্কিত আপনার প্রশ্ন করতে পারেন অথবা বর্তমান সময়ের প্রেক্ষাপটে তাঁর আগমনের আলামতগুলো থেকে শিক্ষণীয় বিষয় নিয়ে একটি অনুপ্রেরণামূলক লেখা পড়তে পারেন। এই বৈশিষ্ট্যগুলো Google Gemini দ্বারা চালিত।
+                    </p>
+            
+                    <div class="mb-8 p-6 border border-gray-200 rounded-lg bg-gray-50">
+                        <h3 class="text-xl font-bold text-[#E07A5F] mb-3">আপনার প্রশ্ন করুন</h3>
+                        <p class="text-sm mb-4">ইমাম মাহদী সম্পর্কে আপনার মনে কোনো প্রশ্ন থাকলে এখানে লিখুন।</p>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="text" id="user-question-input" placeholder="আপনার প্রশ্ন এখানে লিখুন..." class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#81B29A]">
+                            <button id="ask-gemini-btn" class="bg-[#E07A5F] text-white px-6 py-2 rounded-md font-semibold hover:bg-opacity-90 transition-colors flex items-center justify-center min-w-[120px]">
+                                <span class="btn-text">প্রশ্ন করুন</span>
+                                <span class="loader hidden"></span>
+                            </button>
+                        </div>
+                        <div id="gemini-answer" class="mt-4 p-4 bg-white rounded-md border border-gray-200 leading-relaxed" style="display: none;"></div>
+                    </div>
+            
+                    <div class="p-6 border border-gray-200 rounded-lg bg-gray-50">
+                        <h3 class="text-xl font-bold text-[#81B29A] mb-3">সমসাময়িক প্রতিফলন</h3>
+                        <p class="text-sm mb-4">শেষ জামানার আলামতগুলো থেকে বর্তমান সময়ের জন্য আধ্যাত্মিক এবং নৈতিক শিক্ষা কী হতে পারে, সে সম্পর্কে একটি অনুচ্ছেদ তৈরি করতে নিচের বোতামে ক্লিক করুন।</p>
+                        <button id="get-reflection-btn" class="bg-[#81B29A] text-white px-6 py-2 rounded-md font-semibold hover:bg-opacity-90 transition-colors flex items-center justify-center min-w-[190px]">
+                            <span class="btn-text">✨ প্রতিফলন তৈরি করুন</span>
+                             <span class="loader hidden"></span>
+                        </button>
+                        <div id="gemini-reflection" class="mt-4 p-4 bg-white rounded-md border border-gray-200 leading-relaxed" style="display: none;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="conclusion" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-[#3D405B] mb-4 border-b-2 border-[#81B29A] pb-2">আমাদের করণীয় কী?</h2>
+                    <p class="text-base leading-relaxed mb-4">
+                        মাহদীর আগমনের জন্য অপেক্ষা করার অর্থ নিষ্ক্রিয় হয়ে বসে থাকা নয়। বরং, এটি আমাদের জন্য একটি আহ্বান—নিজেদের প্রস্তুত করার, ঈমানকে দৃঢ় করার এবং সমাজে ন্যায় প্রতিষ্ঠার জন্য কাজ করার। এই চূড়ান্ত বিভাগে, সেই প্রস্তুতির গুরুত্ব এবং আমাদের দায়িত্ব সম্পর্কে আলোচনা করা হয়েছে।
+                    </p>
+                    <p class="text-base leading-relaxed mb-4">
+                        মাহদী আসবেন, কিন্তু কখন তা আল্লাহই ভালো জানেন। উম্মতের জন্য এটা কাম্য নয় যে, তারা তাঁর আবির্ভাবের আশায় অলস হয়ে বসে থাকবে। বরং তাদের কাজ করতে হবে এবং তাঁর আবির্ভাবের জন্য পথ প্রস্তুত করতে হবে। আমাদের নিজেদেরকে এর জন্য প্রস্তুত করতে হবে এবং এমন লোকদের প্রস্তুত করতে হবে যারা আল্লাহর সাথে করা অঙ্গীকারে সত্যবাদী।
+                    </p>
+                    <p class="text-base leading-relaxed font-semibold text-[#E07A5F]">
+                        দুর্বলরা যেন নিশ্চিত থাকে যে, আল্লাহ এই উম্মতের একজনের মাধ্যমে তাঁর দ্বীনকে বিজয়ী করবেন। তারা যেন সুসংবাদ গ্রহণ করে যে, মুক্তি নিকটবর্তী।
+                    </p>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>&copy; 2024. শেখ খালেদ আল-রাশেদের বয়ানের উপর ভিত্তি করে তৈরি।</p>
+             <p>এই অ্যাপ্লিকেশনটি শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে তৈরি।</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+
+            function showTab(tabId) {
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                tabs.forEach(tab => {
+                    tab.classList.remove('nav-active');
+                });
+
+                const activeSection = document.getElementById(tabId);
+                const activeTab = document.querySelector(`[data-tab="${tabId}"]`);
+                
+                if (activeSection) {
+                    activeSection.classList.add('active');
+                }
+                if (activeTab) {
+                    activeTab.classList.add('nav-active');
+                }
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    showTab(tabId);
+                });
+            });
+
+            document.querySelectorAll('details').forEach(detail => {
+                detail.addEventListener('toggle', function() {
+                    const arrow = this.querySelector('.details-arrow');
+                    if (this.open) {
+                        arrow.style.transform = 'rotate(180deg)';
+                    } else {
+                        arrow.style.transform = 'rotate(0deg)';
+                    }
+                });
+            });
+
+            showTab('introduction');
+
+            const askButton = document.getElementById('ask-gemini-btn');
+            const reflectionButton = document.getElementById('get-reflection-btn');
+            const questionInput = document.getElementById('user-question-input');
+            const answerDiv = document.getElementById('gemini-answer');
+            const reflectionDiv = document.getElementById('gemini-reflection');
+
+            async function callGemini(prompt, buttonElement, responseElement) {
+                const btnText = buttonElement.querySelector('.btn-text');
+                const loader = buttonElement.querySelector('.loader');
+
+                btnText.classList.add('hidden');
+                loader.classList.remove('hidden');
+                buttonElement.disabled = true;
+                responseElement.style.display = 'block';
+                responseElement.innerHTML = '<p class="text-center text-gray-500">আপনার উত্তরের জন্য প্রক্রিয়া করা হচ্ছে...</p>';
+
+                const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const payload = {
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            topK: 1,
+                            topP: 1,
+                            maxOutputTokens: 2048,
+                        },
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates[0].content.parts[0].text) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        responseElement.innerHTML = text.replace(/\n/g, '<br>');
+                    } else {
+                        responseElement.innerHTML = '<p class="text-red-500 text-center">একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন।</p>';
+                    }
+                } catch (error) {
+                    console.error('Gemini API call failed:', error);
+                    responseElement.innerHTML = `<p class="text-red-500 text-center">একটি ত্রুটি ঘটেছে। আপনার ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।</p>`;
+                } finally {
+                    btnText.classList.remove('hidden');
+                    loader.classList.add('hidden');
+                    buttonElement.disabled = false;
+                }
+            }
+            
+            askButton.addEventListener('click', () => {
+                const question = questionInput.value;
+                if (!question.trim()) {
+                    answerDiv.style.display = 'block';
+                    answerDiv.innerHTML = '<p class="text-red-500 text-center">অনুগ্রহ করে একটি প্রশ্ন লিখুন।</p>';
+                    return;
+                }
+                const prompt = `একজন ইসলামিক জ্ঞানী হিসেবে, ইমাম মাহদী সম্পর্কে এই প্রশ্নটির উত্তর দিন। উত্তরটি কুরআন ও সুন্নাহর আলোকে এবং শেখ খালেদ আল-রাশেদের বয়ানের মূল চেতনার সাথে সামঞ্জস্যপূর্ণ হওয়া উচিত। প্রশ্ন: "${question}"`;
+                callGemini(prompt, askButton, answerDiv);
+            });
+
+            reflectionButton.addEventListener('click', () => {
+                const prompt = `একজন মুসলিম হিসেবে, শেষ জামানার আলামতগুলো (যেমন: জুলুম, আমানতের খেয়ানত, সুদের বিস্তার) থেকে বর্তমান সময়ের জন্য কী আধ্যাত্মিক এবং নৈতিক শিক্ষা গ্রহণ করা যেতে পারে? এই বিষয়ে একটি গভীর ও অনুপ্রেরণামূলক অনুচ্ছেদ লিখুন। উত্তরটি ইতিবাচক, গঠনমূলক এবং ব্যক্তিগত আধ্যাত্মিক উন্নতির উপর জোর দেওয়া উচিত।`;
+                callGemini(prompt, reflectionButton, reflectionDiv);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমি কীভাবে আল্লাহকে লজ্জা করব? - শেখ খালেদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: "Spiritual Oasis" -->
+    <!-- Application Structure Plan: The application uses a thematic, single-page structure to guide the user through the core spiritual concepts of the sermon. The flow is designed to be exploratory rather than strictly linear. It starts with a hero section, followed by a clear navigation bar. The main content is divided into logical, collapsible sections for the core pillars (Tawakkul, Ihsan, Muraqaba), which keeps the UI clean. The most interactive part is the "Allah's Names" section, designed as a tab-like interface where clicking a name dynamically displays its meaning and the associated story. This breaks down the dense narrative into digestible, engaging parts, enhancing user understanding and retention. This structure was chosen because it transforms a passive listening/reading experience into an active journey of discovery, which is more effective for internalizing spiritual concepts. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Core concepts of Tawakkul, Ihsan, Muraqaba. Goal: Organize & Inform. Viz/Presentation: Interactive cards/collapsible sections. Interaction: Click to expand/reveal content. Justification: Prevents overwhelming the user with text, allowing them to focus on one concept at a time. Method: HTML/CSS with JS for toggling visibility.
+        2. Report Info: Allah's names (Ar-Raqib, Al-Hafiz, As-Sami', Al-Basir) and their associated stories. Goal: Deep Dive & Storytelling. Viz/Presentation: A grid of selectable buttons representing each name, with a dedicated content display area. Interaction: Clicking a button dynamically updates the display area with the corresponding name's meaning, story, and relevant verses. Justification: This is the most effective way to handle multiple narratives within one section. It creates an engaging, tab-like experience that encourages exploration and makes the stories more memorable. Method: Vanilla JS to manage state and update DOM content from a data object.
+        3. Report Info: Foundational Quranic verses. Goal: Emphasize & Set Tone. Viz/Presentation: Styled blockquotes. Interaction: None. Justification: Classic, respectful presentation for sacred texts. Method: HTML `<blockquote>` with Tailwind CSS.
+        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background-color: #fdfaf6;
+            color: #4a4a4a;
+        }
+        .hero {
+            background: linear-gradient(rgba(248, 237, 222, 0.8), rgba(248, 237, 222, 0.9)), url('https://placehold.co/1200x600/f8edde/a89b88?text=');
+            background-size: cover;
+            background-position: center;
+        }
+        .hero h1 {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(163, 139, 114, 0.4);
+        }
+        .active-tab {
+            background-color: #a38b72;
+            color: #ffffff;
+            transform: scale(1.05);
+            box-shadow: 0 0 8px rgba(163, 139, 114, 0.6), 0 0 20px rgba(163, 139, 114, 0.4);
+        }
+        .tab-btn {
+            transition: all 0.3s ease-in-out;
+        }
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 5px rgba(163, 139, 114, 0.4), 0 0 10px rgba(163, 139, 114, 0.2);
+        }
+        .content-card {
+            min-height: 400px;
+        }
+        blockquote {
+            border-left: 4px solid #c9b8a5;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #6b5d4f;
+            transition: all 0.3s ease;
+            box-shadow: -2px 0 8px -4px rgba(201, 184, 165, 0.1);
+        }
+        blockquote:hover {
+            box-shadow: -3px 0 15px -4px rgba(201, 184, 165, 0.8);
+        }
+        .cta-button:hover {
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.7), 0 0 15px rgba(163, 139, 114, 0.5);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header id="home" class="hero text-center py-20 px-4">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-bold text-[#6b5d4f] mb-4">আমি কীভাবে আল্লাহকে লজ্জা করব?</h1>
+            <p class="text-lg md:text-xl text-[#8c7a69] mb-8">শেখ খালেদ আল-রাশেদ এর একটি জ্ঞানগর্ভ আলোচনা</p>
+            <a href="#introduction" class="cta-button bg-[#a38b72] text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-[#8c7a69] transition duration-300">অন্বেষণ শুরু করুন</a>
+        </div>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 bg-[#fdfaf6] shadow-md z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-center items-center py-4 space-x-4 md:space-x-8 overflow-x-auto">
+                <a href="#introduction" class="text-gray-600 hover:text-[#a38b72] font-medium">ভূমিকা</a>
+                <a href="#pillars" class="text-gray-600 hover:text-[#a38b72] font-medium">মূল স্তম্ভ</a>
+                <a href="#names-of-allah" class="text-gray-600 hover:text-[#a38b72] font-medium">আল্লাহর নামসমূহ</a>
+                <a href="#conclusion" class="text-gray-600 hover:text-[#a38b72] font-medium">উপসংহার</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto p-4 md:p-8">
+
+        <!-- Introduction Section -->
+        <section id="introduction" class="py-16">
+            <h2 class="text-3xl font-bold text-center text-[#6b5d4f] mb-8">ভূমিকা: আল্লাহর উপর ভরসা</h2>
+            <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+                <p class="mb-6 text-lg leading-relaxed">সকল প্রশংসা আল্লাহর জন্য। আমরা তাঁর প্রশংসা করি, তাঁর কাছে সাহায্য চাই, তাঁর কাছে ক্ষমা প্রার্থনা করি। নিশ্চয়ই আল্লাহ তা'আলা সৃষ্টির সকল অবস্থা সম্পর্কে অবগত। তাই বান্দার উচিত গোপনে ও প্রকাশ্যে আল্লাহকে পর্যবেক্ষণ করা এবং তাঁর সকল বিষয়ে তাঁর উপর ভরসা করা।</p>
+                <blockquote>"হে ঈমানদারগণ! তোমরা আল্লাহকে ভয় কর, যেমনভাবে ভয় করা উচিত এবং তোমরা মুসলমান না হয়ে মৃত্যুবরণ করো না।" <br><span class="text-sm font-medium">(সূরা আলে ইমরান: ১০২)</span></blockquote>
+                <blockquote>"হে মুমিনগণ! আল্লাহকে ভয় কর এবং সঠিক কথা বল। তিনি তোমাদের আমল-আचरण সংশোধন করবেন এবং তোমাদের পাপসমূহ ক্ষমা করবেন। যে কেউ আল্লাহ ও তাঁর রসূলের আনুগত্য করে, সে অবশ্যই মহাসাফল্য অর্জন করবে।" <br><span class="text-sm font-medium">(সূরা আল-আহযাব: ৭০-৭১)</span></blockquote>
+            </div>
+        </section>
+
+        <!-- Pillars of Faith Section -->
+        <section id="pillars" class="py-16 bg-stone-50 rounded-2xl">
+            <h2 class="text-3xl font-bold text-center text-[#6b5d4f] mb-2">ঈমানের মূল স্তম্ভসমূহ</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">আল্লাহর প্রতি লজ্জা ও ভয় জাগ্রত করতে তিনটি গুরুত্বপূর্ণ ধারণা আমাদের বুঝতে হবে: তাওয়াক্কুল (ভরসা), ইহসান (ইবাদতের সৌন্দর্য), এবং মুরাকাবা (আত্ম-পর্যবেক্ষণ)। নিচের প্রতিটি স্তম্ভ সম্পর্কে বিস্তারিত জানতে ক্লিক করুন।</p>
+            <div class="grid md:grid-cols-3 gap-8 px-4">
+                <!-- Tawakkul Card -->
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <details>
+                        <summary class="text-xl font-bold text-[#a38b72] cursor-pointer">১. তাওয়াক্কুল (ভরসা)</summary>
+                        <div class="mt-4 text-gray-700 space-y-4">
+                           <p><strong>তাওয়াক্কুল হলো:</strong> উপকার লাভ এবং ক্ষতি দূর করার জন্য আল্লাহর উপর হৃদয়ের নির্ভরতা, সাথে তাঁর প্রতি আস্থা এবং কাঙ্ক্ষিত বস্তু পাওয়ার ব্যাপারে সুধারণা পোষণ করা। কারণ তিনি পরাক্রমশালী, পরম দয়ালু। তাঁর পরাক্রমের মাধ্যমে তিনি তাঁর বান্দার কাছে কল্যাণ পৌঁছাতে এবং অনিষ্ট দূর করতে সক্ষম, আর এ সবই তাঁর রহমতের কারণে।</p>
+                           <blockquote>"আর ভরসা করুন পরাক্রমশালী, পরম দয়ালুর উপর।" <br><span class="text-sm font-medium">(সূরা আশ-শু'আরা: ২১৭)</span></blockquote>
+                        </div>
+                    </details>
+                </div>
+                <!-- Ihsan Card -->
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <details>
+                        <summary class="text-xl font-bold text-[#a38b72] cursor-pointer">২. ইহসান (সৌন্দর্য)</summary>
+                        <div class="mt-4 text-gray-700 space-y-4">
+                            <p>রাসূলুল্লাহ (ﷺ) কে ইহসান সম্পর্কে জিজ্ঞাসা করা হয়েছিল, তিনি বলেছিলেন: <strong>"(ইহসান হলো) তুমি এমনভাবে আল্লাহর ইবাদত করবে যেন তুমি তাঁকে দেখছ, আর যদি তুমি তাঁকে দেখতে না পাও, তবে (মনে রাখবে) তিনি তোমাকে দেখছেন।"</strong></p>
+                            <p>সালাতে যে ব্যক্তি তার রবের নৈকট্য অনুভব করে, সে বিনয়ী হয় এবং সালাতকে পরিপূর্ণ করে। আর সালাত পরিপূর্ণ করার মাধ্যমে তার বাকি আমলও পরিপূর্ণ হয়।</p>
+                        </div>
+                    </details>
+                </div>
+                <!-- Muraqaba Card -->
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <details>
+                        <summary class="text-xl font-bold text-[#a38b72] cursor-pointer">৩. মুরাকাবা (আত্ম-পর্যবেক্ষণ)</summary>
+                        <div class="mt-4 text-gray-700 space-y-4">
+                           <p><strong>মুরাকাবা হলো:</strong> বান্দার এই জ্ঞান ও দৃঢ় বিশ্বাস যে, আল্লাহ তা'আলা তার জাহির (বাহ্যিক) ও বাতিন (অভ্যন্তরীণ) সবকিছু সম্পর্কে অবগত। এই জ্ঞান ও বিশ্বাসের ধারাবাহিকতাই হলো মুরাকাবা।</p>
+                           <p>অর্থাৎ, আল্লাহ তোমাকে দেখছেন এবং তোমার গোপন ও প্রকাশ্য সবকিছু জানেন। মরুভূমিতে, আকাশে বা বাতাসে, এমনকি তুমি একা থাকলেও তিনি তোমাকে দেখেন।</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- Allah's Names Section -->
+        <section id="names-of-allah" class="py-16">
+            <h2 class="text-3xl font-bold text-center text-[#6b5d4f] mb-2">আল্লাহর নাম ও গুণাবলীর প্রভাব</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">মুরাকাবা অর্জনের অন্যতম উপায় হলো আল্লাহর পর্যবেক্ষক নামসমূহ সম্পর্কে জানা এবং সে অনুযায়ী ইবাদত করা। নিচে আল্লাহর চারটি নাম এবং এর সাথে সম্পর্কিত শিক্ষণীয় ঘটনাবলী দেওয়া হলো। প্রতিটি নাম সম্পর্কে জানতে তার বাটনে ক্লিক করুন।</p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <button class="tab-btn p-4 rounded-lg shadow font-semibold bg-white" data-name="ar-raqib">আর-রাকিব (পর্যবেক্ষক)</button>
+                <button class="tab-btn p-4 rounded-lg shadow font-semibold bg-white" data-name="al-hafiz">আল-হাফিজ (সংরক্ষক)</button>
+                <button class="tab-btn p-4 rounded-lg shadow font-semibold bg-white" data-name="as-sami">আস-সামি' (সর্বশ্রোতা)</button>
+                <button class="tab-btn p-4 rounded-lg shadow font-semibold bg-white" data-name="al-basir">আল-বাসির (সর্বদ্রষ্টা)</button>
+            </div>
+
+            <div id="name-content" class="bg-white p-8 rounded-xl shadow-lg content-card transition-all duration-500">
+                <!-- Content will be injected here by JS -->
+            </div>
+        </section>
+
+        <!-- Conclusion Section -->
+        <section id="conclusion" class="py-16 bg-stone-50 rounded-2xl">
+            <h2 class="text-3xl font-bold text-center text-[#6b5d4f] mb-8">উপসংহার: আত্ম-জিজ্ঞাসা</h2>
+            <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg text-center">
+                <p class="mb-6 text-lg leading-relaxed">হে আল্লাহর বান্দা! ঈমান কেবল দুই রাকাত সালাত বা দিনের বেলা রোজা রাখার মধ্যে প্রকাশ পায় না, বরং তা নফস ও প্রবৃত্তির বিরুদ্ধে সংগ্রামের মধ্যে প্রকাশ পায়। সেই ব্যক্তিই আসল পুরুষ, যে নির্জনে হারাম কাজে লিপ্ত হওয়ার সুযোগ পেয়েও আল্লাহর কথা স্মরণ করে এবং বলে: "আল্লাহ আমাকে সর্বত্র দেখছেন।"</p>
+                <p class="mb-6 font-bold text-xl text-red-700" style="text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);">আপনি যদি বিশ্বাস করেন যে আল্লাহ আপনাকে দেখেন না, তবে আপনার কুফরি কতই না বড়! আর যদি আপনি তাঁর দেখার কথা জেনেও তাঁর অবাধ্যতা করেন, তবে আপনার স্পর্ধা কত বেশি! আপনার লজ্জা কত কম!</p>
+                <p class="text-lg">জেনে রাখুন, আপনি আল্লাহর সামনে দাঁড়াবেন। তখন কোন ভাষায় জবাব দেবেন? তাই প্রশ্নের জন্য উত্তর এবং উত্তরের জন্য সঠিকতা প্রস্তুত করুন।</p>
+                <div class="mt-8 border-t pt-6">
+                     <p class="text-xl font-semibold text-[#a38b72]">হে আল্লাহ, আমরা আপনার কাছে গোপনে ও প্রকাশ্যে আপনার ভয় প্রার্থনা করি।</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-[#6b5d4f] text-white text-center p-6">
+        <p>&copy; ২০২৪। শেখ খালেদ আল-রাশেদের আলোচনার উপর ভিত্তি করে তৈরি।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentData = {
+                "ar-raqib": {
+                    title: "আর-রাকিব (পর্যবেক্ষক)",
+                    content: `
+                        <p class="mb-4">তিনি সবকিছুর উপর তাঁর জ্ঞানের দ্বারা পর্যবেক্ষক, যা সবকিছুকে পরিবেষ্টন করে আছে। তিনি তাঁর দৃষ্টির দ্বারা সবকিছুর উপর পর্যবেক্ষক, যাকে তন্দ্রা বা নিদ্রা স্পর্শ করে না। তিনি তাঁর শ্রবণের দ্বারা প্রত্যেক নড়াচড়া ও কথা শোনেন।</p>
+                        <h4 class="font-bold text-lg mb-2 text-[#a38b72]">ঘটনা: উমাইর ইবনে ওয়াহাবের ইসলাম গ্রহণ</h4>
+                        <p class="mb-4">বদরের যুদ্ধের পর সাফওয়ান ইবনে উমাইয়া এবং উমাইর ইবনে ওয়াহাব একান্তে বসে রাসূল (ﷺ)-কে হত্যার ষড়যন্ত্র করে। সেখানে তৃতীয় কেউ ছিল না। উমাইর মদিনায় পৌঁছালে রাসূল (ﷺ) তাকে তার এবং সাফওয়ানের মধ্যকার সেই গোপন আলোচনার কথা বলে দেন, যা শুনে উমাইর বিস্মিত হয়ে ইসলাম গ্রহণ করেন। কারণ তিনি বুঝতে পারেন, এই খবর আল্লাহ ছাড়া আর কেউ রাসূল (ﷺ)-কে দিতে পারে না।</p>
+                        <blockquote>"তারা মানুষের কাছ থেকে নিজেদের গোপন করতে চায়, কিন্তু আল্লাহর নিকট গোপন করতে পারে না। অথচ তিনি তাদের সঙ্গে রয়েছেন রাতেও, যখন তারা এমন বিষয়ে পরামর্শ করে, যাতে তিনি সন্তুষ্ট নন।"<br><span class="text-sm font-medium">(সূরা আন-নিসা: ১০৮)</span></blockquote>
+                    `
+                },
+                "al-hafiz": {
+                    title: "আল-হাফিজ (সংরক্ষক)",
+                    content: `
+                        <p class="mb-4">তিনি তাঁর সৃষ্টিকে রক্ষা করেন, তাঁর সৃষ্ট সকল বস্তু সম্পর্কে তাঁর জ্ঞান পরিব্যাপ্ত, তিনি তাঁর প্রিয় বান্দাদেরকে পাপ ও ধ্বংস থেকে রক্ষা করেন।</p>
+                        <h4 class="font-bold text-lg mb-2 text-[#a38b72]">সংরক্ষণের মূল ভিত্তি: তাওহীদ ও সালাত</h4>
+                        <p class="mb-4">বান্দার উপর আল্লাহর সবচেয়ে বড় হক হলো তাওহীদ। যে এই হক সংরক্ষণ করবে, আল্লাহ তাকে জাহান্নামের আযাব থেকে রক্ষা করবেন। যেসব বিষয় আল্লাহ আমাদের সংরক্ষণের নির্দেশ দিয়েছেন, তার মধ্যে অন্যতম হলো সালাত। যে ব্যক্তি সালাত সংরক্ষণ করবে, আল্লাহ তাকে রক্ষা করবেন এবং কিয়ামতের দিন তা তার জন্য মুক্তির কারণ হবে।</p>
+                        <blockquote>"সমস্ত নামাযের প্রতি যত্নবান হও, বিশেষ করে মধ্যবর্তী নামাযের ব্যাপারে। আর আল্লাহর সামনে একান্ত আদবের সাথে দাঁড়াও।"<br><span class="text-sm font-medium">(সূরা আল-বাকারা: ২৩৮)</span></blockquote>
+                    `
+                },
+                "as-sami": {
+                    title: "আস-সামি' (সর্বশ্রোতা)",
+                    content: `
+                        <p class="mb-4">তিনি তাঁর বান্দাদের কথা শোনেন এবং তাদের ডাকে সাড়া দেন। তিনি গোপন ও তার চেয়েও গোপন কথা শোনেন।</p>
+                        <h4 class="font-bold text-lg mb-2 text-[#a38b72]">ঘটনা: অভিযোগকারী মহিলার কথা</h4>
+                        <p class="mb-4">একবার এক মহিলা রাসূল (ﷺ) এর কাছে এসে তার স্বামীর বিরুদ্ধে অভিযোগ করছিলেন। আয়েশা (রাঃ) বলেন যে তিনি পর্দার আড়াল থেকে কিছু কথা শুনছিলেন এবং কিছু তার কাছে অস্পষ্ট ছিল। কিন্তু আল্লাহ তা'আলা সবকিছু শুনেছিলেন এবং তৎক্ষণাৎ আয়াত নাযিল করেন।</p>
+                        <blockquote>"যে নারী তার স্বামীর বিষয়ে আপনার সাথে বাদানুবাদ করছে এবং অভিযোগ পেশ করছে আল্লাহর দরবারে, আল্লাহ তার কথা শুনেছেন। আল্লাহ তোমাদের উভয়ের কথাবার্তা শুনেন। নিশ্চয় আল্লাহ সবকিছু শুনেন, সবকিছু দেখেন।"<br><span class="text-sm font-medium">(সূরা আল-মুজাদালা: ১)</span></blockquote>
+                    `
+                },
+                "al-basir": {
+                    title: "আল-বাসির (সর্বদ্রষ্টা)",
+                    content: `
+                        <p class="mb-4">তাঁর দৃষ্টি আছে যা দ্বারা তিনি সবকিছু দেখেন। তিনি পৃথিবীর নিচে যা আছে, আকাশের উপরে যা আছে এবং সমুদ্রের গভীরে যা আছে, সবই দেখেন।</p>
+                        <h4 class="font-bold text-lg mb-2 text-[#a38b72]">ঘটনা: রাখাল ও ইবনে উমার (রাঃ)</h4>
+                        <p class="mb-4">একবার ইবনে উমার (রাঃ) এক রাখালকে পরীক্ষা করার জন্য বললেন: "আমাদের কাছে একটি ছাগল বিক্রি করো এবং মালিককে বলো বাঘে খেয়ে ফেলেছে।" তখন সেই সত্যবাদী ও ঈমানদার রাখাল বলল: "তাহলে আমি আল্লাহকে কী বলব?!" এই একটি কথাই আল্লাহর প্রতি তার গভীর পর্যবেক্ষণের প্রমাণ দেয়।</p>
+                        <h4 class="font-bold text-lg mb-2 text-[#a38b72]">ঘটনা: উমার (রাঃ) ও দুধ বিক্রেতা</h4>
+                        <p class="mb-4">খলিফা উমার (রাঃ) রাতে প্রজাদের অবস্থা দেখতে বের হলে এক বৃদ্ধাকে তার মেয়েকে বলতে শুনলেন: "দুধের সাথে পানি মেশাও।" মেয়েটি বলল: "আমীরুল মু'মিনীন এটা নিষেধ করেছেন।" বৃদ্ধা বললেন: "উমার এখন কোথায় যে আমাদের দেখবে?" তখন সেই ঈমানদার মেয়েটি বলল: "যদি উমার আমাদের না দেখেন, তবে উমারের রব তো আমাদের দেখছেন!"</p>
+                    `
+                }
+            };
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const contentDisplay = document.getElementById('name-content');
+
+            function updateContent(name) {
+                const data = contentData[name];
+                contentDisplay.innerHTML = `
+                    <h3 class="text-2xl font-bold text-[#6b5d4f] mb-4">${data.title}</h3>
+                    <div>${data.content}</div>
+                `;
+                tabButtons.forEach(button => {
+                    if (button.dataset.name === name) {
+                        button.classList.add('active-tab');
+                    } else {
+                        button.classList.remove('active-tab');
+                    }
+                });
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const name = button.dataset.name;
+                    updateContent(name);
+                });
+            });
+
+            // Set initial content
+            updateContent('ar-raqib');
+            
+            // Smooth scrolling for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

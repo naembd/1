@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>দুঃখের যাত্রায় আমি যা দেখেছি - শায়খ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: একটি বিষয়ভিত্তিক, গল্প-চালিত, একক-পৃষ্ঠার স্ক্রোলযোগ্য অ্যাপ্লিকেশন। গঠনটি ব্যবহারকারীকে বর্ণনার মাধ্যমে গাইড করবে, আধ্যাত্মিক ভিত্তি থেকে শুরু করে কর্মের আহ্বানে পৌঁছাবে। ইন্টারেক্টিভ উপাদানগুলি পাঠ্যকে বিভক্ত করতে এবং মূল বিষয়গুলিকে তুলে ধরতে ব্যবহৃত হয়েছে। বিভাগগুলো হলো: ১) ভূমিকা ও ঐশ্বরিক সতর্কবার্তা, ২) যাত্রার সূচনা, ৩) দুর্যোগের কেন্দ্রে, ৪) বিপর্যয়ের মূল কারণ এবং ৫) কর্মের প্রতি আহ্বান। এই গঠনটি ব্যবহারকারীকে একটি रैखिक প্রতিবেদনের পরিবর্তে একটি গভীর ও भावनात्मक যাত্রার অভিজ্ঞতা দেওয়ার জন্য বেছে নেওয়া হয়েছে, যা মূল বক্তৃতার সুরের সাথে সামঞ্জস্যপূর্ণ। -->
+    <!-- Visualization & Content Choices: পরিমাণগত তথ্য (যেমন হতাহতের সংখ্যা) ব্যবহারকারীর মনোযোগ আকর্ষণের জন্য ডাইনামিক কাউন্টার এবং একটি ডোনাট চার্টের মাধ্যমে উপস্থাপন করা হয়েছে। গুণগত অন্তর্দৃষ্টি (যেমন শাইখের পর্যবেক্ষণ ও গল্প) কার্ড, ব্লককোট এবং ইন্টারেক্টিভ টগলের মাধ্যমে সংগঠিত করা হয়েছে যাতে পাঠ্যের দীর্ঘ প্রবাহ এড়ানো যায়। মসজিদের টিকে থাকার মতো বিষয়গুলোকে তুলনামূলকভাবে হাইলাইট করার জন্য বিশেষ ভিজ্যুয়াল ট্রিটমেন্ট দেওয়া হয়েছে। লক্ষ্য হলো একটি তথ্যবহুল এবং भावनात्मकভাবে প্রভাবশালী অভিজ্ঞতা তৈরি করা। -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #2c1f1a;
+            color: #EAE0D5;
+        }
+        .bg-deep-night { background-color: #3d2c26; }
+        .text-warm-ivory { color: #F5EFE6; }
+        .text-deep-brown { color: #5C3D2E; }
+        .accent-color { color: #FF6B6B; }
+        .accent-bg { background-color: #FF6B6B; }
+
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s, text-shadow 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #FF6B6B;
+            border-bottom-color: #FF6B6B;
+            text-shadow: 0 0 12px rgba(255, 107, 107, 0.7);
+        }
+        .stat-card {
+            background-color: rgba(61, 44, 38, 0.7);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 107, 107, 0.5);
+            box-shadow: 0 0 25px rgba(255, 107, 107, 0.3);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        .neon-text {
+            color: #FF6B6B;
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.7), 0 0 15px rgba(255, 107, 107, 0.5), 0 0 25px rgba(255, 107, 107, 0.3);
+        }
+        .title-glow {
+            color: #F5EFE6;
+            text-shadow: 0 0 8px rgba(245, 239, 230, 0.3);
+        }
+        .neon-blockquote {
+             border-color: #FF6B6B;
+             box-shadow: 0 0 20px rgba(255, 107, 107, 0.3), inset 0 0 10px rgba(255, 107, 107, 0.2);
+             background-color: rgba(44, 31, 26, 0.5);
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        [data-section] {
+            scroll-margin-top: 80px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header id="header" class="bg-deep-night/80 backdrop-blur-sm sticky top-0 z-50 shadow-lg shadow-black/20">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-lg md:text-xl font-bold text-warm-ivory title-glow">দুঃখের যাত্রা</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#intro" class="nav-link font-medium border-b-2 border-transparent">ভূমিকা</a>
+                <a href="#journey" class="nav-link font-medium border-b-2 border-transparent">যাত্রা</a>
+                <a href="#disaster" class="nav-link font-medium border-b-2 border-transparent">বিপর্যয়</a>
+                <a href="#cause" class="nav-link font-medium border-b-2 border-transparent">কারণ</a>
+                <a href="#call-to-action" class="nav-link font-medium border-b-2 border-transparent">আহ্বান</a>
+            </div>
+            <div class="md:hidden">
+                <select id="mobile-nav" class="bg-deep-night border border-gray-600 rounded-md p-2 text-warm-ivory">
+                    <option value="#intro">ভূমিকা</option>
+                    <option value="#journey">যাত্রা</option>
+                    <option value="#disaster">বিপর্যয়</option>
+                    <option value="#cause">কারণ</option>
+                    <option value="#call-to-action">আহ্বান</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="intro" data-section class="bg-deep-night py-20 md:py-28 text-center">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-5xl font-bold text-warm-ivory mb-4 title-glow">দুঃখের যাত্রায় আমি যা দেখেছি</h2>
+                <p class="text-lg md:text-xl text-gray-400 mb-8">শায়খ খালিদ আল-রাশেদের এক মর্মস্পর্শী বর্ণনা</p>
+                <blockquote class="max-w-3xl mx-auto italic text-gray-300 border-l-4 pl-4 p-6 rounded-lg neon-blockquote">
+                    "রাত এবং দিনের আবর্তন আমাদের নিকটবর্তী মৃত্যুর জানান দেয়। বড় বড় ঘটনা এবং ভয়াবহ দুর্যোগ আমাদের জন্য শিক্ষণীয়, যেন আমরা আমাদের প্রতিপালক আল্লাহ তাবারাকা ওয়া তা'আলার দিকে ফিরে যাই।"
+                </blockquote>
+            </div>
+        </section>
+
+        <section id="journey" data-section class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-2xl md:text-4xl font-bold text-warm-ivory title-glow">যাত্রার সূচনা</h3>
+                    <p class="mt-4 text-gray-400 max-w-2xl mx-auto">শায়খের এই সফরের উদ্দেশ্য শুধুমাত্র ত্রাণ বিতরণ ছিল না, বরং এটি ছিল এক আধ্যাত্মিক যাত্রা। তবে যাত্রার শুরুতেই তিনি এমন কিছু ঘটনার সম্মুখীন হন, যা তাকে গভীরভাবে ব্যথিত করে।</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-6">
+                        <div class="p-6 rounded-xl shadow-md stat-card">
+                            <h4 class="font-bold text-xl accent-color mb-2 neon-text">সফরের প্রেরণা</h4>
+                            <p class="text-gray-300">মুসলিমদের দুর্দশা এবং খ্রিস্টান সংস্থাগুলোর ব্যাপক উপস্থিতি দেখে তিনি ব্যথিত হন। তিনি বলেন, "আমার মনে কষ্ট লেগেছে যে আমি মুসলিম দেশগুলোতে ক্রুশকে এখানে-সেখানে ঘুরতে দেখেছি... আমি বললাম: আমরা আমাদের ভাইদের থেকে কোথায়?"</p>
+                        </div>
+                        <div class="p-6 rounded-xl shadow-md stat-card">
+                            <h4 class="font-bold text-xl accent-color mb-2 neon-text">বিমানের ভেতরের ঘটনা</h4>
+                            <p class="text-gray-300">বিমানে মাতাল যুবকদের ইসলামবিদ্বেষী মন্তব্য এবং অন্যান্য যাত্রীদের উদাসীনতা তাকে হতাশ করে। ৩০০ যাত্রীর মধ্যে মাত্র ৫ জন ফজরের নামাজ আদায় করেন, যা তাকে মুসলিম উম্মাহর আধ্যাত্মিক অবস্থা নিয়ে চিন্তিত করে তোলে।</p>
+                        </div>
+                    </div>
+                    <div class="p-6 rounded-xl shadow-md stat-card">
+                         <h4 class="font-bold text-xl accent-color mb-4 text-center neon-text">ইন্দোনেশিয়ার বাস্তবতা</h4>
+                         <div class="space-y-4 text-gray-300">
+                            <p>"মুসলিম দেশ ইন্দোনেশিয়া ইসলামের নাম ছাড়া আর কিছুই জানে না... তাদের ছুটির দিন হলো শনি ও রবিবার!"</p>
+                            <p>"আমি একজন নারীকেও মুখ ঢাকতে দেখিনি... অধিকাংশই মাথায় হিজাব পরে এবং টাইট প্যান্ট পরে, যা শরীরকে খুব বাজেভাবে ফুটিয়ে তোলে।"</p>
+                            <p>"রাস্তার পাশে শুধু নারীদের দেখলাম... নাইটক্লাব, বিনোদন কেন্দ্র, পতিতালয় রাস্তায় এবং সব জায়গায়।"</p>
+                            <p>"মসজিদের বাইরে শত শত মানুষ ছিল, কিন্তু আমাদের সাথে মাত্র এক সারি নামাজ পড়ল।"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="disaster" data-section class="bg-deep-night py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-2xl md:text-4xl font-bold text-warm-ivory title-glow">বিপর্যয়ের কেন্দ্রে</h3>
+                    <p class="mt-4 text-gray-400 max-w-2xl mx-auto">আচেহ প্রদেশে পৌঁছে শায়খ যে ভয়াবহ ধ্বংসযজ্ঞের সাক্ষী হন, তা ছিল মানব কল্পনার অতীত। এই বিপর্যয়ের ব্যাপকতা কিছু পরিসংখ্যান এবং ঘটনার মাধ্যমে উপলব্ধি করা যায়।</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-12">
+                    <div class="stat-card p-6 rounded-xl shadow-md">
+                        <p class="text-5xl font-bold accent-color neon-text" data-target="160000">0</p>
+                        <p class="text-lg font-medium text-warm-ivory mt-2">মানুষের মৃত্যু</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-xl shadow-md">
+                        <p class="text-5xl font-bold accent-color neon-text" data-target="1000000">0</p>
+                        <p class="text-lg font-medium text-warm-ivory mt-2">মানুষ গৃহহীন</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-xl shadow-md">
+                        <p class="text-5xl font-bold accent-color neon-text" data-target="15000">0</p>
+                        <p class="text-lg font-medium text-warm-ivory mt-2">মানুষ নিখোঁজ</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div class="p-6 rounded-xl shadow-md mb-6 stat-card">
+                            <h4 class="font-bold text-xl accent-color mb-2 neon-text">এক অলৌকিক ঘটনা: ভাসমান জাহাজ</h4>
+                            <p class="text-gray-300">"আমি একটি বড় ট্যাঙ্কারের কথা বলছি, যার দৈর্ঘ্য ষাট মিটার এবং ওজন পাঁচশ ষাট টন... ঢেউ এটাকে এখানে ছুড়ে ফেলেছে! জাহাজটি সমুদ্র সৈকত থেকে প্রায় আট কিলোমিটার দূরে গ্রামের মধ্যে পাওয়া যায়।"</p>
+                        </div>
+                         <div class="p-6 rounded-xl shadow-md stat-card">
+                            <h4 class="font-bold text-xl accent-color mb-2 neon-text">আল্লাহর ঘরের সুরক্ষা</h4>
+                            <p class="text-gray-300">"সবকিছু ধ্বংস হয়ে গিয়েছিল, শুধুমাত্র মসজিদগুলো ছাড়া! আমি বেঁচে যাওয়া একাধিক ব্যক্তিকে জিজ্ঞাসা করলাম: 'আপনারা কিভাবে বেঁচে গেলেন?' তারা বলল: 'আমরা মসজিদগুলোতে আশ্রয় নিয়েছিলাম।' এভাবেই বিপদের সময় মানুষ আল্লাহর কাছে আশ্রয় নেয়।"</p>
+                        </div>
+                    </div>
+                    <div class="p-6 rounded-xl shadow-md stat-card">
+                        <h4 class="font-bold text-xl accent-color mb-4 text-center neon-text">হতাহতের একটি চিত্র</h4>
+                        <div class="chart-container">
+                            <canvas id="casualtyChart"></canvas>
+                        </div>
+                         <p class="text-center text-sm text-gray-500 mt-4">এই চার্টটি সুনামিতে হতাহতের সংখ্যার একটি আনুপাতিক ধারণা দেয়।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cause" data-section class="py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-12">
+                    <h3 class="text-2xl md:text-4xl font-bold text-warm-ivory title-glow">বিপর্যয়ের মূল কারণ</h3>
+                    <p class="mt-4 text-gray-400 max-w-2xl mx-auto">শায়খের মতে, এই ভয়াবহ বিপর্যয় কোনো প্রাকৃতিক দুর্ঘটনা ছিল না, বরং এটি ছিল মানুষের সীমাহীন পাপ এবং আল্লাহবিমুখতার অবশ্যম্ভাবী পরিণতি।</p>
+                </div>
+                <div class="max-w-4xl mx-auto">
+                    <div class="p-8 rounded-xl shadow-lg neon-blockquote">
+                        <blockquote class="text-center italic text-xl text-gray-300 border-y-2 border-red-500/50 py-6">
+                           "আল্লাহর কসম! বিষয়টি ব্যভিচার এবং মদ্যপানের চেয়েও বড়। আল্লাহর কসম! আমি মনে করি তারা আল্লাহকে চ্যালেঞ্জ করেছিল... তারা জুলুম ও অত্যাচারের এমন এক পর্যায়ে পৌঁছেছিল যে তাদের উপর এমন অপমানজনক শাস্তি নেমে এসেছিল।"
+                        </blockquote>
+                        <div class="mt-8">
+                            <h4 class="font-semibold text-lg text-warm-ivory text-center mb-4 title-glow">যেসব পাপে সমাজ নিমজ্জিত ছিল:</h4>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300">
+                                <li class="flex items-center"><span class="accent-color mr-3 text-2xl neon-text">*</span>প্রকাশ্যে ব্যভিচার</li>
+                                <li class="flex items-center"><span class="accent-color mr-3 text-2xl neon-text">*</span>ব্যাপক মদ্যপান</li>
+                                <li class="flex items-center"><span class="accent-color mr-3 text-2xl neon-text">*</span>জাদু ও শিরক</li>
+                                <li class="flex items-center"><span class="accent-color mr-3 text-2xl neon-text">*</span>সৎ কাজে আদেশ ও অসৎ কাজে নিষেধ ত্যাগ</li>
+                                <li class="flex items-center"><span class="accent-color mr-3 text-2xl neon-text">*</span>খ্রিস্টানদের শিরকি উৎসবে নীরবতা</li>
+                                 <li class="flex items-center"><span class="accent-color mr-3 text-2xl neon-text">*</span>আল্লাহর বিধানের প্রতি অবজ্ঞা</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="call-to-action" data-section class="bg-deep-night py-16 md:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-2xl md:text-4xl font-bold text-warm-ivory title-glow">আমাদের জন্য আহ্বান</h3>
+                    <p class="mt-4 text-gray-400 max-w-2xl mx-auto">এই ঘটনা শুধু একটি অঞ্চলের জন্য নয়, বরং পুরো মুসলিম উম্মাহর জন্য একটি শক্তিশালী সতর্কবার্তা। শায়খ আমাদের নিজেদের অবস্থা পর্যালোচনা এবং আল্লাহর দিকে ফিরে আসার আহ্বান জানিয়েছেন।</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                     <div class="p-6 rounded-xl shadow-md stat-card">
+                        <h4 class="font-bold text-xl accent-color mb-2 neon-text">আত্মসমালোচনা</h4>
+                        <p class="text-gray-300">"আমরা কি আজ দেখছি না যে فساد সব জায়গায় ছড়িয়ে পড়েছে? ... তাহলে কী আমাদের উপর তাদের মতো বিপর্যয় নেমে আসা থেকে বিরত রাখছে? আমরা কি আল্লাহর কাছে তাদের চেয়ে বেশি সম্মানিত? না, আল্লাহর কসম!"</p>
+                    </div>
+                     <div class="p-8 rounded-xl shadow-md accent-bg text-white stat-card" style="box-shadow: 0 0 30px rgba(255, 107, 107, 0.6);">
+                        <h4 class="font-bold text-xl mb-2 text-white title-glow">উম্মাহর দায়িত্ব</h4>
+                        <p>"সুতরাং, আল্লাহর দোহাই, মুসলিমদের পাশে দাঁড়ান। যদি আমরা তাদের বিপদে তাদের পাশে না দাঁড়াই এবং তাদের কষ্টে তাদের সাহায্য না করি, তাহলে কবে তা করব?!"</p>
+                    </div>
+                     <div class="p-6 rounded-xl shadow-md stat-card">
+                        <h4 class="font-bold text-xl accent-color mb-2 neon-text">মুক্তির পথ</h4>
+                        <p class="text-gray-300">"মুক্তির একটি কারণ হোন। সৎ কাজের আদেশ দিন, অসৎ কাজে নিষেধ করুন এবং সত্য কথা বলুন এবং আল্লাহর ব্যাপারে কোনো নিন্দুকের নিন্দার ভয় করবেন না। যদি আমরা তা না করি, তাহলে আমরা নিজেদের ছাড়া আর কাউকে দোষারোপ করতে পারব না।"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-black/50 text-white py-8">
+        <div class="container mx-auto px-6 text-center text-gray-400">
+            <p>"হে আল্লাহ, আমাদের সমাজ এবং মুসলিম দেশগুলোকে শিরক, বিদ'আত, কুসংস্কার, পথভ্রষ্টতা, পাপ এবং অন্যায় থেকে পবিত্র করুন... হে আল্লাহ, আমাদেরকে আপনার দিকে সুন্দরভাবে ফিরিয়ে আনুন, হে বিশ্বজগতের প্রতিপালক!"</p>
+            <p class="text-sm mt-4 opacity-70">&copy; শায়খ খালিদ আল-রাশেদের বক্তৃতা অবলম্বনে নির্মিত।</p>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.addEventListener('change', (e) => {
+                const targetId = e.target.value;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
+            const navLinks = document.querySelectorAll('a.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                       targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+            
+            const sections = document.querySelectorAll('[data-section]');
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.5
+            };
+
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        document.querySelectorAll('a.nav-link').forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                        mobileNav.value = `#${id}`;
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                sectionObserver.observe(section);
+            });
+
+            const animateCounter = (el) => {
+                const target = +el.getAttribute('data-target');
+                const duration = 2000;
+                let current = 0;
+                const step = (timestamp) => {
+                    if (!start) start = timestamp;
+                    const progress = timestamp - start;
+                    current = Math.min(Math.floor(progress / duration * target), target);
+                    el.innerText = current.toLocaleString('bn-BD');
+                    if (current < target) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                let start = null;
+                window.requestAnimationFrame(step);
+            };
+
+            const counterObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.8 });
+
+            document.querySelectorAll('[data-target]').forEach(counter => {
+                counterObserver.observe(counter);
+            });
+            
+            const chartObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        renderChart();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            chartObserver.observe(document.getElementById('casualtyChart'));
+
+            function renderChart() {
+                const ctx = document.getElementById('casualtyChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['মৃত', 'গৃহহীন', 'নিখোঁজ'],
+                        datasets: [{
+                            label: 'হতাহতের সংখ্যা',
+                            data: [160000, 1000000, 15000],
+                            backgroundColor: [
+                                '#FF6B6B', 
+                                'rgba(92, 61, 46, 0.5)',
+                                '#A98778'
+                            ],
+                            borderColor: [
+                                '#3d2c26',
+                                '#3d2c26',
+                                '#3d2c26'
+                            ],
+                            borderWidth: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '60%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    font: {
+                                        family: "'Hind Siliguri', sans-serif"
+                                    },
+                                    color: '#EAE0D5'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed !== null) {
+                                            label += context.parsed.toLocaleString('bn-BD');
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

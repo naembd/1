@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ঘুমের নেয়ামত ও আদব</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cyber Glow (Dark Gray, Cyan/Teal Glow) -->
+    <!-- Application Structure Plan: The application structure remains a single-page interactive guide. The change is primarily aesthetic, shifting to a dark theme to make the new "neon glow" effect prominent. The core user flow (navigation -> section exploration -> interactive cards -> modal) is preserved as it is effective for learning. The dark theme enhances the spiritual and focused mood, making the glowing text feel more ethereal and reverent. -->
+    <!-- Visualization & Content Choices: The update introduces a visual "neon glow" effect to enhance the existing textual content. Goal: To create a more modern, engaging, and visually striking experience while respecting the content's tone. Method: CSS `text-shadow` and `box-shadow` are used to create glow effects on headers and interactive cards. The colors (cyan/teal) are chosen to feel spiritual rather than jarring. Interaction: The glow effect intensifies on hover, providing clear visual feedback. This is handled via CSS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .bismillah-ar {
+            font-family: 'Times New Roman', serif;
+            direction: rtl;
+        }
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+
+        /* Neon Glow Effect */
+        .neon-text {
+            color: #f0fdfa; /* very light teal */
+            text-shadow:
+                0 0 5px rgba(13, 148, 136, 0.7),
+                0 0 10px rgba(13, 148, 136, 0.7),
+                0 0 20px rgba(13, 148, 136, 0.5),
+                0 0 40px rgba(13, 148, 136, 0.3);
+        }
+
+        .neon-blockquote {
+            border-color: #14b8a6;
+            box-shadow: 0 0 8px rgba(20, 184, 166, 0.4);
+        }
+        
+        .neon-card-hover:hover {
+            border-color: #14b8a6;
+            box-shadow: 0 0 15px rgba(20, 184, 166, 0.6), 0 0 5px rgba(20, 184, 166, 0.8) inset;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-stone-300 antialiased">
+
+    <!-- Header -->
+    <header class="text-center py-16">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 neon-text">ঘুমের নেয়ামত ও আদব</h1>
+            <p class="text-lg text-teal-300">শেখ খালিদ আল-রাশেদের বক্তৃতার আলোকে একটি ইন্টারেক্টিভ গাইড</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-gray-900/70 backdrop-blur-md sticky top-0 z-40 shadow-lg shadow-teal-900/10">
+        <div class="container mx-auto px-4">
+            <ul class="flex justify-center items-center space-x-4 sm:space-x-8 py-3 text-sm sm:text-base font-medium">
+                <li><a href="#introduction" class="text-stone-300 hover:text-teal-300 hover:scale-105 transition-all duration-300">ভূমিকা</a></li>
+                <li><a href="#signs" class="text-stone-300 hover:text-teal-300 hover:scale-105 transition-all duration-300">আল্লাহর নিদর্শন</a></li>
+                <li><a href="#etiquettes" class="text-stone-300 hover:text-teal-300 hover:scale-105 transition-all duration-300">ঘুমের আদব</a></li>
+                <li><a href="#conclusion" class="text-stone-300 hover:text-teal-300 hover:scale-105 transition-all duration-300">উপসংহার</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- Introduction Section -->
+        <section id="introduction" class="my-16 text-center">
+            <h2 class="text-3xl font-bold neon-text mb-4">ভূমিকা: ঘুম আল্লাহর এক মহান নেয়ামত</h2>
+            <p class="max-w-3xl mx-auto text-lg leading-relaxed text-stone-400">
+                এই বিভাগটি ঘুমের গুরুত্ব তুলে ধরে, যা আল্লাহ তা'আলার পক্ষ থেকে মানুষের জন্য একটি عظیم نعمت বা মহান অনুগ্রহ। এখানে ব্যাখ্যা করা হয়েছে কিভাবে ঘুমের মাধ্যমে আমাদের শরীর বিশ্রাম লাভ করে এবং পরবর্তী দিনের কাজ ও ইবাদতের জন্য শক্তি সঞ্চয় করে। যে ব্যক্তি অনিদ্রা বা অসুস্থতার কারণে এই নেয়ামত থেকে বঞ্চিত হন, তিনিই এর প্রকৃত মূল্য গভীরভাবে অনুধাবন করতে পারেন।
+            </p>
+        </section>
+
+        <!-- Signs of Allah & Sleep-Death Connection Section -->
+        <section id="signs" class="my-16">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Sign of Allah -->
+                <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-2xl font-bold text-teal-300 mb-3 flex items-center">
+                        <span class="mr-3 text-2xl">🌙</span>ঘুম: আল্লাহর অন্যতম নিদর্শন
+                    </h3>
+                    <p class="text-stone-400 leading-relaxed mb-4">
+                        আল্লাহ তা'আলা রাতকে আবরণ এবং ঘুমকে প্রশান্তি হিসেবে সৃষ্টি করেছেন, আর দিনকে করেছেন কর্মময়। এটি তাঁর ক্ষমতার এক বিশাল নিদর্শন। এই অংশে পবিত্র কুরআনের আলোকে ঘুমের তাৎপর্য ব্যাখ্যা করা হয়েছে, যা আমাদের চিন্তা ও কৃতজ্ঞতা প্রকাশের জন্য আহ্বান জানায়।
+                    </p>
+                    <blockquote class="border-r-4 bg-gray-900/50 p-4 rounded-r-lg text-stone-300 italic neon-blockquote">
+                        "এবং তিনিই তোমাদের জন্য রাতকে আবরণ, ঘুমকে বিশ্রাম এবং দিনকে করেছেন জাগ্রত থাকার সময়।" <span class="block text-sm mt-1 not-italic">(সূরা আল-ফুরকান: ৪৭)</span>
+                    </blockquote>
+                </div>
+                <!-- Sleep and Death -->
+                <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+                    <h3 class="text-2xl font-bold text-teal-300 mb-3 flex items-center">
+                        <span class="mr-3 text-2xl">❤️</span>ঘুম এবং মৃত্যু
+                    </h3>
+                    <p class="text-stone-400 leading-relaxed mb-4">
+                        ঘুমকে একটি ছোট মৃত্যুর সাথে তুলনা করা হয়। ঘুমের সময় আল্লাহ আমাদের আত্মা কবজ করেন এবং জাগ্রত হওয়ার পর তা ফেরত দেন। এই প্রক্রিয়াটি আমাদের মনে করিয়ে দেয় যে, আমরা যেভাবে ঘুম থেকে উঠি, সেভাবেই কিয়ামতের দিন পুনরুত্থিত হব।
+                    </p>
+                    <blockquote class="border-r-4 bg-gray-900/50 p-4 rounded-r-lg text-stone-300 italic neon-blockquote">
+                        "আল্লাহই প্রাণ হরণ করেন তার মৃত্যুর সময় এবং যে মরে না, তার নিদ্রার সময়।" <span class="block text-sm mt-1 not-italic">(সূরা আয-যুমার: ৪২)</span>
+                    </blockquote>
+                </div>
+            </div>
+        </section>
+
+        <!-- Etiquettes Section -->
+        <section id="etiquettes" class="my-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold neon-text mb-4">ঘুমের ইসলামিক আদব</h2>
+                <p class="max-w-3xl mx-auto text-lg leading-relaxed text-stone-400">
+                    রাসূলুল্লাহ (সাঃ) ঘুমের আগে ও পরে কিছু নির্দিষ্ট আমল করার শিক্ষা দিয়েছেন। এই আমলগুলো আমাদের ঘুমকে ইবাদতে পরিণত করতে পারে। নিচের কার্ডগুলোতে ক্লিক করে প্রতিটি আদব সম্পর্কে বিস্তারিত জানুন এবং সংশ্লিষ্ট দোয়াগুলো শিখুন।
+                </p>
+            </div>
+            
+            <div id="etiquette-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                <!-- Etiquette cards will be dynamically inserted here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Conclusion Section -->
+        <section id="conclusion" class="my-16 text-center">
+            <h2 class="text-3xl font-bold neon-text mb-4">উপসংহার</h2>
+            <p class="max-w-3xl mx-auto text-lg leading-relaxed text-stone-400">
+                বুদ্ধিমান ব্যক্তির উচিত রাতকে আল্লাহর অবাধ্যতায় না কাটিয়ে তাঁর নেয়ামতের শুকরিয়া আদায় করা। ঘুমের মাধ্যমে ক্লান্তি দূর করে নতুন উদ্যমে ইবাদত ও ভালো কাজ করার নিয়ত করা উচিত। ইসলামিক আদবগুলো মেনে চললে আমাদের ঘুমও ইবাদতে পরিণত হবে এবং আমরা আল্লাহর সন্তুষ্টি অর্জন করতে পারব।
+            </p>
+        </section>
+
+    </main>
+    
+    <!-- Modal -->
+    <div id="etiquetteModal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 invisible opacity-0">
+        <div id="modalContent" class="modal-content bg-gray-800 border border-teal-500/30 w-full max-w-lg rounded-xl shadow-2xl shadow-teal-500/20 p-6 sm:p-8 relative transform scale-95">
+            <button id="closeModal" class="absolute top-4 right-4 text-stone-400 hover:text-red-500 transition text-2xl">&times;</button>
+            <h3 id="modalTitle" class="text-2xl font-bold text-teal-300 mb-4"></h3>
+            <div id="modalBody" class="text-stone-300 leading-relaxed space-y-4"></div>
+        </div>
+    </div>
+
+
+    <footer class="text-center py-6 bg-gray-900 border-t border-gray-800">
+        <p class="text-stone-500">&copy; 2024 - ঘুমের নেয়ামত ও আদব। সর্বস্বত্ব সংরক্ষিত।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const etiquettes = [
+                { title: 'অজু করা', icon: '💧', description: 'ঘুমানোর আগে পবিত্রতা অর্জনের জন্য অজু করা সুন্নত। এতে শরীর ও মন পবিত্র থাকে এবং ঘুমের মধ্যে খারাপ স্বপ্ন থেকে সুরক্ষা পাওয়া যায়।' },
+                { title: 'বিছানা পরিষ্কার', icon: '🧹', description: 'শোবার আগে বিছানা ঝেড়ে পরিষ্কার করে নেওয়া উচিত। কারণ আপনার অনুপস্থিতিতে সেখানে ক্ষতিকর কিছু থাকতে পারে। এটি একটি গুরুত্বপূর্ণ সতর্কতা।', dua: { ar: 'بِاسْمِكَ رَبِّ وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، إِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ', trans: 'Bismika Rabbī waḍaʿtu janbī, wa bika arfaʿuhu, in amsakta nafsī farḥamhā, wa in arsaltahā faḥfaẓhā bimā taḥfaẓu bihi ʿibādakaṣ-ṣāliḥīn.', bn: 'হে আমার রব! আপনার নামে আমি আমার পার্শ্ব রাখলাম এবং আপনার সাহায্যেই আমি তা উঠাব। যদি আপনি আমার আত্মাকে আটকে রাখেন, তবে তার উপর রহম করুন। আর যদি আপনি তা ফিরিয়ে দেন, তবে তাকে এমনভাবে হিফাজত করুন যেভাবে আপনি আপনার নেক বান্দাদের হিফাজত করেন।' } },
+                { title: 'ডান দিকে ফেরা', icon: '➡️', description: 'ডান কাত হয়ে, ডান হাতের তালু ডান গালের নিচে রেখে শোয়া সুন্নত। এটি হৃদপিণ্ডের উপর চাপ কমায় এবং স্বাস্থ্যের জন্য উপকারী।' },
+                { title: 'ঘুমানোর দোয়া', icon: '🤲', description: 'শোয়ার সময় রাসূল (সাঃ) এই দোয়াটি পাঠ করতেন।', dua: { ar: 'بِاسْمِكَ اللهم أمُوتُ وَأَحْيَا', trans: 'Bismika Allāhumma amūtu wa aḥyā.', bn: 'হে আল্লাহ! আপনার নামেই আমি মৃত্যুবরণ করি এবং জীবিত হই।' } },
+                { title: 'তিন কুল পাঠ', icon: '📖', description: 'ঘুমের আগে সূরা ইখলাস, সূরা ফালাক ও সূরা নাস তিনবার পাঠ করে দুই হাতে ফুঁ দিয়ে মাথা থেকে পা পর্যন্ত পুরো শরীরে হাত বুলিয়ে নেওয়া একটি গুরুত্বপূর্ণ সুন্নত। এটি সকল প্রকার অনিষ্ট থেকে সুরক্ষা দেয়।' },
+                { title: 'আয়াতুল কুরসি', icon: '🛡️', description: 'ঘুমের আগে আয়াতুল কুরসি পাঠ করলে আল্লাহ একজন ফেরেশতাকে তার পাহারাদার হিসেবে নিযুক্ত করেন এবং সকাল পর্যন্ত শয়তান তার কাছে আসতে পারে না।' },
+                { title: 'তাসবীহ পাঠ', icon: '📿', description: 'ঘুমের আগে ৩৩ বার \'সুবহানাল্লাহ\', ৩৩ বার \'আলহামদুলিল্লাহ\' এবং ৩৪ বার \'আল্লাহু আকবার\' পাঠ করা। এই আমলটি খাদেমের চেয়েও উত্তম বলে হাদীসে বর্ণিত হয়েছে।' },
+                { title: 'পেটের ওপর না শোয়া', icon: '🚫', description: 'পেটের ওপর ভর দিয়ে শোয়াকে আল্লাহ অপছন্দ করেন। হাদীস অনুযায়ী এটি জাহান্নামীদের শোয়ার পদ্ধতি এবং স্বাস্থ্যের জন্যও ক্ষতিকর।' },
+                { title: 'ঘুম থেকে ওঠার দোয়া', icon: '☀️', description: 'ঘুম থেকে জেগে রাসূল (সাঃ) এই দোয়াটি পাঠ করতেন, যা নতুন একটি দিন শুরু করার জন্য আল্লাহর প্রতি কৃতজ্ঞতা প্রকাশ করে।', dua: { ar: 'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ', trans: 'Alḥamdulillāhilladhī aḥyānā baʿda mā amātanā wa ilayhin-nushūr.', bn: 'সমস্ত প্রশংসা সেই আল্লাহর জন্য, যিনি আমাদেরকে মৃত্যুর পর জীবন দান করেছেন এবং তাঁরই দিকে আমাদের পুনরুত্থান।' } }
+            ];
+
+            const grid = document.getElementById('etiquette-grid');
+            const modal = document.getElementById('etiquetteModal');
+            const modalContent = document.getElementById('modalContent');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const closeModalBtn = document.getElementById('closeModal');
+
+            etiquettes.forEach(etiquette => {
+                const card = document.createElement('div');
+                card.className = 'etiquette-card bg-gray-800/50 p-4 rounded-xl shadow-lg border border-gray-700 text-center cursor-pointer transition-all duration-300 neon-card-hover flex flex-col items-center justify-center';
+                card.innerHTML = `
+                    <div class="text-4xl mb-2">${etiquette.icon}</div>
+                    <h4 class="font-semibold text-stone-300">${etiquette.title}</h4>
+                `;
+                card.addEventListener('click', () => openModal(etiquette));
+                grid.appendChild(card);
+            });
+
+            function openModal(etiquette) {
+                modalTitle.textContent = etiquette.title;
+                let bodyContent = `<p>${etiquette.description}</p>`;
+                
+                if (etiquette.dua) {
+                    bodyContent += `
+                        <div class="mt-4 border-t border-gray-700 pt-4 space-y-3">
+                            <p class="bismillah-ar text-xl text-right text-teal-300">${etiquette.dua.ar}</p>
+                            <p class="italic text-stone-400"><strong>উচ্চারণ:</strong> ${etiquette.dua.trans}</p>
+                            <p class="text-stone-300"><strong>অর্থ:</strong> ${etiquette.dua.bn}</p>
+                        </div>
+                    `;
+                }
+                
+                modalBody.innerHTML = bodyContent;
+                modal.classList.remove('invisible', 'opacity-0');
+                modalContent.classList.remove('scale-95');
+                document.body.style.overflow = 'hidden'; 
+            }
+
+            function closeModal() {
+                modal.classList.add('invisible', 'opacity-0');
+                modalContent.classList.add('scale-95');
+                document.body.style.overflow = 'auto';
+            }
+
+            closeModalBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !modal.classList.contains('invisible')) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

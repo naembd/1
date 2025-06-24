@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>এক অবস্থা থেকে অন্য অবস্থায় - শেখ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Neon Dark (Tones of charcoal, slate, and vibrant cyan/rose) -->
+    <!-- Application Structure Plan: The application uses a tab-based navigation system to present the sermon's key themes and stories as distinct, digestible sections. The structure is designed for focused reading and emotional engagement, allowing users to explore the narratives of transformation individually. A central conceptual chart visually summarizes the core theme of change ('from one state to another'), providing an interactive anchor to the sermon's message. This user-controlled, modular approach was chosen to make the profound, text-heavy content more accessible and less overwhelming than a single long-scrolling page. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Overall theme of transformation from sin to piety. -> Goal: Visually represent change. -> Viz/Presentation Method: Horizontal Bar Chart (Chart.js) comparing 'Previous State' vs. 'Current State'. -> Interaction: Hovering on bars shows tooltips with descriptive states. -> Justification: Provides a tangible, metaphorical visualization of the sermon's core concept, enhancing user understanding.
+        2. Report Info: Three inspirational stories. -> Goal: Present narratives clearly. -> Viz/Presentation Method: Tabbed content sections (HTML/JS) with distinct styling for key quotes. -> Interaction: Clicking tabs reveals the relevant story. -> Justification: Organizes content into logical chapters, improving readability and user navigation.
+        3. Report Info: Sermon structure. -> Goal: Create an intuitive, app-like experience. -> Viz/Presentation Method: A fixed header with navigation buttons (HTML/Tailwind). -> Interaction: JS-powered content switching. -> Justification: Provides a modern, user-friendly interface for exploring the content.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-btn {
+            transition: all 0.3s ease;
+        }
+        .nav-btn.active {
+            background-color: #06b6d4;
+            color: #ffffff;
+            box-shadow: 0 0 5px #06b6d4, 0 0 10px #06b6d4, 0 0 15px #06b6d4;
+        }
+        .neon-text {
+            text-shadow: 0 0 7px rgba(6, 182, 212, 0.8), 0 0 10px rgba(6, 182, 212, 0.6), 0 0 21px rgba(6, 182, 212, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300">
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-cyan-400 mb-2 neon-text">এক অবস্থা থেকে অন্য অবস্থায়</h1>
+            <p class="text-lg text-gray-400">শেখ খালিদ আল-রাশেদের হৃদয়স্পর্শী বয়ান</p>
+        </header>
+
+        <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+            <button id="nav-intro" class="nav-btn active text-sm md:text-base bg-gray-800 border border-gray-700 text-gray-300 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-700">
+                ভূমিকা
+            </button>
+            <button id="nav-story1" class="nav-btn text-sm md:text-base bg-gray-800 border border-gray-700 text-gray-300 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-700">
+                এক তওবাকারী যুবকের গল্প
+            </button>
+            <button id="nav-story2" class="nav-btn text-sm md:text-base bg-gray-800 border border-gray-700 text-gray-300 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-700">
+                এক শহীদের গল্প
+            </button>
+            <button id="nav-story3" class="nav-btn text-sm md:text-base bg-gray-800 border border-gray-700 text-gray-300 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-700">
+                হাসানের তওবা
+            </button>
+            <button id="nav-chart" class="nav-btn text-sm md:text-base bg-gray-800 border border-gray-700 text-gray-300 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-700">
+                রূপান্তরের চিত্র
+            </button>
+        </nav>
+
+        <main id="content-container" class="bg-gray-800/60 backdrop-blur-sm border border-gray-700 p-6 md:p-8 rounded-xl shadow-2xl">
+            
+            <section id="content-intro" class="content-section space-y-4 leading-relaxed">
+                <h2 class="text-2xl font-bold border-b border-gray-600 pb-2 mb-4 text-cyan-400">ভূমিকা: আল্লাহর অসীম ক্ষমতা</h2>
+                <p>এই বিভাগটি আল্লাহর সেই অসীম ক্ষমতার কথা স্মরণ করিয়ে দেয়, যার মাধ্যমে তিনি মানুষের অবস্থাকে আমূল পরিবর্তন করতে পারেন। এটি বয়ানের মূল ভিত্তি স্থাপন করে এবং দেখায় যে হতাশার কোনো স্থান নেই, কারণ আল্লাহ যেকোনো মুহূর্তে তাঁর বান্দাকে সঠিক পথে ফিরিয়ে আনতে পারেন।</p>
+                <p>আল্লাহ তা'আলা বিষয়সমূহকে এক অবস্থা থেকে অন্য অবস্থায় পরিবর্তন করেন। প্রতিদিন তিনি নতুন শান ও মহিমায় থাকেন। কত মানুষ ছিল অবাধ্য ও বিদ্রোহী, অতঃপর আল্লাহ তা'আলা তার অবস্থাকে কল্যাণ ও আনুগত্যের দিকে পরিবর্তন করে দিয়েছেন। আবার কত মানুষ ছিল গাফেল, উদাসীন ও অমনোযোগী, আল্লাহ তাকে তার গাফিলতি থেকে জাগ্রত করেছেন, ফলে সে আল্লাহর যিকিরকারী ও শুকরগুزار বান্দাদের অন্তর্ভুক্ত হয়েছে। অতএব, মহাপবিত্র সেই সত্তা, যাঁর হাতে সকল বিষয়ের চাবিকাঠি এবং তিনি যেভাবে ইচ্ছা তা পরিচালনা করেন!</p>
+                <blockquote class="border-r-4 border-cyan-500 pr-4 my-4">
+                    <h3 class="text-xl font-semibold text-cyan-300">যুবক ও তাদের প্রভাব</h3>
+                    <p class="mt-2 text-gray-400">জীবনের সবচেয়ে গুরুত্বপূর্ণ পর্যায় হল যৌবনকাল। নবী (সাঃ) বলেছেন যে, কিয়ামতের দিন একজন বান্দার পা ততক্ষণ পর্যন্ত নড়বে না, যতক্ষণ না তাকে তার জীবনকাল সম্পর্কে জিজ্ঞাসা করা হবে এবং বিশেষভাবে তার যৌবনকাল সম্পর্কে প্রশ্ন করা হবে। এই দ্বীন যুবকদের কাঁধেই প্রতিষ্ঠিত হয়েছে এবং এই উম্মত যুবকদের প্রচেষ্টাতেই পৃথিবীতে প্রাধান্য পেয়েছে। তবে আমরা সেই যুবকদের কথা বলছি যারা কুরআনের শিক্ষায় শিক্ষিত, যারা নবী (সাঃ) এবং তাঁর সাহাবীদের আদর্শে অনুপ্রাণিত।</p>
+                </blockquote>
+            </section>
+
+            <section id="content-story1" class="content-section space-y-4 leading-relaxed hidden">
+                <h2 class="text-2xl font-bold border-b border-gray-600 pb-2 mb-4 text-cyan-400">এক তওবাকারী যুবকের গল্প</h2>
+                 <p>এই গল্পটি সঙ্গ বা সাহচর্যের শক্তিকে তুলে ধরে। এখানে শেখ তাঁর নিজের অভিজ্ঞতা থেকে বর্ণনা করেছেন কীভাবে একজন দ্বীনদার মানুষের সঙ্গ একজন উদাসীন ব্যক্তিকে আল্লাহর পথে ফিরিয়ে আনতে পারে। এটি শেখায় যে, সৎ সঙ্গ মানুষের জীবনে ইতিবাচক পরিবর্তনের জন্য কতটা জরুরি।</p>
+                <p>শেখ তাঁর কর্মজীবনের একটি ঘটনা বর্ণনা করেছেন যেখানে তিনি একজন ভিন্ন চিন্তাধারার সহকর্মীর সাথে কাজ করার সুযোগ পান। সেই সহকর্মী দ্বীনের প্রতি উদাসীন ছিলেন। শেখ তাকে নামাজের জন্য মসজিদে যেতে উৎসাহিত করেন। ধীরে ধীরে, তার সাহচর্যে এসে সেই যুবক মসজিদে নামাজ আদায়, শাওয়ালের রোজা রাখা এবং অন্যান্য ইবাদতে অভ্যস্ত হয়ে ওঠেন। তার জীবনে আমূল পরিবর্তন আসে এবং সে আল্লাহর নৈকট্য লাভে ধন্য হয়।</p>
+                <blockquote class="border-r-4 border-cyan-500 pr-4 my-4 text-lg italic text-gray-400">
+                    সে তার অতীতের জীবনকে অন্ধকারময় মনে করে এবং বলে, "আল্লাহ আমাদের মৃত অবস্থা থেকে জীবন দান করেছেন।"
+                </blockquote>
+            </section>
+
+            <section id="content-story2" class="content-section space-y-4 leading-relaxed hidden">
+                <h2 class="text-2xl font-bold border-b border-gray-600 pb-2 mb-4 text-cyan-400">এক শহীদের গল্প</h2>
+                <p>এই গল্পটি আল্লাহর প্রতি অগাধ বিশ্বাস এবং জান্নাতের জন্য তীব্র আকাঙ্ক্ষার এক অসাধারণ উদাহরণ। একজন ষোল বছর বয়সী যুবক দুনিয়ার সমস্ত সম্পদকে তুচ্ছ করে আল্লাহর রাস্তায় জীবন উৎসর্গ করার সিদ্ধান্ত নেয়। গল্পটি ঈমানের শক্তি এবং পরকালের প্রতিশ্রুতির উপর দৃঢ় বিশ্বাস স্থাপনের গুরুত্ব তুলে ধরে।</p>
+                <p>আব্দুল ওয়াহিদ বিন জিয়াদের মজলিসে শাহাদাতের ফজিলত নিয়ে আলোচনা হচ্ছিল। ষোল বছর বয়সী এক যুবক, যে তার পিতামাতার কাছ থেকে প্রচুর সম্পদ উত্তরাধিকার সূত্রে পেয়েছিল, সে আল্লাহর রাস্তায় তার জান ও মাল বিক্রি করে দেওয়ার সিদ্ধান্ত নেয়। যুদ্ধের ময়দানে সে ছিল অবিচল এবং সাহসী। একদিন দুপুরে বিশ্রামের সময় সে স্বপ্নে জান্নাত এবং হুর আল-ঈনদের দেখে। স্বপ্নের কথা তার সাথীদের বলার কিছুক্ষণ পরেই কাফেরদের একটি দলের সাথে যুদ্ধ হয় এবং সে শহীদ হয়ে যায়।</p>
+                <blockquote class="border-r-4 border-cyan-500 pr-4 my-4 text-lg italic text-gray-400">
+                    মৃত্যুর সময় তার মুখে হাসি ছিল এবং সে বলছিল, "স্বাগতম হে হুর আল-ঈন।"
+                </blockquote>
+            </section>
+
+            <section id="content-story3" class="content-section space-y-4 leading-relaxed hidden">
+                <h2 class="text-2xl font-bold border-b border-gray-600 pb-2 mb-4 text-cyan-400">হাসানের তওবা</h2>
+                <p>হাসানের গল্পটি আল্লাহর ক্ষমার বিশালতা এবং আন্তরিক তওবার শক্তির চূড়ান্ত নিদর্শন। একজন মানুষ পাপের সাগরে ডুবে থেকেও কীভাবে আল্লাহর রহমতে সম্পূর্ণরূপে পরিবর্তিত হতে পারে এবং শাহাদাতের সর্বোচ্চ মর্যাদা লাভ করতে পারে, এই গল্পটি তার এক জীবন্ত প্রমাণ। এটি আমাদের শেখায় যে, পাপ যত বড়ই হোক না কেন, আল্লাহর রহমত তার চেয়েও বিশাল।</p>
+                <p>হাসান নামের এক যুবক পাপে নিমজ্জিত ছিল। তিন জন সৎ বন্ধু তাকে তওবার পথে নিয়ে আসে। সে তার জীবন পরিবর্তন করে এবং তার পাপ মোচনের জন্য জিহাদের ময়দানে যাওয়ার সিদ্ধান্ত নেয়। তার বৃদ্ধ বাবা-মা প্রথমে অনিচ্ছুক থাকলেও, পরে তাকে এই শর্তে অনুমতি দেন যে সে কিয়ামতের দিন তাদের জন্য সুপারিশ করবে। জিহাদের ময়দানে হাসান একজন বীরযোদ্ধা হিসেবে পরিচিতি লাভ করে। এক ভয়াবহ হামলায় সে গুরুতরভাবে আহত হয়।</p>
+                 <blockquote class="border-r-4 border-cyan-500 pr-4 my-4 text-lg italic text-gray-400">
+                    তার সঙ্গীরা যখন তাকে আহত অবস্থায় পায়, তখন সে হাসিমুখে বলে, "আল্লাহর কসম, আমি পাহাড়ের ওপার থেকে হুর আল-ঈনদের ডাক শুনতে পাচ্ছি।"
+                </blockquote>
+            </section>
+            
+            <section id="content-chart" class="content-section space-y-4 leading-relaxed hidden">
+                 <h2 class="text-2xl font-bold border-b border-gray-600 pb-2 mb-4 text-cyan-400">রূপান্তরের চিত্র</h2>
+                 <p>এই ইন্টারেক্টিভ চার্টটি বয়ানের মূল বার্তাটিকে দৃশ্যমান করে তুলেছে। এটি দেখায় যে গল্পগুলোর চরিত্ররা পাপ ও উদাসীনতার অন্ধকার থেকে কীভাবে ঈমান ও আনুগত্যের আলোতে ফিরে এসেছেন। প্রতিটি বারের উপর মাউস রাখলে আপনি তাদের অবস্থার পরিবর্তন সম্পর্কে আরও জানতে পারবেন। এটি আল্লাহর রহমতে মানুষের জীবনে আসা অসাধারণ পরিবর্তনের একটি চাক্ষুষ প্রমাণ।</p>
+                <div class="chart-container">
+                    <canvas id="transformationChart"></canvas>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const contentSections = document.querySelectorAll('.content-section');
+            let transformationChart = null;
+            const textColor = '#d1d5db'; 
+
+            function showSection(sectionId) {
+                contentSections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+                navButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                const activeSection = document.getElementById('content-' + sectionId);
+                const activeButton = document.getElementById('nav-' + sectionId);
+                
+                if (activeSection) {
+                    activeSection.classList.remove('hidden');
+                }
+                if (activeButton) {
+                    activeButton.classList.add('active');
+                }
+
+                if (sectionId === 'chart') {
+                    renderChart();
+                }
+            }
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const sectionId = button.id.replace('nav-', '');
+                    showSection(sectionId);
+                });
+            });
+            
+            showSection('intro');
+
+            function renderChart() {
+                if (transformationChart) {
+                    transformationChart.destroy();
+                }
+
+                const ctx = document.getElementById('transformationChart').getContext('2d');
+                transformationChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['সহকর্মী', 'শহীদ যুবক', 'হাসান'],
+                        datasets: [{
+                            label: 'পূর্বের অবস্থা (পাপ ও উদাসীনতা)',
+                            data: [3, 2, 1],
+                            backgroundColor: 'rgba(244, 63, 94, 0.6)',
+                            borderColor: '#f43f5e',
+                            borderWidth: 1
+                        }, {
+                            label: 'বর্তমান অবস্থা (হেদায়েত ও আনুগত্য)',
+                            data: [8, 9, 10],
+                            backgroundColor: 'rgba(34, 211, 238, 0.6)',
+                            borderColor: '#22d3ee',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                ticks: {
+                                    display: false,
+                                    color: textColor
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)',
+                                    borderColor: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'আধ্যাত্মিক অবস্থার পরিবর্তন',
+                                    color: textColor,
+                                    font: {
+                                        size: 14,
+                                        family: "'Hind Siliguri', sans-serif"
+                                    }
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    color: textColor,
+                                    font: {
+                                        size: 14,
+                                        family: "'Hind Siliguri', sans-serif"
+                                    }
+                                },
+                                 grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                     color: textColor,
+                                     font: {
+                                        size: 12,
+                                        family: "'Hind Siliguri', sans-serif"
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                titleColor: textColor,
+                                bodyColor: textColor,
+                                titleFont: {
+                                    family: "'Hind Siliguri', sans-serif"
+                                },
+                                bodyFont: {
+                                    family: "'Hind Siliguri', sans-serif"
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

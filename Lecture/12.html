@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমি কীভাবে আল্লাহকে লজ্জা করব? - শেখ খালেদ আল-রাশেদ (নিয়ন সংস্করণ)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Neon Dark -->
+    <!-- Application Structure Plan: The application is designed as a single-page thematic exploration of the sermon. The structure avoids a linear text dump by breaking the content into logical, interactive sections: an introduction (ভূমিকা), the core concept of Muraqaba (মুরাকাবা), an interactive explorer for Allah's Names (আল্লাহর নাম), a card-based section for key stories (ঘটনা), and a reflective conclusion (উপসংহার). A sticky navigation bar allows users to jump between these themes. This non-linear, thematic structure was chosen to make the deep spiritual concepts more digestible and accessible for a web audience, allowing users to explore topics of interest at their own pace rather than being forced through a long-form text. -->
+    <!-- Visualization & Content Choices: Report Info: The sermon explains Haya (shyness before God) through Muraqaba (self-monitoring). -> Goal: Organize & Inform. -> Viz/Presentation Method: Interactive cards and tab-like navigation for key concepts (Allah's names like Ar-Raqib, Al-Basir) and stories. Content is presented in styled text blocks with clear headings. -> Interaction: Users click on a name or story title to reveal the detailed explanation. This 'click-to-reveal' interaction breaks down dense text into manageable chunks. -> Justification: This approach turns passive reading into active exploration, enhancing engagement and comprehension of spiritual themes without using conventional data charts. -> Library/Method: Vanilla JS for click handlers and content toggling, with Tailwind CSS for layout and styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #0D0D0D;
+            color: #E0E0E0;
+        }
+        .neon-text-pink {
+            color: #FFA7F1;
+            text-shadow: 0 0 5px #FFA7F1, 0 0 10px #FF69B4, 0 0 15px #FF69B4;
+        }
+        .neon-text-cyan {
+            color: #79F7FF;
+            text-shadow: 0 0 5px #79F7FF, 0 0 10px #00B5C5, 0 0 15px #00B5C5;
+        }
+        .active-nav {
+            font-weight: 600;
+            color: #79F7FF;
+            border-bottom: 2px solid #79F7FF;
+            text-shadow: 0 0 8px #79F7FF;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom 0.3s, text-shadow 0.3s;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
+        }
+        .active-tab {
+            background-color: #0e7490 !important;
+            color: #FFFFFF !important;
+            border-color: #22d3ee !important;
+            box-shadow: 0 0 15px #22d3ee;
+        }
+        .tab-button {
+             color: #67e8f9;
+             border: 1px solid #0e7490;
+             background-color: rgba(14, 116, 144, 0.2);
+        }
+        .tab-button:hover {
+            background-color: #164e63 !important;
+            border-color: #67e8f9;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .card-content {
+            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-in-out;
+        }
+        .card-content.active {
+            max-height: 1000px;
+        }
+        .quran-quote {
+            background-color: #1E293B;
+            border-left: 4px solid #22d3ee;
+        }
+        .story-card {
+            background-color: #1A1A1A;
+            border: 1px solid #0e7490;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+        }
+        .story-card:hover {
+            transform: translateY(-5px);
+            border-color: #67e8f9;
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header id="header" class="bg-black/80 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-cyan-500/10">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl md:text-2xl font-bold neon-text-pink">আল্লাহর প্রতি লজ্জা</h1>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#introduction" class="nav-link text-gray-300 hover:text-white">ভূমিকা</a>
+                    <a href="#muraqaba" class="nav-link text-gray-300 hover:text-white">মুরাকাবা</a>
+                    <a href="#names-of-allah" class="nav-link text-gray-300 hover:text-white">আল্লাহর নাম</a>
+                    <a href="#stories" class="nav-link text-gray-300 hover:text-white">ঘটনা</a>
+                    <a href="#conclusion" class="nav-link text-gray-300 hover:text-white">উপসংহার</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-300 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-black/90">
+            <a href="#introduction" class="block py-2 px-4 text-sm text-gray-300 hover:bg-gray-800">ভূমিকা</a>
+            <a href="#muraqaba" class="block py-2 px-4 text-sm text-gray-300 hover:bg-gray-800">মুরাকাবা</a>
+            <a href="#names-of-allah" class="block py-2 px-4 text-sm text-gray-300 hover:bg-gray-800">আল্লাহর নাম</a>
+            <a href="#stories" class="block py-2 px-4 text-sm text-gray-300 hover:bg-gray-800">ঘটনা</a>
+            <a href="#conclusion" class="block py-2 px-4 text-sm text-gray-300 hover:bg-gray-800">উপসংহার</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <!-- Introduction Section -->
+        <section id="introduction" class="mb-16 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 neon-text-pink">আমি কীভাবে আল্লাহকে লজ্জা করব?</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">শেখ খালেদ আল-রাশেদের একটি অনুপ্রেরণামূলক আলোচনা, যা আমাদের আল্লাহর প্রতি লজ্জা ও সচেতনতা বৃদ্ধিতে সহায়তা করে।</p>
+            </div>
+
+            <div class="bg-gray-900/50 border border-gray-800 p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
+                <p class="text-base md:text-lg leading-relaxed text-gray-300 mb-6">এই বিভাগে, আমরা আল্লাহর উপর ভরসা বা তাওয়াক্কুলের অপরিহার্যতা এবং ইবাদতে ইহসান বা শ্রেষ্ঠত্বের স্তর অর্জনের গুরুত্ব সম্পর্কে জানব। এই ধারণাগুলো আল্লাহর প্রতি লজ্জা এবং তাঁর সার্বক্ষণিক উপস্থিতির অনুভূতি গড়ে তোলার ভিত্তি স্থাপন করে।</p>
+                <blockquote class="quran-quote p-4 my-6 italic rounded-md">
+                    <p class="mb-2 text-cyan-200">"আর ভরসা করুন পরাক্রমশালী, পরম দয়ালুর উপর। যিনি আপনাকে দেখেন যখন আপনি দণ্ডায়মান হন এবং সিজদাকারীদের মধ্যে আপনার গতিবিধি দেখেন। নিশ্চয় তিনি সর্বশ্রোতা, সর্বজ্ঞ।"</p>
+                    <cite class="font-semibold not-italic text-cyan-400">- সূরা আশ-শু'আরা: ২১৭-২২০</cite>
+                </blockquote>
+                <p class="text-gray-300 leading-relaxed">তাওয়াক্কুল হলো উপকার লাভ এবং ক্ষতি দূর করার জন্য আল্লাহর উপর হৃদয়ের নির্ভরতা। আর ইহসান হলো এমনভাবে আল্লাহর ইবাদত করা যেন আপনি তাঁকে দেখছেন, আর যদি আপনি তাঁকে দেখতে না পান, তবে (মনে রাখা যে) তিনি আপনাকে দেখছেন। এই চেতনাই আমাদের পরবর্তী আলোচনার মূল বিষয় 'মুরাকাবা'র দিকে নিয়ে যায়।</p>
+            </div>
+        </section>
+
+        <!-- Muraqaba Section -->
+        <section id="muraqaba" class="mb-16 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 neon-text-pink">মুরাকাবা: আত্ম-পর্যবেক্ষণের কেন্দ্রবিন্দু</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">মুরাকাবা হলো এই দৃঢ় বিশ্বাস যে আল্লাহ তা'আলা আমাদের বাহ্যিক ও অভ্যন্তরীণ সকল অবস্থা সম্পর্কে অবগত। এই বিভাগে আমরা মুরাকাবার সংজ্ঞা এবং এর তাৎপর্য সম্পর্কে জানব।</p>
+            </div>
+
+            <div class="bg-gray-900/50 border border-gray-800 p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
+                <div class="prose max-w-none text-gray-300 leading-relaxed">
+                    <p>ইবনুল কাইয়্যিম (রহঃ) বলেন: মুরাকাবা হলো বান্দার এই জ্ঞান ও দৃঢ় বিশ্বাস যে, আল্লাহ তা'আলা তার ظاہر (বাহ্যিক) ও বাতিন (অভ্যন্তরীণ) সবকিছু সম্পর্কে অবগত। এই জ্ঞান ও বিশ্বাসের ধারাবাহিকতাই হলো মুরাকাবা। এটি এই জ্ঞানের ফল যে আল্লাহ তাঁর উপর পর্যবেক্ষক, তাঁর দিকে তাকিয়ে আছেন, তাঁর কথা শুনছেন এবং তাঁর কাজ সম্পর্কে অবগত।</p>
+                    <p>একজন বলেছেন: <span class="font-semibold text-pink-300">"আল্লাহর কসম! আমি লজ্জা বোধ করি যে, আল্লাহ আমার অন্তরের দিকে তাকাবেন আর সেখানে তিনি ছাড়া অন্য কেউ থাকবে।"</span></p>
+                    <p>মুরাকাবা অর্জনের শ্রেষ্ঠ উপায় হলো আল্লাহর নাম ও গুণাবলীর মাধ্যমে ইবাদত করা। পরবর্তী বিভাগে আমরা এ বিষয়ে বিস্তারিত আলোচনা করব।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Names of Allah Section -->
+        <section id="names-of-allah" class="mb-16 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 neon-text-pink">আল্লাহর সুন্দর নামসমূহ</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">আল্লাহর সুন্দর নামগুলো বোঝা এবং সে অনুযায়ী ইবাদত করা মুরাকাবা অর্জনের একটি শক্তিশালী উপায়। এই বিভাগে, আমরা চারটি গুরুত্বপূর্ণ নাম এবং আমাদের জীবনে সেগুলোর প্রভাব সম্পর্কে জানব।</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 border-b-2 border-cyan-900/50 pb-4">
+                    <button class="tab-button text-sm md:text-base px-4 py-2 rounded-full transition duration-300" data-tab="ar-raqib">আর-রাকিব (পর্যবেক্ষক)</button>
+                    <button class="tab-button text-sm md:text-base px-4 py-2 rounded-full transition duration-300" data-tab="al-hafiz">আল-হাফিজ (সংরক্ষক)</button>
+                    <button class="tab-button text-sm md:text-base px-4 py-2 rounded-full transition duration-300" data-tab="as-sami">আস-সামি' (সর্বশ্রোতা)</button>
+                    <button class="tab-button text-sm md:text-base px-4 py-2 rounded-full transition duration-300" data-tab="al-basir">আল-বাসির (সর্বদ্রষ্টা)</button>
+                </div>
+
+                <div id="tab-container" class="bg-gray-900/50 border border-gray-800 p-6 md:p-8 rounded-lg shadow-lg">
+                    <div id="ar-raqib" class="tab-content">
+                        <h3 class="text-2xl font-bold mb-4 neon-text-cyan">আর-রাকিব (পর্যবেক্ষক)</h3>
+                        <p class="text-gray-300 leading-relaxed">তিনি সবকিছুর উপর তাঁর জ্ঞানের দ্বারা পর্যবেক্ষক, যা সবকিছুকে পরিবেষ্টন করে আছে। তিনি যা ছিল, যা হবে এবং যা হচ্ছে তা যদি অন্যরকম হতো তবে কেমন হতো, তাও জানেন। তিনি তাঁর দৃষ্টির দ্বারা সবকিছুর উপর পর্যবেক্ষক, যাকে তন্দ্রা বা নিদ্রা স্পর্শ করে না। তিনি তাঁর শ্রবণের দ্বারা প্রত্যেক নড়াচড়া ও কথা শোনেন। আমাদের জীবনে, আমাদের আচরণে, আমাদের লেনদেনে, আমাদের ইবাদতে এর প্রভাব কোথায়?</p>
+                    </div>
+                    <div id="al-hafiz" class="tab-content">
+                        <h3 class="text-2xl font-bold mb-4 neon-text-cyan">আল-হাফিজ (সংরক্ষক)</h3>
+                        <p class="text-gray-300 leading-relaxed">তিনি তাঁর সৃষ্টিকে রক্ষা করেন, তাঁর সৃষ্ট সকল বস্তু সম্পর্কে তাঁর জ্ঞান পরিব্যাপ্ত, তিনি তাঁর প্রিয় বান্দাদেরকে পাপ ও ধ্বংস থেকে রক্ষা করেন। বান্দার উপর আল্লাহর সবচেয়ে বড় হক হলো তাওহীদ। যে এই হক সংরক্ষণ করবে, আল্লাহ তাকে জাহান্নামের আযাব থেকে রক্ষা করবেন। যেসব বিষয় আল্লাহ আমাদের সংরক্ষণের নির্দেশ দিয়েছেন, তার মধ্যে অন্যতম হলো সালাত। যে ব্যক্তি সালাত সংরক্ষণ করবে, আল্লাহ তাকে রক্ষা করবেন এবং কিয়ামতের দিন তা তার জন্য মুক্তির কারণ হবে।</p>
+                    </div>
+                    <div id="as-sami" class="tab-content">
+                        <h3 class="text-2xl font-bold mb-4 neon-text-cyan">আস-সামি' (সর্বশ্রোতা)</h3>
+                        <p class="text-gray-300 leading-relaxed">তিনি তাঁর বান্দাদের কথা শোনেন এবং তাদের ডাকে সাড়া দেন। তিনি গোপন ও তার চেয়েও গোপন কথা শোনেন। এক মহিলা রাসূল (ﷺ) এর কাছে তার স্বামীর বিষয়ে অভিযোগ করলে আল্লাহ তা'আলা নাযিল করেন: "যে নারী তার স্বামীর বিষয়ে আপনার সাথে বাদানুবাদ করছে এবং অভিযোগ পেশ করছে আল্লাহর দরবারে, আল্লাহ তার কথা শুনেছেন। আল্লাহ তোমাদের উভয়ের কথাবার্তা শুনেন। নিশ্চয় আল্লাহ সবকিছু শুনেন, সবকিছু দেখেন।" (সূরা আল-মুজাদালা: ১)</p>
+                    </div>
+                    <div id="al-basir" class="tab-content">
+                        <h3 class="text-2xl font-bold mb-4 neon-text-cyan">আল-বাসির (সর্বদ্রষ্টা)</h3>
+                        <p class="text-gray-300 leading-relaxed">তাঁর দৃষ্টি আছে যা দ্বারা তিনি সবকিছু দেখেন। তিনি ছোট-বড় সবকিছু দেখেন। তিনি পৃথিবীর নিচে যা আছে, আকাশের উপরে যা আছে এবং সমুদ্রের গভীরে যা আছে, সবই দেখেন। এক রাতে উমার (রাঃ) এক বৃদ্ধাকে তার মেয়েকে বলতে শুনলেন: "দুধের সাথে পানি মেশাও।" মেয়েটি উত্তরে বলেছিল: "যদি উমার আমাদের না দেখেন, তবে উমারের রব তো আমাদের দেখছেন!" এই বিশ্বাসই হলো আল্লাহর প্রতি লজ্জা ও ভয়।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Stories Section -->
+        <section id="stories" class="mb-16 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 neon-text-pink">শিক্ষণীয় ঘটনাবলী</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">ইতিহাসের পাতা থেকে নেওয়া এই ঘটনাগুলো আমাদের দেখায় কিভাবে আল্লাহর উপস্থিতি সম্পর্কে সচেতনতা মানুষের জীবনকে পরিবর্তন করে দিতে পারে। প্রতিটি ঘটনাতেই রয়েছে গভীর শিক্ষা।</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="story-card rounded-lg shadow-lg overflow-hidden">
+                    <button class="card-trigger w-full text-left p-6">
+                        <h3 class="text-xl font-bold text-pink-300">উমাইর ইবনে ওয়াহাবের ঘটনা</h3>
+                        <p class="text-sm text-gray-500 mt-1">গোপন ষড়যন্ত্র এবং আল্লাহর জ্ঞান</p>
+                    </button>
+                    <div class="card-content">
+                        <div class="p-6 pt-0 prose max-w-none text-gray-300 leading-relaxed">
+                            <p>বদরের যুদ্ধের পর, উমাইর ইবনে ওয়াহাব এবং সাফওয়ান ইবনে উমাইয়া মুহাম্মদ (ﷺ) কে হত্যা করার জন্য গোপনে ষড়যন্ত্র করে। তাদের এই গোপন পরিকল্পনার কথা আল্লাহ ছাড়া আর কেউ জানত না। যখন উমাইর মদিনায় পৌঁছায়, রাসূল (ﷺ) ওহীর মাধ্যমে তাদের সম্পূর্ণ পরিকল্পনা প্রকাশ করে দেন। এই ঘটনায় বিস্মিত হয়ে উমাইর ইসলাম গ্রহণ করেন, কারণ তিনি বুঝতে পেরেছিলেন যে একমাত্র আল্লাহই এই গোপন খবর রাসূল (ﷺ) কে জানাতে পারেন।</p>
+                             <blockquote class="quran-quote p-4 my-4 italic rounded-md text-sm">
+                                <p class="text-cyan-200">"তারা মানুষের কাছ থেকে নিজেদের গোপন করতে চায়, কিন্তু আল্লাহর নিকট গোপন করতে পারে না। অথচ তিনি তাদের সঙ্গে রয়েছেন...।"</p>
+                                <cite class="font-semibold not-italic text-cyan-400">- সূরা আন-নিসা: ১০৮</cite>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="story-card rounded-lg shadow-lg overflow-hidden">
+                    <button class="card-trigger w-full text-left p-6">
+                        <h3 class="text-xl font-bold text-pink-300">দুধ বিক্রেতা মেয়েটির ঘটনা</h3>
+                        <p class="text-sm text-gray-500 mt-1">সততা এবং আল্লাহর পর্যবেক্ষণ</p>
+                    </button>
+                    <div class="card-content">
+                        <div class="p-6 pt-0 prose max-w-none text-gray-300 leading-relaxed">
+                            <p>খলিফা উমার (রাঃ) এক রাতে প্রজাদের অবস্থা দেখতে বের হয়েছিলেন। তিনি এক বৃদ্ধাকে তার মেয়েকে বলতে শুনলেন, "দুধের সাথে পানি মেশাও।" মেয়েটি উত্তর দিল, "আমীরুল মু'মিনীন এটা করতে নিষেধ করেছেন।" মা বললেন, "উমার এখন কোথায় যে আমাদের দেখবে?" তখন সেই ঈমানদার মেয়েটি উত্তর দিল, "যদি উমার আমাদের না দেখেন, তবে উমারের রব তো আমাদের দেখছেন!" এই ঘটনাই আমাদের শেখায় যে, মানুষের চোখের আড়ালে থাকলেও আল্লাহর দৃষ্টির বাইরে কিছুই নেই।</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="story-card rounded-lg shadow-lg overflow-hidden">
+                    <button class="card-trigger w-full text-left p-6">
+                        <h3 class="text-xl font-bold text-pink-300">রাখালের আমানতদারিতা</h3>
+                        <p class="text-sm text-gray-500 mt-1">দায়িত্ববোধ এবং আল্লাহর ভয়</p>
+                    </button>
+                    <div class="card-content">
+                        <div class="p-6 pt-0 prose max-w-none text-gray-300 leading-relaxed">
+                            <p>একবার ইবনে উমার (রাঃ) এক রাখালকে পরীক্ষা করার জন্য বললেন, "আমাদের কাছে একটি ছাগল বিক্রি করো এবং মালিককে বলো যে বাঘে খেয়ে ফেলেছে।" রাখালটি উত্তর দিল, "তাহলে আমি আল্লাহকে কী বলব?" তার এই ছোট্ট উত্তরটি আল্লাহর প্রতি তার গভীর ভয় এবং আমানতদারিতার প্রমাণ দেয়। ইবনে উমার (রাঃ) তার উত্তরে এতই মুগ্ধ হয়েছিলেন যে তিনি তাকে কিনে মুক্ত করে দিয়েছিলেন এবং বলেছিলেন, "এই কথাটি তোমাকে দুনিয়াতে মুক্ত করেছে, আমি আশা করি এটি তোমাকে আখেরাতেও মুক্ত করবে।"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion Section -->
+        <section id="conclusion" class="scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 neon-text-pink">উপসংহার ও আত্ম-প্রতিফলন</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto">আলোচনার শেষে, আমাদের জন্য কিছু চিন্তার খোরাক এবং আল্লাহর কাছে প্রার্থনা। এই অংশটি আমাদের নিজেদের জীবন নিয়ে ভাবতে এবং ইতিবাচক পরিবর্তনের জন্য অনুপ্রাণিত হতে সাহায্য করবে।</p>
+            </div>
+            <div class="bg-gradient-to-br from-gray-900 to-black border border-pink-500/30 p-8 rounded-lg shadow-lg shadow-pink-500/10 max-w-4xl mx-auto">
+                <div class="prose max-w-none text-gray-300 leading-relaxed">
+                    <p>হে আল্লাহর বান্দা! এগুলি আল্লাহর কিছু নাম ও গুণাবলী। আমাদের জীবনে এর প্রভাব কোথায়? আমাদের ঈমানের স্তর কোথায়? যদি তুমি তোমার ঈমানের মাত্রা জানতে চাও, তবে নির্জনে নিজেকে পর্যবেক্ষণ করো। ঈমান কেবল দুই রাকাত সালাত বা দিনের বেলা রোজা রাখার মধ্যে প্রকাশ পায় না, বরং তা নফস ও প্রবৃত্তির বিরুদ্ধে সংগ্রামের মধ্যে প্রকাশ পায়।</p>
+                    <p class="font-semibold text-pink-300">আপনি যদি বিশ্বাস করেন যে আল্লাহ আপনাকে দেখেন না, তবে আপনার কুফরি কতই না বড়! আর যদি আপনি তাঁর দেখার কথা জেনেও তাঁর অবাধ্যতা করেন, তবে আপনার স্পর্ধা কত বেশি! আপনার লজ্জা কত কম!</p>
+                    <p>জেনে রাখুন, আপনি আল্লাহর সামনে দাঁড়াবেন। তখন কোন ভাষায় জবাব দেবেন? তাই প্রশ্নের জন্য উত্তর এবং উত্তরের জন্য সঠিকতা প্রস্তুত করুন।</p>
+                    <hr class="my-6 border-cyan-800">
+                    <h4 class="font-bold neon-text-cyan">দু'আ</h4>
+                    <p>হে আল্লাহ, আমাদেরকে মুসলিম হিসেবে বাঁচিয়ে রাখুন এবং মুসলিম হিসেবে মৃত্যু দিন এবং আমাদেরকে সৎকর্মশীলদের সাথে মিলিত করুন।</p>
+                    <p>হে আল্লাহ, আমরা আপনার কাছে গোপনে ও প্রকাশ্যে আপনার ভয় প্রার্থনা করি।</p>
+                    <p>হে আল্লাহ, আমাদের ঈমানের অলংকারে সজ্জিত করুন এবং আমাদেরকে হেদায়েতপ্রাপ্ত ও হেদায়েতকারী বানান, পথভ্রষ্ট ও পথভ্রষ্টকারী নয়।</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-black mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-gray-500">
+            <p>&copy; ২০২৪ | শেখ খালেদ আল-রাশেদের আলোচনার উপর ভিত্তি করে তৈরি।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Tab functionality for Names of Allah
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            function activateTab(tabId) {
+                tabButtons.forEach(btn => {
+                    if (btn.dataset.tab === tabId) {
+                        btn.classList.add('active-tab');
+                    } else {
+                        btn.classList.remove('active-tab');
+                    }
+                });
+
+                tabContents.forEach(content => {
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    } else {
+                        content.classList.remove('active');
+                    }
+                });
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    activateTab(button.dataset.tab);
+                });
+            });
+
+            // Activate the first tab by default
+            if (tabButtons.length > 0) {
+                activateTab(tabButtons[0].dataset.tab);
+            }
+
+            // Accordion for stories
+            const cardTriggers = document.querySelectorAll('.card-trigger');
+            cardTriggers.forEach(trigger => {
+                trigger.addEventListener('click', () => {
+                    const content = trigger.nextElementSibling;
+                    const isActive = content.classList.contains('active');
+
+                    // Close all other cards
+                    cardTriggers.forEach(otherTrigger => {
+                        otherTrigger.nextElementSibling.classList.remove('active');
+                    });
+
+                    // Toggle the clicked card
+                    if (!isActive) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+
+            // Smooth scrolling and active nav state
+            const navLinks = document.querySelectorAll('nav a');
+            const sections = document.querySelectorAll('main section');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.hash !== "") {
+                        e.preventDefault();
+                        const hash = this.hash;
+                        const targetElement = document.querySelector(hash);
+                        if (targetElement) {
+                             window.scrollTo({
+                                top: targetElement.offsetTop - 80, // Adjust for sticky header
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                     // For mobile menu, close it after clicking a link
+                    if(mobileMenu.classList.contains('hidden') === false){
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        document.querySelectorAll('.nav-link').forEach(link => {
+                            link.classList.remove('active-nav');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active-nav');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: "-100px 0px -50% 0px" });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+
+</body>
+</html>

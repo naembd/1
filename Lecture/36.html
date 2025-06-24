@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>গাফলাত (উদাসীনতা): একটি ইন্টারেক্টিভ বিশ্লেষণ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals (Stone, Amber, Gray) -->
+    <!-- Application Structure Plan: The application is a single-page thematic dashboard. It breaks down the sermon into logical sections for non-linear exploration. New Gemini-powered sections for a 'Personal Action Plan' and 'Dua Generation' have been added. This transforms the app from a passive information tool into an active, personalized spiritual guide, allowing users to apply the sermon's teachings directly to their lives. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Contrasting stories of death. Goal: Compare. Viz: Interactive content switcher. Interaction: Buttons. Justification: Powerful narrative comparison. Library: Vanilla JS.
+        2. Report Info: List of remedies. Goal: Inform/Organize. Viz: Grid of cards. Interaction: Hover. Justification: Visually appealing & digestible. Library: HTML/Tailwind.
+        3. Report Info: Abstract spiritual states. Goal: Compare/Visualize. Viz: Bar Chart. Interaction: Buttons. Justification: Makes abstract concepts concrete. Library: Chart.js.
+        4. Report Info: User's personal struggles. Goal: Personalize/Advise. Viz: AI-generated text block. Interaction: Text input and generate button. Justification: Provides actionable, personalized guidance based on the sermon's core message. Library: Gemini API.
+        5. Report Info: User's specific needs. Goal: Assist/Personalize. Viz: AI-generated text block. Interaction: Text input and generate button. Justification: Offers immediate spiritual support by generating relevant supplications. Library: Gemini API.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #fafaf9; /* stone-50 */
+            color: #292524; /* stone-800 */
+        }
+        .active-nav {
+            color: #d97706; /* amber-600 */
+            font-weight: 600;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: #d97706;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-stone-100 sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-amber-700">গাফলাত</h1>
+            <div class="hidden md:flex space-x-6 text-stone-600 font-medium">
+                <a href="#intro" class="hover:text-amber-600 transition duration-300">ভূমিকা</a>
+                <a href="#disease" class="hover:text-amber-600 transition duration-300">রোগের পরিচয়</a>
+                <a href="#state" class="hover:text-amber-600 transition duration-300">উদাসীনদের অবস্থা</a>
+                <a href="#death" class="hover:text-amber-600 transition duration-300">মৃত্যুর মুহূর্ত</a>
+                <a href="#salvation" class="hover:text-amber-600 transition duration-300">মুক্তির পথ</a>
+                <a href="#action-plan" class="hover:text-amber-600 transition duration-300">কর্ম পরিকল্পনা ✨</a>
+                <a href="#end" class="hover:text-amber-600 transition duration-300">শেষ পরিণতি</a>
+            </div>
+             <div class="md:hidden">
+                <select id="mobile-nav" class="bg-stone-200 border border-stone-300 rounded-md p-2 text-stone-700">
+                    <option value="#intro">ভূমিকা</option>
+                    <option value="#disease">রোগের পরিচয়</option>
+                    <option value="#state">উদাসীনদের অবস্থা</option>
+                    <option value="#death">মৃত্যুর মুহূর্ত</option>
+                    <option value="#salvation">মুক্তির পথ</option>
+                    <option value="#action-plan">কর্ম পরিকল্পনা ✨</option>
+                    <option value="#end">শেষ পরিণতি</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="intro" class="text-center min-h-[60vh] flex flex-col justify-center items-center">
+            <h2 class="text-3xl md:text-5xl font-extrabold text-stone-800 mb-4">উদাসীনতা: একটি মারাত্মক হৃদয়ের রোগ</h2>
+            <p class="max-w-3xl mx-auto text-lg md:text-xl text-stone-600 mb-8">
+                "মানুষের হিসাব-নিকাশের সময় ঘনিয়ে এসেছে, অথচ তারা উদাসীনতায় মুখ ফিরিয়ে আছে। তাদের কাছে তাদের রবের পক্ষ থেকে যখনই কোনো নতুন উপদেশ আসে, তারা তা শোনে খেলার ছলে।"
+            </p>
+            <a href="#disease" class="bg-amber-600 text-white font-bold py-3 px-8 rounded-full hover:bg-amber-700 transition duration-300 text-lg shadow-lg">
+                সতর্কবাণী অন্বেষণ করুন
+            </a>
+        </section>
+
+        <section id="disease" class="py-16 md:py-24">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-stone-800">রোগের পরিচয়</h3>
+                <p class="text-lg text-stone-600 mt-2 max-w-2xl mx-auto">উদাসীনতা বা 'গাফলাত' একটি আধ্যাত্মিক ব্যাধি, যা শারীরিক অসুস্থতার চেয়েও ভয়ংকর। এই বিভাগে আমরা এই দুটি রোগের মধ্যেকার পার্থক্য এবং গাফলাতের প্রকৃত বিপদ সম্পর্কে জানব।</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white p-6 rounded-lg shadow-lg border border-stone-200">
+                    <h4 class="text-2xl font-semibold text-red-600 mb-3 text-center">শারীরিক রোগ</h4>
+                    <ul class="space-y-2 text-stone-700 list-disc list-inside">
+                        <li>এর চিকিৎসা ও প্রতিকার স্পষ্ট।</li>
+                        <li>মানুষ এর থেকে আরোগ্য লাভের জন্য সচেষ্ট হয়।</li>
+                        <li>এর কষ্ট সাধারণত দুনিয়াতেই সীমাবদ্ধ থাকে।</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-xl border-2 border-amber-500">
+                    <h4 class="text-2xl font-semibold text-amber-700 mb-3 text-center">হৃদয়ের রোগ (গাফলাত)</h4>
+                    <ul class="space-y-2 text-stone-700 list-disc list-inside">
+                        <li>এটি প্রায়শই অলক্ষিত থাকে, মৃত্যুর সময় প্রকাশ পায়।</li>
+                        <li>এটি দ্বীন, দুনিয়া ও আখেরাত—সবকিছু ধ্বংস করে।</li>
+                        <li>মানুষকে হেদায়েত থেকে দূরে রাখে এবং চিরস্থায়ী ক্ষতির দিকে ঠেলে দেয়।</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="state" class="py-16 md:py-24 bg-stone-100 rounded-2xl">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-stone-800">উদাসীনদের অবস্থা</h3>
+                <p class="text-lg text-stone-600 mt-2 max-w-2xl mx-auto">উদাসীনতা মানুষের আচরণে নানাভাবে প্রকাশ পায়। এই বিভাগে আমরা এর কিছু প্রধান লক্ষণ এবং একটি বাস্তব উদাহরণ দেখব, যা আমাদের নিজেদের অবস্থা যাচাই করতে সাহায্য করবে।</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                 <div class="mb-4 border-b border-stone-300">
+                    <nav class="flex space-x-4" aria-label="Tabs">
+                        <button id="tab-prayer" class="tab-button active-tab text-lg font-semibold py-3 px-4 text-amber-600 border-b-2 border-amber-600">সালাত ত্যাগ</button>
+                        <button id="tab-dunya" class="tab-button text-lg font-semibold py-3 px-4 text-stone-500 hover:text-amber-600">দুনিয়ার মোহ</button>
+                        <button id="tab-hope" class="tab-button text-lg font-semibold py-3 px-4 text-stone-500 hover:text-amber-600">দীর্ঘ আশা</button>
+                    </nav>
+                </div>
+                <div id="content-prayer" class="tab-content p-4 bg-white rounded-lg shadow">
+                    <h4 class="text-2xl font-bold mb-3 text-amber-800">সালাত ত্যাগ করা: উদাসীনতার চূড়ান্ত পর্যায়</h4>
+                    <p class="mb-4">উদাসীনতার সবচেয়ে বড় লক্ষণ হলো সালাতের প্রতি অমনোযোগিতা। অনেকে সালাত আদায়ই করে না, কেউ দিনে একবার বা দুইবার, আবার কেউ শুধু জুম'আর দিন সালাত আদায় করে। অথচ সালাতই হলো বরকতের চাবিকাঠি এবং আল্লাহর সাথে বান্দার সম্পর্কের মূল ভিত্তি।</p>
+                    <div class="bg-amber-50 border-l-4 border-amber-500 text-amber-800 p-4 rounded-r-lg">
+                        <p class="font-semibold">একটি বাস্তব ঘটনা:</p>
+                        <p class="mt-1">একদল যুবক চাকরির খোঁজে যাচ্ছিল। তাদের সালাত সম্পর্কে জিজ্ঞাসা করা হলে একজন বলল সে সালাত পড়েই না, আরেকজন দিনে দুইবার, এবং তৃতীয়জন শুধু জুম'আ থেকে জুম'আ। এটিই সমাজের গাফলাতির একটি বাস্তব চিত্র।</p>
+                    </div>
+                </div>
+                <div id="content-dunya" class="tab-content hidden p-4 bg-white rounded-lg shadow">
+                    <h4 class="text-2xl font-bold mb-3 text-amber-800">দুনিয়ার মোহে আচ্ছন্ন</h4>
+                    <p>উদাসীনতার মূল কারণ হলো দুনিয়ার প্রতি ভালোবাসা এবং এর ভোগ-বিলাসে মগ্ন থাকা। আল্লাহ বলেন, "হে মু'মিনগণ! তোমাদের ধন-সম্পদ ও সন্তান-সন্ততি যেন তোমাদেরকে আল্লাহর স্মরণ থেকে উদাসীন না করে।" মানুষ দুনিয়া অর্জনের জন্য যতটা সচেষ্ট, আল্লাহর আদেশ পালনে ততটাই উদাসীন। ফজরের আযানের সময় রাস্তাঘাট খালি থাকলেও, কর্মজীবনের ডাকে সাড়া দিয়ে রাস্তাগুলো জনাকীর্ণ হয়ে ওঠে।</p>
+                </div>
+                <div id="content-hope" class="tab-content hidden p-4 bg-white rounded-lg shadow">
+                    <h4 class="text-2xl font-bold mb-3 text-amber-800">দীর্ঘ আশার প্রতারণা</h4>
+                    <p>মানুষকে আখেরাতের প্রস্তুতি থেকে যা বিরত রাখে তা হলো দীর্ঘ আশা। সে ভাবে, "এখনো অনেক সময় আছে, পরে তওবা করে নেব।" কিন্তু মৃত্যু হঠাৎ করেই আসে। আল্লাহ বলেন, "তাদের ছেড়ে দিন, তারা খাক, ভোগ করুক এবং আশা তাদের ভুলিয়ে রাখুক, অচিরেই তারা জানতে পারবে।" দীর্ঘ আশা মানুষকে মন্দ কাজে লিপ্ত রাখে এবং ভালো কাজ থেকে বিরত রাখে।</p>
+                </div>
+            </div>
+
+            <div class="mt-12">
+                <div class="text-center mb-8">
+                     <h4 class="text-2xl font-bold text-stone-800">হৃদয়ের অবস্থার তুলনামূলক চিত্র</h4>
+                     <p class="text-md text-stone-600">বাটন ক্লিক করে হৃদয়ের দুটি ভিন্ন অবস্থার একটি ধারণাগত চিত্র দেখুন।</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="heartStateChart"></canvas>
+                </div>
+                <div class="flex justify-center mt-4 space-x-4">
+                    <button id="btnHeedless" class="bg-red-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-red-700 transition">উদাসীন অবস্থা</button>
+                    <button id="btnAware" class="bg-green-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-green-700 transition">সচেতন অবস্থা</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="death" class="py-16 md:py-24">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-stone-800">মৃত্যুর মুহূর্ত: শেষ পরিণতি</h3>
+                <p class="text-lg text-stone-600 mt-2 max-w-2xl mx-auto">মৃত্যুর সময় মানুষের সারা জীবনের আমল প্রকাশ পায়। এই বিভাগে আমরা দুটি বাস্তব এবং বিপরীতমুখী ঘটনার মাধ্যমে দেখব কীভাবে উদাসীনতা ও সচেতনতা মানুষের শেষ মুহূর্তকে প্রভাবিত করে।</p>
+            </div>
+            <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-6 md:p-8 border">
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-8">
+                    <button id="btn-outcome-bad" class="outcome-button active-outcome w-full md:w-auto bg-amber-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300">উদাসীনদের পরিণতি</button>
+                    <button id="btn-outcome-good" class="outcome-button w-full md:w-auto bg-stone-200 text-stone-700 font-bold py-3 px-6 rounded-lg transition duration-300">পুণ্যবানদের পরিণতি</button>
+                </div>
+                <div id="outcome-content">
+                </div>
+            </div>
+        </section>
+
+        <section id="salvation" class="py-16 md:py-24 bg-stone-100 rounded-2xl">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-stone-800">মুক্তির পথ</h3>
+                <p class="text-lg text-stone-600 mt-2 max-w-2xl mx-auto">হৃদয়ের রোগ 'গাফলাত' থেকে মুক্তির জন্য নির্দিষ্ট কিছু আমল রয়েছে। এখানে ইবনুল কাইয়্যিম (রহ.) বর্ণিত পাঁচটি কার্যকর প্রতিকার তুলে ধরা হলো।</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-4xl text-amber-600 mb-3">📖</div>
+                    <h4 class="text-xl font-semibold mb-2">কুরআন তিলাওয়াত</h4>
+                    <p class="text-stone-600">গভীর চিন্তা ও অর্থ বুঝে কুরআন পাঠ করা।</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-4xl text-amber-600 mb-3">🌙</div>
+                    <h4 class="text-xl font-semibold mb-2">তাহাজ্জুদের সালাত</h4>
+                    <p class="text-stone-600">রাতের শেষভাগে আল্লাহর সামনে দণ্ডায়মান হওয়া।</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-4xl text-amber-600 mb-3">🤲</div>
+                    <h4 class="text-xl font-semibold mb-2">সাহরীর সময় তضرع</h4>
+                    <p class="text-stone-600">ভোরের আগে আল্লাহর কাছে কান্নাকাটি ও দু'আ করা।</p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-lg text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-4xl text-amber-600 mb-3">🍽️</div>
+                    <h4 class="text-xl font-semibold mb-2">অল্প আহার</h4>
+                    <p class="text-stone-600">অতিরিক্ত খাওয়া-দাওয়া থেকে বিরত থাকা, যা অন্তরকে কঠিন করে।</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-4xl text-amber-600 mb-3">🤝</div>
+                    <h4 class="text-xl font-semibold mb-2">সৎসঙ্গ</h4>
+                    <p class="text-stone-600">পুণ্যবান ও আল্লাহভীরু মানুষদের সাথে সম্পর্ক রাখা।</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-4xl text-amber-600 mb-3">⏱️</div>
+                    <h4 class="text-xl font-semibold mb-2">মৃত্যুর স্মরণ</h4>
+                    <p class="text-stone-600">নিয়মিত মৃত্যু ও পরকালের কথা স্মরণ করা।</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="action-plan" class="py-16 md:py-24">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-stone-800">আপনার ব্যক্তিগত কর্ম পরিকল্পনা তৈরি করুন ✨</h3>
+                <p class="text-lg text-stone-600 mt-2 max-w-3xl mx-auto">আপনি কি গাফলাত থেকে বেরিয়ে আসতে চান কিন্তু কোথা থেকে শুরু করবেন বুঝতে পারছেন না? আপনার বর্তমান আধ্যাত্মিক অবস্থা, সংগ্রাম বা দুর্বলতার কথা নিচে লিখুন। Gemini API এই বক্তৃতার আলোকে আপনার জন্য একটি বাস্তবসম্মত ও কার্যকর কর্ম পরিকল্পনা তৈরি করে দেবে।</p>
+            </div>
+            <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
+                <textarea id="plan-input" class="w-full p-3 border border-stone-300 rounded-lg text-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition" rows="4" placeholder="যেমন: 'আমি ফজরের সালাতের জন্য ঘুম থেকে উঠতে পারি না' অথবা 'দুনিয়াবী বিষয়ে আমার মন খুব বেশি ব্যস্ত থাকে'"></textarea>
+                <button id="generate-plan-btn" class="w-full bg-amber-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-amber-700 transition duration-300 text-lg shadow-lg mt-4">
+                    পরিকল্পনা তৈরি করুন
+                </button>
+                <div id="plan-output" class="mt-6 p-4 border border-stone-200 rounded-lg bg-stone-50 min-h-[100px]">
+                    <p class="text-stone-500">আপনার পরিকল্পনা এখানে প্রদর্শিত হবে...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="end" class="py-16 md:py-24 bg-stone-100 rounded-2xl">
+             <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-stone-800">শেষ পরিণতি: অনন্ত জীবন</h3>
+                <p class="text-lg text-stone-600 mt-2 max-w-2xl mx-auto">কিয়ামতের দিন মৃত্যুকে জবাই করে দেওয়া হবে এবং জান্নাত ও জাহান্নামের জীবন চিরস্থায়ী হয়ে যাবে। তখন আর কোনো দ্বিতীয় সুযোগ থাকবে না।</p>
+            </div>
+            <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+                <p class="text-center text-xl font-medium text-stone-700 italic">
+                    "আর তাদেরকে পরিতাপের দিন সম্পর্কে সতর্ক করুন, যখন সবকিছুর ফয়সালা হয়ে যাবে, অথচ তারা উদাসীনতায় রয়েছে এবং তারা ঈমান আনে না।"
+                </p>
+                <div class="mt-8 grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-2xl font-bold text-green-700 mb-3">জান্নাতবাসীদের জন্য:</h4>
+                        <p class="text-stone-600">"হে জান্নাতবাসী, চিরকাল থাকো, আর কোনো মৃত্যু নেই।" তাদের জন্য থাকবে অনন্ত সুখ, স্বাস্থ্য এবং যৌবন।</p>
+                    </div>
+                     <div>
+                        <h4 class="text-2xl font-bold text-red-700 mb-3">জাহান্নামবাসীদের জন্য:</h4>
+                        <p class="text-stone-600">"হে জাহান্নামবাসী, চিরকাল থাকো, আর কোনো মৃত্যু নেই।" তারা ফিরে আসতে চাইবে, কিন্তু তা আর সম্ভব হবে না।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="dua-generator" class="py-16 md:py-24">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-stone-800">আপনার প্রয়োজনে একটি দু'আ তৈরি করুন ✨</h3>
+                <p class="text-lg text-stone-600 mt-2 max-w-3xl mx-auto">আল্লাহর কাছে আপনার মনের কথাগুলো গুছিয়ে বলতে পারছেন না? আপনার প্রয়োজনটি এখানে লিখুন, Gemini API আপনার জন্য একটি সুন্দর ও আন্তরিক দু'আ তৈরি করে দেবে।</p>
+            </div>
+            <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8">
+                <input type="text" id="dua-input" class="w-full p-3 border border-stone-300 rounded-lg text-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition" placeholder="আপনার প্রয়োজন লিখুন (যেমন: পরীক্ষায় সাফল্য, অসুস্থতা থেকে মুক্তি)">
+                <button id="generate-dua-btn" class="w-full bg-amber-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-amber-700 transition duration-300 text-lg shadow-lg mt-4">
+                    দু'আ তৈরি করুন
+                </button>
+                <div id="dua-output" class="mt-6 p-4 border border-stone-200 rounded-lg bg-stone-50 min-h-[100px]">
+                    <p class="text-stone-500">আপনার দু'আ এখানে প্রদর্শিত হবে...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-stone-800 text-stone-300 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-4 text-lg italic">"হে আল্লাহ, আমাদের সত্যকে সত্য হিসেবে দেখান এবং তা অনুসরণ করার তৌফিক দিন, এবং বাতিলকে বাতিল হিসেবে দেখান এবং তা থেকে বিরত থাকার তৌফিক দিন।"</p>
+            <p class="text-stone-400">শেখ খালিদ আল-রাশেদের "الغفلة" বক্তৃতার উপর ভিত্তি করে নির্মিত।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const outcomes = {
+                bad: {
+                    title: "গান গাইতে গাইতে মৃত্যু",
+                    content: `এক ভয়ানক সড়ক দুর্ঘটনায় তিনজন যুবক মৃত্যুর মুখোমুখি হয়। যখন তাদের 'লা ইলাহা ইল্লাল্লাহ' পাঠ করতে বলা হলো, তারা তার পরিবর্তে গান গাইতে শুরু করে এবং সেই অবস্থাতেই মৃত্যুবরণ করে। তাদের সারা জীবনের পাপ ও উদাসীনতা মৃত্যুর সময় তাদের ধোঁকা দেয়।`,
+                    sub_title: "সালাত ত্যাগকারী যুবকের পরিণতি",
+                    sub_content: `একজন মৃতদেহ গোসলকারী বলেন, এক ফর্সা যুবককে গোসলের জন্য আনা হয় যে সালাত পড়ত না। গোসল শুরু করার সাথে সাথে তার চামড়া তীব্র কালো হয়ে যায়। এটি ছিল তার দুনিয়ার আমলের প্রতিফলন।`
+                },
+                good: {
+                    title: "কুরআন পড়তে পড়তে মৃত্যু",
+                    content: `এক যুবক দুর্ঘটনায় মারাত্মকভাবে আহত হয়। তাকে হাসপাতালে নেওয়ার পথে সে যন্ত্রণার মাঝেও মধুর কণ্ঠে কুরআন তিলাওয়াত করতে থাকে। অবশেষে শাহাদাত আঙুল তুলে 'লা ইলাহা ইল্লাল্লাহ' বলতে বলতে সে মৃত্যুবরণ করে। তার নেক আমল তাকে কঠিন মুহূর্তে স্থির রাখে।`,
+                    sub_title: "পুণ্যবান যুবকের দাফন",
+                    sub_content: `এক সৎ ও পুণ্যবান যুবককে দাফনের জন্য আনা হয়। গোসলের আগেই তার শরীর থেকে কস্তুরীর সুগন্ধ বের হতে থাকে। দাফনের সময় তার মুখ হাস্যোজ্জ্বল ছিল। তার আনুগত্য তাকে কবরেও সম্মানিত করে।`
+                }
+            };
+
+            const outcomeContentEl = document.getElementById('outcome-content');
+            const btnBad = document.getElementById('btn-outcome-bad');
+            const btnGood = document.getElementById('btn-outcome-good');
+
+            function renderOutcome(type) {
+                const data = outcomes[type];
+                outcomeContentEl.innerHTML = `
+                    <div class="transition-opacity duration-500 ease-in-out">
+                        <div class="mb-6 pb-6 border-b border-stone-200">
+                            <h4 class="text-2xl font-bold text-amber-800 mb-2">${data.title}</h4>
+                            <p class="text-stone-700 leading-relaxed">${data.content}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-2xl font-bold text-amber-800 mb-2">${data.sub_title}</h4>
+                            <p class="text-stone-700 leading-relaxed">${data.sub_content}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            btnBad.addEventListener('click', () => {
+                renderOutcome('bad');
+                btnBad.classList.add('bg-amber-600', 'text-white');
+                btnBad.classList.remove('bg-stone-200', 'text-stone-700');
+                btnGood.classList.add('bg-stone-200', 'text-stone-700');
+                btnGood.classList.remove('bg-amber-600', 'text-white');
+            });
+
+            btnGood.addEventListener('click', () => {
+                renderOutcome('good');
+                btnGood.classList.add('bg-amber-600', 'text-white');
+                btnGood.classList.remove('bg-stone-200', 'text-stone-700');
+                btnBad.classList.add('bg-stone-200', 'text-stone-700');
+                btnBad.classList.remove('bg-amber-600', 'text-white');
+            });
+
+            renderOutcome('bad');
+            
+            const tabs = document.querySelectorAll('.tab-button');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(item => {
+                        item.classList.remove('active-tab', 'text-amber-600', 'border-amber-600');
+                        item.classList.add('text-stone-500');
+                    });
+                    tab.classList.add('active-tab', 'text-amber-600', 'border-amber-600');
+                    tab.classList.remove('text-stone-500');
+                    
+                    const targetId = 'content-' + tab.id.split('-')[1];
+                    contents.forEach(content => {
+                        if(content.id === targetId) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.addEventListener('change', function() {
+                window.location.hash = this.value;
+            });
+            
+            const ctx = document.getElementById('heartStateChart').getContext('2d');
+            const heartStateData = {
+                heedless: { labels: ['সালাত', 'কুরআন', 'আল্লাহর স্মরণ', 'দুনিয়ার চিন্তা'], data: [10, 5, 15, 70], backgroundColor: 'rgba(220, 38, 38, 0.6)', borderColor: 'rgba(220, 38, 38, 1)' },
+                aware: { labels: ['সালাত', 'কুরআন', 'আল্লাহর স্মরণ', 'দুনিয়ার চিন্তা'], data: [80, 70, 85, 20], backgroundColor: 'rgba(22, 163, 74, 0.6)', borderColor: 'rgba(22, 163, 74, 1)' }
+            };
+            
+            let myChart = new Chart(ctx, {
+                type: 'bar',
+                data: { labels: heartStateData.heedless.labels, datasets: [{ label: 'হৃদয়ের অবস্থা (শতাংশ)', data: heartStateData.heedless.data, backgroundColor: heartStateData.heedless.backgroundColor, borderColor: heartStateData.heedless.borderColor, borderWidth: 1 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 }}, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return context.dataset.label + ': ' + context.formattedValue + '%'; }}}}}
+            });
+
+            document.getElementById('btnHeedless').addEventListener('click', () => { myChart.data.datasets[0].data = heartStateData.heedless.data; myChart.data.datasets[0].backgroundColor = heartStateData.heedless.backgroundColor; myChart.data.datasets[0].borderColor = heartStateData.heedless.borderColor; myChart.update(); });
+            document.getElementById('btnAware').addEventListener('click', () => { myChart.data.datasets[0].data = heartStateData.aware.data; myChart.data.datasets[0].backgroundColor = heartStateData.aware.backgroundColor; myChart.data.datasets[0].borderColor = heartStateData.aware.borderColor; myChart.update(); });
+            
+            async function callGemini(prompt, outputElement) {
+                outputElement.innerHTML = '<div class="flex justify-center items-center"><div class="loader"></div></div>';
+                
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API অনুরোধ ব্যর্থ হয়েছে: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                        let text = result.candidates[0].content.parts[0].text;
+                        text = text.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-amber-800">$1</strong>');
+                        text = text.replace(/^\* (.*$)/gm, '<li class="mb-2 list-disc ml-5">$1</li>');
+                        text = text.replace(/\n/g, '<br>');
+                        outputElement.innerHTML = `<div class="text-stone-700 leading-relaxed">${text}</div>`;
+                    } else {
+                        outputElement.innerHTML = `<p class="text-red-500">দুঃখিত, কোনো উত্তর পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</p>`;
+                        console.error("Unexpected API response structure:", result);
+                    }
+                } catch (error) {
+                    console.error('Gemini API Error:', error);
+                    outputElement.innerHTML = `<p class="text-red-500">একটি ত্রুটি ঘটেছে। অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।</p>`;
+                }
+            }
+            
+            const planBtn = document.getElementById('generate-plan-btn');
+            const planInput = document.getElementById('plan-input');
+            const planOutput = document.getElementById('plan-output');
+
+            planBtn.addEventListener('click', () => {
+                const userInput = planInput.value.trim();
+                if (!userInput) {
+                    planOutput.innerHTML = '<p class="text-red-500">অনুগ্রহ করে আপনার সংগ্রাম সম্পর্কে কিছু লিখুন।</p>';
+                    return;
+                }
+                const prompt = `একজন বিজ্ঞ ইসলামিক উপদেষ্টা হিসেবে, শেখ খালিদ আল-রাশেদের 'গাফলাত' বা উদাসীনতা বিষয়ক বক্তৃতার আলোকে, নিম্নলিখিত ব্যক্তিগত সংগ্রামের জন্য একটি বাস্তবসম্মত, ধাপে ধাপে কর্মপরিকল্পনা বাংলায় তৈরি করুন। উত্তরটি সহানুভূতিশীল এবং উৎসাহব্যঞ্জক হতে হবে। পরিকল্পনায় সালাত, কুরআন, আল্লাহর স্মরণ এবং সৎসঙ্গের মতো বিষয়গুলো অন্তর্ভুক্ত করুন। ব্যবহারকারীর সমস্যা: "${userInput}"`;
+                callGemini(prompt, planOutput);
+            });
+
+            const duaBtn = document.getElementById('generate-dua-btn');
+            const duaInput = document.getElementById('dua-input');
+            const duaOutput = document.getElementById('dua-output');
+
+            duaBtn.addEventListener('click', () => {
+                const userInput = duaInput.value.trim();
+                if (!userInput) {
+                    duaOutput.innerHTML = '<p class="text-red-500">অনুগ্রহ করে আপনার প্রয়োজনের কথা লিখুন।</p>';
+                    return;
+                }
+                const prompt = `ইসলামিক ঐতিহ্য অনুসারে, নিম্নলিখিত প্রয়োজনের জন্য একটি আন্তরিক, সুন্দর এবং হৃদয়গ্রাহী দু'আ বাংলায় রচনা করুন। দু'আটি যেন বিনয় এবং আল্লাহর প্রতি পূর্ণ নির্ভরতা প্রকাশ করে। ব্যবহারকারীর প্রয়োজন: "${userInput}"`;
+                callGemini(prompt, duaOutput);
+            });
+        });
+    </script>
+</body>
+</html>

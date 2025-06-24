@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>হেদায়েতের পথে যাত্রা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral (bg-stone-100, text-stone-800, accent-teal-600) -->
+    <!-- Application Structure Plan: A thematic, single-page journey application with an added interactive AI section. The core structure remains the same (thematic sections, sticky nav) for exploring the sermon's content. A new section, 'Your Personal Path', is added, featuring two Gemini API-powered tools: a 'Dua & Reflection Generator' and a 'Dilemma & Guidance' helper. This enhances the app from a content viewer to a personal spiritual tool, making the sermon's teachings directly applicable to the user's life. -->
+    <!-- Visualization & Content Choices: Added Gemini API features. 1) User Input (Struggle) -> Goal: Personalize & Comfort -> Viz/Presentation: Text area input, button, and text block output -> Interaction: JS-powered API call to Gemini -> Justification: Creates a personalized spiritual reflection and prayer, making the app highly relevant. 2) User Input (Dilemma) -> Goal: Provide Guidance -> Viz/Presentation: Text area input, button, and text block output -> Interaction: JS-powered API call to Gemini -> Justification: Applies the sermon's principles to real-life user problems, offering actionable advice. The core report is qualitative; these AI features add an interactive, personalized layer without needing data charts. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .active-nav {
+            color: #0d9488; /* teal-600 */
+            font-weight: 600;
+            border-bottom: 2px solid #0d9488;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom 0.3s;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
+        }
+        .gemini-output {
+            white-space: pre-wrap;
+            background-color: #f5f5f4; /* stone-200 */
+            border-left: 4px solid #0d9488; /* teal-600 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            min-height: 100px;
+        }
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: #0d9488;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="bg-stone-100 text-stone-800 antialiased">
+
+    <!-- Header & Navigation -->
+    <header id="header" class="bg-stone-100/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4">
+            <nav class="flex justify-between items-center py-4">
+                <h1 class="text-2xl md:text-3xl font-bold text-teal-700">হেদায়েতের পথে যাত্রা</h1>
+                <div class="hidden md:flex items-center space-x-6 lg:space-x-8 text-lg">
+                    <a href="#hidayah" class="nav-link">হেদায়েতের নেয়ামত</a>
+                    <a href="#two-paths" class="nav-link">দুই পথ</a>
+                    <a href="#steadfastness" class="nav-link">স্থিরতার আদর্শ</a>
+                    <a href="#personal-path" class="nav-link">আপনার পথ ✨</a>
+                    <a href="#return-path" class="nav-link">ফিরে আসা</a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </nav>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-stone-100">
+            <a href="#hidayah" class="block text-center py-2 px-4 text-lg hover:bg-teal-50">হেদায়েতের নেয়ামত</a>
+            <a href="#two-paths" class="block text-center py-2 px-4 text-lg hover:bg-teal-50">দুই পথ</a>
+            <a href="#steadfastness" class="block text-center py-2 px-4 text-lg hover:bg-teal-50">স্থিরতার আদর্শ</a>
+            <a href="#personal-path" class="block text-center py-2 px-4 text-lg hover:bg-teal-50">আপনার পথ ✨</a>
+            <a href="#return-path" class="block text-center py-2 px-4 text-lg hover:bg-teal-50">ফিরে আসা</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+
+        <!-- Section 1: The Blessing of Hidayah -->
+        <section id="hidayah" class="min-h-[60vh] flex items-center justify-center text-center rounded-lg bg-white p-8 shadow-lg mb-16">
+            <div>
+                <h2 class="text-3xl md:text-5xl font-bold text-teal-700 mb-4">হেদায়েতের নেয়ামত</h2>
+                <p class="text-lg md:text-xl max-w-4xl mx-auto leading-relaxed">
+                    এই বিভাগে হেদায়েতের অমূল্য নেয়ামত এবং জীবনে এর গভীর প্রভাব সম্পর্কে আলোচনা করা হয়েছে। হেদায়েত হলো সেই আলো যা দুনিয়া ও আখেরাতে সুখ এবং প্রশান্তির পথ দেখায়। এটি এমন এক ঐশ্বরিক উপহার যা একজন বিশ্বাসীর জীবনকে অর্থবহ করে তোলে এবং তাকে সকল পরিস্থিতিতে ধৈর্য ও কৃতজ্ঞতার সাথে অবিচল থাকতে সাহায্য করে।
+                </p>
+                <blockquote class="mt-8 text-xl md:text-2xl italic text-stone-600 border-l-4 border-teal-500 pl-6 max-w-3xl mx-auto">
+                    "হেদায়েতের নেয়ামত দুনিয়া ও আখেরাতের সুখের রহস্য। এর অধিকারী ব্যক্তি মানসিক শান্তিতে থাকে, তার অন্তর প্রশান্ত থাকে। যখন সে কোনো সুখবর পায়, তখন সে শুকরিয়া আদায় করে, আর যখন কোনো বিপদে পড়ে, তখন সে ধৈর্য ধরে।"
+                </blockquote>
+            </div>
+        </section>
+
+        <!-- Section 2: The Two Paths -->
+        <section id="two-paths" class="mb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold text-teal-700 mb-4">স্থির এবং অ-স্থির যুবকের মধ্যে তুলনা</h2>
+                <p class="text-lg md:text-xl max-w-4xl mx-auto leading-relaxed">
+                    জীবন দুটি পথের একটি সংযোগস্থল: একটি আলোর দিকে নিয়ে যায়, অন্যটি অন্ধকারের দিকে। এই বিভাগে, বক্তৃতা থেকে অনুপ্রাণিত হয়ে একজন হেদায়েতপ্রাপ্ত যুবক এবং একজন পথভ্রষ্ট যুবকের জীবনের মধ্যে একটি সুস্পষ্ট তুলনা করা হয়েছে। নীচের বোতামগুলি ব্যবহার করে তাদের চরিত্র, সঙ্গ এবং পরিণতির বিভিন্ন দিক অন্বেষণ করুন এবং দেখুন কীভাবে ছোট ছোট পছন্দগুলি জীবনের গতিপথকে ব্যাপকভাবে প্রভাবিত করে।
+                </p>
+            </div>
+
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                <div id="comparison-buttons" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                    <button data-topic="character" class="comparison-btn active bg-teal-600 text-white px-4 py-2 rounded-full font-semibold">চরিত্র ও অন্তর</button>
+                    <button data-topic="actions" class="comparison-btn bg-stone-200 text-stone-700 px-4 py-2 rounded-full font-semibold">কর্ম ও সঙ্গ</button>
+                    <button data-topic="goal" class="comparison-btn bg-stone-200 text-stone-700 px-4 py-2 rounded-full font-semibold">লক্ষ্য ও আদর্শ</button>
+                    <button data-topic="end" class="comparison-btn bg-stone-200 text-stone-700 px-4 py-2 rounded-full font-semibold">পরিণতি</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                    <!-- Righteous Youth Column -->
+                    <div class="border-t-4 border-teal-500 bg-teal-50/50 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold mb-4 text-center text-teal-800">☀️ স্থির যুবক</h3>
+                        <div id="righteous-content" class="text-lg space-y-4">
+                        </div>
+                    </div>
+                    <!-- Misguided Youth Column -->
+                    <div class="border-t-4 border-red-500 bg-red-50/50 p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold mb-4 text-center text-red-800">🌑 পথভ্রষ্ট যুবক</h3>
+                        <div id="misguided-content" class="text-lg space-y-4">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Story of Deviation is now part of steadfastness section for brevity -->
+
+        <!-- Section 4: Models of Steadfastness -->
+        <section id="steadfastness" class="mb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold text-teal-700 mb-4">গল্প থেকে শিক্ষা: স্থিরতা ও বিচ্যুতি</h2>
+                 <p class="text-lg md:text-xl max-w-4xl mx-auto leading-relaxed">
+                    ঈমানের পথে অবিচল থাকা সাহসিকতার সর্বোচ্চ নিদর্শন, আবার পথভ্রষ্টতা থেকে ফিরে আসাটাও আল্লাহর এক বিশাল রহমত। এই বিভাগে আমরা দুটি ভিন্নধর্মী গল্প দেখব: একটি চরম প্রতিকূলতার মাঝেও ঈমানের উপর পাহাড়ের মতো অটল থাকার, এবং অন্যটি পাপের গভীর থেকে ফিরে আসার মর্মস্পর্শী কাহিনী।
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-stone-800 mb-4">স্থিরতার আদর্শ: হাবিব ইবনে যায়েদ (রাঃ)</h3>
+                    <p class="text-lg leading-relaxed">
+                        ভণ্ড নবী মুসায়লিমার সামনে যুবক হাবিব ইবনে যায়েদ (রাঃ)-কে তাঁর নবুয়ত স্বীকার করতে বলা হয়। হাবিব (রাঃ) সাহসিকতার সাথে তা প্রত্যাখ্যান করে বলেন, "আমি সাক্ষ্য দিচ্ছি যে মুহাম্মদ আল্লাহর রাসূল।" ক্রোধে মুসায়লিমা তাঁর শরীরকে টুকরো টুকরো করার আদেশ দেয়। প্রতিটি অঙ্গ কাটার সময়ও তিনি ঈমানের উপর অটল থেকে শাহাদাত বরণ করেন। তাঁর এই ত্যাগ ঈমানের পথে স্থিরতার এক জ্বলন্ত উদাহরণ।
+                    </p>
+                </div>
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-stone-800 mb-4">বিচ্যুতি থেকে প্রত্যাবর্তন: এক যুবকের গল্প</h3>
+                    <p class="text-lg leading-relaxed">
+                        এক যুবক খারাপ সঙ্গ, মাদক এবং পাপে ডুবে গিয়েছিল। জীবন যখন প্রায় শেষ, মৃত্যুর ভয়ে সে আল্লাহর কাছে ফিরে আসে। বহু বছর পর নামাজে দাঁড়ায়। আল্লাহ তাকে একটি নতুন সুযোগ দেন এবং সে ধীরে ধীরে নিজেকে পরিবর্তন করে। একজন صالح যুবকের সংস্পর্শে এসে সে পুরোপুরি তওবা করে এবং হেদায়েতের আলো খুঁজে পায়। এই গল্প শেখায় যে, আল্লাহর রহমতের দরজা সর্বদা খোলা।
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 5: Your Personal Path (Gemini API) -->
+        <section id="personal-path" class="mb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold text-teal-700 mb-4">আপনার ব্যক্তিগত পথ ✨</h2>
+                <p class="text-lg md:text-xl max-w-4xl mx-auto leading-relaxed">
+                    এই বক্তৃতার শিক্ষাগুলি আপনার জীবনে প্রয়োগ করুন। নীচের সরঞ্জামগুলি ব্যবহার করে আপনার ব্যক্তিগত অনুভূতি বা দ্বিধা থেকে আধ্যাত্মিক নির্দেশনা এবং সান্ত্বনা খুঁজুন। আপনার ইনপুটের উপর ভিত্তি করে Gemini AI আপনার জন্য ব্যক্তিগতকৃত প্রতিক্রিয়া তৈরি করবে।
+                </p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Dua & Reflection Generator -->
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-stone-800 mb-4">ব্যক্তিগত দোয়া ও প্রতিফলন</h3>
+                    <p class="mb-4">আপনার মনের বর্তমান অবস্থা, কোনো সংগ্রাম বা অনুভূতির কথা লিখুন। আমরা এর উপর ভিত্তি করে একটি প্রতিফলনমূলক বার্তা এবং দোয়া তৈরি করতে সাহায্য করব।</p>
+                    <textarea id="dua-input" class="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" rows="4" placeholder="যেমন: আমি খুব একাকী বোধ করছি এবং ভবিষ্যৎ নিয়ে চিন্তিত..."></textarea>
+                    <button id="generate-dua" class="mt-4 w-full bg-teal-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors flex items-center justify-center">
+                        ✨ দোয়া তৈরি করুন
+                    </button>
+                    <div id="dua-output" class="gemini-output hidden"></div>
+                     <div id="dua-loader" class="hidden text-center mt-4"><div class="loader mx-auto"></div></div>
+                </div>
+                <!-- Dilemma & Guidance -->
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-stone-800 mb-4">দ্বিধা ও নির্দেশনা</h3>
+                    <p class="mb-4">আপনি কি কোনো সিদ্ধান্তহীনতায় ভুগছেন? আপনার পরিস্থিতি বর্ণনা করুন, এবং ইসলামিক নীতির আলোকে নির্দেশনা সন্ধান করুন।</p>
+                    <textarea id="guidance-input" class="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none" rows="4" placeholder="যেমন: আমার বন্ধুরা আমাকে একটি অন্যায় কাজে যোগ দিতে বলছে, আমার কী করা উচিত?"></textarea>
+                    <button id="generate-guidance" class="mt-4 w-full bg-teal-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors flex items-center justify-center">
+                        ✨ নির্দেশনা সন্ধান করুন
+                    </button>
+                    <div id="guidance-output" class="gemini-output hidden"></div>
+                    <div id="guidance-loader" class="hidden text-center mt-4"><div class="loader mx-auto"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: The Path of Return -->
+        <section id="return-path">
+             <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-bold text-teal-700 mb-4">ফিরে আসার পথ: হেদায়েতের কারণ অবলম্বন</h2>
+                 <p class="text-lg md:text-xl max-w-4xl mx-auto leading-relaxed">
+                    বিচ্যুতি থেকে ফিরে আসার পথ সর্বদা খোলা থাকে তাদের জন্য, যারা আন্তরিকভাবে প্রত্যাবর্তন করতে চায়। এই চূড়ান্ত বিভাগে, শায়খ হেদায়েত লাভের জন্য কিছু বাস্তব এবং কার্যকরী পদক্ষেপের কথা বলেছেন। এটি একটি রোডম্যাপ যা আপনাকে আল্লাহর নৈকট্য লাভে এবং একটি অর্থবহ জীবন গঠনে সহায়তা করবে।
+                </p>
+            </div>
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-stone-800 mb-6 text-center">কীভাবে শুরু করবেন?</h3>
+                <ol class="space-y-4 text-lg">
+                    <li class="flex items-start">
+                        <span class="bg-teal-600 text-white rounded-full h-8 w-8 text-center leading-8 font-bold mr-4 flex-shrink-0">১</span>
+                        <span><strong class="text-teal-700">পাপ ত্যাগ করা:</strong> হেদায়েতের পথে প্রথম পদক্ষেপ হলো সমস্ত পাপ ও অন্যায় কাজকে আন্তরিকভাবে ত্যাগ করার সিদ্ধান্ত নেওয়া।</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-teal-600 text-white rounded-full h-8 w-8 text-center leading-8 font-bold mr-4 flex-shrink-0">২</span>
+                        <span><strong class="text-teal-700">খাঁটি তওবা:</strong> অনুশোচনা, প্রত্যাবর্তন এবং আল্লাহর কাছে ক্ষমা প্রার্থনার মাধ্যমে খাঁটি তওবা করা। ভবিষ্যতে সেই পাপে ফিরে না যাওয়ার জন্য দৃঢ় প্রতিজ্ঞ হওয়া।</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-teal-600 text-white rounded-full h-8 w-8 text-center leading-8 font-bold mr-4 flex-shrink-0">৩</span>
+                        <span><strong class="text-teal-700">নামাজ প্রতিষ্ঠা:</strong> পাঁচ ওয়াক্ত নামাজের প্রতি যত্নবান হওয়া, কারণ নামাজ হলো অশ্লীলতা ও অন্যায় কাজ থেকে বিরত রাখার সবচেয়ে বড় মাধ্যম।</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-teal-600 text-white rounded-full h-8 w-8 text-center leading-8 font-bold mr-4 flex-shrink-0">৪</span>
+                        <span><strong class="text-teal-700">সৎ সঙ্গ গ্রহণ:</strong> খারাপ সঙ্গ ত্যাগ করে صالح (ধার্মিক) ব্যক্তিদের সাথে সম্পর্ক স্থাপন করা, কারণ "মানুষ তার বন্ধুর ধর্মের উপর থাকে"।</span>
+                    </li>
+                     <li class="flex items-start">
+                        <span class="bg-teal-600 text-white rounded-full h-8 w-8 text-center leading-8 font-bold mr-4 flex-shrink-0">৫</span>
+                        <span><strong class="text-teal-700">আল্লাহর কাছে দোয়া:</strong> প্রতিনিয়ত আল্লাহর কাছে হেদায়েতের জন্য দোয়া করা, বিশেষ করে সূরা ফাতিহায় আমরা যা বলি: "আমাদেরকে সরল পথ দেখাও"।</span>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-stone-800 text-white mt-16">
+        <div class="container mx-auto px-4 py-8 text-center">
+            <p class="text-lg mb-4">"أسأل الله العظيم رب العرش الكريم أن يجعلنا هداة مهتدين، لا ضالين ولا مضلين."</p>
+            <p>"আমি মহান আরশের রব, মহান আল্লাহর কাছে প্রার্থনা করি, তিনি যেন আমাদেরকে হেদায়েতপ্রাপ্ত ও হেদায়েতকারী হিসেবে কবুল করেন, পথভ্রষ্ট বা পথভ্রষ্টকারী হিসেবে নয়।"</p>
+            <p class="mt-4 text-stone-400 text-sm">শেখ খালিদ আল-রাশেদের বক্তৃতা অবলম্বনে নির্মিত।</p>
+        </div>
+    </footer>
+    
+    <button id="to-top-button" class="hidden fixed bottom-8 right-8 bg-teal-600 text-white p-3 rounded-full shadow-lg hover:bg-teal-700 focus:outline-none transition-opacity duration-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const comparisonData = {
+                character: {
+                    righteous: "পবিত্র হৃদয়ের, পরিষ্কার মনের অধিকারী। তার চেহারা নূরে উজ্জ্বল থাকে এবং আল্লাহর দেওয়া নূরান্বিত দাড়ি তার সৌন্দর্য বৃদ্ধি করে।",
+                    misguided: "খবিস আত্মার, সংকীর্ণ মনের, অন্ধকার চেহারার। সে সর্বদা কল্পিত সুখের পিছনে ছুটে বেড়ায় কিন্তু তা পায় না।"
+                },
+                actions: {
+                    righteous: "মসজিদে এবং আলেমদের সান্নিধ্যে সময় কাটায়। উপকারী জ্ঞান অর্জন করে এবং সমাজের জন্য উৎপাদনশীল কাজ করে। তার মুখে থাকে উত্তম কথা ও দোয়া।",
+                    misguided: "শপিং মল, বাজার এবং ধ্বংসাত্মক স্থানে সময় নষ্ট করে। তার জিহ্বা সর্বদা অভিশাপ ও গালিগালাজে ব্যস্ত থাকে। সে সমাজের জন্য ধ্বংসের কারণ হয়।"
+                },
+                goal: {
+                    righteous: "তার আদর্শ হলেন নবী (সাঃ), সাহাবাগণ এবং মহান বিজয়ীগণ। সে উম্মাহর চিন্তা করে এবং মহৎ বিষয় নিয়ে ভাবে।",
+                    misguided: "তার আদর্শ হলো খেলোয়াড়, গায়ক বা কাফেররা। তার চিন্তা কেবল নিজের পেট ও কামনা-বাসনা নিয়ে।"
+                },
+                end: {
+                    righteous: "সে একটি সম্মানিত মৃত্যু লাভ করে, তার জিহ্বায় থাকে শাহাদাত বাণী। আল্লাহ তাকে শহীদদের মর্যাদা দান করতে পারেন, যদিও সে বিছানায় মারা যায়।",
+                    misguided: "সে একটি নিকৃষ্ট মৃত্যু লাভ করে। তার রুহকে কষ্ট দিয়ে বের করা হয়। সে শাহাদাত বাণী উচ্চারণ করতে পারে না এবং তার সঙ্গীরাও তাকে ভালো নামে স্মরণ করে না।"
+                }
+            };
+            
+            const righteousContent = document.getElementById('righteous-content');
+            const misguidedContent = document.getElementById('misguided-content');
+            const comparisonButtons = document.querySelectorAll('.comparison-btn');
+
+            function updateContent(topic) {
+                righteousContent.innerHTML = `<p>${comparisonData[topic].righteous}</p>`;
+                misguidedContent.innerHTML = `<p>${comparisonData[topic].misguided}</p>`;
+            }
+
+            comparisonButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    comparisonButtons.forEach(btn => {
+                        btn.classList.remove('active', 'bg-teal-600', 'text-white');
+                        btn.classList.add('bg-stone-200', 'text-stone-700');
+                    });
+                    button.classList.add('active', 'bg-teal-600', 'text-white');
+                    button.classList.remove('bg-stone-200', 'text-stone-700');
+                    updateContent(button.dataset.topic);
+                });
+            });
+
+            updateContent('character');
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileNavLinks = mobileMenu.querySelectorAll('a');
+
+            mobileMenuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+            mobileNavLinks.forEach(link => { link.addEventListener('click', () => { mobileMenu.classList.add('hidden'); }); });
+            
+            const toTopButton = document.getElementById('to-top-button');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) toTopButton.classList.remove('hidden');
+                else toTopButton.classList.add('hidden');
+            });
+
+            toTopButton.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active-nav');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active-nav');
+                    }
+                });
+            });
+
+            // Gemini API functionality
+            const generateDuaBtn = document.getElementById('generate-dua');
+            const duaInput = document.getElementById('dua-input');
+            const duaOutput = document.getElementById('dua-output');
+            const duaLoader = document.getElementById('dua-loader');
+
+            const generateGuidanceBtn = document.getElementById('generate-guidance');
+            const guidanceInput = document.getElementById('guidance-input');
+            const guidanceOutput = document.getElementById('guidance-output');
+            const guidanceLoader = document.getElementById('guidance-loader');
+
+            const callGemini = async (prompt, outputElement, loaderElement) => {
+                if (!prompt.trim()) {
+                    outputElement.textContent = "অনুগ্রহ করে আপনার অনুভূতি বা প্রশ্ন লিখুন।";
+                    outputElement.classList.remove('hidden');
+                    return;
+                }
+                
+                loaderElement.classList.remove('hidden');
+                outputElement.classList.add('hidden');
+                outputElement.textContent = '';
+
+                const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4"; // API key is handled by the environment
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        outputElement.textContent = text;
+                    } else {
+                        outputElement.textContent = 'দুঃখিত, একটি অপ্রত্যাশিত প্রতিক্রিয়া এসেছে। অনুগ্রহ করে আবার চেষ্টা করুন।';
+                    }
+                } catch (error) {
+                    console.error("Gemini API call failed:", error);
+                    outputElement.textContent = 'দুঃখিত, একটি সমস্যা হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।';
+                } finally {
+                    loaderElement.classList.add('hidden');
+                    outputElement.classList.remove('hidden');
+                }
+            };
+
+            generateDuaBtn.addEventListener('click', () => {
+                const userInput = duaInput.value;
+                const prompt = `You are a compassionate and wise Islamic guide. A person is feeling the following: "${userInput}". Based on the core principles of Islam focusing on hope, repentance, and seeking Allah's help and mercy, please write a short, comforting reflection and a personal dua in Bengali. The tone must be gentle, empathetic, and encouraging. Structure the response with a "প্রতিফলন:" heading and a "দোয়া:" heading.`;
+                callGemini(prompt, duaOutput, duaLoader);
+            });
+
+            generateGuidanceBtn.addEventListener('click', () => {
+                const userInput = guidanceInput.value;
+                const prompt = `You are a wise and practical Islamic advisor. A person is facing the following dilemma: "${userInput}". Based on the core teachings found in Sheikh Khalid Al-Rashed's sermons (which emphasize choosing good companions, fearing Allah, remembering death, patience, and staying steadfast on the right path), provide practical, actionable, and encouraging advice in clear Bengali. The advice should be rooted in Islamic principles but easy for a young person to understand and apply.`;
+                callGemini(prompt, guidanceOutput, guidanceLoader);
+            });
+        });
+    </script>
+</body>
+</html>

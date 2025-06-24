@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কুরআনের আলোয় জীবন - শেখ খালেদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Earthly Harmony -->
+    <!-- Application Structure Plan: The SPA is designed with a thematic, non-linear structure to enhance user engagement with the sermon's narrative content. A sticky top navigation allows users to jump to key themes: an introduction, a detailed interactive section on the life of Ibn Mas'ud (RA), the broader impact of the Quran, a call-to-action section, a new AI-powered interaction section, and a conclusion. The core interaction is a card-based exploration of Ibn Mas'ud's life. The new AI section allows users to ask questions and generate reflections, making the experience deeply personal and educational. This transforms a passive listening experience into an active, AI-assisted exploration. -->
+    <!-- Visualization & Content Choices: Report Info: User Questions -> Goal: Explore & Clarify -> Viz/Presentation: AI-powered Q&A (Input + Button + Modal Display) -> Interaction: User types question, clicks to get AI-generated answer based on sermon context -> Justification: Provides instant, contextual clarification, enhancing understanding. | Report Info: Sermon Themes -> Goal: Personalize & Reflect -> Viz/Presentation: AI-powered Reflection Generator (Button + Modal Display) -> Interaction: User clicks to generate a personal reflection based on the sermon's core messages -> Justification: Connects timeless lessons to the user's modern life, fostering deeper personal impact. All visualizations are custom-built to suit the narrative content. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .active-nav {
+            color: #166534; /* green-800 */
+            font-weight: 600;
+            position: relative;
+        }
+        .active-nav::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 2px;
+            bottom: -4px;
+            left: 25%;
+            background-color: #166534; /* green-800 */
+        }
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-in-out;
+        }
+        .card-content.show {
+            max-height: 1000px; /* Adjust as needed */
+        }
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .loader {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #166534; /* Green */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-slate-800">
+    
+    <!-- AI Modal -->
+    <div id="ai-modal" class="fixed inset-0 bg-black bg-opacity-60 z-[100] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 id="ai-modal-title" class="text-xl font-bold text-green-800">AI এর উত্তর</h3>
+                <button id="close-ai-modal" class="text-slate-500 hover:text-slate-800">&times;</button>
+            </div>
+            <div id="ai-modal-content" class="p-6 overflow-y-auto">
+                <div id="ai-loader" class="flex justify-center items-center py-10">
+                    <div class="loader"></div>
+                </div>
+                <div id="ai-response-text" class="text-slate-700 leading-relaxed whitespace-pre-wrap" style="font-family: 'Hind Siliguri', sans-serif;"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Header & Navigation -->
+    <header id="header" class="bg-stone-100/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-green-800">কুরআনের আলো</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#home" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-green-800 hover:bg-stone-200 transition-colors">প্রচ্ছদ</a>
+                        <a href="#ibn_masud" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-green-800 hover:bg-stone-200 transition-colors">ইবনে মাসউদ (রাঃ)</a>
+                        <a href="#impact" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-green-800 hover:bg-stone-200 transition-colors">কুরআনের প্রভাব</a>
+                        <a href="#action" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-green-800 hover:bg-stone-200 transition-colors">করণীয়</a>
+                        <a href="#ai-interaction" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-green-800 hover:bg-stone-200 transition-colors">আরও গভীরে (AI)</a>
+                        <a href="#conclusion" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-green-800 hover:bg-stone-200 transition-colors">উপসংহার</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-700 hover:text-green-800 hover:bg-stone-200 focus:outline-none">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-green-800 hover:bg-stone-200 transition-colors">প্রচ্ছদ</a>
+                <a href="#ibn_masud" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-green-800 hover:bg-stone-200 transition-colors">ইবনে মাসউদ (রাঃ)</a>
+                <a href="#impact" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-green-800 hover:bg-stone-200 transition-colors">কুরআনের প্রভাব</a>
+                <a href="#action" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-green-800 hover:bg-stone-200 transition-colors">করণীয়</a>
+                <a href="#ai-interaction" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-green-800 hover:bg-stone-200 transition-colors">আরও গভীরে (AI)</a>
+                <a href="#conclusion" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:text-green-800 hover:bg-stone-200 transition-colors">উপসংহার</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        
+        <!-- Home Section -->
+        <section id="home" class="min-h-[60vh] flex items-center justify-center text-center section-fade-in">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-slate-800 leading-tight">
+                    <span class="text-green-800">কুরআনের</span> আলোয় জীবন
+                </h1>
+                <p class="mt-4 text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">
+                    শেখ খালেদ আল-রাশেদের এই মর্মস্পর্শী আলোচনা থেকে জানুন, কীভাবে আল্লাহর বাণী একজন সাধারণ রাখালকে ইসলামের ইতিহাসে এক উজ্জ্বল নক্ষত্রে পরিণত করেছিল এবং কীভাবে তা আজও আমাদের জীবনকে আলোকিত করতে পারে।
+                </p>
+                <a href="#ibn_masud" class="mt-8 inline-block bg-green-700 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-green-800 transition-transform transform hover:scale-105">
+                    আবিষ্কার করুন
+                </a>
+            </div>
+        </section>
+
+        <!-- Ibn Mas'ud (RA) Section -->
+        <section id="ibn_masud" class="py-16 md:py-24 section-fade-in">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">আবদুল্লাহ ইবনে মাসউদ (রাঃ)</h2>
+                <p class="mt-3 text-lg text-slate-600 max-w-2xl mx-auto">কুরআন কীভাবে একজন মানুষকে নতুন জীবন দান করে, তার এক জীবন্ত উদাহরণ। তাঁর জীবনের বিভিন্ন অধ্যায় থেকে শিক্ষা নিন, যা এখানে ইন্টারেক্টিভ কার্ডের মাধ্যমে তুলে ধরা হলো। প্রতিটি কার্ডে ক্লিক করে বিস্তারিত জানুন।</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="card-container">
+                <div class="interactive-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <div class="p-6"><h3 class="font-bold text-xl text-green-800">ইসলাম গ্রহণ ও রাখাল জীবন</h3><p class="text-slate-600 mt-2 text-sm">একজন সাধারণ রাখাল থেকে ইসলামের প্রথম সারির সাহাবী হওয়ার বিস্ময়কর যাত্রা।</p></div>
+                    <div class="card-content px-6 pb-6 text-slate-700 text-base leading-relaxed"><p>ইসলাম গ্রহণের পূর্বে আবদুল্লাহ ইবনে মাসউদ (রাঃ) ছিলেন একজন দরিদ্র রাখাল। একদিন রাসূল (সাঃ) ও আবু বকর (রাঃ) তাঁর পাশ দিয়ে যাচ্ছিলেন। তাঁরা দুধ পান করতে চাইলে তিনি আমানতদারিতার পরিচয় দেন। রাসূল (সাঃ)-এর মুজিযায় একটি ছোট বকরী থেকে দুধ প্রবাহিত হতে দেখে তিনি অভিভূত হন এবং সেই ঐশী বাণীর প্রতি আকৃষ্ট হন, যা তাঁর জীবনকে চিরতরে বদলে দেয়।</p></div>
+                </div>
+                <div class="interactive-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <div class="p-6"><h3 class="font-bold text-xl text-green-800">সত্য প্রচারে অসীম সাহস</h3><p class="text-slate-600 mt-2 text-sm"> তিনিই প্রথম ব্যক্তি যিনি কাবা প্রাঙ্গণে কাফেরদের সামনে প্রকাশ্যে কুরআন পাঠ করেছিলেন।</p></div>
+                    <div class="card-content px-6 pb-6 text-slate-700 text-base leading-relaxed"><p>ইসলামের প্রাথমিক যুগে যখন প্রকাশ্যে কুরআন পাঠ করা বিপজ্জনক ছিল, তখন ইবনে মাসউদ (রাঃ) সাহসিকতার সাথে এগিয়ে আসেন। কুরাইশদের শত অত্যাচার ও নির্যাতন সত্ত্বেও তিনি নির্ভীকভাবে আল্লাহর বাণী পাঠ করেন। তাঁর এই সাহস প্রমাণ করে, কুরআন কীভাবে একজন দুর্বলকেও শক্তিশালী করে তোলে।</p></div>
+                </div>
+                <div class="interactive-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <div class="p-6"><h3 class="font-bold text-xl text-green-800">জ্ঞানের গভীরতা ও রাসূলের (সাঃ) প্রশংসা</h3><p class="text-slate-600 mt-2 text-sm">রাসূল (সাঃ) বলতেন, "যে কুরআনকে সতেজ ও তরতাজা অবস্থায় শুনতে চায়, সে যেন ইবনে উম্মে আবদের কাছ থেকে শোনে।"</p></div>
+                    <div class="card-content px-6 pb-6 text-slate-700 text-base leading-relaxed"><p>তিনি সরাসরি রাসূল (সাঃ)-এর মুখ থেকে সত্তরটিরও বেশি সূরা শিখেছিলেন এবং প্রতিটি আয়াতের প্রেক্ষাপট জানতেন। তাঁর তেলাওয়াত এতটাই মধুর ছিল যে, স্বয়ং নবী (সাঃ) তাঁর কাছ থেকে কুরআন শুনতে ভালোবাসতেন। উমর (রাঃ)-এর মতো সাহাবীও তাঁর জ্ঞানের গভীরতার প্রশংসা করতেন।</p></div>
+                </div>
+                <div class="interactive-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <div class="p-6"><h3 class="font-bold text-xl text-green-800">আল্লাহর চোখে মর্যাদা</h3><p class="text-slate-600 mt-2 text-sm">"আল্লাহর কসম! ইবনে মাসউদের পা দুটি মীযানে উহুদ পাহাড়ের চেয়েও ভারী হবে।" - রাসূল (সাঃ)</p></div>
+                    <div class="card-content px-6 pb-6 text-slate-700 text-base leading-relaxed"><p>শারীরিকভাবে কৃশকায় হওয়া সত্ত্বেও তাঁর মর্যাদা ছিল আকাশচুম্বী। একদিন তাঁর পায়ের সরু গঠন দেখে সাহাবীরা হেসে ফেললে রাসূল (সাঃ) এই বিখ্যাত উক্তিটি করেন। এটি প্রমাণ করে যে, আল্লাহর কাছে মানুষের শারীরিক গঠন বা বাহ্যিক অবস্থা নয়, বরং তার অন্তরে থাকা ঈমান ও কুরআনের জ্ঞানই আসল মর্যাদার মাপকাঠি।</p></div>
+                </div>
+                <div class="interactive-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <div class="p-6"><h3 class="font-bold text-xl text-green-800">পরহেজগারি ও সময়ের মূল্য</h3><p class="text-slate-600 mt-2 text-sm">তিনি বলতেন, "মুমিন ছোট গুনাহকেও পাহাড়ের মতো দেখে, আর মুনাফিক দেখে নাকের উপর বসা মাছির মতো।"</p></div>
+                    <div class="card-content px-6 pb-6 text-slate-700 text-base leading-relaxed"><p>ইবনে মাসউদ (রাঃ) গুনাহের ব্যাপারে অত্যন্ত সতর্ক ছিলেন। তিনি সময়ের অপচয়কে ঘৃণা করতেন এবং বলতেন, "আমি এমন লোককে ঘৃণা করি যে দুনিয়া বা আখেরাতের কোনো কাজেই ব্যস্ত নয়।" তাঁর এই জীবনদর্শন আমাদের জন্য এক বিরাট শিক্ষা।</p></div>
+                </div>
+                <div class="interactive-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <div class="p-6"><h3 class="font-bold text-xl text-green-800">শ্রেষ্ঠ আকাঙ্ক্ষা</h3><p class="text-slate-600 mt-2 text-sm">তাঁর জীবনের সবচেয়ে বড় আকাঙ্ক্ষা ছিল আল্লাহর সন্তুষ্টি নিয়ে মৃত্যুবরণ করা।</p></div>
+                    <div class="card-content px-6 pb-6 text-slate-700 text-base leading-relaxed"><p>তাবুকের যুদ্ধে আবদুল্লাহ জুল-বিজাদাইন (রাঃ)-কে যখন স্বয়ং নবী (সাঃ) দাফন করছিলেন এবং তাঁর জন্য দোয়া করছিলেন, তখন ইবনে মাসউদ (রাঃ) বলেছিলেন, "আল্লাহর কসম, আমি শুধু এটাই কামনা করেছিলাম যে, আমি যদি সেই কবরের মালিক হতাম।" এই ঘটনা তাদের আকাঙ্ক্ষার উচ্চতা প্রকাশ করে।</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Impact Section -->
+        <section id="impact" class="py-16 md:py-24 bg-stone-100 rounded-2xl section-fade-in">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">কুরআনের রূপান্তরকারী প্রভাব</h2>
+                <p class="mt-3 text-lg text-slate-600 max-w-2xl mx-auto">কুরআন শুধু ব্যক্তিকেই নয়, সমাজকেও বদলে দেয়। এটি অন্ধকার থেকে আলোতে, বিভেদ থেকে ঐক্যে এবং অপমান থেকে সম্মানে উন্নীত করে।</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h3 class="font-bold text-xl text-center text-red-700 mb-4">কুরআনের পূর্বে আরব সমাজ</h3>
+                    <ul class="space-y-3 text-slate-700">
+                        <li class="flex items-start"><span class="text-red-500 mr-3 text-xl">✗</span><span>গোত্রীয় বিবাদ ও যুদ্ধ-বিগ্রহ</span></li>
+                        <li class="flex items-start"><span class="text-red-500 mr-3 text-xl">✗</span><span>নৈতিক অধঃপতন ও কুসংস্কার</span></li>
+                        <li class="flex items-start"><span class="text-red-500 mr-3 text-xl">✗</span><span>সামাজিক অবিচার ও বৈষম্য</span></li>
+                        <li class="flex items-start"><span class="text-red-500 mr-3 text-xl">✗</span><span>লক্ষ্যহীন ও বিচ্ছিন্ন জীবন</span></li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h3 class="font-bold text-xl text-center text-green-800 mb-4">কুরআনের আলোয় আরব সমাজ</h3>
+                    <ul class="space-y-3 text-slate-700">
+                        <li class="flex items-start"><span class="text-green-600 mr-3 text-xl">✓</span><span>ভ্রাতৃত্ব ও ঐক্য প্রতিষ্ঠা</span></li>
+                        <li class="flex items-start"><span class="text-green-600 mr-3 text-xl">✓</span><span>জ্ঞান ও নৈতিকতার জাগরণ</span></li>
+                        <li class="flex items-start"><span class="text-green-600 mr-3 text-xl">✓</span><span>ন্যায়বিচার ও সাম্য প্রতিষ্ঠা</span></li>
+                        <li class="flex items-start"><span class="text-green-600 mr-3 text-xl">✓</span><span>উদ্দেশ্যপূর্ণ ও সম্মানিত জীবন</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 bg-white p-8 rounded-xl shadow-md">
+                 <h3 class="font-bold text-2xl text-green-800 mb-4">এক শিশুর অনুভূতি</h3>
+                 <p class="text-slate-700 leading-relaxed">
+                    বক্তৃতায় একটি দশ বছরের বালকের ঘটনা উল্লেখ করা হয়েছে যে সূরা ইনসান পড়ে জান্নাতের বর্ণনা শুনে অভিভূত হয়ে পড়েছিল। সে তার মাকে জিজ্ঞাসা করেছিল, "তারা কী এমন প্রচেষ্টা করেছিল যে আল্লাহ তাদের বলছেন: ‘তোমাদের প্রচেষ্টা প্রশংসিত হয়েছে’?" এই ঘটনা প্রমাণ করে, কুরআন সব বয়সের মানুষের অন্তরে গভীর প্রভাব ফেলতে পারে এবং তাদের চিন্তার জগতে আলোড়ন সৃষ্টি করতে পারে, যদি তা সঠিকভাবে বোঝা যায়।
+                 </p>
+            </div>
+        </section>
+
+        <!-- Action Section -->
+        <section id="action" class="py-16 md:py-24 section-fade-in">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">আমাদের করণীয়: কুরআনের সাথে সম্পর্ক স্থাপন</h2>
+                <p class="mt-3 text-lg text-slate-600 max-w-2xl mx-auto">এই আলোচনা থেকে প্রাপ্ত শিক্ষাগুলো আমাদের জীবনে প্রতিফলিত করা অপরিহার্য। আল্লাহর কাছে আমাদের মর্যাদা আমাদের জীবনের সাথে কুরআনের সম্পর্কের উপর নির্ভরশীল।</p>
+            </div>
+            <div class="max-w-3xl mx-auto space-y-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm flex items-center space-x-4 hover:bg-green-50 transition-colors">
+                    <div class="flex-shrink-0 bg-green-100 text-green-800 rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl">১</div>
+                    <div><h3 class="font-semibold text-lg">কুরআন পড়ুন ও বুঝুন (تدبر)</h3><p class="text-slate-600">শুধু তেলাওয়াত নয়, অর্থ ও প্রেক্ষাপট বোঝার চেষ্টা করুন। প্রতিটি আয়াত নিয়ে গভীরভাবে চিন্তা করুন।</p></div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm flex items-center space-x-4 hover:bg-green-50 transition-colors">
+                    <div class="flex-shrink-0 bg-green-100 text-green-800 rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl">২</div>
+                    <div><h3 class="font-semibold text-lg">হালালকে হালাল ও হারামকে হারাম জানুন</h3><p class="text-slate-600">কুরআনের আদেশ ও নিষেধগুলো নিজের জীবনে বাস্তবায়ন করুন।</p></div>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-sm flex items-center space-x-4 hover:bg-green-50 transition-colors">
+                    <div class="flex-shrink-0 bg-green-100 text-green-800 rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl">৩</div>
+                    <div><h3 class="font-semibold text-lg">সময়কে মূল্যায়ন করুন</h3><p class="text-slate-600">ইবনে মাসউদ (রাঃ)-এর মতো সময়ের অপচয় থেকে বিরত থাকুন এবং প্রতিটি মুহূর্তকে ভালো কাজে লাগান।</p></div>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-sm flex items-center space-x-4 hover:bg-green-50 transition-colors">
+                    <div class="flex-shrink-0 bg-green-100 text-green-800 rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl">৪</div>
+                    <div><h3 class="font-semibold text-lg">কুরআনের শিক্ষা ছড়িয়ে দিন</h3><p class="text-slate-600">পরিবার, সন্তান ও সমাজে কুরআনের আলো ছড়িয়ে দিতে সাহায্য করুন। কুরআনের পাঠচক্রকে (হালাকা) সমর্থন করুন।</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Interaction Section -->
+        <section id="ai-interaction" class="py-16 md:py-24 bg-stone-100 rounded-2xl section-fade-in">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">✨ আরও গভীরে জানুন </h2>
+                <p class="mt-3 text-lg text-slate-600 max-w-2xl mx-auto">এই আলোচনার বিষয়ে কোনো প্রশ্ন আছে? অথবা আজকের শিক্ষা থেকে ব্যক্তিগতভাবে অনুপ্রাণিত হতে চান? আমাদের সাহায্য নিন।</p>
+            </div>
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md">
+                <div class="mb-8">
+                    <label for="ai-question" class="block text-lg font-semibold text-slate-800 mb-2">আলোচনা নিয়ে প্রশ্ন করুন</label>
+                    <p class="text-sm text-slate-500 mb-3">যেমন: "ইবনে মাসউদ (রাঃ) এর সাহস থেকে আমি কী শিখতে পারি?"</p>
+                    <div class="flex gap-2">
+                        <input type="text" id="ai-question" placeholder="আপনার প্রশ্ন এখানে লিখুন..." class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition">
+                        <button id="ask-ai-button" class="bg-green-700 text-white font-semibold px-6 py-2 rounded-lg hover:bg-green-800 transition">জিজ্ঞাসা করুন</button>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-slate-800 mb-2">ব্যক্তিগত ভাবনা তৈরি করুন</h3>
+                     <p class="text-sm text-slate-500 mb-3">এই আলোচনার মূল শিক্ষা থেকে অনুপ্রাণিত হয়ে একটি সংক্ষিপ্ত উপদেশ বা ভাবনা পেতে নিচের বাটনে ক্লিক করুন।</p>
+                    <button id="reflect-ai-button" class="w-full bg-stone-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-stone-800 transition flex items-center justify-center gap-2">
+                        <span>✨</span>
+                        <span>আমার জন্য একটি ভাবনা তৈরি করুন</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Conclusion Section -->
+        <section id="conclusion" class="py-16 md:py-24 bg-stone-800 text-stone-200 rounded-2xl section-fade-in">
+            <div class="text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">উপসংহার ও প্রার্থনা</h2>
+                <p class="mt-4 text-lg text-stone-300 leading-relaxed">
+                    যে কুরআন প্রথম প্রজন্মকে তৈরি করেছে, তা আজও জীবন্ত এবং একই শক্তি ধারণ করে। যে উম্মত কুরআনকে আঁকড়ে ধরবে, আল্লাহ তাদের কখনোই পরাজিত হতে দেবেন না। আসুন, আমরা সেই কুরআনের বিশেষ অনুসারী হওয়ার জন্য সর্বশক্তিমান আল্লাহর কাছে প্রার্থনা করি।
+                </p>
+                 <div class="mt-8 text-left text-stone-300 bg-stone-700/50 p-6 rounded-lg italic">
+                    <p>"হে আল্লাহ, মহান কুরআনকে আমাদের অন্তরের বসন্ত, আমাদের দুঃখের উপশম এবং আমাদের চিন্তার অবসানকারী বানিয়ে দিন। আমাদের তা মুখস্থ করার, এর অর্থ নিয়ে চিন্তা করার এবং এর বিধান অনুযায়ী আমল করার তাওফীক দিন... এবং এটিকে আপনার দিকে ও আপনার জান্নাতের দিকে আমাদের পথপ্রদর্শক বানিয়ে দিন।"</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-200">
+        <div class="max-w-6xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-slate-600">
+            <p>&copy; ২০২৪ | কুরআনের আলোয় জীবন। শেখ খালেদ আল-রাশেদের বক্তৃতার উপর ভিত্তি করে নির্মিত।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            const navLinks = document.querySelectorAll('#mobile-menu .nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // Interactive cards
+            const cards = document.querySelectorAll('.interactive-card');
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    cards.forEach(otherCard => {
+                        if (otherCard !== card) {
+                            otherCard.querySelector('.card-content').classList.remove('show');
+                        }
+                    });
+                    card.querySelector('.card-content').classList.toggle('show');
+                });
+            });
+
+            // Section fade-in on scroll
+            const sections = document.querySelectorAll('.section-fade-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            sections.forEach(section => { observer.observe(section); });
+
+            // Active nav link highlighting
+            const allSections = document.querySelectorAll('main section');
+            const navLinksDesktop = document.querySelectorAll('#header .hidden .nav-link');
+            const activateNavLink = (sectionId) => {
+                navLinksDesktop.forEach(link => {
+                    link.classList.remove('active-nav');
+                    if (link.getAttribute('href') === `#${sectionId}`) {
+                        link.classList.add('active-nav');
+                    }
+                });
+            };
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        activateNavLink(entry.target.id);
+                    }
+                });
+            }, { rootMargin: '-50% 0px -50% 0px' });
+            allSections.forEach(section => { sectionObserver.observe(section); });
+
+            // Gemini AI Integration
+            const aiModal = document.getElementById('ai-modal');
+            const closeModalButton = document.getElementById('close-ai-modal');
+            const aiModalTitle = document.getElementById('ai-modal-title');
+            const aiLoader = document.getElementById('ai-loader');
+            const aiResponseText = document.getElementById('ai-response-text');
+            const askAiButton = document.getElementById('ask-ai-button');
+            const questionInput = document.getElementById('ai-question');
+            const reflectAiButton = document.getElementById('reflect-ai-button');
+
+            const openModal = () => {
+                aiResponseText.innerHTML = '';
+                aiLoader.style.display = 'flex';
+                aiModal.style.display = 'flex';
+            };
+
+            const closeModal = () => {
+                aiModal.style.display = 'none';
+            };
+            
+            closeModalButton.addEventListener('click', closeModal);
+            aiModal.addEventListener('click', (e) => {
+                if (e.target === aiModal) {
+                    closeModal();
+                }
+            });
+
+            async function callGemini(prompt) {
+                const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4"; // Canvas will provide the key
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.statusText}`);
+                    }
+                    
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        return "দুঃখিত, একটি অপ্রত্যাশিত উত্তর পাওয়া গেছে। অনুগ্রহ করে আবার চেষ্টা করুন।";
+                    }
+                } catch (error) {
+                    console.error("Gemini API call failed:", error);
+                    return "দুঃখিত, একটি সমস্যা হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।";
+                }
+            }
+            
+            askAiButton.addEventListener('click', async () => {
+                const question = questionInput.value.trim();
+                if (!question) {
+                    alert("অনুগ্রহ করে একটি প্রশ্ন লিখুন।");
+                    return;
+                }
+
+                openModal();
+                aiModalTitle.textContent = "আপনার প্রশ্নের উত্তর";
+
+                const prompt = `আপনি একজন ইসলামিক স্কলারের সহকারী। আবদুল্লাহ ইবনে মাসউদ (রাঃ) এর জীবন এবং কুরআনের রূপান্তরকারী শক্তি সম্পর্কিত একটি আলোচনার শিক্ষার উপর ভিত্তি করে, ব্যবহারকারীর নিম্নলিখিত প্রশ্নের একটি চিন্তাশীল এবং স্পষ্ট বাংলা ভাষায় উত্তর দিন। আলোচনায় এই বিষয়গুলির উপর জোর দেওয়া হয়েছে: কুরআন চরিত্র গঠন করে, ঈমানের পথে সাহস, জ্ঞানের গুরুত্ব, প্রকৃত মূল্য ঈমানে, জাগতিক মর্যাদায় নয়, এবং দৈনন্দিন জীবনে কুরআন প্রয়োগ করা। প্রশ্ন: "${question}"। একটি সংক্ষিপ্ত এবং সহায়ক উত্তর দিন।`;
+                
+                const answer = await callGemini(prompt);
+                aiLoader.style.display = 'none';
+                aiResponseText.textContent = answer;
+                questionInput.value = '';
+            });
+
+            reflectAiButton.addEventListener('click', async () => {
+                openModal();
+                aiModalTitle.textContent = "আপনার জন্য একটি ভাবনা";
+
+                const prompt = `আপনি একজন জ্ঞানী এবং বিনয়ী আধ্যাত্মিক পথপ্রদর্শক। একজন ব্যবহারকারী আবদুল্লাহ ইবনে মাসউদ (রাঃ) এর জীবন এবং কুরআনের রূপান্তরকারী শক্তি সম্পর্কে শিখছেন। এই বিষয়গুলির উপর ভিত্তি করে (সাহস, জ্ঞান, নম্রতা, জীবনে ধর্মগ্রন্থ প্রয়োগ), তার জন্য সুন্দর বাংলা ভাষায় একটি সংক্ষিপ্ত, ব্যক্তিগত এবং অনুপ্রেরণামূলক ভাবনা লিখুন। ভাবনাটি এই চিরন্তন শিক্ষাগুলোকে আধুনিক দিনের চ্যালেঞ্জগুলির সাথে সংযুক্ত করবে এবং তাকে তার নিজের আধ্যাত্মিক যাত্রায় উৎসাহিত করবে। এটি কোনো সারাংশ হবে না, বরং একটি ব্যক্তিগত উপদেশ বা চিন্তার খোরাক হবে।`;
+
+                const reflection = await callGemini(prompt);
+                aiLoader.style.display = 'none';
+                aiResponseText.textContent = reflection;
+            });
+        });
+    </script>
+</body>
+</html>

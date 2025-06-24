@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>জিবরাইল (আঃ) এর উপদেশাবলী</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Dark Neon -->
+    <!-- Application Structure Plan: The SPA uses a top-down, single-page structure. It begins with a clear header and introduction. The core of the application is a grid of five interactive buttons, each representing one of Jibril's (AS) pieces of advice. Clicking a button smoothly reveals the detailed explanation for that advice in a content area below, while highlighting the active button. This non-linear, user-driven approach was chosen over a simple text document to break down the dense spiritual text into digestible, focused segments. It encourages active exploration and reflection on each piece of advice individually, enhancing comprehension and engagement with the religious teachings. A persistent navigation scheme allows users to jump between topics easily. -->
+    <!-- Visualization & Content Choices: Report Info: Five pieces of advice from Jibril (AS) to Prophet Muhammad (PBUH). Goal: To inform and organize the teachings for easy reflection. Viz/Presentation Method: An interactive navigation system using styled HTML buttons (cards) in a responsive grid. Interaction: On-click event reveals the corresponding textual content block for the selected advice and applies an 'active' style to the button. Justification: Since the source is purely textual and qualitative, traditional charts are unsuitable. This interactive card system acts as a visual table of contents, allowing users to navigate the spiritual guidance at their own pace, which is more effective for learning and contemplation than a static page. Library/Method: Vanilla JavaScript for interaction, Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+        .neon-text {
+            color: #58a6ff;
+            text-shadow: 0 0 5px rgba(88, 166, 255, 0.5), 0 0 10px rgba(88, 166, 255, 0.5);
+        }
+        .active-nav-button {
+            background-color: #58a6ff !important;
+            color: #0d1117 !important;
+            transform: translateY(-4px);
+            box-shadow: 0 0 15px #58a6ff, 0 0 25px #58a6ff, 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .nav-button {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 8px rgba(88, 166, 255, 0.6);
+            border-color: #58a6ff;
+        }
+        .content-section {
+            display: none;
+            border-left: 4px solid #58a6ff;
+        }
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .icon-style {
+            font-size: 2rem;
+            line-height: 1;
+            color: #58a6ff;
+            text-shadow: 0 0 8px rgba(88, 166, 255, 0.7);
+        }
+        .active-nav-button .icon-style {
+            color: #0d1117;
+            text-shadow: none;
+        }
+        .main-header {
+            text-shadow: 0 0 10px rgba(88, 166, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-8 md:py-12">
+
+        <header class="text-center mb-10 md:mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 main-header">জিবরাইল (আঃ) এর <span class="neon-text">উপদেশাবলী</span></h1>
+            <p class="text-lg text-gray-400">শেখ খালিদ আল-রাশেদের বক্তৃতার আলোকে একটি ইন্টারেক্টিভ উপস্থাপনা</p>
+        </header>
+
+        <main>
+            <section id="introduction" class="mb-12 bg-[#161b22]/70 p-6 rounded-xl shadow-lg border border-gray-700">
+                <h2 class="text-2xl font-semibold neon-text mb-4">ভূমিকা</h2>
+                <p class="text-gray-300 leading-relaxed">
+                    এই উপদেশগুলো আকাশের أمين (বিশ্বস্ত) জিবরাইল (আঃ) জমিনের أمين (বিশ্বস্ত) হযরত মুহাম্মদ (সাঃ) কে দিয়েছিলেন। এগুলো অত্যন্ত মূল্যবান এবং গুরুত্বপূর্ণ উপদেশ। এর প্রতিটি উপদেশের মধ্যে রয়েছে গভীর চিন্তার খোরাক এবং মহান শিক্ষা। এই ইন্টারেক্টিভ প্ল্যাটফর্মটি আপনাকে সেই পাঁচটি মহামূল্যবান উপদেশ সম্পর্কে জানতে এবং গভীরভাবে চিন্তা করতে সাহায্য করবে। নিচের যেকোনো একটি উপদেশের উপর ক্লিক করে এর বিস্তারিত ব্যাখ্যা পড়ুন।
+                </p>
+            </section>
+            
+            <nav id="advice-nav" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6 mb-12">
+                <button data-target="advice-1" class="nav-button w-full text-left p-5 rounded-xl flex items-center space-x-4">
+                    <div class="icon-style">⌛</div>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-200">জীবন ও মৃত্যু</h3>
+                        <p class="text-sm text-gray-400">প্রথম উপদেশ</p>
+                    </div>
+                </button>
+                <button data-target="advice-2" class="nav-button w-full text-left p-5 rounded-xl flex items-center space-x-4">
+                    <div class="icon-style">💔</div>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-200">ভালোবাসা ও বিচ্ছেদ</h3>
+                        <p class="text-sm text-gray-400">দ্বিতীয় উপদেশ</p>
+                    </div>
+                </button>
+                <button data-target="advice-3" class="nav-button w-full text-left p-5 rounded-xl flex items-center space-x-4">
+                     <div class="icon-style">⚖️</div>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-200">কর্ম ও প্রতিদান</h3>
+                        <p class="text-sm text-gray-400">তৃতীয় উপদেশ</p>
+                    </div>
+                </button>
+                <button data-target="advice-4" class="nav-button w-full text-left p-5 rounded-xl flex items-center space-x-4">
+                    <div class="icon-style">🌙</div>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-200">মুমিনের সম্মান</h3>
+                        <p class="text-sm text-gray-400">চতুর্থ উপদেশ</p>
+                    </div>
+                </button>
+                <button data-target="advice-5" class="nav-button w-full text-left p-5 rounded-xl flex items-center space-x-4">
+                    <div class="icon-style">👑</div>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-200">মুমিনের মর্যাদা</h3>
+                        <p class="text-sm text-gray-400">পঞ্চম উপদেশ</p>
+                    </div>
+                </button>
+            </nav>
+
+            <div id="advice-content" class="bg-[#161b22] p-6 sm:p-8 rounded-xl shadow-2xl border border-gray-700 min-h-[300px]">
+                <article id="advice-1" class="content-section">
+                    <h2 class="text-2xl md:text-3xl font-bold neon-text mb-4">১. "যতদিন ইচ্ছা বাঁচো, কারণ তুমি অবশ্যই মৃত্যুবরণ করবে।"</h2>
+                    <div class="space-y-4 text-gray-300 leading-loose">
+                        <p>এটি একটি মহাসত্য যে, প্রত্যেক প্রাণীকে মৃত্যুর স্বাদ গ্রহণ করতে হবে। আল্লাহ তায়ালা বলেন: <span class="font-semibold italic text-blue-300">"নিশ্চয়ই তুমি মরণশীল এবং তারাও মরণশীল"</span> (সূরা আয-যুমার: ৩০)। আরও বলেন: <span class="font-semibold italic text-blue-300">"প্রত্যেক প্রাণীকে মৃত্যুর স্বাদ গ্রহণ করতে হবে"</span> (সূরা আলে ইমরান: ১৮৫)। তাই আমাদের উচিত মৃত্যুর জন্য সর্বদা প্রস্তুত থাকা এবং সৎকর্মে জীবন অতিবাহিত করা। কারণ যে ব্যক্তি সৎ জীবনযাপন করে, তার মৃত্যুও সৎ অবস্থায় হয়।</p>
+                    </div>
+                </article>
+
+                <article id="advice-2" class="content-section">
+                    <h2 class="text-2xl md:text-3xl font-bold neon-text mb-4">২. "যাকে ইচ্ছা ভালোবাসো, কারণ তুমি অবশ্যই তার থেকে পৃথক হবে।"</h2>
+                    <div class="space-y-4 text-gray-300 leading-loose">
+                        <p>পৃথিবীর সকল ভালোবাসা এবং সম্পর্কই অস্থায়ী। স্ত্রী, সন্তান, বন্ধু-বান্ধব, আত্মীয়-স্বজন—সবার থেকেই একদিন বিচ্ছিন্ন হতে হবে। অনেক পার্থিব ভালোবাসা কিয়ামতের দিন শত্রুতায় পরিণত হবে। আল্লাহ বলেন: <span class="font-semibold italic text-blue-300">"সেদিন বন্ধুরা একে অপরের শত্রু হবে, তবে মুত্তাকিরা ছাড়া"</span> (সূরা আয-যুখরুফ: ৬৭)। সুতরাং, আল্লাহর জন্য ভালোবাসাই হলো সর্বোত্তম ভালোবাসা, যা চিরস্থায়ী।</p>
+                    </div>
+                </article>
+
+                <article id="advice-3" class="content-section">
+                    <h2 class="text-2xl md:text-3xl font-bold neon-text mb-4">৩. "যা ইচ্ছা তাই করো, কারণ তোমাকে তার প্রতিদান দেওয়া হবে।"</h2>
+                    <div class="space-y-4 text-gray-300 leading-loose">
+                        <p>মানুষের প্রতিটি কাজের হিসাব রাখা হয় এবং তার প্রতিদান দেওয়া হবে। ভালো কাজের জন্য উত্তম পুরস্কার এবং মন্দ কাজের জন্য শাস্তি। আল্লাহ বলেন: <span class="font-semibold italic text-blue-300">"সেদিন প্রত্যেক ব্যক্তি তার কৃতকর্ম দেখতে পাবে, ভালো হোক বা মন্দ"</span> (সূরা আলে ইমরান: ৩০)। কিয়ামতের দিন প্রত্যেকের আমলনামা তার হাতে দেওয়া হবে এবং বলা হবে: <span class="font-semibold italic text-blue-300">"তুমি তোমার কিতাব পাঠ করো। আজ তোমার হিসাবের জন্য তুমিই যথেষ্ট"</span> (সূরা আল-ইসরা: ১৪)।</p>
+                    </div>
+                </article>
+
+                <article id="advice-4" class="content-section">
+                    <h2 class="text-2xl md:text-3xl font-bold neon-text mb-4">৪. "জেনে রেখো, মুমিনের সম্মান হলো রাতের নামাজে।"</h2>
+                    <div class="space-y-4 text-gray-300 leading-loose">
+                        <p>একজন মুমিনের প্রকৃত সম্মান ও মর্যাদা নিহিত রয়েছে রাতে আল্লাহর ইবাদতে দাঁড়ানোর মধ্যে, অর্থাৎ তাহাজ্জুদের নামাজে। যখন মানুষ ঘুমিয়ে থাকে, তখন একজন মুমিন বান্দা তার রবের সামনে দাঁড়ায়। আল্লাহ তাদের প্রশংসা করে বলেন: <span class="font-semibold italic text-blue-300">"তাদের পার্শ্বদেশ শয্যা থেকে আলাদা থাকে, তারা তাদের রবকে ডাকে ভয় ও আশায় এবং আমি তাদের যা দিয়েছি তা থেকে তারা ব্যয় করে"</span> (সূরা আস-সাজদাহ: ১৬)।</p>
+                    </div>
+                </article>
+                
+                <article id="advice-5" class="content-section">
+                    <h2 class="text-2xl md:text-3xl font-bold neon-text mb-4">৫. "এবং তার মর্যাদা হলো মানুষের থেকে অমুখাপেক্ষী হওয়া।"</h2>
+                    <div class="space-y-4 text-gray-300 leading-loose">
+                        <p>মুমিনের প্রকৃত ইজ্জত ও মর্যাদা হলো আল্লাহর উপর নির্ভরশীল থাকা এবং মানুষের কাছে মুখাপেক্ষী না হওয়া। অন্যের উপর নির্ভরশীল না হয়ে নিজ পরিশ্রমে উপার্জিত সম্পদে জীবনধারণ করা সম্মানের। নবী-রাসূলগণও পরিশ্রম করে জীবিকা নির্বাহ করতেন। আমাদের নবী মুহাম্মদ (সাঃ) মক্কাবাসীর ছাগল চরাতেন। মানুষের কাছে হাত পাতা অসম্মানজনক। প্রকৃত সম্মান হলো একমাত্র আল্লাহর কাছে চাওয়া।</p>
+                    </div>
+                </article>
+                
+                <div id="placeholder-content" class="text-center py-10 text-gray-500">
+                    <p class="text-xl">উপরে উল্লেখিত যেকোনো একটি উপদেশ নির্বাচন করুন।</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navButtons = document.querySelectorAll('.nav-button');
+            const contentSections = document.querySelectorAll('.content-section');
+            const placeholder = document.getElementById('placeholder-content');
+            
+            function showContent(targetId) {
+                contentSections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+
+                if (targetId) {
+                    placeholder.style.display = 'none';
+                } else {
+                    placeholder.style.display = 'block';
+                }
+            }
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+
+                    navButtons.forEach(btn => {
+                        btn.classList.remove('active-nav-button');
+                    });
+                    
+                    button.classList.add('active-nav-button');
+                    
+                    showContent(targetId);
+                });
+            });
+
+            const firstButton = document.querySelector('.nav-button');
+            if(firstButton) {
+                firstButton.click();
+            }
+        });
+    </script>
+</body>
+</html>

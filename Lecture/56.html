@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মাসীহ দাজ্জাল: একটি ইন্টারেক্টিভ নির্দেশিকা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral with Amber Accent -->
+    <!-- Application Structure Plan: A single-page application with a fixed sidebar navigation (collapsing on mobile) to allow non-linear exploration of the sermon's content. The sermon is broken into logical thematic sections (Identity, Signs, Trials, Protection, etc.), each displayed in the main content area upon user selection. This structure turns a linear text into an interactive, user-driven reference guide, which is more engaging and usable than a simple long-scroll page. Key interactions include section switching via navigation and collapsible accordions for dense text blocks like long hadiths. -->
+    <!-- Visualization & Content Choices: Report Info: The entire report is a textual sermon. Goal: Inform, Warn, Organize, and Guide. Viz/Presentation Method: The primary method is structured typography using HTML/Tailwind. Key concepts are organized into navigable sections. Longer narrations (Hadith of Jassasa) are placed in collapsible accordions to improve readability. Simple diagrams using styled HTML divs and flexbox will be used to illustrate abstract concepts like 'Dajjal's Heaven/Hell' comparison. Lists are used for signs and reasons. Interaction: Navigation clicks to show/hide content sections, and click-to-expand for accordions. Justification: Since there is no quantitative data, traditional charts are not applicable. The focus is on making the dense text digestible and easily navigable. This approach enhances user experience by providing control and breaking down complex information. Library/Method: Vanilla JS for interactions, Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #FFFAF0; /* FloralWhite */
+        }
+        .active-nav {
+            background-color: #FCD34D; /* Amber 300 */
+            color: #4B5563; /* Gray 600 */
+            border-right: 4px solid #F59E0B; /* Amber 500 */
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        /* Modal and Loader styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            max-width: 90%;
+            width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            transition: transform 0.3s;
+        }
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #F59E0B;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="bg-stone-100 text-gray-700 w-64 space-y-2 py-7 px-2 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out z-30">
+            <h2 class="text-xl font-bold text-center text-amber-800 px-4">বিষয়সূচি</h2>
+            <nav class="mt-6">
+                <a href="#" class="nav-link active-nav block py-3 px-4 text-md rounded transition duration-200 hover:bg-amber-200" data-target="introduction">ভূমিকা ও সতর্কীকরণ</a>
+                <a href="#" class="nav-link block py-3 px-4 text-md rounded transition duration-200 hover:bg-amber-200" data-target="identity">দাজ্জালের পরিচয়</a>
+                <a href="#" class="nav-link block py-3 px-4 text-md rounded transition duration-200 hover:bg-amber-200" data-target="signs">আবির্ভাবের লক্ষণসমূহ</a>
+                <a href="#" class="nav-link block py-3 px-4 text-md rounded transition duration-200 hover:bg-amber-200" data-target="powers">ফিতনা ও অলৌকিক ক্ষমতা</a>
+                <a href="#" class="nav-link block py-3 px-4 text-md rounded transition duration-200 hover:bg-amber-200" data-target="resistance">ঈমানদারের প্রতিরোধ</a>
+                <a href="#" class="nav-link block py-3 px-4 text-md rounded transition duration-200 hover:bg-amber-200" data-target="existence">অস্তিত্ব ও সমাপ্তি</a>
+                <a href="#" class="nav-link block py-3 px-4 text-md rounded transition duration-200 hover:bg-amber-200" data-target="protection">ফিতনা থেকে বাঁচার উপায়</a>
+                <a href="#" class="nav-link block py-3 px-4 text-md rounded transition duration-200 hover:bg-amber-200 font-bold" data-target="gemini_interaction">জিজ্ঞাসা ও বিশ্লেষণ ✨</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10">
+            <button id="menu-button" class="md:hidden fixed top-4 right-4 bg-amber-400 text-white p-2 rounded-md z-40">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <header class="mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-amber-900 leading-tight">মাসীহ দাজ্জাল</h1>
+                <p class="text-lg text-gray-600 mt-2">শেখ খালিদ আল-রাশেদের বয়ানের আলোকে একটি ইন্টারেক্টিভ নির্দেশিকা</p>
+            </header>
+
+            <!-- Content Sections will be dynamically displayed here -->
+            <div id="content-container">
+                 <div id="introduction" class="content-section active">
+                    <h2 class="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-amber-400 pb-2">ভূমিকা ও সতর্কীকরণ</h2>
+                    <div class="gemini-buttons mb-4 space-x-2">
+                        <button class="gemini-btn bg-amber-400 hover:bg-amber-500 text-white font-bold py-2 px-4 rounded" data-action="summarize">✨ এই বিভাগটি সংক্ষেপে দেখুন</button>
+                        <button class="gemini-btn bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded" data-action="reflect">✨ চিন্তার খোরাক</button>
+                    </div>
+                    <p class="mb-4 text-lg leading-relaxed">এই নির্দেশিকাটি মানব ইতিহাসের সর্বশ্রেষ্ঠ ফিতনা, মাসীহ দাজ্জাল সম্পর্কে গভীর আলোচনা উপস্থাপন করে। প্রতিটি নবী তাঁর জাতিকে এই বিষয়ে সতর্ক করেছেন, কিন্তু আমাদের নবী হযরত মুহাম্মদ (সাঃ) সবচেয়ে কঠোরভাবে সতর্ক করেছেন কারণ দাজ্জাল এই উম্মতের মধ্যেই আবির্ভূত হবে। এখানে আমরা তার পরিচয়, ক্ষমতা, ফিতনা এবং তা থেকে আত্মরক্ষার উপায় সম্পর্কে জানব।</p>
+                    <div class="bg-amber-50 border-l-4 border-amber-500 text-amber-800 p-4 rounded-r-lg" role="alert">
+                        <p class="font-bold">গুরুত্বপূর্ণ বার্তা</p>
+                        <p>দাজ্জালের আবির্ভাব এক ভয়াবহ ও মারাত্মক ঘটনা। তার ফিতনা এমন পর্যায়ে পৌঁছাবে যা আল্লাহ ছাড়া কেউ জানে না। এই জ্ঞান অর্জন করা প্রতিটি মুমিনের জন্য জরুরি, যাতে আমরা সেই কঠিন সময়ে নিজেদের ঈমান রক্ষা করতে পারি।</p>
+                    </div>
+                </div>
+
+                <div id="identity" class="content-section">
+                    <h2 class="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-amber-400 pb-2">দাজ্জালের পরিচয়</h2>
+                    <div class="gemini-buttons mb-4 space-x-2">
+                        <button class="gemini-btn bg-amber-400 hover:bg-amber-500 text-white font-bold py-2 px-4 rounded" data-action="summarize">✨ এই বিভাগটি সংক্ষেপে দেখুন</button>
+                        <button class="gemini-btn bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded" data-action="reflect">✨ চিন্তার খোরাক</button>
+                    </div>
+                     <p class="mb-6 text-lg leading-relaxed">দাজ্জালকে কেন 'মাসীহ' এবং 'দাজ্জাল' বলা হয়, তা বোঝা তার প্রতারণাকে চিহ্নিত করার জন্য গুরুত্বপূর্ণ। এই নামগুলোর পেছনে গভীর অর্থ নিহিত রয়েছে যা তার সত্তা এবং মিশনকে প্রকাশ করে।</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-stone-50 p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold mb-3 text-amber-800">'মাসীহ' নামের কারণ</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>তার চেহারার এক পাশ বিকৃত ও মসৃণ (মাসুহ) থাকবে।</li>
+                                <li>তার ডান চোখ কানা এবং একটি ভাসমান আঙুরের মতো হবে।</li>
+                                <li>সে চল্লিশ দিনে সমগ্র পৃথিবী ভ্রমণ (মাসাহ) করবে।</li>
+                            </ul>
+                        </div>
+                        <div class="bg-stone-50 p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold mb-3 text-amber-800">'দাজ্জাল' নামের কারণ</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>'দাজ্জাল' শব্দের অর্থ চরম মিথ্যাবাদী এবং প্রতারক।</li>
+                                <li>সে তার জাদু ও মিথ্যা দিয়ে সত্যকে ঢেকে রাখবে, যেমন উটের চর্মরোগ আলকাতরা দিয়ে ঢাকা হয়।</li>
+                                <li>সে পৃথিবীর বিভিন্ন প্রান্তে ভ্রমণ করবে।</li>
+                                <li>সে বাহ্যিকভাবে সুন্দর দেখিয়ে ভেতরের বাতিলকে লুকাবে।</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="mt-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg text-blue-800">ঈসা (আঃ)-কেও 'মাসীহ' বলা হয় কারণ তিনি আল্লাহর ইচ্ছায় রোগীর উপর হাত বুলিয়ে (মাসাহ) তাদের সুস্থ করতেন। সুতরাং, একজন হেদায়েতের মাসীহ (ঈসা), অন্যজন পথভ্রষ্টতার মাসীহ (দাজ্জাল)।</p>
+                </div>
+
+                <div id="signs" class="content-section">
+                    <h2 class="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-amber-400 pb-2">আবির্ভাবের লক্ষণসমূহ</h2>
+                     <div class="gemini-buttons mb-4 space-x-2">
+                        <button class="gemini-btn bg-amber-400 hover:bg-amber-500 text-white font-bold py-2 px-4 rounded" data-action="summarize">✨ এই বিভাগটি সংক্ষেপে দেখুন</button>
+                        <button class="gemini-btn bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded" data-action="reflect">✨ চিন্তার খোরাক</button>
+                    </div>
+                     <p class="mb-6 text-lg leading-relaxed">দাজ্জালের ভয়াবহ আগমনের পূর্বে পৃথিবীতে কিছু সুস্পষ্ট লক্ষণ দেখা দেবে। এই অংশে সেই ভবিষ্যদ্বাণীমূলক চিহ্নগুলো তুলে ধরা হলো যা হাদিসে বর্ণিত হয়েছে এবং যা তার আগমনকে আসন্ন বলে सूचित করে।</p>
+                    
+                    <ul class="space-y-4">
+                        <li class="p-4 bg-stone-50 rounded-lg shadow-sm flex items-start">
+                            <span class="text-amber-600 font-bold text-2xl mr-4">&#9733;</span>
+                            <div>
+                                <h3 class="font-semibold text-lg">মিথ্যা নবীদের আবির্ভাব</h3>
+                                <p class="text-gray-600">কিয়ামতের আগে প্রায় ত্রিশজন মিথ্যাবাদী দাজ্জালের আবির্ভাব হবে, যারা নিজেদের নবী বলে দাবি করবে।</p>
+                            </div>
+                        </li>
+                        <li class="p-4 bg-stone-50 rounded-lg shadow-sm flex items-start">
+                            <span class="text-amber-600 font-bold text-2xl mr-4">&#9733;</span>
+                            <div>
+                                <h3 class="font-semibold text-lg">মূল্যবোধের অবক্ষয়</h3>
+                                <p class="text-gray-600">এমন সময় আসবে যখন মিথ্যাবাদীকে সত্যবাদী এবং সত্যবাদীকে মিথ্যাবাদী মনে করা হবে। বিশ্বাসঘাতক বিশ্বস্ত হবে এবং বিশ্বস্তকে বিশ্বাসঘাতক মনে করা হবে। তুচ্ছ ব্যক্তিরা জাতির গুরুত্বপূর্ণ বিষয়ে কথা বলবে।</p>
+                            </div>
+                        </li>
+                        <li class="p-4 bg-stone-50 rounded-lg shadow-sm flex items-start">
+                            <span class="text-amber-600 font-bold text-2xl mr-4">&#9733;</span>
+                            <div>
+                                <h3 class="font-semibold text-lg"> شدید দুর্ভিক্ষ</h3>
+                                <p class="text-gray-600">তার আবির্ভাবের আগে তিন বছর কঠিন দুর্ভিক্ষ দেখা দেবে। প্রথম বছর এক-তৃতীয়াংশ, দ্বিতীয় বছর দুই-তৃতীয়াংশ এবং তৃতীয় বছর সম্পূর্ণ বৃষ্টিপাত বন্ধ হয়ে যাবে, ফলে জমিনে কোনো ফসল ফলবে না। তখন মুমিনদের খাবার হবে তাকবীর, তাহলীল ও তাসবীহ।</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="powers" class="content-section">
+                    <h2 class="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-amber-400 pb-2">ফিতনা ও অলৌকিক ক্ষমতা</h2>
+                     <div class="gemini-buttons mb-4 space-x-2">
+                        <button class="gemini-btn bg-amber-400 hover:bg-amber-500 text-white font-bold py-2 px-4 rounded" data-action="summarize">✨ এই বিভাগটি সংক্ষেপে দেখুন</button>
+                        <button class="gemini-btn bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded" data-action="reflect">✨ চিন্তার খোরাক</button>
+                    </div>
+                     <p class="mb-6 text-lg leading-relaxed">দাজ্জালকে আল্লাহ এমন কিছু অলৌকিক ক্ষমতা দেবেন যা দিয়ে সে মানুষের ঈমান পরীক্ষা করবে। তার সবচেয়ে বড় প্রতারণাগুলো হবে মানুষের মৌলিক চাহিদা এবং আবেগ কেন্দ্রিক। এই ক্ষমতাগুলো তার রুবুবিয়্যাতের মিথ্যা দাবিকে সমর্থন করার জন্য ব্যবহৃত হবে।</p>
+                    
+                    <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded-r-lg mb-6" role="alert">
+                        <p class="font-bold">তার জান্নাত ও জাহান্নাম</p>
+                        <p>দাজ্জালের সাথে একটি জান্নাত ও একটি জাহান্নাম থাকবে। কিন্তু বাস্তবতা হবে উল্টো। তার জান্নাত হবে আসলে জাহান্নাম, এবং তার জাহান্নাম হবে শীতল ও শান্তিদায়ক জান্নাত। যে তার জাহান্নাম দেখবে, সে যেন চোখ বন্ধ করে তা থেকে পান করে, কারণ তা ঠান্ডা পানি।</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="p-4 bg-stone-50 rounded-lg shadow-sm">
+                            <h3 class="font-semibold text-lg text-amber-800">প্রকৃতির উপর নিয়ন্ত্রণ</h3>
+                            <p class="text-gray-700">সে আকাশকে বৃষ্টি বর্ষণের আদেশ দেবে এবং জমিনকে ফসল উৎপাদনের আদেশ দেবে, আর তাই ঘটবে। যারা তাকে বিশ্বাস করবে, তাদের উপর প্রাচুর্য নেমে আসবে, আর যারা তাকে অস্বীকার করবে, তারা চরম অভাবে পড়বে।</p>
+                        </div>
+                        <div class="p-4 bg-stone-50 rounded-lg shadow-sm">
+                            <h3 class="font-semibold text-lg text-amber-800">মৃতকে জীবিত করার ক্ষমতা</h3>
+                            <p class="text-gray-700">সে এক বেদুঈনের মৃত পিতা-মাতাকে জীবিত করার ভান করবে। শয়তানরা তার পিতা-মাতার রূপ ধারণ করে তাকে বলবে, "হে পুত্র, এ-ই তোমার রব, তার অনুসরণ কর।" এটি হবে ঈমানের এক কঠিন পরীক্ষা।</p>
+                        </div>
+                        <div class="p-4 bg-stone-50 rounded-lg shadow-sm">
+                            <h3 class="font-semibold text-lg text-amber-800">পৃথিবীতে দ্রুতগতিতে ভ্রমণ</h3>
+                            <p class="text-gray-700">তার গতি হবে ঝড়ের সময় বাতাসের তাড়িত মেঘের মতো। সে মক্কা ও মদিনা ছাড়া পৃথিবীর সব স্থানে প্রবেশ করবে। এই দুটি পবিত্র শহরে ফেরেশতারা পাহারা দেবে।</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="resistance" class="content-section">
+                    <h2 class="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-amber-400 pb-2">ঈমানদারের প্রতিরোধ</h2>
+                     <div class="gemini-buttons mb-4 space-x-2">
+                        <button class="gemini-btn bg-amber-400 hover:bg-amber-500 text-white font-bold py-2 px-4 rounded" data-action="summarize">✨ এই বিভাগটি সংক্ষেপে দেখুন</button>
+                        <button class="gemini-btn bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded" data-action="reflect">✨ চিন্তার খোরাক</button>
+                    </div>
+                     <p class="mb-6 text-lg leading-relaxed">দাজ্জালের চরম ফিতনার সময়েও কিছু দৃঢ় ঈমানদার ব্যক্তি তার বিরুদ্ধে রুখে দাঁড়াবেন। তাদের প্রতিরোধের কাহিনী ঈমানদারদের জন্য অনুপ্রেরণার এক উজ্জ্বল দৃষ্টান্ত। নিচে হাদিসে বর্ণিত সেই শ্রেষ্ঠ শহীদের ঘটনা তুলে ধরা হলো।</p>
+                    
+                    <div class="bg-stone-50 p-6 rounded-lg shadow-lg">
+                        <blockquote class="border-l-4 border-amber-500 pl-4 text-gray-700 italic">
+                            <p class="mb-4">"দাজ্জাল আবির্ভূত হলে একজন মুমিন ব্যক্তি তার দিকে এগিয়ে যাবেন। দাজ্জালের রক্ষীরা তাকে বাধা দেবে, কিন্তু সে বলবে, 'আমি এই ব্যক্তির কাছেই যাচ্ছি।' তারা তাকে দাজ্জালের কাছে নিয়ে যাবে।"</p>
+                            <p class="mb-4">"মুমিন ব্যক্তি দাজ্জালকে দেখেই বলবেন, 'হে লোকসকল! এই সেই দাজ্জাল যার কথা নবী (সাঃ) বলেছেন।' দাজ্জাল ক্রোধে তাকে হত্যা করার আদেশ দেবে। তাকে আঘাত করা হবে, কিন্তু সে ঈমান থেকে বিচ্যুত হবে না।"</p>
+                            <p class="mb-4">"দাজ্জাল তাকে বলবে, 'তুমি কি আমার উপর ঈমান আনো না?' সে উত্তর দেবে, 'তুমিই মাসীহ দাজ্জাল।' তখন দাজ্জাল তাকে করাত দিয়ে চিরে দুই ভাগ করে ফেলবে এবং দুই ভাগের মাঝখান দিয়ে হেঁটে গিয়ে বলবে, 'ওঠো!' লোকটি জীবিত হয়ে দাঁড়িয়ে যাবে।"</p>
+                            <p class="mb-4">"দাজ্জাল আবার জিজ্ঞাসা করবে, 'এবার কি আমার উপর ঈমান আনবে?' লোকটি উত্তর দেবে, 'তোমার ব্যাপারে আমার জ্ঞান আরও বেড়েছে। তুমিই দাজ্জাল।' তারপর সে বলবে, 'হে লোকসকল! আমার পরে সে আর কারো সাথে এমন করতে পারবে না।'"</p>
+                             <p class="font-semibold text-amber-800">"দাজ্জাল তাকে জবাই করার চেষ্টা করবে কিন্তু পারবে না। অবশেষে তাকে আগুনে নিক্ষেপ করবে, যা আসলে হবে জান্নাত। নবী (সাঃ) বলেন, 'এই ব্যক্তি বিশ্বজগতের রবের কাছে সর্বশ্রেষ্ঠ শহীদ।' (সহীহ মুসলিম)"</p>
+                        </blockquote>
+                    </div>
+                </div>
+
+                <div id="existence" class="content-section">
+                    <h2 class="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-amber-400 pb-2">অস্তিত্ব ও সমাপ্তি</h2>
+                     <div class="gemini-buttons mb-4 space-x-2">
+                        <button class="gemini-btn bg-amber-400 hover:bg-amber-500 text-white font-bold py-2 px-4 rounded" data-action="summarize">✨ এই বিভাগটি সংক্ষেপে দেখুন</button>
+                        <button class="gemini-btn bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded" data-action="reflect">✨ চিন্তার খোরাক</button>
+                    </div>
+                    <p class="mb-6 text-lg leading-relaxed">দাজ্জাল কি বর্তমানে বিদ্যমান? সে কোথায় আছে? এবং তার ভয়াবহ শাসনের অবসান কীভাবে ঘটবে? বিখ্যাত 'জাসসাসা'র হাদিস এবং ঈসা (আঃ)-এর অবতরণের মাধ্যমে এই প্রশ্নগুলোর উত্তর পাওয়া যায়।</p>
+                    
+                    <div class="bg-stone-50 rounded-lg shadow-md mb-6">
+                        <button class="accordion-toggle w-full p-4 text-left text-xl font-semibold text-amber-800 flex justify-between items-center hover:bg-amber-100 rounded-t-lg">
+                            <span>জাসসাসার হাদিস: দাজ্জালের অস্তিত্বের প্রমাণ</span>
+                            <span class="transform transition-transform duration-300">&#9662;</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-6 border-t border-amber-200">
+                                <p class="text-gray-700 leading-relaxed">ফাতেমা বিনতে কাইস (রাঃ) তামীম আদ-দারীর একটি ঘটনা বর্ণনা করেন। তামীম আদ-দারী এবং তার সঙ্গীরা ঝড়ের কবলে পড়ে এক দ্বীপে আশ্রয় নেন। সেখানে তারা 'জাসসাসা' নামক এক লোমশ জন্তুর দেখা পান যে তাদের একটি মঠের দিকে পথ দেখায়। সেই মঠে তারা এক বিশাল আকারের শিকলবন্দী লোককে দেখতে পান।</p>
+                                <p class="mt-2 text-gray-700 leading-relaxed">সেই লোকটিই ছিল দাজ্জাল। সে তাদের কাছে বাইসানের খেজুর গাছ, তাবারিয়া হ্রদ এবং নবী মুহাম্মদ (সাঃ) সম্পর্কে জিজ্ঞাসা করে। সে জানায় যে শিগগিরই তাকে বের হওয়ার অনুমতি দেওয়া হবে এবং সে পৃথিবীতে ভ্রমণ করবে, কিন্তু মক্কা ও মদিনায় প্রবেশ করতে পারবে না। এই হাদিস প্রমাণ করে যে দাজ্জাল বিদ্যমান এবং এক দ্বীপে বন্দী অবস্থায় আছে। (সহীহ মুসলিম)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-50 p-6 rounded-lg shadow-md border-l-4 border-emerald-500">
+                        <h3 class="text-2xl font-bold mb-3 text-emerald-800">দাজ্জালের সমাপ্তি</h3>
+                        <p class="text-gray-700 leading-relaxed">যখন দাজ্জালের ফিতনা চরমে পৌঁছাবে, তখন আল্লাহ তা'আলা ঈসা (আঃ)-কে পাঠাবেন। তিনি দামেস্কের পূর্বে সাদা মিনারের কাছে অবতরণ করবেন। দাজ্জাল ঈসা (আঃ)-কে দেখামাত্রই লবণের মতো পানিতে গলে যেতে শুরু করবে।</p>
+                        <p class="mt-2 text-gray-700 leading-relaxed">ঈসা (আঃ) তাকে ধাওয়া করে ফিলিস্তিনের 'লুদ' নামক দরজার কাছে হত্যা করবেন। এরপর ইহুদিদের বিরুদ্ধে এক চূড়ান্ত যুদ্ধ হবে, যেখানে গাছ ও পাথরও মুমিনদেরকে ইহুদিদের অবস্থান জানিয়ে দেবে। ঈসা (আঃ)-এর শাসনামলে পৃথিবীতে শান্তি ও ন্যায়বিচার প্রতিষ্ঠিত হবে।</p>
+                    </div>
+                </div>
+
+                <div id="protection" class="content-section">
+                    <h2 class="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-amber-400 pb-2">ফিতনা থেকে বাঁচার উপায়</h2>
+                     <div class="gemini-buttons mb-4 space-x-2">
+                        <button class="gemini-btn bg-amber-400 hover:bg-amber-500 text-white font-bold py-2 px-4 rounded" data-action="summarize">✨ এই বিভাগটি সংক্ষেপে দেখুন</button>
+                        <button class="gemini-btn bg-emerald-400 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded" data-action="reflect">✨ চিন্তার খোরাক</button>
+                    </div>
+                     <p class="mb-6 text-lg leading-relaxed">দাজ্জালের ফিতনা থেকে রক্ষা পাওয়া ঈমানদারের জন্য সবচেয়ে বড় চ্যালেঞ্জ। রাসূল (সাঃ) আমাদেরকে এই ভয়াবহ পরীক্ষা থেকে বাঁচার জন্য কিছু সুস্পষ্ট নির্দেশনা দিয়েছেন। এই আমলগুলো আঁকড়ে ধরাই হবে আমাদের মুক্তির পথ।</p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="p-6 bg-stone-50 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                            <h3 class="text-xl font-bold text-amber-800 mb-2">সূরা আল-কাহফ পাঠ</h3>
+                            <p class="text-gray-700">যে ব্যক্তি সূরা কাহফের প্রথম দশ আয়াত (অন্য বর্ণনায় শেষ দশ আয়াত) মুখস্থ করবে এবং নিয়মিত পাঠ করবে, সে দাজ্জালের ফিতনা থেকে সুরক্ষিত থাকবে।</p>
+                        </div>
+                        <div class="p-6 bg-stone-50 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                            <h3 class="text-xl font-bold text-amber-800 mb-2">নামাযে আশ্রয় প্রার্থনা</h3>
+                            <p class="text-gray-700">প্রত্যেক নামাযের শেষ বৈঠকে তাশাহহুদের পর সালাম ফেরানোর আগে দাজ্জালের ফিতনা থেকে আল্লাহর কাছে আশ্রয় প্রার্থনা করা একটি মাসনুন দোয়া।</p>
+                        </div>
+                        <div class="p-6 bg-stone-50 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                            <h3 class="text-xl font-bold text-amber-800 mb-2">দাজ্জাল থেকে দূরে থাকা</h3>
+                            <p class="text-gray-700">যখন দাজ্জালের আবির্ভাবের খবর পাওয়া যাবে, তখন তার থেকে যথাসম্ভব দূরে থাকা উচিত। কারণ একজন ব্যক্তি নিজেকে মুমিন মনে করে তার কাছে গিয়েও তার অলৌকিক ক্ষমতা দেখে বিভ্রান্ত হয়ে পড়তে পারে।</p>
+                        </div>
+                        <div class="p-6 bg-stone-50 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                            <h3 class="text-xl font-bold text-amber-800 mb-2">ঈমানের উপর অটল থাকা</h3>
+                            <p class="text-gray-700">ইসলামের মৌলিক জ্ঞান অর্জন করা এবং ঈমানের উপর দৃঢ় থাকা। দাজ্জালের কপালে 'কাফির' (كافر) লেখা থাকবে, যা প্রত্যেক মুমিন, শিক্ষিত বা অশিক্ষিত, পড়তে পারবে।</p>
+                        </div>
+                    </div>
+                </div>
+
+                 <div id="gemini_interaction" class="content-section">
+                    <h2 class="text-3xl font-semibold text-gray-800 mb-4 border-b-2 border-amber-400 pb-2">জিজ্ঞাসা ও বিশ্লেষণ ✨</h2>
+                    <p class="mb-6 text-lg leading-relaxed">দাজ্জাল সম্পর্কিত আপনার কোনো প্রশ্ন থাকলে এখানে জিজ্ঞাসা করুন। আমাদের AI সহকারী, বয়ানের বিষয়বস্তু এবং ইসলামিক জ্ঞানের উপর ভিত্তি করে উত্তর দেওয়ার চেষ্টা করবে।</p>
+                    
+                    <div class="bg-stone-50 p-6 rounded-lg shadow-md">
+                        <textarea id="user-question" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-400" rows="4" placeholder="আপনার প্রশ্নটি এখানে লিখুন..."></textarea>
+                        <button id="ask-gemini-btn" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-6 rounded transition-colors">প্রশ্ন করুন</button>
+                    </div>
+
+                    <div id="gemini-response-area" class="mt-6 hidden">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-3">উত্তর:</h3>
+                        <div id="gemini-response-content" class="bg-stone-50 p-6 rounded-lg shadow-inner text-gray-700 leading-relaxed">
+                            <!-- Gemini response will be injected here -->
+                        </div>
+                    </div>
+                 </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal for Gemini Responses -->
+    <div id="gemini-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modal-title" class="text-2xl font-bold text-amber-800 mb-4"></h3>
+            <div id="modal-body" class="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                <!-- Loader or content will be here -->
+            </div>
+            <button id="close-modal-btn" class="mt-6 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded">বন্ধ করুন</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            const menuButton = document.getElementById('menu-button');
+            const sidebar = document.getElementById('sidebar');
+
+            function switchTab(targetId) {
+                navLinks.forEach(nav => {
+                    if (nav.dataset.target === targetId) {
+                        nav.classList.add('active-nav');
+                    } else {
+                        nav.classList.remove('active-nav');
+                    }
+                });
+
+                contentSections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+                window.scrollTo(0, 0);
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.dataset.target;
+                    switchTab(targetId);
+                    if (!sidebar.classList.contains('md:relative')) {
+                       sidebar.classList.add('-translate-x-full');
+                    }
+                });
+            });
+            
+            menuButton.addEventListener('click', function() {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+
+            const accordionToggles = document.querySelectorAll('.accordion-toggle');
+            accordionToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const arrow = this.querySelector('span:last-child');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        arrow.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        arrow.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            // Gemini API Integration
+            const modal = document.getElementById('gemini-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+
+            function showModal(title) {
+                modalTitle.textContent = title;
+                modalBody.innerHTML = '<div class="loader"></div>';
+                modal.classList.add('visible');
+            }
+
+            function hideModal() {
+                modal.classList.remove('visible');
+            }
+
+            closeModalBtn.addEventListener('click', hideModal);
+            modal.addEventListener('click', function(e) {
+                if(e.target === modal) {
+                    hideModal();
+                }
+            });
+
+            async function callGeminiAPI(prompt) {
+                const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4"; // Canvas will provide the key
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                const payload = {
+                    contents: [{
+                        role: "user",
+                        parts: [{ text: prompt }]
+                    }]
+                };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.statusText}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        return "দুঃখিত, একটি বৈধ উত্তর তৈরি করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।";
+                    }
+                } catch (error) {
+                    console.error("Gemini API call failed:", error);
+                    return "দুঃখিত, একটি ত্রুটি ঘটেছে। আপনার নেটওয়ার্ক সংযোগ পরীক্ষা করুন এবং আবার চেষ্টা করুন।";
+                }
+            }
+            
+            document.querySelectorAll('.gemini-btn').forEach(button => {
+                button.addEventListener('click', async function() {
+                    const action = this.dataset.action;
+                    const section = this.closest('.content-section');
+                    const sectionTitle = section.querySelector('h2').textContent;
+                    const sectionText = section.innerText; // Get all text from the section
+                    
+                    let prompt = '';
+                    let modalHeader = '';
+
+                    if (action === 'summarize') {
+                        prompt = `অনুগ্রহ করে শেখ খালিদ আল-রাশেদের বয়ানের এই অংশটি (${sectionTitle}) বাংলায় ৩-৪টি মূল পয়েন্টে সংক্ষেপে তুলে ধরুন: \n\n'${sectionText}'`;
+                        modalHeader = `"${sectionTitle}" বিভাগের সারসংক্ষেপ`;
+                    } else if (action === 'reflect') {
+                        prompt = `শেখ খালিদ আল-রাশেদের বয়ানের এই অংশ (${sectionTitle}) এর উপর ভিত্তি করে, আধুনিক সময়ের প্রেক্ষাপটে ঈমানদারদের জন্য কিছু চিন্তার খোরাক বা আলোচনার প্রশ্ন বাংলায় তৈরি করুন। প্রশ্নগুলো যেন গভীর চিন্তা ও আত্ম-জিজ্ঞাসাকে উৎসাহিত করে। অংশ: \n\n'${sectionText}'`;
+                         modalHeader = `"${sectionTitle}" বিভাগের উপর চিন্তার খোরাক`;
+                    }
+                    
+                    showModal(modalHeader);
+                    const response = await callGeminiAPI(prompt);
+                    modalBody.innerHTML = response;
+                });
+            });
+
+            // Handle "Ask Gemini" button
+            const askButton = document.getElementById('ask-gemini-btn');
+            const questionInput = document.getElementById('user-question');
+            const responseArea = document.getElementById('gemini-response-area');
+            const responseContent = document.getElementById('gemini-response-content');
+            
+            askButton.addEventListener('click', async function() {
+                const question = questionInput.value.trim();
+                if (!question) {
+                    alert('অনুগ্রহ করে আপনার প্রশ্নটি লিখুন।');
+                    return;
+                }
+                
+                responseArea.classList.remove('hidden');
+                responseContent.innerHTML = '<div class="loader"></div>';
+
+                const sermonContext = Array.from(contentSections).map(s => s.innerText).join('\n\n---\n\n');
+                const prompt = `আপনি একজন ইসলামিক স্কলার। প্রদত্ত শেখ খালিদ আল-রাশেদের 'মাসীহ দাজ্জাল' সম্পর্কিত বয়ানের বিষয়বস্তু এবং সাধারণ ইসলামিক জ্ঞানের উপর ভিত্তি করে, অনুগ্রহ করে নিম্নলিখিত প্রশ্নের উত্তর দিন। উত্তরটি অবশ্যই বাংলায় এবং শ্রদ্ধাপূর্ণ ভাষায় হতে হবে। প্রশ্ন: "${question}" \n\n প্রাসঙ্গিক বয়ানের সম্পূর্ণ বিষয়বস্তু: \n'${sermonContext}'`;
+                
+                const response = await callGeminiAPI(prompt);
+                responseContent.innerHTML = response.replace(/\n/g, '<br>');
+            });
+
+        });
+    </script>
+
+</body>
+</html>

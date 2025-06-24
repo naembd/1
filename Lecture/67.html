@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>যুবকদের সাথে খোলামেলা কথা - একটি ইন্টারেক্টিভ উপস্থাপনা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cyber Neon -->
+    <!-- Application Structure Plan: The SPA is designed as a narrative journey through the lecture's core themes. It starts with an introduction setting the stage (The Crossroads). The core is a 'Two Paths' section using interactive tabs for direct comparison between a life of sin and a life of righteousness, making the choice stark and clear. This is followed by a data visualization section ('The State of Prayer') using a Chart.js doughnut chart to make the statistics on prayer neglect visually impactful. It then moves to a direct 'Call to Change' and concludes with actionable 'Practical Steps' in a card format. This thematic, interactive structure is chosen over a linear one to engage the user emotionally and intellectually, guiding them from problem identification to a solution-oriented mindset. -->
+    <!-- Visualization & Content Choices: 1. Contrasting Stories -> Goal: Compare -> Viz: Two-column tabbed interface -> Interaction: Clickable tabs to reveal stories -> Justification: Direct side-by-side comparison is powerful for showing consequences. -> Method: HTML/Tailwind/JS. 2. Prayer Statistics -> Goal: Inform/Alarm -> Viz: Doughnut Chart -> Interaction: Hover tooltips -> Justification: Visualizes the alarming state of neglect more effectively than text. -> Library: Chart.js (Canvas). 3. Actionable Advice -> Goal: Guide/Instruct -> Viz: Icon-based cards -> Interaction: Static, clear presentation -> Justification: Breaks down advice into memorable, easy-to-digest steps. -> Method: HTML/Tailwind with Unicode characters. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-btn.active {
+            border-color: #00FFFF;
+            background-color: #1a202c;
+            color: #00FFFF;
+            font-weight: 700;
+            box-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF;
+        }
+        .content {
+            display: none;
+        }
+        .content.active {
+            display: block;
+        }
+        .neon-text {
+            color: #fff;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 10px #0fa,
+                0 0 20px #0fa;
+        }
+        .neon-text-red {
+             color: #fff;
+             text-shadow:
+                0 0 5px #fff,
+                0 0 10px #f0a,
+                0 0 20px #f0a;
+        }
+        
+        .neon-box {
+            border: 2px solid #00FFFF;
+            box-shadow: 0 0 10px #00FFFF, inset 0 0 10px #00FFFF;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300">
+
+    <div class="container mx-auto px-4 py-8 md:py-12">
+
+        <header class="text-center mb-12 md:mb-16">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 neon-text">যুবকদের সাথে খোলামেলা কথা</h1>
+            <p class="text-md md:text-lg text-cyan-300">শাইখ খালিদ আল-রাশেদের বক্তৃতার আলোকে একটি ইন্টারেক্টিভ উপস্থাপনা</p>
+        </header>
+
+        <main>
+            <section id="intro" class="mb-16 text-center max-w-3xl mx-auto bg-gray-800/50 p-6 rounded-lg neon-box">
+                 <h2 class="text-2xl md:text-3xl font-bold text-cyan-400 mb-4">ভূমিকা: পথের দ্বিধা</h2>
+                <p class="text-lg leading-relaxed text-gray-200">
+                    যুব সমাজই উম্মাহর ভবিষ্যৎ ও মূল শক্তি। তাদের মাধ্যমেই দ্বীন প্রতিষ্ঠিত হবে এবং উম্মাহ তার হারানো গৌরব ফিরে পাবে। কিন্তু বাস্তবতা হলো, আজ অনেক যুবক তাদের জীবনের মূল উদ্দেশ্য থেকে বিচ্যুত হয়ে পড়েছে, অবহেলা ও গাফিলতির অন্ধকারে হারিয়ে যাচ্ছে। এই উপস্থাপনাটি তাদের জন্য একটি আন্তরিক আহ্বান, যেন তারা সঠিক পথটি চিনে নিতে পারে এবং অনুশোচনার আগেই নিজেদের শুধরে নেয়।
+                </p>
+            </section>
+
+            <section id="stories" class="mb-16">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl md:text-3xl font-bold text-cyan-400 mb-4">দুটি পথ, দুটি পরিণতি</h2>
+                    <p class="text-lg max-w-3xl mx-auto">জীবন দুটি পথের সমষ্টি: একটি আল্লাহর দিকে নিয়ে যায়, অন্যটি ধ্বংসের দিকে। বক্তৃতায় বর্ণিত দুটি গল্প আমাদের এই বাস্তবতা চোখে আঙুল দিয়ে দেখিয়ে দেয়। নিচের ট্যাবগুলোতে ক্লিক করে দুটি ভিন্ন জীবনের পরিণতি সম্পর্কে জানুন।</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="path-section bg-gray-800 rounded-lg p-6 shadow-lg border border-red-500 shadow-red-500/20">
+                        <h3 class="text-xl font-bold text-center mb-4 text-red-400 neon-text-red">পথভ্রষ্টতার জীবন</h3>
+                        <div class="tabs flex border-b-2 border-red-500/50 mb-4">
+                            <button class="tab-btn flex-1 py-2 text-center text-gray-400 border-b-4 border-transparent transition" data-path="gafiloti" data-target="story1">বিমান সেবকের গল্প</button>
+                        </div>
+                        <div id="story1" class="content active text-gray-300 leading-relaxed" data-path="gafiloti">
+                            <p class="mb-3">শাইখ একজন বিমান সেবকের গল্প বলেন, যিনি পাপের জীবনে ডুবে ছিলেন। অর্থ, ভ্রমণ, ও জাগতিক ভোগ-বিলাস তাকে শান্তি দিতে পারেনি। তার স্ত্রী তাকে ছেড়ে চলে যায় এবং তিনি গভীর একাকীত্ব ও মানসিক অশান্তিতে ভুগছিলেন।</p>
+                            <p class="mb-3">এক সফরে হোটেলে একজন পতিতার সাথে থাকা অবস্থায় পার্শ্ববর্তী মসজিদ থেকে আযানের ধ্বনি ভেসে আসে। আযান শুনে পাপী মেয়েটি কেঁপে ওঠে, ওযু করে নামাযে দাঁড়িয়ে যায় এবং কাঁদতে থাকে।</p>
+                            <p>এই দৃশ্য দেখে যুবকটির বিবেক জেগে ওঠে। সে নিজের অধঃপতনের গভীরতা উপলব্ধি করে এবং অনুতপ্ত হয়ে আল্লাহর পথে ফিরে আসার সিদ্ধান্ত নেয়। এই গল্পটি প্রমাণ করে, আল্লাহর স্মরণ থেকে দূরে থাকা জীবনে কোনো প্রকৃত সুখ বা শান্তি নেই।</p>
+                        </div>
+                    </div>
+
+                    <div class="path-section bg-gray-800 rounded-lg p-6 shadow-lg border border-green-500 shadow-green-500/20">
+                        <h3 class="text-xl font-bold text-center mb-4 text-green-400 neon-text">হেদায়েতের জীবন</h3>
+                         <div class="tabs flex border-b-2 border-green-500/50 mb-4">
+                            <button class="tab-btn flex-1 py-2 text-center text-gray-400 border-b-4 border-transparent transition" data-path="hedayet" data-target="story2">ধার্মিক যুবকের গল্প</button>
+                        </div>
+                        <div id="story2" class="content active text-gray-300 leading-relaxed" data-path="hedayet">
+                           <p class="mb-3">বিপথগামীদের গল্পের বিপরীতে, শাইখ একজন ধার্মিক যুবকের গল্প বলেন, যিনি ചെറുപ്പം থেকেই আল্লাহর আনুগত্যে অবিচল ছিলেন। তিনি তার দ্বীনের পরিচয়ে গর্ববোধ করতেন।</p>
+                            <p class="mb-3">ক্যান্সারের মতো কঠিন রোগে আক্রান্ত হয়েও তিনি দ্বীন থেকে বিচ্যুত হননি। তার ঈমান ছিল পর্বতের মতো অটল।</p>
+                             <p>তার মৃত্যুর পর শরীর থেকে সুগন্ধ বের হতে থাকে এবং দাফনের সময় অলৌকিকভাবে তার দেহ কবরে স্থাপিত হয়ে যায়। এটি প্রমাণ করে, যারা আল্লাহর উপর ভরসা করে তার পথে চলে, আল্লাহ দুনিয়া ও আখিরাতে তাদের মর্যাদা বৃদ্ধি করেন।</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="prayer" class="mb-16 bg-gray-800 rounded-lg p-6 md:p-8 shadow-lg neon-box">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl md:text-3xl font-bold text-cyan-400 mb-4">নামাজের প্রতি অবহেলা: এক ভয়াবহ চিত্র</h2>
+                    <p class="text-lg max-w-3xl mx-auto">বক্তৃতায় শাইখ তিনজন যুবকের উদাহরণ দেন, যা বর্তমান সমাজের নামাজের প্রতি অবহেলার একটি বাস্তব চিত্র তুলে ধরে। এই অবহেলা শুধু একটি ইবাদত ত্যাগ করা নয়, বরং স্রষ্টার সাথে সম্পর্ক ছিন্ন করার নামান্তর। নিচের চার্টটি তাদের নামাজের অবস্থাকে তুলে ধরছে।</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="prayerChart"></canvas>
+                </div>
+                <p class="text-center mt-6 text-lg font-medium text-cyan-300">রাসূলুল্লাহ (সাঃ) বলেছেন: "একজন ব্যক্তি এবং শিরক ও কুফরের মধ্যে পার্থক্য হলো নামাজ ত্যাগ করা।" (মুসলিম)</p>
+            </section>
+
+            <section id="call-to-action" class="mb-16 text-center py-12 bg-gray-800/70 rounded-lg neon-box">
+                <h2 class="text-2xl md:text-3xl font-bold text-cyan-400 mb-6">আত্ম-পর্যালোচনা ও ফিরে আসার আহ্বান</h2>
+                <div class="space-y-4 text-xl md:text-2xl text-white font-medium">
+                    <p>"তোমার বয়স কত হয়েছে? বিশ, ত্রিশ বা চল্লিশ?"</p>
+                    <p>"কতদিন এভাবে চলবে?"</p>
+                    <p class="font-bold text-cyan-300 mt-4 neon-text">"যদি আমরা শত্রুদের বিরুদ্ধে বিজয় চাই, তবে আমাদের নিজেদের বিরুদ্ধে বিজয়ী হতে হবে এবং ফজরের নামাজে দাঁড়াতে হবে।"</p>
+                </div>
+            </section>
+
+            <section id="steps" class="mb-12">
+                 <div class="text-center mb-8">
+                    <h2 class="text-2xl md:text-3xl font-bold text-cyan-400 mb-4">পরিবর্তনের জন্য বাস্তবসম্মত পদক্ষেপ</h2>
+                    <p class="text-lg max-w-3xl mx-auto">শুধু অনুশোচনা নয়, পরিবর্তন শুরু করতে হয় কাজের মাধ্যমে। বক্তৃতার শেষে শাইখ কিছু বাস্তবসম্মত উপদেশের কথা বলেছেন যা আমাদের সঠিক পথে ফিরে আসতে সাহায্য করবে।</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-cyan-500/40 transition-shadow border border-cyan-500/30">
+                        <div class="text-5xl mb-4">🤝</div>
+                        <h3 class="text-xl font-bold mb-2 text-cyan-400">খারাপ সঙ্গ ত্যাগ করা</h3>
+                        <p class="text-gray-400">বিপথগামী বন্ধুদের সঙ্গ ত্যাগ করুন। কারণ তারাই যুবকদের বিপথগামী হওয়ার অন্যতম কারণ। সৎ ও ভালো বন্ধুদের সাথে চলুন যারা আপনাকে আল্লাহর কথা স্মরণ করিয়ে দেয়।</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-cyan-500/40 transition-shadow border border-cyan-500/30">
+                        <div class="text-5xl mb-4">묘</div>
+                        <h3 class="text-xl font-bold mb-2 text-cyan-400">কবরস্থান পরিদর্শন</h3>
+                        <p class="text-gray-400">মাঝে মাঝে কবরস্থান পরিদর্শন করুন। এটি আপনাকে মৃত্যুর কথা স্মরণ করাবে এবং দুনিয়ার মোহ থেকে মুক্ত করবে। যা মানুষকে গাফিলতি থেকে জাগ্রত করে।</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-cyan-500/40 transition-shadow border border-cyan-500/30">
+                        <div class="text-5xl mb-4">🏥</div>
+                        <h3 class="text-xl font-bold mb-2 text-cyan-400">অসুস্থদের দেখতে যাওয়া</h3>
+                        <p class="text-gray-400">অসুস্থ ব্যক্তিদের দেখতে যান। এতে আপনি আল্লাহর দেওয়া সুস্থতার নেয়ামতের মূল্য বুঝতে পারবেন এবং তার প্রতি আরও কৃতজ্ঞ হবেন।</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-12 pt-8 border-t border-gray-700">
+            <p class="text-gray-400">মূল বার্তা: মৃত্যু আসার আগেই তওবা করে আল্লাহর পথে ফিরে আসা অপরিহার্য।</p>
+            <p class="text-sm text-gray-500 mt-2">কারণ সত্যিকারের সাফল্য ও শান্তি কেবল আল্লাহর আনুগত্যের মধ্যেই নিহিত।</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const path = tab.dataset.path;
+                    const targetId = tab.dataset.target;
+
+                    document.querySelectorAll(`.tab-btn[data-path='${path}']`).forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    document.querySelectorAll(`.content[data-path='${path}']`).forEach(c => c.classList.remove('active'));
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            tabs.forEach(tab => {
+                if(tab.parentElement.nextElementSibling.classList.contains('active')){
+                    tab.classList.add('active');
+                }
+            });
+
+
+            const prayerCtx = document.getElementById('prayerChart').getContext('2d');
+            new Chart(prayerCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['নামাজ পড়ে না', 'শুধু জুমার নামাজ পড়ে', 'দিনে দুই ওয়াক্ত পড়ে'],
+                    datasets: [{
+                        label: 'যুবকদের নামাজের অবস্থা',
+                        data: [1, 1, 1],
+                        backgroundColor: [
+                            '#FF3EA5', 
+                            '#FBBF24', 
+                            '#3498DB'
+                        ],
+                        borderColor: '#111827',
+                        borderWidth: 5,
+                        hoverOffset: 15,
+                        hoverBorderColor: '#fff',
+                        hoverBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                             labels: {
+                                color: '#9CA3AF',
+                                font: {
+                                    family: "'Noto Sans Bengali', sans-serif",
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#000',
+                            titleColor: '#fff',
+                            bodyColor: '#ddd',
+                            bodyFont: {
+                                family: "'Noto Sans Bengali', sans-serif"
+                            },
+                            titleFont: {
+                                family: "'Noto Sans Bengali', sans-serif"
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

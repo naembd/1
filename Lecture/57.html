@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মুক্তির সন্ধানে: ডুবন্তদের প্রতি একটি বার্তা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Serene Dawn -->
+    <!-- Application Structure Plan: The application is structured as a vertical narrative journey, guiding the user through thematic sections based on the sermon's flow. It starts with establishing the core conflict (drowning vs. salvation), diagnoses the problem with an interactive chart, and now offers a Gemini-powered personalized action plan. It then presents powerful narrative warnings and hopeful stories through storyboard layouts, provides historical context via a timeline, and ends with a direct call to action, enhanced with a Gemini-powered personal Dua generator. This structure creates an emotional and spiritual impact, making complex concepts accessible and providing personalized guidance. -->
+    <!-- Visualization & Content Choices: 
+        - Section 1 (The Choice): Goal: Inform/Frame. Method: Split-screen visual created with HTML/CSS. Interaction: None.
+        - Section 2 (Anatomy of Drowning): Goal: Organize/Compare. Method: Interactive Polar Area Chart (Chart.js/Canvas). Interaction: Clicking/tapping reveals text.
+        - Section 3 (Path to Salvation - Gemini): Goal: Guide/Personalize. Method: Interactive form. Interaction: User selects struggles, clicks a button to call Gemini API, which generates a personalized 3-step plan. Justification: Moves from diagnosis to personalized, actionable advice, making the guidance highly relevant.
+        - Section 4 & 6 (Stories): Goal: Inform/Relate. Method: Storyboard layout. Interaction: Hover effects.
+        - Section 5 (Verdict of History): Goal: Change/Inform. Method: Vertical timeline.
+        - Section 7 (The Invitation - Gemini): Goal: Call to Action/Personalize. Method: Text input form. Interaction: User describes feelings, clicks a button to call Gemini API, which generates a personal Dua. Justification: Provides a deeply personal and spiritual tool at the climax of the user's journey. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #FDFBF8;
+            color: #3f3c3a;
+        }
+        .bg-sea-storm {
+            background: linear-gradient(to top, #0f2027, #203a43, #2c5364);
+        }
+        .bg-sea-calm {
+            background: linear-gradient(to bottom, #a1c4fd, #c2e9fb);
+        }
+        .font-arabic {
+            font-family: 'Times New Roman', serif;
+            direction: rtl;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 50vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 450px;
+            }
+        }
+        .nav-item {
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .nav-item.active, .nav-item:hover {
+            color: #d97706; /* amber-600 */
+            border-bottom-color: #d97706;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #d97706;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header id="header" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-amber-700">মুক্তির সন্ধানে</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div id="nav-menu" class="ml-10 flex items-baseline space-x-4">
+                        <a href="#choice" class="nav-item text-gray-600 hover:text-amber-600 px-3 py-2 text-sm font-medium border-b-2 border-transparent">ভূমিকা</a>
+                        <a href="#anatomy" class="nav-item text-gray-600 hover:text-amber-600 px-3 py-2 text-sm font-medium border-b-2 border-transparent">স্বরূপ</a>
+                        <a href="#guidance" class="nav-item text-gray-600 hover:text-amber-600 px-3 py-2 text-sm font-medium border-b-2 border-transparent">মুক্তির পথ</a>
+                        <a href="#warning" class="nav-item text-gray-600 hover:text-amber-600 px-3 py-2 text-sm font-medium border-b-2 border-transparent">সতর্কবার্তা</a>
+                        <a href="#history" class="nav-item text-gray-600 hover:text-amber-600 px-3 py-2 text-sm font-medium border-b-2 border-transparent">ইতিহাস</a>
+                        <a href="#salvation" class="nav-item text-gray-600 hover:text-amber-600 px-3 py-2 text-sm font-medium border-b-2 border-transparent">আশার গল্প</a>
+                        <a href="#invitation" class="nav-item text-gray-600 hover:text-amber-600 px-3 py-2 text-sm font-medium border-b-2 border-transparent">আহ্বান</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Section 1: The Defining Choice -->
+        <section id="choice" class="min-h-screen flex flex-col items-center justify-center text-white text-center relative overflow-hidden">
+            <div class="absolute inset-0 flex">
+                <div class="w-1/2 bg-sea-storm flex items-center justify-center p-8">
+                    <div class="z-10">
+                        <h2 class="text-4xl md:text-6xl font-bold mb-4 opacity-80">নিমজ্জন</h2>
+                        <p class="text-lg md:text-xl opacity-70">পাপ ও গাফিলতির উত্তাল সাগর</p>
+                    </div>
+                </div>
+                <div class="w-1/2 bg-sea-calm flex items-center justify-center p-8">
+                    <div class="z-10 text-slate-800">
+                        <h2 class="text-4xl md:text-6xl font-bold mb-4">মুক্তি</h2>
+                        <p class="text-lg md:text-xl">নাজাতের শান্ত ও নিরাপদ আশ্রয়</p>
+                    </div>
+                </div>
+            </div>
+            <div class="relative z-20 bg-black/50 p-6 md:p-10 rounded-xl max-w-4xl mx-auto shadow-2xl">
+                 <h3 class="text-2xl md:text-4xl font-bold mb-4">সিদ্ধান্ত আপনার: নিমজ্জন নাকি মুক্তি?</h3>
+                 <p class="text-lg md:text-xl italic">"আমাদের আলোচনা সাগরে ডোবা মানুষদের নিয়ে নয়... বরং তাদের নিয়ে, যারা দুনিয়ার ভোগ-বিলাসে ডুবে আছে।"</p>
+            </div>
+        </section>
+
+        <!-- Section 2: The Anatomy of Drowning -->
+        <section id="anatomy" class="py-20 bg-amber-50/50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-amber-800">নিমজ্জনের স্বরূপ: গাফিলতির চারটি অবস্থা</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-12">এই বিভাগে, আমরা আধ্যাত্মিক পতনের চারটি প্রধান লক্ষণ তুলে ধরেছি যা একজন ব্যক্তিকে পাপের সাগরে ডুবিয়ে দেয়। নিচের চিত্রটিতে প্রতিটি লক্ষণের উপর ক্লিক করে বিস্তারিত জানুন। প্রতিটি অংশ গাফিলতির এক একটি অবস্থা প্রকাশ করে যা থেকে আমাদের বেঁচে থাকা আবশ্যক।</p>
+                <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+                    <div class="w-full lg:w-1/2">
+                        <div class="chart-container">
+                            <canvas id="drowningChart"></canvas>
+                        </div>
+                    </div>
+                    <div id="anatomy-details" class="w-full lg:w-1/2 p-8 bg-white rounded-lg shadow-lg text-left min-h-[350px] flex flex-col justify-center transition-all duration-500">
+                        <div class="text-center text-gray-500">
+                            <p class="text-xl">বিস্তারিত জানতে চিত্রের যেকোনো একটি অংশে ক্লিক করুন।</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 3: Gemini Powered Guidance -->
+        <section id="guidance" class="py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-amber-800">আপনার ব্যক্তিগত মুক্তির পথ</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-8">পূর্ববর্তী অংশে বর্ণিত লক্ষণগুলো থেকে আপনি কোনটির সাথে নিজেকে সম্পর্কিত করতে পারেন তা নির্বাচন করুন। আপনার নির্বাচনের উপর ভিত্তি করে আমরা আপনাকে তওবার পথে এগিয়ে যাওয়ার জন্য কিছু ব্যক্তিগত পরামর্শ দেব।</p>
+                <div id="struggle-options" class="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <!-- Checkboxes will be populated by JS -->
+                </div>
+                <button id="generate-plan-btn" class="bg-amber-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-amber-700 transition-colors duration-300 text-lg shadow-md">
+                    ✨ আমার জন্য একটি মুক্তির পথ তৈরি করুন
+                </button>
+                <div id="plan-loader" class="hidden loader"></div>
+                <div id="plan-result" class="mt-8 max-w-3xl mx-auto text-left"></div>
+            </div>
+        </section>
+
+        <!-- Section 4: A Cautionary Tale -->
+        <section id="warning" class="py-20 bg-slate-800 text-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-amber-400">একটি সতর্কতামূলক গল্প: বন্ধুর বিশ্বাসঘাতকতা</h2>
+                <p class="max-w-3xl mx-auto text-center text-lg text-slate-300 mb-12">এখানে একটি মর্মান্তিক কাহিনী তুলে ধরা হলো যা অসৎ সঙ্গের ভয়াবহ পরিণতির কথা স্মরণ করিয়ে দেয়।</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="bg-slate-700 rounded-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300">
+                        <div class="text-5xl mb-4">🕌</div> <h3 class="font-bold text-lg mb-2">মুক্তির আলো</h3> <p class="text-sm text-slate-300">"একজন যুবক হিদায়াতের পথ বেছে নিল।"</p>
+                    </div>
+                    <div class="bg-slate-700 rounded-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300">
+                        <div class="text-5xl mb-4">👥</div> <h3 class="font-bold text-lg mb-2">প্রতারণার হাতছানি</h3> <p class="text-sm text-slate-300">"চলো, একটি গাড়ি কিনতে যাই... তুমি আমাদের ইমামতি করবে।"</p>
+                    </div>
+                    <div class="bg-slate-700 rounded-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300">
+                        <div class="text-5xl mb-4 text-red-400">🍷</div> <h3 class="font-bold text-lg mb-2">অন্ধকারে পতন</h3> <p class="text-sm text-slate-300">"তারা তাকে মদ ও গান দিয়ে প্রলুব্ধ করল।"</p>
+                    </div>
+                    <div class="bg-slate-700 rounded-lg p-6 flex flex-col items-center text-center transform hover:scale-105 transition-transform duration-300">
+                        <div class="text-5xl mb-4">💔</div> <h3 class="font-bold text-lg mb-2">মর্মান্তিক পরিণতি</h3> <p class="text-sm text-slate-300">"তারা তাকে মৃত অবস্থায় পেল... সবচেয়ে নিকৃষ্টতম পরিণতির উপর।"</p>
+                    </div>
+                    <div class="bg-red-900/50 rounded-lg p-6 flex flex-col items-center text-center justify-center transform hover:scale-105 transition-transform duration-300">
+                        <h3 class="font-bold text-lg mb-2 text-amber-300">ঐশ্বরিক রায়</h3> <p class="font-arabic text-2xl text-white mb-2">يَا وَيْلَتَىٰ لَيْتَنِي لَمْ أَتَّخِذْ فُلَانًا خَلِيلًا</p> <p class="text-sm text-slate-300 italic">"হায়! দুর্ভোগ আমার, আমি যদি অমুককে বন্ধুরূপে গ্রহণ না করতাম!" (আল-ফুরকান: ২৮)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: The Verdict of History -->
+        <section id="history" class="py-20 bg-amber-50/50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-amber-800">ইতিহাসের রায়: পাপের পরিণতি</h2>
+                <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12">পাপের বিধ্বংসী পরিণতি কোনো বিচ্ছিন্ন ঘটনা নয়, বরং এটি একটি ঐশ্বরিক আইন যা ইতিহাস জুড়ে কার্যকর হয়েছে।</p>
+                <div class="relative max-w-2xl mx-auto">
+                    <div class="border-r-2 border-amber-200 absolute h-full top-0" style="left: 15px"></div>
+                    <ul class="space-y-8">
+                        <li class="flex items-center">
+                            <div class="flex-shrink-0 bg-amber-500 rounded-full h-8 w-8 flex items-center justify-center text-white font-bold z-10">১</div>
+                            <div class="ml-6 bg-white rounded-lg p-4 shadow-md w-full"><h3 class="font-bold">নূহের সম্প্রদায়</h3><p class="text-gray-600">মহাপ্লাবন দ্বারা ধ্বংসপ্রাপ্ত।</p></div>
+                        </li>
+                        <li class="flex items-center">
+                            <div class="flex-shrink-0 bg-amber-500 rounded-full h-8 w-8 flex items-center justify-center text-white font-bold z-10">২</div>
+                            <div class="ml-6 bg-white rounded-lg p-4 shadow-md w-full"><h3 class="font-bold">আদ জাতি</h3><p class="text-gray-600">ধ্বংসাত্মক ঝড় দ্বারা নিশ্চিহ্ন।</p></div>
+                        </li>
+                        <li class="flex items-center">
+                            <div class="flex-shrink-0 bg-amber-500 rounded-full h-8 w-8 flex items-center justify-center text-white font-bold z-10">৩</div>
+                            <div class="ml-6 bg-white rounded-lg p-4 shadow-md w-full"><h3 class="font-bold">সামূদ জাতি</h3><p class="text-gray-600">ভয়ঙ্কর শব্দ দ্বারা বিলুপ্ত।</p></div>
+                        </li>
+                         <li class="flex items-center">
+                            <div class="flex-shrink-0 bg-amber-500 rounded-full h-8 w-8 flex items-center justify-center text-white font-bold z-10">৪</div>
+                            <div class="ml-6 bg-white rounded-lg p-4 shadow-md w-full"><h3 class="font-bold">লূতের সম্প্রদায়</h3><p class="text-gray-600">জনপদ উল্টে দেওয়া হয়েছিল।</p></div>
+                        </li>
+                         <li class="flex items-center">
+                            <div class="flex-shrink-0 bg-amber-500 rounded-full h-8 w-8 flex items-center justify-center text-white font-bold z-10">৫</div>
+                            <div class="ml-6 bg-white rounded-lg p-4 shadow-md w-full"><h3 class="font-bold">ফেরাউন ও তার সম্প্রদায়</h3><p class="text-gray-600">সাগরে নিমজ্জিত।</p></div>
+                        </li>
+                    </ul>
+                </div>
+                 <div class="mt-12 text-center bg-gray-800 text-white p-8 rounded-lg max-w-4xl mx-auto shadow-xl">
+                    <h3 class="font-bold text-lg mb-2 text-amber-300">চূড়ান্ত সতর্কবাণী</h3>
+                    <p class="font-arabic text-3xl mb-4">وَكَذَٰلِكَ أَخْذُ رَبِّكَ إِذَا أَخَذَ الْقُرَىٰ وَهِيَ ظَالِمَةٌ ۚ إِنَّ أَخْذَهُ أَلِيمٌ شَدِيدٌ</p>
+                    <p class="text-lg italic text-slate-300">"আর এভাবেই তোমার রব অত্যাচারী জনপদগুলোকে পাকড়াও করেন। নিশ্চয়ই তাঁর পাকড়াও অত্যন্ত যন্ত্রণাদায়ক ও কঠোর।" (হূদ: ১০২)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: The Journey to Salvation -->
+        <section id="salvation" class="py-20 bg-sky-50">
+             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-4 text-sky-800">আশার গল্প: একজন উদ্ধারপ্রাপ্তের যাত্রা</h2>
+                <p class="max-w-3xl mx-auto text-center text-lg text-gray-600 mb-12">হতাশার বিপরীতে, এই গল্পটি আশার আলো দেখায়। এটি প্রমাণ করে যে, আন্তরিক তওবার মাধ্যমে মুক্তির পথ সর্বদা খোলা থাকে।</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-lg p-8 flex flex-col items-center text-center shadow-lg transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-6xl mb-4">💥</div> <h3 class="font-bold text-xl mb-2 text-sky-700">ঐশ্বরিক সতর্কসংকেত</h3> <p class="text-gray-600">"বন্ধুদের আকস্মিক মৃত্যু দেখে সে উপলব্ধি করল, 'আমি যদি তাদের সাথে থাকতাম?'"</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-8 flex flex-col items-center text-center shadow-lg transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-6xl mb-4">😭</div> <h3 class="font-bold text-xl mb-2 text-sky-700">অনুশোচনার অশ্রু</h3> <p class="text-gray-600">"রমজানের এক রাতে কুরআনের আয়াত শুনে তার অন্তর কেঁপে উঠল এবং সে অঝোরে কাঁদতে লাগল।"</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-8 flex flex-col items-center text-center shadow-lg transform hover:-translate-y-2 transition-transform duration-300">
+                         <div class="text-6xl mb-4 text-yellow-400">🌟</div> <h3 class="font-bold text-xl mb-2 text-sky-700">ঈমানের নূর</h3> <p class="text-gray-600">"তার চেহারায় এখন ঈমানের নূর। সে এখন অন্যদের মুক্তির পথে আহ্বান করে।"</p>
+                    </div>
+                </div>
+             </div>
+        </section>
+
+        <!-- Section 7: The Invitation -->
+        <section id="invitation" class="py-20 bg-sea-calm text-center">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto bg-white/90 p-10 rounded-2xl shadow-2xl backdrop-blur-sm">
+                    <h2 class="text-4xl md:text-5xl font-bold text-amber-700 mb-6">খোলা দরজা: দয়ার পথে আহ্বান</h2>
+                    <p class="text-xl text-gray-700 mb-8">পাপের অন্ধকার থেকে বেরিয়ে এসে আল্লাহর অসীম রহমতের দিকে ফিরে আসার পথ এখনো খোলা আছে।</p>
+                    
+                    <!-- Gemini Dua Generator -->
+                    <div class="bg-amber-50 p-6 rounded-lg my-8 border border-amber-200">
+                        <h3 class="text-2xl font-bold text-amber-800 mb-3">আপনার মনের কথা বলুন</h3>
+                        <p class="text-gray-600 mb-4">আপনার মনের অনুভূতি বা সংগ্রামের কথা লিখুন, আমরা আপনার জন্য একটি ব্যক্তিগত দোয়া তৈরি করতে সাহায্য করব।</p>
+                        <textarea id="dua-input" class="w-full p-3 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none" rows="3" placeholder="যেমন: আমি একাকী ও হতাশ বোধ করছি..."></textarea>
+                        <button id="generate-dua-btn" class="mt-4 bg-amber-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-amber-700 transition-colors duration-300 text-lg shadow-md">
+                            ✨ আমার জন্য একটি দোয়া তৈরি করুন
+                        </button>
+                        <div id="dua-loader" class="hidden loader"></div>
+                        <div id="dua-result" class="mt-6 text-left"></div>
+                    </div>
+
+                    <div class="mt-12 border-t-2 border-amber-200 pt-8">
+                         <h3 class="font-bold text-lg mb-2 text-amber-800">আমাদের সম্মিলিত প্রার্থনা</h3>
+                         <p class="text-lg italic text-gray-600">"হে আল্লাহ, তওবাকারীদের তওবা কবুল করুন, গুনাহগারদের গুনাহ মাফ করুন, এবং পথহারাদের পথ দেখান। আমাদেরকে ইসলামের উপর قائم রাখুন এবং মৃত্যুর পূর্বে খাঁটি তওবা নসিব করুন।"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white py-4">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p>&copy; ২০২৫ | শেখ খালিদ আল-রাশেদের "আহওয়ালুল গারিকীন" খুতবার উপর ভিত্তি করে নির্মিত একটি শিক্ষামূলক প্রয়াস।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const anatomyData = [
+                {
+                    key: 'salat',
+                    label: 'অবহেলিত সালাত',
+                    icon: '✈️',
+                    value: 1,
+                    title: 'অবহেলিত সালাত',
+                    quote: '"সে তার বিমানের জন্য ফজরের আগে ঘুম থেকে ওঠে, কিন্তু ফজরের সালাতের জন্য উঠতে পারে না। একটি ক্ষণস্থায়ী যাত্রার জন্য সে প্রস্তুত, কিন্তু অনন্তের যাত্রার জন্য নয়।"',
+                    bgColor: 'bg-red-100',
+                    borderColor: 'border-red-500'
+                },
+                {
+                    key: 'entertainment',
+                    label: 'শূন্যতার প্রতিধ্বনি',
+                    icon: '🎵',
+                    value: 1,
+                    title: 'শূন্যতার প্রতিধ্বনি',
+                    quote: '"তারা গায়ক-গায়িকাদের নাম জানে, কিন্তু মুহাম্মদ (ﷺ) ও তাঁর সাহাবীদের জীবনী জানে না। তাদের অন্তর অর্থহীন শব্দে পূর্ণ, কিন্তু কুরআনের আলো থেকে বঞ্চিত।"',
+                    bgColor: 'bg-blue-100',
+                    borderColor: 'border-blue-500'
+                },
+                {
+                    key: 'materialism',
+                    label: 'বাহ্যিক চাকচিক্য',
+                    icon: '👔',
+                    value: 1,
+                    title: 'বাজারের চাকচিক্য',
+                    quote: '"তাদের বাহ্যিক রূপ তোমাকে মুগ্ধ করবে... কিন্তু তাদের ভেতরটা অন্তঃসারশূন্য। তারা পোশাক-পরিচ্ছদ নিয়ে ব্যস্ত, কিন্তু আত্মার পরিচর্যায় উদাসীন।"',
+                    bgColor: 'bg-yellow-100',
+                    borderColor: 'border-yellow-500'
+                },
+                {
+                    key: 'habitual_sin',
+                    label: 'অভ্যাসের শিকল',
+                    icon: '🔗',
+                    value: 1,
+                    title: 'অভ্যাসের শিকল',
+                    quote: '"পাপ তাদের জন্য একটি অভ্যাসে পরিণত হয়েছে... তারা অন্ধকারের উপর অন্ধকারে বাস করে। প্রতিটি পাপ পরবর্তী পাপের পথ খুলে দেয়, যতক্ষণ না তারা повністю ডুবে যায়।"',
+                    bgColor: 'bg-gray-200',
+                    borderColor: 'border-gray-500'
+                }
+            ];
+
+            const detailsContainer = document.getElementById('anatomy-details');
+
+            const renderDetails = (index) => {
+                const item = anatomyData[index];
+                detailsContainer.innerHTML = `
+                    <div class="border-l-4 ${item.borderColor} pl-4 animate-fade-in">
+                         <div class="text-4xl mb-3">${item.icon}</div>
+                        <h3 class="text-2xl font-bold text-amber-800 mb-2">${item.title}</h3>
+                        <p class="text-lg italic text-gray-700">${item.quote}</p>
+                    </div>
+                `;
+                detailsContainer.classList.remove('animate-fade-in-custom');
+                void detailsContainer.offsetWidth; 
+                detailsContainer.classList.add('animate-fade-in-custom');
+            };
+            
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes animate-fade-in-custom {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-fade-in-custom {
+                    animation: animate-fade-in-custom 0.5s ease-out forwards;
+                }
+            `;
+            document.head.appendChild(style);
+
+            const ctx = document.getElementById('drowningChart').getContext('2d');
+            const drowningChart = new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: anatomyData.map(d => d.label),
+                    datasets: [{
+                        data: anatomyData.map(d => d.value),
+                        backgroundColor: ['rgba(239, 68, 68, 0.6)', 'rgba(59, 130, 246, 0.6)', 'rgba(245, 158, 11, 0.6)', 'rgba(107, 114, 128, 0.6)'],
+                        borderColor: ['rgba(239, 68, 68, 1)', 'rgba(59, 130, 246, 1)', 'rgba(245, 158, 11, 1)', 'rgba(107, 114, 128, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { r: { display: false } },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: "'Hind Siliguri', sans-serif", size: 14 } } },
+                        tooltip: { enabled: false }
+                    },
+                    onClick: (evt, elements) => {
+                        if (elements.length > 0) renderDetails(elements[0].index);
+                    }
+                }
+            });
+            
+            renderDetails(0);
+
+            // Populate guidance options
+            const struggleOptionsContainer = document.getElementById('struggle-options');
+            anatomyData.forEach(item => {
+                struggleOptionsContainer.innerHTML += `
+                    <label class="flex items-center space-x-3 p-3 bg-gray-50 border rounded-lg hover:bg-amber-50 cursor-pointer">
+                        <input type="checkbox" name="struggle" value="${item.label}" class="form-checkbox h-5 w-5 text-amber-600 rounded focus:ring-amber-500">
+                        <span class="text-gray-700">${item.label}</span>
+                    </label>
+                `;
+            });
+
+            const callGemini = async (prompt) => {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.statusText}`);
+                    }
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        throw new Error("Unexpected API response format.");
+                    }
+                } catch (error) {
+                    console.error("Gemini API call failed:", error);
+                    return "দুঃখিত, এই মুহূর্তে উত্তর তৈরি করা সম্ভব হচ্ছে না। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।";
+                }
+            };
+
+            // Gemini Action Plan
+            const generatePlanBtn = document.getElementById('generate-plan-btn');
+            const planLoader = document.getElementById('plan-loader');
+            const planResult = document.getElementById('plan-result');
+
+            generatePlanBtn.addEventListener('click', async () => {
+                const selectedStruggles = Array.from(document.querySelectorAll('input[name="struggle"]:checked')).map(cb => cb.value);
+                if (selectedStruggles.length === 0) {
+                    planResult.innerHTML = `<p class="text-red-600 bg-red-100 p-3 rounded-lg">অনুগ্রহ করে অন্তত একটি বিষয় নির্বাচন করুন।</p>`;
+                    return;
+                }
+
+                planLoader.style.display = 'block';
+                planResult.innerHTML = '';
+
+                const strugglesText = selectedStruggles.join(' এবং ');
+                const prompt = `আপনি একজন সহানুভূতিশীল ইসলামিক আধ্যাত্মিক வழிகாশকের ভূমিকা পালন করুন। আমি "${strugglesText}" নিয়ে সংগ্রাম করছি। দয়া করে আমাকে তওবা এবং আল্লাহর দিকে ফিরে আসার জন্য ৩টি বাস্তবসম্মত এবং উৎসাহব্যঞ্জক পদক্ষেপ দিন। উত্তরটি অবশ্যই বাংলায় এবং একটি সংখ্যাযুক্ত তালিকা হিসাবে ফর্ম্যাট করা উচিত। প্রতিটি পদক্ষেপ একটি নতুন লাইনে শুরু হবে।`;
+                
+                const responseText = await callGemini(prompt);
+                
+                const steps = responseText.split('\n').filter(line => line.trim().length > 0);
+                let html = '<div class="bg-green-50 p-6 rounded-lg border border-green-200 shadow-md animate-fade-in-custom space-y-4">';
+                html += '<h4 class="text-xl font-bold text-green-800">আপনার জন্য কিছু পরামর্শ:</h4>';
+                steps.forEach(step => {
+                   html += `<p class="text-gray-700 leading-relaxed">${step}</p>`;
+                });
+                html += '</div>';
+
+                planResult.innerHTML = html;
+                planLoader.style.display = 'none';
+            });
+            
+            // Gemini Dua Generator
+            const generateDuaBtn = document.getElementById('generate-dua-btn');
+            const duaLoader = document.getElementById('dua-loader');
+            const duaResult = document.getElementById('dua-result');
+            const duaInput = document.getElementById('dua-input');
+
+            generateDuaBtn.addEventListener('click', async () => {
+                const feeling = duaInput.value.trim();
+                if (feeling === '') {
+                    duaResult.innerHTML = `<p class="text-red-600 bg-red-100 p-3 rounded-lg">অনুগ্রহ করে আপনার অনুভূতি প্রকাশ করুন।</p>`;
+                    return;
+                }
+
+                duaLoader.style.display = 'block';
+                duaResult.innerHTML = '';
+                
+                const prompt = `আমি "${feeling}" বোধ করছি। এই অনুভূতির উপর ভিত্তি করে, আল্লাহর কাছে সাহায্য, পথনির্দেশ এবং করুণা চেয়ে একটি সংক্ষিপ্ত, আন্তরিক এবং ব্যক্তিগত দোয়া রচনা করুন। দোয়ার ভাষা সুন্দর, আশাবাদী এবং বিনয়ী হতে হবে। উত্তরটি শুধুমাত্র দোয়া অংশটুকু হবে, অন্য কোনো অতিরিক্ত লেখা থাকবে না এবং অবশ্যই বাংলা ভাষায় হবে।`;
+
+                const responseText = await callGemini(prompt);
+
+                let html = `
+                    <div class="bg-sky-50 p-6 rounded-lg border border-sky-200 shadow-md animate-fade-in-custom">
+                        <h4 class="text-xl font-bold text-sky-800 mb-3">আপনার জন্য একটি বিশেষ দোয়া:</h4>
+                        <p class="text-lg italic text-gray-800 leading-loose">"${responseText}"</p>
+                    </div>
+                `;
+                duaResult.innerHTML = html;
+                duaLoader.style.display = 'none';
+            });
+
+
+            // Smooth scrolling for nav links
+            const navLinks = document.querySelectorAll('#nav-menu a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        const headerOffset = document.getElementById('header').offsetHeight;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+                    }
+                });
+            });
+
+            // Active nav link on scroll
+            const sections = document.querySelectorAll('section');
+            const navItems = document.querySelectorAll('.nav-item');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= (sectionTop - sectionHeight / 2)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === `#${current}`) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>

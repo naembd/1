@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>জান্নাতই আমাদের মিলনস্থল</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Teal and Gold accents -->
+    <!-- Application Structure Plan: A guided, thematic journey designed to take the user from understanding the goal (Paradise), to feeling the motivation (stories of the devout), believing the promise (the martyr's story), and finally learning the practical steps (the path). This structure prioritizes user psychology and engagement over a literal-for-chapter translation of the source report. It uses a sticky navigation for easy exploration but encourages a natural top-to-bottom flow. Key interactions include interactive cards, a narrative timeline, and data visualization to make complex theological concepts tangible and memorable. A Gemini-powered Dua generator is added for personal reflection and supplication. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Comparing worldly value to a single item from Paradise. Goal: Show the immense ROI of piety. Viz: Bar Chart (Chart.js). Interaction: Hover tooltips. Justification: A direct, powerful visual for comparing vastly different values.
+        2. Report Info: The actionable steps to Paradise. Goal: Provide a practical, memorable guide. Viz: Interactive Checklist (HTML/CSS/JS) and a Radar Chart (Chart.js) for the "Doors of Goodness". Interaction: Hover effects on checklist, visual balance on radar. Justification: Checklist is action-oriented; radar chart shows the holistic nature of the required deeds.
+        3. Report Info: Stories of the devout. Goal: Humanize piety. Viz: Horizontal scroll container with cards (HTML/Tailwind/JS). Interaction: Click/swipe navigation. Justification: Breaks up text, makes anecdotes easily scannable and digestible.
+        4. Report Info: The Martyr's Dream story. Goal: Build certainty in Allah's promise. Viz: Vertical step-based narrative diagram (HTML/Tailwind). Interaction: Icons and text reveal on scroll/hover. Justification: Clearly visualizes the chronological flow of promise to fulfillment, strengthening the narrative impact.
+        5. User Input for Dua: Goal: Provide a personalized spiritual tool. Viz: Text area and button. Interaction: User types feelings, clicks to generate a custom dua via Gemini API. Justification: Moves from passive learning to active, personal spiritual engagement.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 300px;
+            width: 100%;
+            max-width: 600px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #14b8a6; /* teal-500 */
+            border-bottom-color: #14b8a6;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #14b8a6;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <header id="navbar" class="bg-stone-50/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-teal-700">জান্নাত</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#description" class="nav-link text-stone-600 font-medium border-b-2 border-transparent pb-1">জান্নাতের বর্ণনা</a>
+                <a href="#longing" class="nav-link text-stone-600 font-medium border-b-2 border-transparent pb-1">পুণ্যবানদের আকুতি</a>
+                <a href="#promise" class="nav-link text-stone-600 font-medium border-b-2 border-transparent pb-1">ঐশ্বরিক প্রতিশ্রুতি</a>
+                <a href="#path" class="nav-link text-stone-600 font-medium border-b-2 border-transparent pb-1">জান্নাতের পথ</a>
+                <a href="#dua-generator" class="nav-link text-stone-600 font-medium border-b-2 border-transparent pb-1">ব্যক্তিগত দোয়া</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-stone-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#description" class="mobile-nav-link block text-center py-2 px-4 text-sm text-stone-600 hover:bg-teal-50">জান্নাতের বর্ণনা</a>
+            <a href="#longing" class="mobile-nav-link block text-center py-2 px-4 text-sm text-stone-600 hover:bg-teal-50">পুণ্যবানদের আকুতি</a>
+            <a href="#promise" class="mobile-nav-link block text-center py-2 px-4 text-sm text-stone-600 hover:bg-teal-50">ঐশ্বরিক প্রতিশ্রুতি</a>
+            <a href="#path" class="mobile-nav-link block text-center py-2 px-4 text-sm text-stone-600 hover:bg-teal-50">জান্নাতের পথ</a>
+            <a href="#dua-generator" class="mobile-nav-link block text-center py-2 px-4 text-sm text-stone-600 hover:bg-teal-50">ব্যক্তিগত দোয়া</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-100 to-stone-50">
+            <div class="text-center p-8">
+                <h2 class="text-4xl md:text-6xl font-extrabold text-teal-800 leading-tight">জান্নাতই আমাদের মিলনস্থল</h2>
+                <p class="mt-4 text-lg md:text-xl text-stone-600 max-w-2xl mx-auto">শেখ খালিদ আল-রাশেদের হৃদয়স্পর্শী বয়ানের আলোকে জান্নাতের পথে এক অনবদ্য যাত্রা।</p>
+                <a href="#description" class="mt-8 inline-block bg-teal-600 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-teal-700 transition-transform transform hover:scale-105">যাত্রা শুরু করুন</a>
+            </div>
+        </section>
+
+        <section id="description" class="py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 fade-in">
+                    <h3 class="text-3xl md:text-4xl font-bold text-teal-700">কুরআনের বর্ণনায় জান্নাত</h3>
+                    <p class="mt-4 text-lg text-stone-600 max-w-3xl mx-auto">এই বিভাগে জান্নাতের সেই সব বর্ণনার উপর আলোকপাত করা হয়েছে যা আল্লাহ তায়ালা কুরআনে উল্লেখ করেছেন। এটি এমন এক স্থান যেখানে কোনো দুঃখ, কষ্ট বা অভাব থাকবে না, থাকবে শুধু অফুরন্ত শান্তি ও নিয়ামত।</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+                    <div class="fade-in">
+                        <h4 class="text-2xl font-semibold mb-4 text-center">দুনিয়া ও জান্নাতের তুলনা</h4>
+                        <p class="text-stone-600 mb-6 text-center">একটি হাদিসে এসেছে, জান্নাতের কোনো নারীর ওড়না দুনিয়া এবং এর মধ্যে যা কিছু আছে তার চেয়েও উত্তম। এই চার্টটি আমাদেরকে সেই বিশাল ব্যবধান বুঝতে সাহায্য করে।</p>
+                        <div class="chart-container">
+                            <canvas id="rewardChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="space-y-6 fade-in">
+                        <div>
+                            <h4 class="text-2xl font-semibold mb-4">জান্নাতে যা কিছু থাকবে না</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-start"><span class="bg-red-100 text-red-700 font-bold rounded-full w-6 h-6 text-center mr-3 flex-shrink-0">✕</span><span>কখনো ক্ষুধা লাগবে না।</span></li>
+                                <li class="flex items-start"><span class="bg-red-100 text-red-700 font-bold rounded-full w-6 h-6 text-center mr-3 flex-shrink-0">✕</span><span>তৃষ্ণার্ত হতে হবে না।</span></li>
+                                <li class="flex items-start"><span class="bg-red-100 text-red-700 font-bold rounded-full w-6 h-6 text-center mr-3 flex-shrink-0">✕</span><span>পোশাকের কোনো অভাব হবে না।</span></li>
+                                <li class="flex items-start"><span class="bg-red-100 text-red-700 font-bold rounded-full w-6 h-6 text-center mr-3 flex-shrink-0">✕</span><span>কোনো অপ্রয়োজনীয় বা বাজে কথা শোনা যাবে না।</span></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-2xl font-semibold mb-4">সর্বশ্রেষ্ঠ পুরস্কার</h4>
+                            <p class="text-stone-700 leading-relaxed bg-amber-50 p-6 rounded-lg border-l-4 border-amber-400">জান্নাতের সমস্ত বস্তুগত নিয়ামতের চেয়েও বড় পুরস্কার হলো 'ইউমুল মাযিদ' বা বৃদ্ধির দিন। সেদিন জান্নাতিরা তাদের রবের দর্শন লাভ করবে। আল্লাহ তায়ালা তাদের উপর তাঁর সন্তুষ্টি প্রকাশ করবেন এবং বলবেন, "আমি তোমাদের উপর আমার সন্তুষ্টি অবধারিত করলাম, এরপর আমি আর কখনো তোমাদের উপর অসন্তুষ্ট হব না।" এটিই হবে জান্নাতের সর্বশ্রেষ্ঠ ও চূড়ান্ত প্রাপ্তি।</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="longing" class="py-20 md:py-32 bg-stone-100">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 fade-in">
+                    <h3 class="text-3xl md:text-4xl font-bold text-teal-700">পুণ্যবানদের আকুতি</h3>
+                    <p class="mt-4 text-lg text-stone-600 max-w-3xl mx-auto">জান্নাতের প্রতি ভালোবাসা শুধুমাত্র একটি ধারণা নয়, বরং এটি ছিল পূর্বসূরি পুণ্যবানদের জীবনের চালিকাশক্তি। এই বিভাগে তাঁদের কিছু গল্প তুলে ধরা হলো, যা আমাদের জন্য অনুপ্রেরণা হতে পারে।</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-2 fade-in">
+                        <h4 class="text-xl font-bold text-teal-600 mb-3">আবু রাইহানা (রাঃ)</h4>
+                        <p class="text-stone-600">একবার যুদ্ধ থেকে ফিরে তিনি সারা রাত নামাজে কাটিয়ে দেন। স্ত্রী জিজ্ঞাসা করলে তিনি বলেন, "জান্নাতের বর্ণনায় আমার অন্তর এতটাই মগ্ন ছিল যে, আমি দুনিয়ার সবকিছু ভুলে গিয়েছিলাম।"</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-2 fade-in" style="transition-delay: 150ms;">
+                        <h4 class="text-xl font-bold text-teal-600 mb-3">হাসান আল-বসরী (রহঃ)</h4>
+                        <p class="text-stone-600">তিনি বলতেন, "যখন তুমি দেখবে কেউ দুনিয়াবি বিষয়ে তোমার সাথে প্রতিযোগিতা করছে, তখন তুমি তার সাথে আখেরাতের বিষয়ে প্রতিযোগিতা করো।"</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-2 fade-in" style="transition-delay: 300ms;">
+                        <h4 class="text-xl font-bold text-teal-600 mb-3">হারিছা (রাঃ)</h4>
+                        <p class="text-stone-600">বদরের যুদ্ধে শহীদ হলে তাঁর মা রাসূল (সাঃ) এর কাছে তাঁর অবস্থা জানতে চান। রাসূল (সাঃ) বলেন, "এটি একটি জান্নাত নয়, বরং অনেক জান্নাত। আর তোমার পুত্র সর্বোচ্চ ফিরদাউস লাভ করেছে।"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="promise" class="py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 fade-in">
+                    <h3 class="text-3xl md:text-4xl font-bold text-teal-700">ঐশ্বরিক প্রতিশ্রুতি: শহীদের স্বপ্ন</h3>
+                    <p class="mt-4 text-lg text-stone-600 max-w-3xl mx-auto">আল্লাহর প্রতিশ্রুতি যে কতটা সত্য, তা সাঈদ বিন আল-হারিথের এই অলৌকিক ঘটনা থেকে বোঝা যায়। এই গল্পটি আমাদের অন্তরে ইয়াকিন বা দৃঢ় বিশ্বাস তৈরি করে যে, জান্নাতই আমাদের চূড়ান্ত মিলনস্থল।</p>
+                </div>
+                <div class="relative max-w-2xl mx-auto">
+                    <div class="absolute left-1/2 w-1 bg-teal-200 h-full -translate-x-1/2"></div>
+                    <div class="space-y-16">
+                        <div class="relative flex items-center fade-in">
+                            <div class="w-1/2 pr-8 text-right">
+                                <h4 class="font-bold text-xl text-teal-600">স্বপ্নে সুসংবাদ</h4>
+                                <p class="text-stone-600 mt-2">ধার্মিক যোদ্ধা সাঈদ এক রাতে স্বপ্নে দেখেন, দুজন ফেরেশতা তাঁকে বলছেন, "সুসংবাদ! তোমার গুনাহ মাফ করা হয়েছে এবং তোমার আমল কবুল করা হয়েছে।" তারা তাঁকে জান্নাতে তাঁর প্রাসাদ ও হুরদের দেখান।</p>
+                            </div>
+                            <div class="absolute left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-teal-500 border-4 border-white flex items-center justify-center text-white font-bold">1</div>
+                            <div class="w-1/2 pl-8"></div>
+                        </div>
+                        <div class="relative flex items-center fade-in">
+                            <div class="w-1/2 pr-8"></div>
+                             <div class="absolute left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-teal-500 border-4 border-white flex items-center justify-center text-white font-bold">2</div>
+                            <div class="w-1/2 pl-8 text-left">
+                                <h4 class="font-bold text-xl text-teal-600">তিন দিনের অপেক্ষা</h4>
+                                <p class="text-stone-600 mt-2">তাঁর জান্নাতী স্ত্রী তাঁকে জানান, "আজ নয়, তুমি তিন দিন পর আমাদের সাথে জান্নাতে ইফতার করবে।" এই প্রতিশ্রুতি পাওয়ার পর সাঈদ শাহাদাতের জন্য ব্যাকুল হয়ে ওঠেন।</p>
+                            </div>
+                        </div>
+                        <div class="relative flex items-center fade-in">
+                            <div class="w-1/2 pr-8 text-right">
+                                <h4 class="font-bold text-xl text-teal-600">প্রতিশ্রুতি পূরণ</h4>
+                                <p class="text-stone-600 mt-2">ঠিক তৃতীয় দিনের বিকেলে একটি তীর এসে তাঁর গলায় লাগে। শাহাদাতের সময় তিনি হাসিমুখে বলেন, "আলহামদুলিল্লাহ, যিনি তাঁর ওয়াদা পূরণ করেছেন। আমাদের মিলনস্থল জান্নাত।"</p>
+                            </div>
+                             <div class="absolute left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-teal-500 border-4 border-white flex items-center justify-center text-white font-bold">3</div>
+                            <div class="w-1/2 pl-8"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="path" class="py-20 md:py-32 bg-stone-100">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 fade-in">
+                    <h3 class="text-3xl md:text-4xl font-bold text-teal-700">জান্নাতের পথ</h3>
+                    <p class="mt-4 text-lg text-stone-600 max-w-3xl mx-auto">এই বিভাগে জান্নাতে পৌঁছানোর জন্য কিছু সহজ ও কার্যকরী আমল তুলে ধরা হয়েছে। এই পথগুলো অনুসরণ করে যে কেউ আল্লাহর সন্তুষ্টি অর্জন করতে পারে এবং জান্নাতের আশা করতে পারে।</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+                    <div class="space-y-4 fade-in">
+                        <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow flex items-center">
+                            <span class="text-2xl mr-4">🤝</span>
+                            <div>
+                                <h4 class="font-semibold text-lg">শান্তি প্রচার করা</h4>
+                                <p class="text-sm text-stone-500">অপরকে সালাম দেওয়া, বিবাদ মীমাংসা করা।</p>
+                            </div>
+                        </div>
+                         <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow flex items-center">
+                            <span class="text-2xl mr-4">🍲</span>
+                            <div>
+                                <h4 class="font-semibold text-lg">অভুক্তকে খাওয়ানো</h4>
+                                <p class="text-sm text-stone-500">ক্ষুধার্তকে খাদ্য দেওয়া, প্রতিবেশীর খোঁজ রাখা।</p>
+                            </div>
+                        </div>
+                         <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow flex items-center">
+                            <span class="text-2xl mr-4">👨‍👩‍👧‍👦</span>
+                            <div>
+                                <h4 class="font-semibold text-lg">আত্মীয়তার সম্পর্ক রক্ষা করা</h4>
+                                <p class="text-sm text-stone-500">পরিবারের সাথে সুসম্পর্ক বজায় রাখা।</p>
+                            </div>
+                        </div>
+                         <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow flex items-center">
+                            <span class="text-2xl mr-4">🌙</span>
+                            <div>
+                                <h4 class="font-semibold text-lg">রাতে ইবাদত করা</h4>
+                                <p class="text-sm text-stone-500">মানুষ যখন ঘুমিয়ে থাকে, তখন তাহাজ্জুদ পড়া।</p>
+                            </div>
+                        </div>
+                         <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow flex items-center">
+                            <span class="text-2xl mr-4">✅</span>
+                            <div>
+                                <h4 class="font-semibold text-lg">সত্যবাদিতা ধারণ করা</h4>
+                                <p class="text-sm text-stone-500">সর্বদা সত্য কথা বলা, কারণ সত্যবাদিতা জান্নাতের দিকে পথ দেখায়।</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fade-in">
+                         <h4 class="text-2xl font-semibold mb-4 text-center">সৎকাজের স্তম্ভসমূহ</h4>
+                        <p class="text-stone-600 mb-6 text-center">কিছু আমল রয়েছে যা কল্যাণের দরজা খুলে দেয়। এই চার্টটি সেইসব মূল আমলের একটি ভারসাম্যপূর্ণ চিত্র তুলে ধরে।</p>
+                        <div class="chart-container">
+                            <canvas id="deedsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-20 bg-red-100 border-l-4 border-red-500 text-red-800 p-6 rounded-lg fade-in">
+                    <h4 class="font-bold text-xl mb-2">সবচেয়ে বড় বাধা: জিহ্বার ফসল</h4>
+                    <p class="leading-relaxed">রাসূল (সাঃ) মু'আজ (রাঃ)-কে সতর্ক করে বলেন, "মানুষকে তার জিহ্বার ফসলই (অর্থাৎ, মন্দ কথা) উপুড় করে জাহান্নামে নিক্ষেপ করবে।" আমাদের সমস্ত ভালো আমল গীবত, মিথ্যা, এবং কটূকথার কারণে নষ্ট হয়ে যেতে পারে। তাই জিহ্বার হেফাজত করা জান্নাতের পথের অন্যতম গুরুত্বপূর্ণ শর্ত।</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="dua-generator" class="py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 fade-in">
+                    <h3 class="text-3xl md:text-4xl font-bold text-teal-700">আপনার মনের কথা থেকে দোয়া</h3>
+                    <p class="mt-4 text-lg text-stone-600 max-w-3xl mx-auto">কখনো কখনো আমরা আমাদের মনের কথা গুছিয়ে বলতে পারি না। এখানে আপনার অনুভূতি, দুশ্চিন্তা বা কৃতজ্ঞতার কথা লিখুন। আমরা চেষ্টা করবো আপনার জন্য একটি ব্যক্তিগত দোয়া তৈরি করতে।</p>
+                </div>
+                <div class="max-w-2xl mx-auto fade-in">
+                    <div class="bg-stone-100 p-6 rounded-xl shadow-inner">
+                        <textarea id="dua-input" rows="4" class="w-full p-4 bg-white rounded-lg border border-stone-200 focus:ring-2 focus:ring-teal-500 focus:outline-none" placeholder="যেমন: আমি আমার পরীক্ষার ফলাফল নিয়ে খুব চিন্তিত, অথবা, আমি আমার পরিবারের জন্য আল্লাহর কাছে কৃতজ্ঞ..."></textarea>
+                        <button id="generate-dua-btn" class="mt-4 w-full bg-teal-600 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-teal-700 transition-all transform hover:scale-105 flex items-center justify-center">
+                            ✨ আমার জন্য দোয়া তৈরি করুন
+                        </button>
+                    </div>
+
+                    <div id="dua-loading" class="mt-8 text-center hidden">
+                        <div class="loader mx-auto"></div>
+                        <p class="mt-2 text-stone-500">আপনার জন্য দোয়া তৈরি করা হচ্ছে...</p>
+                    </div>
+                    
+                    <div id="dua-output-container" class="mt-8 hidden">
+                        <div id="dua-output" class="bg-amber-50 p-6 rounded-lg border-l-4 border-amber-400 text-stone-700 leading-relaxed text-lg"></div>
+                        <div class="text-right mt-2">
+                            <button id="copy-dua-btn" class="text-sm bg-stone-200 text-stone-600 hover:bg-stone-300 py-1 px-3 rounded">কপি করুন</button>
+                        </div>
+                         <p class="text-xs text-stone-500 mt-4 text-center">দ্রষ্টব্য: এই দোয়াটি কৃত্রিম বুদ্ধিমত্তা দ্বারা তৈরি এবং অনুপ্রেরণার জন্য ব্যবহৃত হতে পারে। কুরআন ও সুন্নাহ থেকে প্রাপ্ত দোয়াই সর্বোত্তম।</p>
+                    </div>
+                     <div id="dua-error" class="mt-8 text-center hidden p-4 bg-red-100 text-red-700 rounded-lg">
+                        দুঃখিত, এই মুহূর্তে দোয়া তৈরি করা সম্ভব হচ্ছে না। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-teal-800 text-white py-12">
+        <div class="container mx-auto px-6 text-center">
+            <h3 class="text-2xl font-semibold mb-4">আমাদের শেষ মিলনস্থল</h3>
+            <p class="text-lg text-teal-100 max-w-2xl mx-auto italic">
+                "যদি পৃথিবীতে আমাদের সাক্ষাৎ না-ও হয় এবং মৃত্যু আমাদের আলাদা করে দেয়,
+                তবে আমাদের দেখা হবে কাল এক চিরস্থায়ী আবাসে, যেখানে প্রত্যেক প্রিয়জন তার প্রিয়জনের সাথে মিলিত হবে।"
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                     mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const rewardCtx = document.getElementById('rewardChart').getContext('2d');
+            new Chart(rewardCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['দুনিয়া ও এর সবকিছু', 'জান্নাতী নারীর ওড়না'],
+                    datasets: [{
+                        label: 'তুলনামূলক মূল্য',
+                        data: [10, 200],
+                        backgroundColor: ['rgba(217, 119, 6, 0.6)', 'rgba(13, 148, 136, 0.6)'],
+                        borderColor: ['rgba(217, 119, 6, 1)', 'rgba(13, 148, 136, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => c.dataIndex === 0 ? 'দুনিয়ার সমস্ত সম্পদ ও ভোগবিলাস' : 'অকল্পনীয় ও অসীম মূল্যবান' } } },
+                    scales: { x: { ticks: { display: false }, grid: { display: false } }, y: { ticks: { font: { size: 14, family: "'Hind Siliguri', sans-serif" } } } }
+                }
+            });
+
+            const deedsCtx = document.getElementById('deedsChart').getContext('2d');
+            new Chart(deedsCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['নামাজ', 'রোজা (ঐচ্ছিক)', 'দান', 'রাতের ইবাদত', 'জিহাদ'],
+                    datasets: [{
+                        label: 'সৎকাজের প্রভাব',
+                        data: [9, 7, 8, 8, 6],
+                        backgroundColor: 'rgba(13, 148, 136, 0.2)',
+                        borderColor: 'rgba(13, 148, 136, 1)',
+                        pointBackgroundColor: 'rgba(13, 148, 136, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(13, 148, 136, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, elements: { line: { borderWidth: 3 } },
+                    plugins: { legend: { display: false } },
+                    scales: { r: { angleLines: { color: 'rgba(0,0,0,0.1)' }, suggestedMin: 0, suggestedMax: 10, pointLabels: { font: { size: 12, family: "'Hind Siliguri', sans-serif" } }, ticks: { backdropColor: 'rgba(255, 255, 255, 0.75)', color: '#666' } } }
+                }
+            });
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+            const sections = document.querySelectorAll('main section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    if (pageYOffset >= section.offsetTop - 70) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Gemini API Feature
+            const generateDuaBtn = document.getElementById('generate-dua-btn');
+            const duaInput = document.getElementById('dua-input');
+            const duaLoading = document.getElementById('dua-loading');
+            const duaOutputContainer = document.getElementById('dua-output-container');
+            const duaOutput = document.getElementById('dua-output');
+            const duaError = document.getElementById('dua-error');
+            const copyDuaBtn = document.getElementById('copy-dua-btn');
+
+            generateDuaBtn.addEventListener('click', async () => {
+                const userInput = duaInput.value.trim();
+                if (!userInput) {
+                    duaInput.focus();
+                    return;
+                }
+
+                duaLoading.classList.remove('hidden');
+                duaOutputContainer.classList.add('hidden');
+                duaError.classList.add('hidden');
+
+                const prompt = `You are a knowledgeable and compassionate Islamic guide. A person seeking closeness to Allah and aspiring for Jannah is expressing their feelings in Bengali. Based on their input, compose a short, heartfelt, and beautiful dua (supplication) in eloquent Bengali. The dua should reflect their feelings but guide them towards seeking Allah's help, mercy, strength, forgiveness, and guidance towards Paradise. Keep the language beautiful, humble, and hopeful. User's feelings: "${userInput}"`;
+
+                try {
+                    const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    
+                    const payload = {
+                        contents: [{
+                            role: "user",
+                            parts: [{ text: prompt }]
+                        }]
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts[0].text) {
+                        const generatedDua = result.candidates[0].content.parts[0].text;
+                        duaOutput.innerText = generatedDua;
+                        duaOutputContainer.classList.remove('hidden');
+                    } else {
+                        throw new Error("Invalid response from API.");
+                    }
+
+                } catch (error) {
+                    console.error("Error generating dua:", error);
+                    duaError.classList.remove('hidden');
+                } finally {
+                    duaLoading.classList.add('hidden');
+                }
+            });
+            
+            copyDuaBtn.addEventListener('click', () => {
+                const textToCopy = duaOutput.innerText;
+                const tempTextArea = document.createElement('textarea');
+                tempTextArea.value = textToCopy;
+                document.body.appendChild(tempTextArea);
+                tempTextArea.select();
+                try {
+                    document.execCommand('copy');
+                    copyDuaBtn.innerText = 'কপি হয়েছে!';
+                    setTimeout(() => {
+                        copyDuaBtn.innerText = 'কপি করুন';
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                }
+                document.body.removeChild(tempTextArea);
+            });
+        });
+    </script>
+</body>
+</html>

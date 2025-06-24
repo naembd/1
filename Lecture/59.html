@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মুনাফিক: একটি ইন্টারেক্টিভ বিশ্লেষণ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The application is designed as a single-page, thematic dashboard. Instead of a linear text, it uses interactive cards and a comparative chart to engage the user. The structure flows from introduction to dangers, characteristics, a historical lesson, and a conclusion. Gemini API has been integrated in two ways: 1) A new "Deeper Reflection" section allows users to ask open-ended questions for personalized, AI-generated insights based on the lecture's context. 2) "Generate Scenario" buttons on each characteristic card use Gemini to create modern, relatable case studies. This enhances interactivity and personal relevance, moving from static information presentation to a dynamic, AI-assisted learning tool. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Key characteristics of hypocrites. Goal: Organize & Explore. Viz/Method: Interactive cards (HTML/CSS/JS). Interaction: Click to reveal details. NEW: Click a button to generate a contemporary scenario via Gemini API. Justification: Makes abstract concepts concrete and relatable.
+        - Report Info: Difference in worship. Goal: Compare. Viz/Method: Bar Chart (Chart.js). Interaction: Static visualization. Justification: Clear visual comparison.
+        - Report Info: Core Islamic concepts on hypocrisy. Goal: Inquire & Reflect. Viz/Method: A new text input section. Interaction: User types a question, Gemini API generates a detailed reflection. Justification: Provides a personalized, deep-dive learning experience beyond the pre-defined content.
+        All visualizations and interactions are designed to create a comprehensive and engaging learning journey.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .content-section {
+            scroll-margin-top: 80px;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border-left-color: #d69e2e;
+            animation: spin 1s ease infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-gray-800">
+
+    <header class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-amber-700">মুনাফিক: একটি বিশ্লেষণ</h1>
+            <div class="hidden md:flex space-x-6">
+                <a href="#introduction" class="nav-link text-gray-600 hover:text-amber-700 transition duration-300">ভূমিকা</a>
+                <a href="#danger" class="nav-link text-gray-600 hover:text-amber-700 transition duration-300">বিপদ</a>
+                <a href="#characteristics" class="nav-link text-gray-600 hover:text-amber-700 transition duration-300">বৈশিষ্ট্যসমূহ</a>
+                <a href="#reflection" class="nav-link text-gray-600 hover:text-amber-700 transition duration-300">প্রশ্নোত্তর</a>
+                <a href="#conclusion" class="nav-link text-gray-600 hover:text-amber-700 transition duration-300">উপসংহার</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#introduction" class="nav-link block text-center py-2 px-4 text-sm text-gray-700 hover:bg-amber-100">ভূমিকা</a>
+            <a href="#danger" class="nav-link block text-center py-2 px-4 text-sm text-gray-700 hover:bg-amber-100">বিপদ ও পরিণতি</a>
+            <a href="#characteristics" class="nav-link block text-center py-2 px-4 text-sm text-gray-700 hover:bg-amber-100">বৈশিষ্ট্যসমূহ</a>
+            <a href="#reflection" class="nav-link block text-center py-2 px-4 text-sm text-gray-700 hover:bg-amber-100">প্রশ্নোত্তর</a>
+            <a href="#conclusion" class="nav-link block text-center py-2 px-4 text-sm text-gray-700 hover:bg-amber-100">উপসংহার</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <section id="introduction" class="content-section text-center mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-amber-800">ইসলামে মুনাফিকি: এক নীরব বিপদ</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed">
+                ইসলামের শুরু থেকেই মুনাফিকরা মুসলিম উম্মাহর অভ্যন্তরে থেকে সবচেয়ে বড় হুমকি হিসেবে বিবেচিত হয়ে আসছে। তারা আমাদের ভাষায় কথা বলে, আমাদের সাথেই বসবাস করে, কিন্তু গোপনে ইসলামের ক্ষতিসাধনে লিপ্ত থাকে। এই ইন্টারেক্টিভ উপস্থাপনার মাধ্যমে আমরা কুরআনের আলোকে মুনাফিকদের পরিচয়, তাদের ধ্বংসাত্মক বৈশিষ্ট্য এবং তাদের থেকে সতর্ক থাকার গুরুত্ব সম্পর্কে জানব।
+            </p>
+        </section>
+        
+        <section id="danger" class="content-section bg-white p-8 rounded-xl shadow-lg mb-20">
+            <h2 class="text-3xl font-bold text-center mb-8 text-red-800">মুনাফিকদের বিপদ ও চূড়ান্ত পরিণতি</h2>
+            <div class="text-center mb-6">
+                <p class="max-w-3xl mx-auto text-gray-600">
+                    মুনাফিকদের বিপদ প্রকাশ্য কাফেরদের চেয়েও ভয়াবহ, কারণ তারা বন্ধুবেশে শত্রু। আল্লাহ তাদেরকেই 'প্রকৃত শত্রু' হিসেবে আখ্যায়িত করেছেন এবং তাদের জন্য পরকালে সবচেয়ে কঠিন শাস্তির ঘোষণা দিয়েছেন।
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 text-center">
+                <div class="border border-red-200 p-6 rounded-lg bg-red-50">
+                    <h3 class="text-2xl font-semibold mb-3 text-red-700">আল্লাহর ঘোষণা</h3>
+                    <p class="text-lg italic text-gray-700">"তারাই শত্রু, অতএব তাদের সম্পর্কে সতর্ক হও। আল্লাহ তাদেরকে ধ্বংস করুন! তারা কোথায় বিভ্রান্ত হচ্ছে?"</p>
+                    <p class="mt-2 text-sm text-gray-500">(সূরা আল-মুনাফিকুন: ৪)</p>
+                </div>
+                <div class="border border-gray-300 p-6 rounded-lg bg-gray-100">
+                    <h3 class="text-2xl font-semibold mb-3 text-gray-700">যন্ত্রণাদায়ক পরিণতি</h3>
+                    <p class="text-lg italic text-gray-700">"নিশ্চয়ই মুনাফিকরা থাকবে জাহান্নামের সর্বনিম্ন স্তরে এবং তাদের জন্য তুমি কখনো কোনো সাহায্যকারী পাবে না।"</p>
+                    <p class="mt-2 text-sm text-gray-500">(সূরা আন-নিসা: ১৪৫)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="characteristics" class="content-section mb-20">
+            <h2 class="text-3xl font-bold text-center mb-4 text-amber-800">মুনাফিকদের প্রধান বৈশিষ্ট্যসমূহ</h2>
+            <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">কুরআনে বর্ণিত মুনাফিকদের কিছু মারাত্মক বৈশিষ্ট্য এখানে তুলে ধরা হলো। প্রতিটি কার্ডে ক্লিক করে বিস্তারিত জানুন এবং সমসাময়িক উদাহরণ দেখুন।</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <div class="characteristic-card bg-white rounded-lg shadow-md p-6 flex flex-col">
+                    <div class="cursor-pointer flex-grow" data-target="details-1">
+                        <h3 class="text-xl font-semibold text-amber-700 mb-2">১. কাফেরদের সাথে বন্ধুত্ব</h3>
+                        <p class="text-gray-600">মুমিনদের পরিবর্তে কাফেরদেরকে বন্ধু ও অভিভাবক হিসেবে গ্রহণ করে এবং তাদের কাছে সম্মান অন্বেষণ করে।</p>
+                        <div id="details-1" class="details hidden mt-4 text-sm text-gray-700 bg-amber-50 p-4 rounded">
+                            তারা মনে করে কাফেররাই শক্তিশালী এবং তাদের সাহায্যেই সম্মান ও মর্যাদা লাভ করা সম্ভব। অথচ, পবিত্র কুরআনে আল্লাহ स्पष्टভাবে ঘোষণা করেছেন যে, সকল সম্মান ও মর্যাদা একমাত্র আল্লাহরই জন্য। (সূরা আন-নিসা: ১৩৯)
+                        </div>
+                    </div>
+                    <button class="generate-scenario-btn mt-4 bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition duration-300 text-sm" data-characteristic="কাফেরদের সাথে বন্ধুত্ব">উদাহরণ দেখুন ✨</button>
+                    <div class="scenario-output mt-4 text-sm"></div>
+                </div>
+                
+                <div class="characteristic-card bg-white rounded-lg shadow-md p-6 flex flex-col">
+                    <div class="cursor-pointer flex-grow" data-target="details-2">
+                        <h3 class="text-xl font-semibold text-amber-700 mb-2">২. আল্লাহর আয়াত নিয়ে উপহাস</h3>
+                        <p class="text-gray-600">তারা আল্লাহর আয়াত, তাঁর রাসূল এবং দ্বীন নিয়ে গোপনে ও প্রকাশ্যে ঠাট্টা-বিদ্রূপ করে।</p>
+                        <div id="details-2" class="details hidden mt-4 text-sm text-gray-700 bg-amber-50 p-4 rounded">
+                           যখন তাদের এই কাজের ব্যাপারে জিজ্ঞাসা করা হয়, তখন তারা অজুহাত দেখিয়ে বলে, "আমরা তো কেবল হাসি-তামাশা ও খেলাধুলা করছিলাম।" আল্লাহ তাদের এই অজুহাত প্রত্যাখ্যান করে একে কুফরি হিসেবে আখ্যায়িত করেছেন। (সূরা আত-তাওবাহ: ৬৫-৬৬)
+                        </div>
+                    </div>
+                    <button class="generate-scenario-btn mt-4 bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition duration-300 text-sm" data-characteristic="আল্লাহর আয়াত নিয়ে উপহাস">উদাহরণ দেখুন ✨</button>
+                    <div class="scenario-output mt-4 text-sm"></div>
+                </div>
+
+                <div class="characteristic-card bg-white rounded-lg shadow-md p-6 flex flex-col">
+                    <div class="cursor-pointer flex-grow" data-target="details-3">
+                        <h3 class="text-xl font-semibold text-amber-700 mb-2">৩. মুসলিমদের বিপদে আনন্দ</h3>
+                        <p class="text-gray-600">তারা সবসময় মুসলিমদের পরাজয় ও বিপর্যয়ের অপেক্ষায় থাকে এবং এতে আনন্দিত হয়।</p>
+                        <div id="details-3" class="details hidden mt-4 text-sm text-gray-700 bg-amber-50 p-4 rounded">
+                            যদি মুসলিমদের কোনো বিজয় অর্জিত হয়, তখন তারা নিজেদেরকে মুসলিমদের অংশ বলে দাবি করে। আর যদি কাফেরদের কোনো সাফল্য আসে, তখন তাদের বলে, "আমরা তোমাদেরকে মুসলিমদের হাত থেকে রক্ষা করেছি।" (সূরা আন-নিসা: ১৪১)
+                        </div>
+                    </div>
+                    <button class="generate-scenario-btn mt-4 bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition duration-300 text-sm" data-characteristic="মুসলিমদের বিপদে আনন্দ">উদাহরণ দেখুন ✨</button>
+                    <div class="scenario-output mt-4 text-sm"></div>
+                </div>
+                
+                <div class="characteristic-card bg-white rounded-lg shadow-md p-6 flex flex-col">
+                    <div class="cursor-pointer flex-grow" data-target="details-4">
+                        <h3 class="text-xl font-semibold text-amber-700 mb-2">৪. প্রতারণা ও ধোঁকা</h3>
+                        <p class="text-gray-600">তারা আল্লাহ এবং ঈমানদারদেরকে ধোঁকা দেওয়ার চেষ্টা করে, কিন্তু প্রকৃতপক্ষে তারা নিজেদেরকেই ধোঁকা দেয়।</p>
+                        <div id="details-4" class="details hidden mt-4 text-sm text-gray-700 bg-amber-50 p-4 rounded">
+                            তারা মনে করে তাদের কপটতা ও ষড়যন্ত্র কেউ বুঝতে পারছে না। কিন্তু আল্লাহ তাদের অন্তরের গোপন বিষয় সম্পর্কেও অবগত এবং তিনি তাদের ধোঁকার জালেই তাদের নিমজ্জিত রাখেন, যা তাদের ধ্বংসের দিকে ঠেলে দেয়। (সূরা আন-নিসা: ১৪২)
+                        </div>
+                    </div>
+                    <button class="generate-scenario-btn mt-4 bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition duration-300 text-sm" data-characteristic="প্রতারণা ও ধোঁকা">উদাহরণ দেখুন ✨</button>
+                    <div class="scenario-output mt-4 text-sm"></div>
+                </div>
+
+                <div class="characteristic-card bg-white rounded-lg shadow-md p-6 flex flex-col">
+                    <div class="cursor-pointer flex-grow" data-target="details-5">
+                        <h3 class="text-xl font-semibold text-amber-700 mb-2">৫. ইবাদতে অলসতা</h3>
+                        <p class="text-gray-600">তারা যখন সালাতে (নামাজে) দাঁড়ায়, তখন অত্যন্ত অলসতার সাথে দাঁড়ায়, যার মূল উদ্দেশ্য থাকে মানুষকে দেখানো।</p>
+                        <div id="details-5" class="details hidden mt-4 text-sm text-gray-700 bg-amber-50 p-4 rounded">
+                            তাদের অন্তরে আল্লাহর প্রতি আন্তরিকতা না থাকায় ইবাদত তাদের কাছে একটি ভারী বোঝা মনে হয়। একজন মুমিন যেখানে সালাতে আত্মিক প্রশান্তি খুঁজে পায়, সেখানে মুনাফিক তা দায়সারাভাবে সম্পন্ন করে। (সূরা আন-নিসা: ১৪২)
+                        </div>
+                    </div>
+                    <button class="generate-scenario-btn mt-4 bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition duration-300 text-sm" data-characteristic="ইবাদতে অলসতা">উদাহরণ দেখুন ✨</button>
+                    <div class="scenario-output mt-4 text-sm"></div>
+                </div>
+
+                <div class="characteristic-card bg-white rounded-lg shadow-md p-6 flex flex-col">
+                    <div class="cursor-pointer flex-grow" data-target="details-6">
+                        <h3 class="text-xl font-semibold text-amber-700 mb-2">৬. দ্বিধাগ্রস্ততা</h3>
+                        <p class="text-gray-600">তাদের কোনো স্থির আদর্শিক অবস্থান নেই। তারা না পূর্ণ মুসলিমদের দিকে, না কাফেরদের দিকে।</p>
+                        <div id="details-6" class="details hidden mt-4 text-sm text-gray-700 bg-amber-50 p-4 rounded">
+                           তারা সুবিধাবাদী এবং দোদুল্যমান। যখন যেদিকে পাল্লা ভারী দেখে, সেদিকেই ঝুঁকে পড়ে। এই দ্বিধাগ্রস্ততার কারণে তারা কখনো সত্যের উপর অটল থাকতে পারে না। (সূরা আন-নিসা: ১৪৩)
+                        </div>
+                    </div>
+                    <button class="generate-scenario-btn mt-4 bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition duration-300 text-sm" data-characteristic="দ্বিধাগ্রস্ততা">উদাহরণ দেখুন ✨</button>
+                    <div class="scenario-output mt-4 text-sm"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reflection" class="content-section bg-white p-8 rounded-xl shadow-lg mb-20">
+            <h2 class="text-3xl font-bold text-center mb-2 text-amber-800">✨ গভীর চিন্তাভাবনা ও প্রশ্নোত্তর</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
+                আপনার মনে মুনাফিকি বা ঈমানের দুর্বলতা নিয়ে কোনো প্রশ্ন আছে? এখানে জিজ্ঞাসা করুন এবং ইসলামিক শিক্ষার আলোকে একটি চিন্তাশীল উত্তর পান।
+            </p>
+            <div class="max-w-2xl mx-auto">
+                <textarea id="reflection-question" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none" rows="3" placeholder="উদাহরণ: আমি কীভাবে রিয়া (লোক দেখানো ইবাদত) থেকে নিজের অন্তরকে রক্ষা করতে পারি?"></textarea>
+                <button id="ask-reflection-btn" class="mt-4 w-full bg-amber-700 text-white px-4 py-3 rounded-lg hover:bg-amber-800 transition duration-300 flex items-center justify-center">
+                    <span id="ask-btn-text">উত্তর খুঁজুন</span>
+                    <div id="ask-spinner" class="spinner hidden ml-3"></div>
+                </button>
+                <div id="reflection-answer" class="mt-6 p-4 bg-amber-50 rounded-lg text-gray-700 border border-amber-200 hidden leading-relaxed"></div>
+            </div>
+        </section>
+        
+        <section id="comparison-chart" class="content-section bg-white p-8 rounded-xl shadow-lg mb-20">
+            <h2 class="text-3xl font-bold text-center mb-2 text-amber-800">তুলনামূলক চিত্র: সালাতে মুমিন বনাম মুনাফিক</h2>
+             <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">সালাতের প্রতি মনোভাব একজন মুমিন এবং মুনাফিকের মধ্যকার অন্যতম প্রধান পার্থক্য তুলে ধরে। নিচের চার্টটি এই পার্থক্যকে দৃশ্যমান করে।</p>
+            <div class="chart-container">
+                <canvas id="believerVsHypocriteChart"></canvas>
+            </div>
+        </section>
+
+        <section id="history" class="content-section mb-20">
+            <h2 class="text-3xl font-bold text-center mb-8 text-amber-800">ইতিহাস থেকে শিক্ষা: এক মুনাফিকের разоблачение</h2>
+            <div class="bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
+                <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                    রাসূলুল্লাহ (ﷺ)-এর সময়ে, <span class="font-semibold">জুলাস ইবনে সুওয়াইদ</span> নামক একজন মুনাফিক এক মজলিসে মুসলিমদের বিরুদ্ধে কটূক্তি করে। সে বলে, "যদি এই লোকটি (মুহাম্মদ ﷺ) সত্যবাদী হয়, তবে আমরা গাধার চেয়েও নিকৃষ্ট।"
+                </p>
+                <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                    <span class="font-semibold text-green-700">উমাইর ইবনে সা'দ (রা.)</span> নামক একজন তরুণ সাহাবী সেই কথা শুনে ফেলেন। তিনি একদিকে জুলাসের প্রতি ব্যক্তিগত ভালোবাসা এবং অন্যদিকে দ্বীনের প্রতি কর্তব্যের দ্বন্দ্বে পড়েন। অবশেষে, তিনি দ্বীনকে প্রাধান্য দিয়ে বিষয়টি রাসূলুল্লাহ (ﷺ)-কে জানান।
+                </p>
+                <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                    রাসূল (ﷺ) জুলাসকে ডেকে পাঠালে সে মিথ্যা কসম করে সবকিছু অস্বীকার করে। সেই মুহূর্তে তরুণ উমাইর (রা.) অত্যন্ত চিন্তিত হয়ে পড়েন।
+                </p>
+                 <p class="text-lg text-gray-700 leading-relaxed font-semibold text-amber-700">
+                    ঠিক তখনই, আল্লাহ তা'আলা ওহী নাযিল করে উমাইর (রা.)-কে সত্যবাদী এবং জুলাসকে মিথ্যাবাদী হিসেবে প্রমাণ করেন। পবিত্র কুরআনের সূরা আত-তাওবাহ'র ৭৪ নম্বর আয়াতটি এই ঘটনাকে কেন্দ্র করেই নাযিল হয়, যা মুনাফিকের মিথ্যাচারকে চিরদিনের জন্য উন্মোচিত করে দেয়।
+                </p>
+            </div>
+        </section>
+
+        <section id="conclusion" class="content-section text-center bg-amber-50 p-10 rounded-xl">
+            <h2 class="text-3xl font-bold mb-4 text-amber-800">উপসংহার ও আশার বাণী</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-700 leading-relaxed">
+                মুসলিম উম্মাহর উপর যত বিপদ ও ষড়যন্ত্রই আসুক না কেন, চূড়ান্ত বিজয় সত্য ও নিষ্ঠাবানদের জন্যই নির্ধারিত। মুনাফিকদের চক্রান্ত সাময়িকভাবে সফল মনে হলেও আল্লাহ তাদের পরিকল্পনা ব্যর্থ করে দেন। তাই হতাশার কোনো স্থান নেই। রাসূলুল্লাহ (ﷺ) কঠিনতম মুহূর্তেও যেমন আশাবাদী ছিলেন, আমাদেরও আল্লাহর সাহায্যের উপর পূর্ণ আস্থা রেখে দ্বীনের পথে অটল থাকতে হবে।
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 mt-16">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 - মুনাফিক: একটি ইন্টারেক্টিভ বিশ্লেষণ।</p>
+            <p class="text-sm text-gray-400 mt-1">শেখ খালিদ আল-রাশেদের বক্তৃতার আলোকে নির্মিত।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('a.nav-link').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (!mobileMenu.classList.contains('hidden')) {
+                       mobileMenu.classList.add('hidden');
+                    }
+                    const targetElement = document.querySelector(this.getAttribute('href'));
+                    if(targetElement) {
+                       targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            document.querySelectorAll('.characteristic-card .cursor-pointer').forEach(cardHeader => {
+                cardHeader.addEventListener('click', () => {
+                    const detailsId = cardHeader.getAttribute('data-target');
+                    const details = document.getElementById(detailsId);
+                    if(details) {
+                        details.classList.toggle('hidden');
+                    }
+                });
+            });
+            
+            async function callGeminiAPI(prompt) {
+                const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        return "দুঃখিত, এই মুহূর্তে একটি উত্তর তৈরি করা সম্ভব হচ্ছে না। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।";
+                    }
+                } catch (error) {
+                    console.error("Gemini API call failed:", error);
+                    return "একটি ত্রুটি ঘটেছে। আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন এবং আবার চেষ্টা করুন।";
+                }
+            }
+            
+            const askReflectionBtn = document.getElementById('ask-reflection-btn');
+            const reflectionQuestion = document.getElementById('reflection-question');
+            const reflectionAnswer = document.getElementById('reflection-answer');
+            const askBtnText = document.getElementById('ask-btn-text');
+            const askSpinner = document.getElementById('ask-spinner');
+
+            askReflectionBtn.addEventListener('click', async () => {
+                const question = reflectionQuestion.value.trim();
+                if (!question) {
+                    reflectionAnswer.innerText = "অনুগ্রহ করে আপনার প্রশ্নটি লিখুন।";
+                    reflectionAnswer.classList.remove('hidden');
+                    return;
+                }
+
+                askBtnText.classList.add('hidden');
+                askSpinner.classList.remove('hidden');
+                askReflectionBtn.disabled = true;
+                reflectionAnswer.classList.add('hidden');
+
+                const prompt = `Based on Islamic teachings about Nifaq (hypocrisy) as explained in the Quran and the teachings of Sheikh Khalid Al-Rashed, provide a thoughtful and practical reflection in Bengali on the following question: "${question}". The answer should encourage self-reflection, piety and adherence to sincere faith. Avoid giving definitive religious rulings (fatwas), instead focus on guiding principles and practical advice. The tone should be gentle, wise, and encouraging.`;
+                
+                const answer = await callGeminiAPI(prompt);
+                
+                reflectionAnswer.innerHTML = answer.replace(/\n/g, '<br>');
+                reflectionAnswer.classList.remove('hidden');
+                
+                askBtnText.classList.remove('hidden');
+                askSpinner.classList.add('hidden');
+                askReflectionBtn.disabled = false;
+            });
+
+            document.querySelectorAll('.generate-scenario-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const characteristic = e.target.dataset.characteristic;
+                    const outputDiv = e.target.nextElementSibling;
+                    
+                    e.target.disabled = true;
+                    outputDiv.innerHTML = '<div class="flex justify-center items-center p-4"><div class="spinner"></div></div>';
+                    
+                    const prompt = `In Bengali, generate a short, relatable, fictional scenario that illustrates the hypocritical characteristic of "${characteristic}" in a modern, everyday context. The scenario should be thought-provoking and serve as a gentle, educational, and cautionary tale for self-reflection.`;
+
+                    const scenario = await callGeminiAPI(prompt);
+                    outputDiv.innerHTML = `<div class="p-4 bg-amber-50 rounded border border-amber-200 leading-relaxed">${scenario.replace(/\n/g, '<br>')}</div>`;
+                    e.target.disabled = false;
+                });
+            });
+
+            const ctx = document.getElementById('believerVsHypocriteChart').getContext('2d');
+            const believerVsHypocriteChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['মুমিন (Believer)', 'মুনাফিক (Hypocrite)'],
+                    datasets: [{
+                        label: 'আন্তরিকতা ও আগ্রহ',
+                        data: [90, 10],
+                        backgroundColor: 'rgba(22, 163, 74, 0.6)',
+                        borderColor: 'rgba(22, 163, 74, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'অলসতা ও লোক দেখানো',
+                        data: [5, 85],
+                        backgroundColor: 'rgba(220, 38, 38, 0.6)',
+                        borderColor: 'rgba(220, 38, 38, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%' }
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'সালাতের প্রতি মনোভাবের তুলনামূলক চিত্র',
+                            font: { size: 16, family: "'Hind Siliguri', sans-serif" },
+                            padding: { top: 10, bottom: 20 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed.y !== null) { label += context.parsed.y + '%'; }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

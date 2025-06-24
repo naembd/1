@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মুমিনদের জামাআত ছিন্নকারী - একটি ইন্টারেক্টিভ উপস্থাপনা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Neon Dark -->
+    <!-- Application Structure Plan: A single-page application with a top navigation bar for smooth scrolling to thematic sections. This thematic structure (Introduction, The Problem, The Solution, Examples of Deaths, Conclusion) was chosen over a linear one to allow users to explore the sermon's core messages in a non-linear, digestible way. Key interactions include an interactive chart for comparison, a tabbed interface for exploring multiple stories without overwhelming the user, and clickable cards to reveal information, enhancing engagement and understanding of the spiritual content. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Benefits of remembering death vs. consequences of forgetting it. Goal: Compare. Viz/Method: Horizontal Bar Chart (Chart.js/Canvas). Interaction: Tooltips on hover. Justification: Visually quantifies qualitative advice, making the contrast clear and impactful.
+        - Report Info: Deaths of the Righteous. Goal: Organize & Inform. Viz/Method: Tabbed interface (HTML/CSS/JS). Interaction: Click tabs to switch stories. Justification: Manages a large amount of narrative content, preventing a wall of text and allowing focused exploration.
+        - Report Info: Final Supplication (Dua). Goal: Enable Action. Viz/Method: Text block with a "Copy" button (HTML/JS). Interaction: Click to copy. Justification: Provides a practical, useful feature for the user.
+        - Report Info: Stories and lessons. Goal: Inform. Viz/Method: Clickable cards (HTML/CSS/JS). Interaction: Click to expand/reveal details. Justification: Breaks down content into smaller, interactive chunks to maintain user interest. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s, text-shadow 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #38bdf8; 
+            border-bottom-color: #38bdf8;
+            text-shadow: 0 0 8px #38bdf8;
+        }
+        .tab {
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+            background-color: rgba(30, 41, 59, 0.5);
+            border: 1px solid #334155;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .tab:hover {
+             background-color: #0ea5e9;
+             color: white;
+             border-color: #0ea5e9;
+        }
+        .tab.active {
+            background-color: #0ea5e9;
+            color: white;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 15px #0ea5e9;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .neon-text {
+            color: #fff;
+            font-weight: bold;
+            text-shadow:
+                0 0 5px rgba(56, 189, 248, 0.7),
+                0 0 10px rgba(56, 189, 248, 0.7),
+                0 0 20px rgba(56, 189, 248, 0.7),
+                0 0 40px rgba(14, 165, 233, 0.8),
+                0 0 80px rgba(14, 165, 233, 0.8);
+        }
+        .card-neon-glow {
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        .card-neon-glow:hover {
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <nav class="bg-slate-900/70 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-sky-900/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-center h-16">
+                <div class="flex items-center">
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="#introduction" class="nav-link text-slate-300 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">ভূমিকা</a>
+                            <a href="#the-problem" class="nav-link text-slate-300 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">অন্তর কঠিন হওয়ার কারণ</a>
+                            <a href="#the-remedy" class="nav-link text-slate-300 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">মৃত্যুর স্মরণ</a>
+                            <a href="#righteous-demise" class="nav-link text-slate-300 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">নেককারদের মৃত্যু</a>
+                            <a href="#conclusion" class="nav-link text-slate-300 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-transparent">উপসংহার ও দু'আ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+
+        <section id="introduction" class="text-center mb-24">
+            <h1 class="text-4xl md:text-6xl mb-4 neon-text">মুমিনদের জামাআত ছিন্নকারী</h1>
+            <h2 class="text-2xl md:text-3xl font-semibold text-slate-400 mb-6">শেখ খালিদ আল-রাশেদ</h2>
+            <p class="max-w-3xl mx-auto text-lg text-slate-400 leading-relaxed">
+                মৃত্যু মানুষের জুতার ফিতার চেয়েও নিকটবর্তী। এটি সকল আনন্দকে ধ্বংস করে এবং জামা'আতকে ছিন্নভিন্ন করে দেয়। এই ইন্টারেক্টিভ উপস্থাপনাটি আপনাকে মৃত্যুর স্মরণ এবং পরকালের প্রস্তুতির গুরুত্ব সম্পর্কে গভীর অন্তর্দৃষ্টি দেবে।
+            </p>
+        </section>
+
+        <section id="the-problem" class="mb-24">
+            <h3 class="text-3xl font-bold text-center text-sky-300 mb-12">অন্তর কঠিন হওয়ার কারণ</h3>
+            <div class="bg-slate-800/50 p-8 rounded-xl shadow-lg border border-slate-700 max-w-4xl mx-auto card-neon-glow">
+                <p class="text-lg text-slate-300 leading-relaxed mb-6">
+                    আমার প্রিয় ভাইয়েরা! অন্তর কঠিন হয়ে যাওয়া একটি ভয়াবহ রোগ, যা এ যুগে আমাদের পেয়ে বসেছে। আমরা কুরআন শুনি কিন্তু প্রভাবিত হই না, মৃতদের দাফন করি কিন্তু শিক্ষা গ্রহণ করি না, উপদেশ শুনি কিন্তু স্মরণ করি না। এর একমাত্র কারণ হলো অন্তরের কঠোরতা।
+                </p>
+                <blockquote class="border-r-4 border-sky-500 pr-4 italic text-slate-400">
+                    "এরপর তোমাদের অন্তর কঠিন হয়ে গেল, পাথরের মতো, কিংবা তার চেয়েও কঠিন।" (সূরা আল-বাকারাহ: ৭৪)
+                </blockquote>
+                <p class="mt-6 text-lg text-slate-300 leading-relaxed">
+                    এর প্রতিষেধক হলো—আল্লাহর কিতাব নিয়ে গভীর চিন্তা ও تدبر (তাদাব্বুর) করা। এই কিতাব যদি পাহাড়ের ওপর নাযিল করা হতো, তবে তুমি দেখতে পেতে যে, তা আল্লাহর ভয়ে বিনীত ও বিদীর্ণ হয়ে গেছে। কিন্তু মূল সমস্যা হলো মৃত্যু ও পরকাল থেকে উদাসীনতা।
+                </p>
+            </div>
+        </section>
+
+        <section id="the-remedy" class="mb-24">
+            <h3 class="text-3xl font-bold text-center text-sky-300 mb-12">মৃত্যুর স্মরণ: মুক্তির পথ</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="bg-slate-800/50 p-8 rounded-xl shadow-lg border border-slate-700 card-neon-glow">
+                     <h4 class="text-2xl font-semibold text-sky-400 mb-4">"সকল স্বাদ ধ্বংসকারীকে বেশি বেশি স্মরণ করো"</h4>
+                     <p class="text-slate-300 leading-relaxed">
+                        রাসূলুল্লাহ (ﷺ) এর এই উপদেশটিই অন্তর নরম করার মূল চাবিকাঠি। যেদিন থেকে আমরা মৃত্যু, কবর, হাশর ও সিরাত থেকে উদাসীন হয়েছি, সেদিন থেকেই আমাদের অন্তর পাথরের মতো হয়ে গেছে। আবু আলী আদ-দাকদাক বলেন, মৃত্যুকে স্মরণকারী তিনটি পুরস্কার পান, আর বিস্মৃতকারী তিনটি শাস্তি ভোগ করেন। নিচের চার্টটি দেখুন।
+                    </p>
+                </div>
+                <div class="bg-slate-800/50 p-8 rounded-xl shadow-lg border border-slate-700 card-neon-glow">
+                     <div class="chart-container">
+                        <canvas id="benefitsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+             <div class="mt-12">
+                <h4 class="text-2xl font-bold text-center text-sky-300 mb-8">উদাসীনতার বাস্তব চিত্র</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-slate-800 p-6 rounded-lg shadow-md border border-slate-700 card-neon-glow">
+                        <h5 class="font-semibold text-xl mb-2 text-sky-400">শেষ ফোনালাপ</h5>
+                        <p class="text-slate-400">আমার পরিচিত একজন দুপুর ১টায় তার পরিবারকে ফোন করে বলল, "এক ঘণ্টার মধ্যে আসছি।" কিন্তু কয়েক ঘণ্টা পরেও তার খবর নেই। মাগরিবের আগে ফোন এলো, এক দুর্ঘটনায় সে দুনিয়া থেকে বিদায় নিয়েছে। সে কি ভেবেছিল এটাই তার শেষ যাত্রা হবে?</p>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-lg shadow-md border border-slate-700 card-neon-glow">
+                        <h5 class="font-semibold text-xl mb-2 text-sky-400">"যাত্রা... যাত্রা..."</h5>
+                        <p class="text-slate-400">এক সৎ ব্যক্তি প্রতিদিন গ্রামের উঁচু জায়গায় উঠে ডাকতেন: "যাত্রা... যাত্রা..."। একদিন সেই ডাক থেমে গেল, কারণ তিনি নিজেই অনন্তের পথে যাত্রা করেছেন। তিনি প্রস্তুত ছিলেন, কারণ তিনি সর্বদা যাত্রার কথা স্মরণ করতেন।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="righteous-demise" class="mb-24">
+            <h3 class="text-3xl font-bold text-center text-sky-300 mb-12">নেককারদের মৃত্যু: ঈমানের প্রতিচ্ছবি</h3>
+            <div class="max-w-5xl mx-auto">
+                <div class="flex flex-wrap justify-center gap-2 mb-8 border-b border-slate-700 pb-4">
+                    <button class="tab active" data-tab="prophet">রাসূলুল্লাহ (ﷺ)</button>
+                    <button class="tab" data-tab="abubakr">আবু বকর (রাঃ)</button>
+                    <button class="tab" data-tab="umar">উমার (রাঃ)</button>
+                    <button class="tab" data-tab="uthman">উসমান (রাঃ)</button>
+                    <button class="tab" data-tab="ali">আলী (রাঃ)</button>
+                </div>
+                <div id="tab-content" class="bg-slate-800/50 p-8 rounded-xl shadow-lg border border-slate-700 card-neon-glow">
+                    <div id="prophet" class="tab-content active">
+                        <h4 class="text-2xl font-bold mb-4 text-sky-400">রাসূলুল্লাহ (ﷺ) এর বিদায়</h4>
+                        <p class="text-slate-300 leading-relaxed">জীবনের শেষ মুহূর্তে তিনি মুখে পানি মাখছিলেন আর বলছিলেন, "লা ইলাহা ইল্লাল্লাহ, নিশ্চয়ই মৃত্যুর অনেক যন্ত্রণা আছে।" ফাতেমা (রাঃ) এর ক্রন্দনে তিনি সান্ত্বনা দিয়ে বলেন, "আজকের পর তোমার পিতার আর কোনো কষ্ট থাকবে না।" তাঁর শেষ কথা ছিল, "হে আল্লাহ, আমাকে সর্বোচ্চ সঙ্গীর সাথে মিলিত করো।"</p>
+                    </div>
+                    <div id="abubakr" class="tab-content">
+                        <h4 class="text-2xl font-bold mb-4 text-sky-400">আবু বকর (রাঃ) এর বিদায়</h4>
+                        <p class="text-slate-300 leading-relaxed">মৃত্যুশয্যায় তিনি আয়েশা (রাঃ) কে বলেন, "বলো, 'এবং মৃত্যুর যন্ত্রণা সত্যসহ উপস্থিত হবে। এটাই তা, যা থেকে তুমি পালাতে চাইতে।'" তিনি উমারকে উপদেশ দেন, "হে উমার! আল্লাহর কিছু হক রাতে আছে যা তিনি দিনে কবুল করেন না, আর দিনে কিছু হক আছে যা রাতে কবুল করেন না।"</p>
+                    </div>
+                    <div id="umar" class="tab-content">
+                        <h4 class="text-2xl font-bold mb-4 text-sky-400">উমার (রাঃ) এর শাহাদাত</h4>
+                        <p class="text-slate-300 leading-relaxed">ফজরের সালাতে ছুরিকাহত হওয়ার পর জ্ঞান ফিরলে তাঁর প্রথম কথা ছিল, "লোকেরা কি সালাত আদায় করেছে?" তিনি রাসূলুল্লাহ (ﷺ) ও আবু বকর (রাঃ) এর পাশে দাফন হওয়ার অনুমতি চান এবং অনুমতি পেয়ে আনন্দিত হন। তিনি বলেন, "হায়! আমি যদি কোনো প্রতিদান বা শাস্তি ছাড়া এ জীবন থেকে মুক্তি পেতাম!"</p>
+                    </div>
+                    <div id="uthman" class="tab-content">
+                        <h4 class="text-2xl font-bold mb-4 text-sky-400">উসমান (রাঃ) এর শাহাদাত</h4>
+                        <p class="text-slate-300 leading-relaxed">মৃত্যুর আগের রাতে তিনি স্বপ্নে দেখেন রাসূলুল্লাহ (ﷺ) বলছেন, "আগামীকাল আমাদের সাথে ইফতার করবে।" তিনি রোজা অবস্থায় কুরআন তিলাওয়াত করার সময় শহীদ হন। তাঁর শেষ দু'আ ছিল, "হে আল্লাহ! মুহাম্মদ (ﷺ) এর উম্মাহকে একত্রিত করুন।"</p>
+                    </div>
+                    <div id="ali" class="tab-content">
+                        <h4 class="text-2xl font-bold mb-4 text-sky-400">আলী (রাঃ) এর শাহাদাত</h4>
+                        <p class="text-slate-300 leading-relaxed">ফজরের সালাতের জন্য মসজিদে যাওয়ার পথে তিনি আক্রান্ত হন। তিনি বলেন, "যদি আমি বেঁচে যাই, তবে আমি ক্ষমা করব অথবা প্রতিশোধ নেব। আর যদি আমি মারা যাই, তবে তাকে হত্যা করো, আমি আমার রবের কাছে তার বিরুদ্ধে অভিযোগকারী হব।" তাঁর শেষ কথা ছিল "লা ইলাহা ইল্লাল্লাহ"।</p>
+                    </div>
+                </div>
+            </div>
+             <div class="mt-12 text-center p-8 bg-red-900/20 border border-red-700 rounded-lg max-w-4xl mx-auto card-neon-glow">
+                <h4 class="text-2xl font-bold text-red-400 mb-4">বিপরীতে: এক গাফেল যুবকের পরিণতি</h4>
+                <p class="text-red-300 leading-relaxed">এক যুবক বন্ধুদের সাথে আল্লাহর অবাধ্যতায় লিপ্ত ছিল। তারা পাপাচারের জন্য কাফির দেশে ভ্রমণ করে। সেখানে হার্ট অ্যাটাকে তার মৃত্যু হয়। বন্ধুরা তাকে কফিনে করে ফিরিয়ে আনে। সে কি ভেবেছিল এটাই তার শেষ ভ্রমণ হবে? সৎকর্মশীলদের মৃত্যুর সাথে পাপাচারীদের মৃত্যুর কতই না তফাৎ!</p>
+            </div>
+        </section>
+
+
+        <section id="conclusion" class="text-center">
+            <h3 class="text-3xl font-bold text-sky-300 mb-6">উপসংহার ও আমাদের করণীয়</h3>
+            <p class="max-w-3xl mx-auto text-lg text-slate-400 leading-relaxed mb-12">
+                জীবন যতই দীর্ঘ হোক, তা সংক্ষিপ্ত। দুনিয়া যতই বড় হোক, তা তুচ্ছ। স্বাদ ধ্বংসকারী মৃত্যুকে বেশি বেশি স্মরণ করুন। কবর জিয়ারত করুন, যিকিরের মজলিসে বসুন। অন্তর কঠিন হয়ে গেলে আল্লাহর যিকির, পরকাল ও মৃত্যুর কথা স্মরণ করুন।
+            </p>
+
+            <div class="max-w-3xl mx-auto bg-slate-800/50 p-8 rounded-xl shadow-lg border border-slate-700 card-neon-glow">
+                <h4 class="text-2xl font-semibold text-sky-400 mb-4">এক heartfelt দু'আ</h4>
+                <p id="dua-text" class="text-left text-slate-300 leading-loose">
+                    হে আল্লাহ! আমাদের জীবনের শেষাংশকে সর্বোত্তম অংশ বানিয়ে দিন, আমাদের শেষ আমলকে সর্বোত্তম আমল বানিয়ে দিন এবং আপনার সাথে সাক্ষাতের দিনটিকে আমাদের সর্বোত্তম দিন বানিয়ে দিন। <br>
+                    হে আল্লাহ! মৃত্যুর পূর্বে আমাদেরকে খাঁটি তওবার সুযোগ দিন, মৃত্যুর সময় শাহাদাত নসিব করুন এবং মৃত্যুর পরে রহমত দান করুন, হে العالمين এর রব! <br>
+                    হে আল্লাহ! আমাদের উপর মৃত্যু ও এর যন্ত্রণা, কবর ও এর অন্ধকার, জিজ্ঞাসাবাদ ও এর কঠোরতা এবং কিয়ামতের ভয়াবহতা সহজ করে দিন।
+                </p>
+                <button id="copy-btn" class="mt-6 bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-500 transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/50">দু'আটি কপি করুন</button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800/50 mt-24 border-t border-slate-700">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-slate-500">
+            <p>&copy; 2024. শেখ খালিদ আল-রাশেদের বয়ানের উপর ভিত্তি করে একটি ইন্টারেক্টিভ উপস্থাপনা।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const benefitsCtx = document.getElementById('benefitsChart').getContext('2d');
+            new Chart(benefitsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['মৃত্যুকে স্মরণকারী', 'মৃত্যুকে বিস্মৃতকারী'],
+                    datasets: [{
+                        label: 'তওবা',
+                        data: [1, -1],
+                        backgroundColor: ['#22c55e', '#ef4444'],
+                        borderColor: ['#16a34a', '#dc2626'],
+                        borderWidth: 1
+                    }, {
+                        label: 'ইবাদত',
+                        data: [1, -1],
+                        backgroundColor: ['#3b82f6', '#f97316'],
+                        borderColor: ['#2563eb', '#ea580c'],
+                        borderWidth: 1
+                    }, {
+                        label: 'অন্তর',
+                        data: [1, -1],
+                        backgroundColor: ['#8b5cf6', '#f59e0b'],
+                        borderColor: ['#7c3aed', '#d97706'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const datasetIndex = context.datasetIndex;
+                                    const dataIndex = context.dataIndex;
+                                    let label = '';
+                                    if (dataIndex === 0) { // স্মরণকারী
+                                        if (datasetIndex === 0) label = 'তাড়াতাড়ি তওবা করে';
+                                        if (datasetIndex === 1) label = 'ইবাদতে উদ্যমী হয়';
+                                        if (datasetIndex === 2) label = 'অল্পে তুষ্ট থাকে';
+                                    } else { // বিস্মৃতকারী
+                                        if (datasetIndex === 0) label = 'তওবায় বিলম্ব করে';
+                                        if (datasetIndex === 1) label = 'ইবাদতে অলস হয়';
+                                        if (datasetIndex === 2) label = 'অতৃপ্ত থাকে';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: false,
+                            stacked: true,
+                        },
+                        y: {
+                            stacked: true,
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(51, 65, 85, 0.5)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(item => item.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    const targetId = tab.getAttribute('data-tab');
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === targetId) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            const copyBtn = document.getElementById('copy-btn');
+            const duaText = document.getElementById('dua-text').innerText;
+            copyBtn.addEventListener('click', () => {
+                const textarea = document.createElement('textarea');
+                textarea.value = duaText;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    copyBtn.textContent = 'কপি হয়েছে!';
+                    setTimeout(() => {
+                        copyBtn.textContent = 'দু\'আটি কপি করুন';
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                }
+                document.body.removeChild(textarea);
+            });
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 70) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

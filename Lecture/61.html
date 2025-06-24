@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মুমিনের অস্ত্র - শাইখ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cyber Neon -->
+    <!-- Application Structure Plan: The application is designed as a single-page, vertically scrolling experience to guide the user through the spiritual teachings of the report in a logical, thematic flow. A sticky navigation bar allows for easy access to key sections, transforming the linear lecture format into an exploratory interface. The structure prioritizes user understanding by grouping related concepts: starting with the power of Dua, then its conditions and etiquette, addressing common user questions (like delays in acceptance), and ending with a message of hope. Interactive accordions are used for lists to prevent overwhelming the user with text and encourage active engagement with the content. This design choice makes the dense, qualitative information more digestible and accessible than a plain text document. -->
+    <!-- Visualization & Content Choices: Report Info: The report is purely textual, explaining the concept of Dua in Islam. Goal: To inform, educate, and inspire the user about the power and proper practice of Dua. Viz/Presentation Method: Since there is no quantitative data, standard charts are not applicable. Instead, the structure relies on typography, layout, and interactive components. Key lists, like the 'Conditions of Dua' and 'Reasons for Non-acceptance', are presented in interactive accordions. This breaks down information into manageable chunks (Goal: Organize, Method: HTML/CSS/JS). Important quotes from the Quran and Hadith are emphasized using styled blockquotes (Goal: Inform, Method: HTML/CSS). Interaction: Users click to expand accordions to reveal detailed information. The navigation bar is interactive, highlighting the current section as the user scrolls. Justification: This approach transforms a passive reading experience into an active learning journey, which is more engaging and helps with information retention. Library/Method: Vanilla JavaScript for interactions, Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .nav-active {
+            color: #ec4899; /* Neon Pink */
+            font-weight: 600;
+            text-shadow: 0 0 5px #ec4899;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .accordion-button.open .accordion-arrow {
+            transform: rotate(180deg);
+        }
+        .accordion-arrow {
+            transition: transform 0.3s ease;
+        }
+        .neon-text {
+            color: #67e8f9; /* Neon Cyan */
+            text-shadow: 0 0 2px #fff, 0 0 5px #67e8f9, 0 0 10px #67e8f9;
+        }
+        .neon-border {
+             border-color: #ec4899;
+             box-shadow: 0 0 5px -1px #ec4899, 0 0 8px -2px #ec4899;
+        }
+        .neon-container {
+            background-color: rgba(30, 41, 59, 0.5); /* bg-slate-800 with opacity */
+            backdrop-filter: blur(2px);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <!-- Header & Navigation -->
+    <header id="header" class="bg-gray-900 bg-opacity-80 backdrop-blur-sm sticky top-0 z-50 border-b border-pink-500/20 shadow-lg shadow-pink-500/5">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl md:text-2xl font-bold neon-text">মুমিনের অস্ত্র</h1>
+                <nav class="hidden md:flex space-x-6 lg:space-x-8 text-sm lg:text-base font-medium text-gray-300">
+                    <a href="#power" class="nav-link hover:text-pink-500 transition-colors duration-300">দোয়ার শক্তি</a>
+                    <a href="#conditions" class="nav-link hover:text-pink-500 transition-colors duration-300">শর্ত ও আদব</a>
+                    <a href="#delay" class="nav-link hover:text-pink-500 transition-colors duration-300">বিলম্বের কারণ</a>
+                    <a href="#mercy" class="nav-link hover:text-pink-500 transition-colors duration-300">আল্লাহর রহমত</a>
+                </nav>
+                <div class="md:hidden">
+                    <select id="mobile-nav" class="bg-gray-800 border border-pink-500/50 rounded-md py-1 px-2 text-sm text-white">
+                        <option value="#home">হোম</option>
+                        <option value="#power">দোয়ার শক্তি</option>
+                        <option value="#conditions">শর্ত ও আদব</option>
+                        <option value="#delay">বিলম্বের কারণ</option>
+                        <option value="#mercy">আল্লাহর রহমত</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="home" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <!-- Hero Section -->
+        <section class="text-center mb-16 md:mb-24">
+            <h2 class="text-3xl md:text-5xl font-bold neon-text mb-4">দোয়া: মুমিন নারীর প্রধান অস্ত্র</h2>
+            <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-300">
+                দোয়া মুমিনের দুর্বলতাকে শক্তিতে পরিণত করে। এটি এমন এক অস্ত্র যার মোকাবিলা করার মতো শক্তি আর কিছুরই নেই। এই অ্যাপ্লিকেশনটি শাইখ খালিদ আল-রাশেদের বক্তৃতার আলোকে দোয়ার শক্তি, শর্ত এবং এর গভীরতাকে তুলে ধরেছে।
+            </p>
+        </section>
+
+        <!-- Section 1: The Power of Dua -->
+        <section id="power" class="mb-16 md:mb-24 scroll-mt-20">
+            <h3 class="text-2xl md:text-3xl font-bold text-center neon-text mb-8">দোয়ার শক্তি ও তাৎপর্য</h3>
+            <p class="text-base md:text-lg text-center max-w-4xl mx-auto mb-12 text-gray-400">
+                দোয়া কেবল একটি প্রার্থনা নয়, এটি ইবাদতের মূল। এর মাধ্যমে বান্দা তার সৃষ্টিকর্তার নিকটবর্তী হয়, নিজের অসহায়ত্ব প্রকাশ করে এবং আল্লাহর অসীম ক্ষমতার উপর আস্থা স্থাপন করে। এই বিভাগে দোয়ার মৌলিক ধারণা এবং এর প্রভাব সম্পর্কে আলোচনা করা হয়েছে।
+            </p>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="neon-container p-6 rounded-lg border neon-border">
+                    <h4 class="text-xl font-semibold mb-3 text-cyan-400">দোয়া ইবাদতের মূল</h4>
+                    <p class="text-gray-300 mb-4">নবী (সাঃ) বলেছেন: "দোয়াই হলো ইবাদত।" এরপর তিনি পড়েন: "তোমাদের রব বলেন, ‘তোমরা আমাকে ডাকো, আমি তোমাদের ডাকে সাড়া দেব’।" (সূরা গাফির: ৬০)</p>
+                    <p class="text-gray-300">ইবনুল কাইয়্যিম বলেন, "ইবাদত হলো চূড়ান্ত ভালোবাসা এবং চূড়ান্ত বিনয় ও নম্রতার সমন্বয়।" দোয়া এই দুটি অনুভূতিরই বহিঃপ্রকাশ।</p>
+                </div>
+                <blockquote class="neon-container p-6 rounded-lg border-l-4 neon-border">
+                    <p class="text-lg md:text-xl italic text-gray-200">
+                        "আর আমার বান্দারা যখন আমার সম্পর্কে আপনাকে জিজ্ঞেস করে, তখন (বলুন) আমি তো কাছেই। আমি প্রার্থনাকারীর ডাকে সাড়া দিই, যখন সে আমাকে ডাকে।"
+                    </p>
+                    <cite class="block text-right mt-4 not-italic font-semibold text-cyan-400">— সূরা আল-বাকারা: ১৮৬</cite>
+                </blockquote>
+            </div>
+        </section>
+
+        <!-- Section 2: Conditions and Etiquette of Dua -->
+        <section id="conditions" class="mb-16 md:mb-24 scroll-mt-20">
+            <h3 class="text-2xl md:text-3xl font-bold text-center neon-text mb-8">দোয়ার শর্তাবলী ও আদব</h3>
+             <p class="text-base md:text-lg text-center max-w-4xl mx-auto mb-12 text-gray-400">
+                দোয়া কবুল হওয়ার জন্য কিছু নির্দিষ্ট শর্ত ও আদব রয়েছে। এগুলো পালন করলে প্রার্থনাকারীর দোয়া আল্লাহর কাছে পৌঁছানোর সম্ভাবনা বেড়ে যায়। এই অংশে আমরা দোয়ার কিছু গুরুত্বপূর্ণ শর্ত এবং সালাফদের দৃষ্টিতে দোয়া কবুল না হওয়ার কারণগুলো তুলে ধরব।
+            </p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Conditions Accordion -->
+                <div class="neon-container p-6 rounded-lg border neon-border">
+                    <h4 class="text-xl font-semibold mb-4 text-cyan-400">দোয়ার সাতটি শর্ত</h4>
+                    <div class="space-y-2" id="conditions-accordion">
+                        <div class="border-b border-pink-500/20">
+                            <button class="accordion-button w-full flex justify-between items-center py-3 text-left font-medium text-gray-200 hover:text-pink-400">
+                                <span>১. অনুনয়-বিনয়</span>
+                                <span class="accordion-arrow transform transition-transform duration-300">▼</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p class="pt-2 pb-3 text-gray-400">আল্লাহর সামনে পূর্ণ বিনয়ের সাথে নিজেকে উপস্থাপন করা।</p>
+                            </div>
+                        </div>
+                        <div class="border-b border-pink-500/20">
+                             <button class="accordion-button w-full flex justify-between items-center py-3 text-left font-medium text-gray-200 hover:text-pink-400">
+                                <span>২. ভয় ও ৩. আশা</span>
+                                <span class="accordion-arrow transform transition-transform duration-300">▼</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p class="pt-2 pb-3 text-gray-400">আল্লাহর শাস্তির ভয় এবং তাঁর রহমতের আশা নিয়ে দোয়া করা।</p>
+                            </div>
+                        </div>
+                        <div class="border-b border-pink-500/20">
+                             <button class="accordion-button w-full flex justify-between items-center py-3 text-left font-medium text-gray-200 hover:text-pink-400">
+                                <span>৪. নিয়মিত করা ও ৫. নম্রতা</span>
+                                <span class="accordion-arrow transform transition-transform duration-300">▼</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p class="pt-2 pb-3 text-gray-400">অবিচলভাবে দোয়া চালিয়ে যাওয়া এবং আল্লাহর প্রতি পূর্ণ নম্রতা প্রদর্শন করা।</p>
+                            </div>
+                        </div>
+                         <div class="border-b-0">
+                             <button class="accordion-button w-full flex justify-between items-center py-3 text-left font-medium text-gray-200 hover:text-pink-400">
+                                <span>৬. ব্যাপকতা ও ৭. হালাল ভক্ষণ</span>
+                                <span class="accordion-arrow transform transition-transform duration-300">▼</span>
+                            </button>
+                            <div class="accordion-content">
+                                <p class="pt-2 pb-3 text-gray-400">নিজের এবং সমস্ত মুসলিম উম্মাহর জন্য দোয়া করা এবং নিশ্চিত করা যে আপনার উপার্জন ও খাবার হালাল।</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reasons for Non-acceptance -->
+                <div class="neon-container p-6 rounded-lg border neon-border">
+                    <h4 class="text-xl font-semibold mb-4 text-cyan-400">কেন দোয়া কবুল হয় না?</h4>
+                    <p class="text-gray-300 mb-4">ইবরাহিম ইবনে আদহাম দশটি কারণ উল্লেখ করেন:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-400">
+                        <li>আল্লাহকে চিনেছ কিন্তু তাঁর আনুগত্য করোনি।</li>
+                        <li>রাসূলকে চিনেছ কিন্তু তাঁর সুন্নত অনুসরণ করোনি।</li>
+                        <li>কুরআন পড়েছ কিন্তু সে অনুযায়ী আমল করোনি।</li>
+                        <li>আল্লাহর নেয়ামত ভোগ করেছ কিন্তু শুকরিয়া আদায় করোনি।</li>
+                        <li>জান্নাতকে চিনেছ কিন্তু তা অন্বেষণ করোনি।</li>
+                        <li>জাহান্নামকে চিনেছ কিন্তু তা থেকে পালাওনি।</li>
+                        <li>শয়তানকে শত্রু জেনেও তার সাথে মিত্রতা করেছ।</li>
+                        <li>মৃত্যুকে চিনেছ কিন্তু তার জন্য প্রস্তুতি নাওনি।</li>
+                        <li>মৃতদের দাফন করেছ কিন্তু শিক্ষা গ্রহণ করোনি।</li>
+                        <li>নিজেদের দোষ ছেড়ে মানুষের দোষ নিয়ে ব্যস্ত থেকেছ।</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: The Wisdom in Delay -->
+        <section id="delay" class="mb-16 md:mb-24 scroll-mt-20">
+            <h3 class="text-2xl md:text-3xl font-bold text-center neon-text mb-8">দোয়া কবুল হতে বিলম্বের প্রজ্ঞা</h3>
+            <p class="text-base md:text-lg text-center max-w-4xl mx-auto mb-12 text-gray-400">
+                কখনও কখনও আল্লাহ বান্দার দোয়া কবুল করতে দেরি করেন। এটি আল্লাহর একটি পরীক্ষা এবং এর মধ্যে নিগূঢ় প্রজ্ঞা লুকিয়ে থাকে। বান্দার উচিত হতাশ না হয়ে ধৈর্য ধারণ করা এবং আল্লাহর সিদ্ধান্তের উপর সন্তুষ্ট থাকা। এই অংশে সেই প্রজ্ঞা সম্পর্কে আলোচনা করা হয়েছে।
+            </p>
+            <div class="space-y-6">
+                <div class="neon-container p-6 rounded-lg border-l-4 neon-border">
+                    <h4 class="font-semibold text-lg mb-2 text-cyan-400">পরীক্ষা ও ধৈর্য</h4>
+                    <p class="text-gray-300">দোয়া কবুলের বিলম্ব একটি পরীক্ষা। আল্লাহ দেখতে চান বান্দা কতটা ধৈর্যশীল এবং তাঁর প্রতি কতটা আস্থাশীল। ইয়াকুব (আঃ) আশি বছর বিপদে ছিলেন, কিন্তু তাঁর আশা বদলায়নি।</p>
+                </div>
+                <div class="neon-container p-6 rounded-lg border-l-4 neon-border">
+                    <h4 class="font-semibold text-lg mb-2 text-cyan-400">কল্যাণ নিহিত থাকা</h4>
+                    <p class="text-gray-300">আল্লাহই সবচেয়ে ভালো জানেন বান্দার জন্য কোনটি কল্যাণকর। কখনও কখনও যা চাওয়া হয়, তা বান্দার জন্য অকল্যাণকর হতে পারে। তাই আল্লাহ তাঁর প্রজ্ঞা অনুযায়ী সঠিক সময়ে সঠিক জিনিসটি দান করেন।</p>
+                </div>
+                <div class="neon-container p-6 rounded-lg border-l-4 neon-border">
+                    <h4 class="font-semibold text-lg mb-2 text-cyan-400">নিজের ত্রুটি সংশোধন</h4>
+                    <p class="text-gray-300">দোয়া কবুল না হওয়ার কারণ হতে পারে প্রার্থনাকারীর নিজের কোনো ত্রুটি বা পাপ। বিলম্বের এই সময়টুকু বান্দাকে আত্ম-সমালোচনা এবং নিজেকে সংশোধন করার সুযোগ করে দেয়।</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 4: The Mercy of Allah -->
+        <section id="mercy" class="scroll-mt-20">
+            <h3 class="text-2xl md:text-3xl font-bold text-center neon-text mb-8">আল্লাহর রহমত থেকে নিরাশ হবেন না</h3>
+             <p class="text-base md:text-lg text-center max-w-4xl mx-auto mb-12 text-gray-400">
+                ঈমানের আসল পরীক্ষা হয় বিপদের সময়। আপনি দোয়ায় সর্বাত্মক চেষ্টা করছেন, কিন্তু কবুলের কোনো চিহ্ন দেখছেন না, তবুও আপনার আশা বা প্রত্যাশা যেন কমে না যায়। কারণ আল্লাহ তাঁর বান্দার প্রতি অত্যন্ত দয়ালু এবং তাঁর রহমত অফুরন্ত। বিপদের সময় দীর্ঘ মনে হলেও আল্লাহর রহমত থেকে কখনো নিরাশ হওয়া উচিত নয়।
+            </p>
+            <div class="neon-container p-8 rounded-lg text-center border neon-border shadow-lg shadow-cyan-500/10">
+                <blockquote class="mb-6">
+                    <p class="text-xl md:text-2xl italic text-gray-200">
+                        "সুতরাং, বিপদের সময়কে দীর্ঘ মনে করবেন না এবং বেশি দোয়া করতে করতে ক্লান্ত হবেন না। কারণ আপনি বিপদের মাধ্যমে পরীক্ষিত এবং ধৈর্য ও দোয়ার মাধ্যমে ইবাদত করছেন। আল্লাহর রহমত থেকে নিরাশ হবেন না, যদিও বিপদ দীর্ঘ হয়।"
+                    </p>
+                </blockquote>
+                <p class="text-lg text-cyan-400">আমরা আল্লাহর কাছে প্রার্থনা করি যেন তিনি আমাদের সকলকে তাঁর পছন্দনীয় কাজে তৌফিক দান করেন এবং আমাদের নারীদেরকে মু'মিনা, মুত্তাকী, পবিত্র ও বিনয়ী হিসেবে কবুল করেন। আমীন।</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 border-t border-pink-500/20 mt-16 md:mt-24">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-sm text-gray-500">
+            <p>&copy; শাইখ খালিদ আল-রাশেদের বক্তৃতার আলোকে নির্মিত।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Accordion functionality
+            const accordionButtons = document.querySelectorAll('.accordion-button');
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    button.classList.toggle('open');
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+
+            // Mobile navigation
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.addEventListener('change', function() {
+                if (this.value) {
+                    window.location.href = this.value;
+                }
+            });
+
+            // Intersection Observer for active nav link
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('nav-active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('nav-active');
+                            }
+                        });
+                    }
+                });
+            }, {
+                rootMargin: '-50% 0px -50% 0px'
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

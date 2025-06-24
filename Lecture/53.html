@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>প্রত্যাবর্তনকারীদের কাফেলা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Midnight Glow (Dark charcoal background with vibrant green neon accents) -->
+    <!-- Application Structure Plan: The structure remains a tabbed SPA. The "neon effect" request prompted a shift to a dark theme to make the glow effects viable and impactful, enhancing visual hierarchy and focus on key elements like titles and interactive cards. -->
+    <!-- Visualization & Content Choices: The core change is aesthetic. Goal: Add "neon effect" -> Method: CSS text-shadow and box-shadow -> Interaction: Hover effects on cards to intensify glow -> Justification: Creates a modern, engaging look that makes titles and interactive elements pop against the new dark background, fulfilling the user request. Confirmed NO SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #1a202c; /* gray-900 */
+        }
+        h1, h2, h3 {
+            font-family: 'Noto Serif Bengali', serif;
+        }
+        .neon-text {
+            color: #fff;
+            text-shadow:
+                0 0 5px #4ade80, /* green-400 */
+                0 0 10px #4ade80,
+                0 0 20px #4ade80;
+        }
+        .tab-active {
+            color: #4ade80 !important; /* green-400 */
+            border-bottom-color: #4ade80 !important;
+            box-shadow: 0 3px 15px -3px rgba(74, 222, 128, 0.4);
+        }
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        .story-card {
+             box-shadow: 0 0 2px rgba(255,255,255,0.3), 0 0 8px rgba(74, 222, 128, 0.3);
+             transition: all 0.3s ease;
+        }
+        .story-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 5px rgba(255,255,255,0.5), 0 0 15px rgba(74, 222, 128, 0.6);
+        }
+        .neon-blockquote {
+            box-shadow: -3px 0 15px -4px rgba(74, 222, 128, 0.5);
+        }
+    </style>
+</head>
+<body class="text-gray-300 antialiased">
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold neon-text">প্রত্যাবর্তনকারীদের কাফেলা</h1>
+            <p class="text-lg text-gray-400 mt-4">শায়খ খালিদ আল-রাশেদের হৃদয়গ্রাহী আলোচনা</p>
+        </header>
+
+        <nav class="mb-10 border-b border-gray-700">
+            <ul class="flex flex-wrap -mb-px justify-center text-sm font-medium text-center text-gray-400">
+                <li class="mr-2">
+                    <button onclick="showTab('home')" class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-200 hover:border-gray-500 tab-active" data-tab="home">ভূমিকা</button>
+                </li>
+                <li class="mr-2">
+                    <button onclick="showTab('mercy')" class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-200 hover:border-gray-500" data-tab="mercy">আল্লাহর রহমত</button>
+                </li>
+                <li class="mr-2">
+                    <button onclick="showTab('stories')" class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-200 hover:border-gray-500" data-tab="stories">প্রত্যাবর্তনের গল্প</button>
+                </li>
+                <li class="mr-2">
+                    <button onclick="showTab('path')" class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-200 hover:border-gray-500" data-tab="path">তাওবার পথ</button>
+                </li>
+                 <li class="mr-2">
+                    <button onclick="showTab('call')" class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-200 hover:border-gray-500" data-tab="call">শেষের আহ্বান</button>
+                </li>
+            </ul>
+        </nav>
+
+        <main id="main-content">
+
+            <!-- Home Tab -->
+            <section id="home" class="tab-content">
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-700 text-center">
+                    <h2 class="text-3xl font-semibold mb-4 text-white">তাওবার দিকে ফিরে আসা</h2>
+                    <p class="text-lg leading-relaxed mb-6 text-gray-300">
+                        এই বক্তৃতাটি মূলত তাওবা (অনুশোচনা), আল্লাহর দিকে প্রত্যাবর্তন এবং পাপের পথ ছেড়ে আলোর পথে ফিরে আসার গুরুত্ব নিয়ে আলোচনা করে। শায়খ খালিদ আল-রাশেদ বিভিন্ন হৃদয়স্পর্শী ঘটনা ও উদাহরণের মাধ্যমে দেখিয়েছেন যে, আল্লাহর রহমতের দরজা সর্বদা খোলা এবং আন্তরিকভাবে অনুতপ্ত হলে তিনি যেকোনো পাপীকে ক্ষমা করতে প্রস্তুত।
+                    </p>
+                    <blockquote class="border-r-4 border-green-400 bg-gray-900/50 p-6 rounded-lg text-right text-xl italic text-gray-300 neon-blockquote">
+                        "হে মুমিনগণ, তোমরা সবাই আল্লাহর দিকে প্রত্যাবর্তন করো, যাতে তোমরা সফলকাম হতে পারো।"
+                        <cite class="block not-italic mt-2 text-base font-semibold text-gray-400">(সূরা আন-নূর: ৩১)</cite>
+                    </blockquote>
+                </div>
+            </section>
+
+            <!-- Mercy Tab -->
+            <section id="mercy" class="tab-content hidden">
+                 <div class="bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-700">
+                    <h2 class="text-3xl font-semibold mb-6 text-center text-white">আল্লাহর অসীম রহমত</h2>
+                    <div class="space-y-6">
+                        <p class="text-lg leading-relaxed text-gray-300">আল্লাহর রহমত থেকে নিরাশ হওয়া পাপ। তিনি তাঁর বান্দাদের প্রতি অত্যন্ত দয়ালু এবং তাদের ফিরে আসার জন্য অপেক্ষা করেন। তাওবা শুধু পাপীদের জন্য নয়, বরং সকল মুমিনদের জন্যেই এটি সফলতা ও আল্লাহর নৈকট্য লাভের পথ।</p>
+                        
+                        <div class="border-l-4 border-green-400 pl-4 py-2">
+                            <h3 class="font-semibold text-xl text-green-300">আল্লাহর প্রতিশ্রুতি</h3>
+                            <p class="mt-2 text-gray-300">আল্লাহ তায়ালা তাওবাকারীকে ক্ষমা করার প্রতিশ্রুতি দিয়েছেন। তিনি বলেন, "আর তিনিই তাঁর বান্দাদের তাওবা কবুল করেন এবং পাপসমূহ ক্ষমা করে দেন।" (সূরা আশ-শূরা: ২৫)</p>
+                        </div>
+
+                        <div class="border-l-4 border-green-400 pl-4 py-2">
+                            <h3 class="font-semibold text-xl text-green-300">নবী ﷺ এর উদাহরণ</h3>
+                            <p class="mt-2 text-gray-300">রাসূলুল্লাহ ﷺ নিষ্পাপ হওয়া সত্ত্বেও দিনে সত্তরবারের বেশি তাওবা ও ইস্তেগফার করতেন। তিনি বলেন, "হে মানবমণ্ডলী! তোমরা তোমাদের প্রতিপালকের কাছে তওবা কর। আমি প্রতিদিন তাঁর কাছে একশত বার তওবা করি।" (মুসলিম)</p>
+                        </div>
+                         <div class="border-l-4 border-green-400 pl-4 py-2">
+                            <h3 class="font-semibold text-xl text-green-300">পাপীর প্রতি আল্লাহর আহ্বান</h3>
+                            <p class="mt-2 text-gray-300">আল্লাহর রহমতের দরজা এত বিশাল যে তিনি পাপীদের আহ্বান করে বলেন, "বলো, ‘হে আমার বান্দাগণ! তোমরা যারা নিজেদের প্রতি অবিচার করেছ, আল্লাহর রহমত থেকে নিরাশ হয়ো না। নিশ্চয় আল্লাহ সমস্ত গোনাহ ক্ষমা করেন। নিশ্চয় তিনি ক্ষমাশীল, পরম দয়ালু’।" (সূরা আয-যুমার: ৫৩)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stories Tab -->
+            <section id="stories" class="tab-content hidden">
+                 <div class="bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-700">
+                    <h2 class="text-3xl font-semibold mb-2 text-center text-white">প্রত্যাবর্তনের বাস্তব কাহিনী</h2>
+                    <p class="text-center text-gray-400 mb-8">কিছু হৃদয়স্পর্শী ঘটনা যা অনুশোচনা ও পরিবর্তনের শক্তিকে তুলে ধরে।</p>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        
+                        <div onclick="showModal('story1')" class="story-card cursor-pointer bg-gray-800 border border-gray-700 p-6 rounded-lg">
+                            <h3 class="font-bold text-xl mb-2 text-green-400">জাহাজের আরোহীর তাওবা</h3>
+                            <p class="text-gray-400">কুরআনের কয়েকটি আয়াত কীভাবে একজন পাপীর জীবনকে বদলে দিয়েছিল তার এক অসাধারণ কাহিনী।</p>
+                        </div>
+
+                        <div onclick="showModal('story2')" class="story-card cursor-pointer bg-gray-800 border border-gray-700 p-6 rounded-lg">
+                            <h3 class="font-bold text-xl mb-2 text-green-400">ধ্বংসের পথযাত্রী যুবক</h3>
+                            <p class="text-gray-400">এক যুবকের পাপে ভরা জীবনের করুণ পরিণতি এবং শেষ মুহূর্তে তার অনুশোচনার গল্প।</p>
+                        </div>
+
+                        <div onclick="showModal('story3')" class="story-card cursor-pointer bg-gray-800 border border-gray-700 p-6 rounded-lg">
+                            <h3 class="font-bold text-xl mb-2 text-green-400">সন্তানের হাতে বাবার হিদায়াত</h3>
+                            <p class="text-gray-400">এক প্রতিবন্ধী সন্তানের কারণে কীভাবে একজন গাফেল বাবা হিদায়াতের আলো খুঁজে পেলেন।</p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Path Tab -->
+            <section id="path" class="tab-content hidden">
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-700">
+                    <h2 class="text-3xl font-semibold mb-6 text-center text-white">আন্তরিক তাওবার শর্ত</h2>
+                     <p class="text-center text-gray-400 mb-8">কীভাবে একজন ব্যক্তি সত্যিকারের তাওবা করতে পারে? ইবরাহিম ইবনে আদহাম (রহ.) এর দেওয়া পাঁচটি মূল্যবান উপদেশ।</p>
+                    <div class="space-y-4">
+                        <div class="p-5 rounded-lg border border-gray-700 bg-gray-900/50">
+                            <p class="font-semibold text-lg text-gray-200">১. আল্লাহর রিজিক খেয়ে তাঁর নাফরমানি না করা।</p>
+                        </div>
+                         <div class="p-5 rounded-lg border border-gray-700 bg-gray-900/50">
+                            <p class="font-semibold text-lg text-gray-200">২. আল্লাহর জমিনে বাস করে তাঁর অবাধ্য না হওয়া।</p>
+                        </div>
+                         <div class="p-5 rounded-lg border border-gray-700 bg-gray-900/50">
+                            <p class="font-semibold text-lg text-gray-200">৩. এমন জায়গায় পাপ করা যেখানে আল্লাহ দেখেন না (যা অসম্ভব)।</p>
+                        </div>
+                         <div class="p-5 rounded-lg border border-gray-700 bg-gray-900/50">
+                            <p class="font-semibold text-lg text-gray-200">৪. মৃত্যুর ফেরেশতা এলে তাকে ফিরিয়ে দেওয়ার ক্ষমতা রাখা।</p>
+                        </div>
+                         <div class="p-5 rounded-lg border border-gray-700 bg-gray-900/50">
+                            <p class="font-semibold text-lg text-gray-200">৫. জাহান্নামের ফেরেশতারা নিতে এলে নিজেকে জান্নাতে নিয়ে যাওয়া।</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Call Tab -->
+            <section id="call" class="tab-content hidden">
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-700 text-center">
+                    <h2 class="text-3xl font-semibold mb-4 text-white">এখনই কি ফিরে আসার সময় নয়?</h2>
+                    <p class="text-lg leading-relaxed mb-6 text-gray-300">
+                        মৃত্যু আসার আগে, হিসাবের দিন শুরু হওয়ার আগে, আসুন আমরা আমাদের রবের দিকে ফিরে যাই। জীবন সংক্ষিপ্ত, আর আল্লাহর দিকে প্রত্যাবর্তনই চিরস্থায়ী সফলতা। পাপ যত বড়ই হোক না কেন, আন্তরিকভাবে অনুতপ্ত হলে আল্লাহ ক্ষমা করে দেন। তিনি যুবকদের আহ্বান জানিয়েছেন যেন তারা সময় থাকতে রবের দিকে ফিরে আসে। আসুন, আমরা সবাই প্রত্যাবর্তনকারীদের কাফেলায় যোগ দিই।
+                    </p>
+                    <blockquote class="border-r-4 border-green-400 bg-gray-900/50 p-6 rounded-lg text-right text-xl italic text-gray-300 neon-blockquote">
+                        "আল্লাহর রহমত থেকে কখনো নিরাশ না হওয়া।"
+                        <cite class="block not-italic mt-2 text-base font-semibold text-gray-400">মূল শিক্ষা</cite>
+                    </blockquote>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="story-modal" class="modal fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bg-gray-800 text-gray-300 w-full max-w-2xl max-h-[90vh] rounded-2xl shadow-xl overflow-hidden transform scale-95 border border-gray-700">
+            <div class="flex justify-between items-center p-4 border-b border-gray-700">
+                <h3 id="modal-title" class="text-2xl font-bold text-green-400"></h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white text-3xl">&times;</button>
+            </div>
+            <div id="modal-body" class="p-6 overflow-y-auto text-lg leading-relaxed">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const storyData = {
+            story1: {
+                title: "জাহাজের আরোহীর তাওবা",
+                content: `এক ব্যক্তি জাহাজে করে যাত্রাকালে মদ ও গানে মত্ত ছিল। জাহাজে থাকা একজন পরহেজগার আলেম তাকে আল্লাহর ভয় দেখান এবং সূরা আত-তাকবীরের আয়াতগুলো তিলাওয়াত করেন, যেখানে কিয়ামতের ভয়াবহ বর্ণনা রয়েছে। আয়াতগুলো শোনার পর লোকটি কান্নায় ভেঙে পড়ে এবং তার পাপ কাজের জন্য গভীরভাবে অনুতপ্ত হয়। সে তার সকল হারাম জিনিসপত্র ফেলে দিয়ে আল্লাহর কাছে তাওবা করে এবং বাকি জীবন সৎ পথে কাটায়। মৃত্যুর পর সে শুধুমাত্র সেই আন্তরিক তাওবার কারণে জান্নাত লাভ করে।`
+            },
+            story2: {
+                title: "ধ্বংসের পথযাত্রী যুবক",
+                content: `এক যুবক বন্ধুদের পাল্লায় পড়ে বিদেশে গিয়ে সব ধরনের পাপে লিপ্ত হয়—মদ, ব্যভিচার এবং মাদক। সে এক পর্যায়ে এইডস (AIDS) রোগে আক্রান্ত হয়। যখন সে জানতে পারে যে তার মৃত্যু আসন্ন, তখন তার বোধোদয় হয়। সে তার পাপের জন্য গভীরভাবে অনুতপ্ত হয় এবং আল্লাহর কাছে ক্ষমা চায়। মৃত্যুর আগে সে যুবকদের জন্য একটি বার্তা রেখে যায়, যেন তারা পাপের পথ এড়িয়ে চলে, কারণ এই পথের শেষটা অত্যন্ত ভয়াবহ।`
+            },
+            story3: {
+                title: "সন্তানের হাতে বাবার হিদায়াত",
+                content: `রাশেদ নামের এক ব্যক্তি অত্যন্ত গাফেল জীবনযাপন করত। সে অন্যদের নিয়ে উপহাস করত, এমনকি একজন অন্ধ ভিক্ষুককে নিয়েও মজা করেছিল। তার একটি ছেলে ছিল, যার নাম সালিম। সালিম জন্ম থেকেই অন্ধ ও খোঁড়া ছিল। রাশেদ তার এই প্রতিবন্ধী ছেলেকে অবহেলা করত।<br><br>একদিন রাশেদ দেখতে পায়, তার ছেলে সালিম কাঁদছে কারণ জুম্মার নামাজের জন্য মসজিদে যেতে দেরি হয়ে যাচ্ছিল এবং প্রথম কাতারে জায়গা পাবে না বলে ভয় পাচ্ছিল। এই দৃশ্য দেখে রাশেদের হৃদয়ে পরিবর্তন আসে। সে ছেলেকে মসজিদে নিয়ে যায়। সেখানে সে দেখে, তার অন্ধ ছেলে মুখস্থ সূরা কাহাফ তিলাওয়াত করছে। এই ঘটনায় রাশেদ লজ্জিত ও অনুতপ্ত হয় এবং প্রথমবারের মতো আন্তরিকভাবে কাঁদে। সেই দিন থেকে সে সম্পূর্ণ বদলে যায় এবং আল্লাহর পথে ফিরে আসে। তার এই পরিবর্তনের কারণ ছিল তারই অবহেলিত প্রতিবন্ধী পুত্র সালিম।`
+            }
+        };
+
+        const modal = document.getElementById('story-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+
+        function showModal(storyId) {
+            const story = storyData[storyId];
+            modalTitle.textContent = story.title;
+            modalBody.innerHTML = story.content;
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = 'hidden';
+            modal.querySelector('.modal-content').classList.remove('scale-95');
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = 'auto';
+            modal.querySelector('.modal-content').classList.add('scale-95');
+        }
+        
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
+
+        const tabs = document.querySelectorAll('.tab-content');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+
+        function showTab(tabName) {
+            tabs.forEach(tab => {
+                if (tab.id === tabName) {
+                    tab.classList.remove('hidden');
+                } else {
+                    tab.classList.add('hidden');
+                }
+            });
+
+            tabBtns.forEach(btn => {
+                if(btn.getAttribute('data-tab') === tabName) {
+                    btn.classList.add('tab-active');
+                } else {
+                    btn.classList.remove('tab-active');
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

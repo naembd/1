@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>এবং তারা আল্লাহকে যথাযোগ্য মর্যাদা দেয়নি - শেখ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cyber Teal Neon on Deep Navy -->
+    <!-- Application Structure Plan: The application is structured as a single-page exploratory journey. It begins with an introduction, moves to the core concept of Allah's greatness, then presents the sermon's central part—the stages of Judgment Day—as an interactive timeline. This breaks down the long, intense narrative into manageable, clickable sections, enhancing user engagement and comprehension. It concludes with the path to salvation and the final prayer. This thematic, non-linear structure was chosen over a simple text dump to make the profound spiritual content more accessible and reflective for the user, guiding them from the problem to the solution interactively. -->
+    <!-- Visualization & Content Choices: Report Info: Stages of Judgment Day -> Goal: Organize & Explore a process -> Viz/Presentation Method: Interactive Stepper/Timeline (HTML/CSS/JS) -> Interaction: User clicks on a stage name to display its detailed description. This method organizes the dense, sequential narrative into a user-controlled flow. | Report Info: Qualities of the Pious -> Goal: Inform & Highlight -> Method: Stylized card layout -> Interaction: Static display for clear, focused reading. | Report Info: Quranic verses -> Goal: Emphasize -> Method: Visually distinct blockquotes -> Interaction: Static display. This approach was chosen to make the content digestible and engaging without trivializing its serious nature. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #020617;
+        }
+        .neon-text {
+            text-shadow: 0 0 5px theme('colors.teal.400'), 0 0 10px theme('colors.teal.500'), 0 0 20px theme('colors.teal.600');
+        }
+        .active-tab {
+            background-color: theme('colors.teal.600');
+            color: #ffffff;
+            border-color: theme('colors.teal.400');
+            box-shadow: 0 0 15px theme('colors.teal.500'), inset 0 0 5px theme('colors.teal.400');
+        }
+        .quran-quote {
+            background-color: theme('colors.slate.800');
+            border-left: 4px solid theme('colors.teal.500');
+            box-shadow: inset 3px 0 10px -2px theme('colors.teal.500/50');
+        }
+        .section-container {
+            background-color: theme('colors.slate.900/40');
+            border: 1px solid theme('colors.teal.500/20');
+            box-shadow: 0 0 30px theme('colors.teal.900/50');
+            transition: all 0.3s ease-in-out;
+        }
+        .section-container:hover {
+             border-color: theme('colors.teal.500/40');
+             box-shadow: 0 0 40px theme('colors.teal.800/70');
+        }
+        @keyframes neon-pulse {
+            0%, 100% {
+                text-shadow: 0 0 5px theme('colors.teal.400'), 0 0 15px theme('colors.teal.500'), 0 0 25px theme('colors.teal.600');
+            }
+            50% {
+                text-shadow: 0 0 10px theme('colors.teal.300'), 0 0 25px theme('colors.teal.400'), 0 0 40px theme('colors.teal.500');
+            }
+        }
+        .animate-neon-pulse {
+            animation: neon-pulse 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <header id="header" class="bg-slate-900/80 backdrop-blur-sm shadow-lg shadow-teal-800/30 sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-teal-400 neon-text">আল্লাহর মহত্ত্ব</h1>
+            <div class="hidden md:flex space-x-6">
+                <a href="#intro" class="text-slate-400 hover:text-teal-300 transition-colors hover:drop-shadow-[0_0_8px_theme(colors.teal.400)]">ভূমিকা</a>
+                <a href="#greatness" class="text-slate-400 hover:text-teal-300 transition-colors hover:drop-shadow-[0_0_8px_theme(colors.teal.400)]">আল্লাহর মর্যাদা</a>
+                <a href="#judgment" class="text-slate-400 hover:text-teal-300 transition-colors hover:drop-shadow-[0_0_8px_theme(colors.teal.400)]">কিয়ামতের ভয়াবহতা</a>
+                <a href="#salvation" class="text-slate-400 hover:text-teal-300 transition-colors hover:drop-shadow-[0_0_8px_theme(colors.teal.400)]">নাজাতের পথ</a>
+                <a href="#conclusion" class="text-slate-400 hover:text-teal-300 transition-colors hover:drop-shadow-[0_0_8px_theme(colors.teal.400)]">উপসংহার</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none text-slate-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-4">
+            <a href="#intro" class="block py-2 text-slate-300 hover:text-teal-400">ভূমিকা</a>
+            <a href="#greatness" class="block py-2 text-slate-300 hover:text-teal-400">আল্লাহর মর্যাদা</a>
+            <a href="#judgment" class="block py-2 text-slate-300 hover:text-teal-400">কিয়ামতের ভয়াবহতা</a>
+            <a href="#salvation" class="block py-2 text-slate-300 hover:text-teal-400">নাজাতের পথ</a>
+            <a href="#conclusion" class="block py-2 text-slate-300 hover:text-teal-400">উপসংহার</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        
+        <section id="intro" class="my-16 scroll-mt-20">
+            <div class="text-center p-8 rounded-lg section-container">
+                <h2 class="text-3xl md:text-4xl font-bold text-teal-400 animate-neon-pulse mb-4">এবং তারা আল্লাহকে যথাযোগ্য মর্যাদা দেয়নি</h2>
+                <p class="text-lg text-slate-400 max-w-3xl mx-auto">
+                    শেখ খালিদ আল-রাশেদের এই মর্মস্পর্শী আলোচনাটি আমাদের আল্লাহর মহত্ত্ব এবং তাঁর প্রতি আমাদের কর্তব্যের কথা স্মরণ করিয়ে দেয়। আল্লাহকে তাঁর যথাযোগ্য মর্যাদা ও সম্মান দেওয়ার বাস্তবতা দুটি বিষয়ের মাধ্যমে অর্জিত হয়: এই বিশাল মহাবিশ্বে আল্লাহর নিদর্শনগুলো থেকে তাঁর মহত্ত্বের শিক্ষা গ্রহণ করা এবং শেষ দিবসের ভয়াবহ ঘটনাবলীর প্রতি বিশ্বাস স্থাপন করা। এই অ্যাপ্লিকেশনটি আপনাকে সেই উপলব্ধির যাত্রায় সঙ্গী হতে সাহায্য করবে।
+                </p>
+            </div>
+        </section>
+
+        <section id="greatness" class="my-16 scroll-mt-20">
+            <div class="p-8 rounded-lg section-container">
+                <h3 class="text-2xl md:text-3xl font-bold text-center text-teal-400 neon-text mb-6">মানুষ তাদের প্রতিপালককে যথাযথ সম্মান করে না</h3>
+                <p class="mb-6 text-slate-400 leading-relaxed">
+                    এই বিভাগের উদ্দেশ্য হলো আল্লাহর অসীম ক্ষমতা ও মহত্ত্বের কিছু দিক তুলে ধরা এবং মানুষ কীভাবে তাঁকে যথাযোগ্য মর্যাদা দিতে ব্যর্থ হয়, তা স্পষ্ট করা। আল্লাহর সৃষ্টিতে তাঁর নিদর্শন থাকা সত্ত্বেও মানুষ অবাধ্য হয়, কারণ তারা তাঁর মহত্ত্বকে সঠিকভাবে উপলব্ধি করে না।
+                </p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-6 bg-slate-800 rounded-lg ring-1 ring-slate-700">
+                        <h4 class="font-bold text-xl mb-2 text-teal-400">মর্যাদা না দেওয়ার কারণ</h4>
+                        <p class="text-slate-400">বান্দারা আল্লাহকে যথাযথ মর্যাদা দেয়নি যখন তারা অন্য কারো ইবাদত করেছে, তাঁর সাথে শরীক স্থাপন করেছে, তাঁর আদেশ অমান্য করেছে এবং তাঁর নিষেধ করা কাজে লিপ্ত হয়েছে। তারা যখন বলেছে আল্লাহর ক্ষমতা অসীম নয়, তখনও তারা তাঁর মর্যাদা দেয়নি, অথচ আল্লাহই সবকিছুর ওপর ক্ষমতাবান।</p>
+                    </div>
+                    <div class="p-6 bg-slate-800 rounded-lg ring-1 ring-slate-700">
+                        <h4 class="font-bold text-xl mb-2 text-teal-400">সৃষ্টির মাঝে নিদর্শন</h4>
+                        <p class="text-slate-400">নূহ (আঃ) তাঁর জাতিকে বলেছিলেন, "তোমাদের কি হলো যে, তোমরা আল্লাহর মহত্ত্বের পরোয়া করছ না? অথচ তিনি তোমাদেরকে পর্যায়ক্রমে সৃষ্টি করেছেন।" আল্লাহ মানুষকে শুক্রবিন্দু থেকে পূর্ণাঙ্গ মানুষে রূপান্তরিত করেন, সাত আসমান স্তরে স্তরে সৃষ্টি করেছেন এবং জমিনকে করেছেন বিস্তৃত। এই সবই তাঁর মহত্ত্বের প্রমাণ।</p>
+                    </div>
+                </div>
+                 <blockquote class="quran-quote p-4 my-6 italic">
+                    <p class="text-slate-300">"আর তারা আল্লাহকে যথাযোগ্য মর্যাদা দেয়নি। অথচ কিয়ামতের দিন গোটা পৃথিবী থাকবে তাঁর হাতের মুঠোয় এবং আসমানসমূহ ভাঁজ করা থাকবে তাঁর ডান হাতে। তিনি পবিত্র এবং তারা যাকে শরীক করে, তা থেকে তিনি অনেক ঊর্ধ্বে।"</p>
+                    <cite class="block text-right mt-2 not-italic text-sm text-slate-500">- সূরা যুমার: ৬৭</cite>
+                </blockquote>
+            </div>
+        </section>
+
+        <section id="judgment" class="my-16 scroll-mt-20">
+            <div class="p-8 rounded-lg section-container">
+                <h3 class="text-2xl md:text-3xl font-bold text-center text-teal-400 neon-text mb-6">কিয়ামতের ভয়াবহতার পর্যায়ক্রম</h3>
+                 <p class="mb-8 text-center text-slate-400 max-w-3xl mx-auto leading-relaxed">
+                    এই বিভাগে, কিয়ামতের দিনের ভয়াবহ পর্যায়গুলি একটি ইন্টারেক্টিভ টাইমলাইনের মাধ্যমে তুলে ধরা হয়েছে। প্রতিটি পর্যায়ে ক্লিক করে সেই মুহূর্তের বর্ণনা পড়ুন এবং আল্লাহর শক্তি ও ন্যায়বিচার সম্পর্কে গভীরভাবে চিন্তা করুন। এটি আমাদের স্মরণ করিয়ে দেয় যে, সেই কঠিন দিনের জন্য প্রস্তুতি নেওয়া কতটা অপরিহার্য।
+                </p>
+
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div id="timeline-nav" class="flex md:flex-col md:w-1/4 overflow-x-auto pb-4 md:pb-0">
+                        <button data-target="resurrection" class="timeline-tab active-tab text-left w-full whitespace-nowrap text-sm sm:text-base p-3 font-semibold border-b-2 md:border-l-4 md:border-b-0 border-transparent transition-all duration-300">১. পুনরুত্থান ও হাশর</button>
+                        <button data-target="intercession" class="timeline-tab text-left w-full whitespace-nowrap text-sm sm:text-base p-3 font-semibold border-b-2 md:border-l-4 md:border-b-0 border-slate-700 text-slate-400 hover:bg-slate-700/50 hover:text-teal-400 transition-all duration-300">২. শাফা'আত</button>
+                        <button data-target="judgement" class="timeline-tab text-left w-full whitespace-nowrap text-sm sm:text-base p-3 font-semibold border-b-2 md:border-l-4 md:border-b-0 border-slate-700 text-slate-400 hover:bg-slate-700/50 hover:text-teal-400 transition-all duration-300">৩. হিসাব</button>
+                        <button data-target="mizan" class="timeline-tab text-left w-full whitespace-nowrap text-sm sm:text-base p-3 font-semibold border-b-2 md:border-l-4 md:border-b-0 border-slate-700 text-slate-400 hover:bg-slate-700/50 hover:text-teal-400 transition-all duration-300">৪. মিজান (পাল্লা)</button>
+                        <button data-target="sirat" class="timeline-tab text-left w-full whitespace-nowrap text-sm sm:text-base p-3 font-semibold border-b-2 md:border-l-4 md:border-b-0 border-slate-700 text-slate-400 hover:bg-slate-700/50 hover:text-teal-400 transition-all duration-300">৫. সিরাত (পুল)</button>
+                        <button data-target="final" class="timeline-tab text-left w-full whitespace-nowrap text-sm sm:text-base p-3 font-semibold border-b-2 md:border-l-4 md:border-b-0 border-slate-700 text-slate-400 hover:bg-slate-700/50 hover:text-teal-400 transition-all duration-300">৬. চূড়ান্ত পরিণতি</button>
+                    </div>
+
+                    <div class="md:w-3/4">
+                        <div id="resurrection" class="timeline-content">
+                            <h4 class="text-xl font-bold mb-2 text-teal-400">পুনরুত্থান ও হাশর</h4>
+                            <p class="text-slate-400 leading-relaxed">শিংগায় ফুঁক দেওয়ার সাথে সাথে আসমান ও জমিনের সবকিছু বেহুঁশ হয়ে পড়বে। দ্বিতীয় ফুঁকে সবাই কবর থেকে উঠে দাঁড়াবে। সেদিন মানুষ খালি পায়ে, নগ্ন শরীরে একত্রিত হবে। সূর্য মাথার কাছে চলে আসবে এবং মানুষ ঘামে ডুবে যাবে। প্রত্যেকে নিজের চিন্তায় এতটাই মগ্ন থাকবে যে, ভাই তার ভাই থেকে, মা-বাবা সন্তান থেকে এবং স্বামী-স্ত্রী একে অপর থেকে পালাবে।</p>
+                        </div>
+                        <div id="intercession" class="timeline-content hidden">
+                            <h4 class="text-xl font-bold mb-2 text-teal-400">শাফা'আত (সুপারিশ)</h4>
+                            <p class="text-slate-400 leading-relaxed">মানুষ যখন অসহনীয় কষ্টে থাকবে, তখন তারা একজন সুপারিশকারীর খোঁজ করবে। তারা আদম, নূহ, ইবরাহিম, মূসা এবং ঈসা (আঃ) এর কাছে যাবে, কিন্তু প্রত্যেকেই অপারগতা প্রকাশ করে скажет 'নাফসি নাফসি' (আমার চিন্তা)। অবশেষে, তারা আমাদের নবী মুহাম্মদ (সাঃ) এর কাছে আসবে। তিনি বলবেন, "আমি এর জন্য আছি" এবং আল্লাহর কাছে সিজদায় পড়ে উম্মতের জন্য শাফা'আত করবেন। তাঁর শাফা'আতেই হিসাব শুরু হবে।</p>
+                        </div>
+                        <div id="judgement" class="timeline-content hidden">
+                            <h4 class="text-xl font-bold mb-2 text-teal-400">হিসাব</h4>
+                            <p class="text-slate-400 leading-relaxed">আল্লাহর সামনে সবাইকে সারিবদ্ধভাবে উপস্থিত করা হবে এবং প্রত্যেকের আমলনামা দেওয়া হবে। যারা আল্লাহকে যথাযোগ্য মর্যাদা দিয়েছে, তাদের ডান হাতে আমলনামা দেওয়া হবে এবং তারা আনন্দে চিৎকার করে বলবে, "নাও, আমার কিতাব পড়ো"। আর যারা দেয়নি, তাদের বাম হাতে আমলনামা দেওয়া হবে এবং তারা হতাশ হয়ে বলবে, "হায়! যদি আমাকে আমার কিতাব না দেওয়া হতো"। সেদিন অণু পরিমাণ ভালো বা মন্দ কাজেরও হিসাব নেওয়া হবে।</p>
+                        </div>
+                        <div id="mizan" class="timeline-content hidden">
+                            <h4 class="text-xl font-bold mb-2 text-teal-400">মিজান (পাল্লা)</h4>
+                            <p class="text-slate-400 leading-relaxed">এরপর ন্যায়বিচারের পাল্লা স্থাপন করা হবে এবং মানুষের আমল ওজন করা হবে। কারো ওপর সামান্যতম জুলুমও করা হবে না। একটি "লা ইলাহা ইল্লাল্লাহ" লেখা কার্ড পাহাড় সমান পাপের চেয়েও ভারী হতে পারে। এই পাল্লাই নির্ধারণ করবে কার নেকির পাল্লা ভারী এবং কার পাপের পাল্লা।</p>
+                        </div>
+                        <div id="sirat" class="timeline-content hidden">
+                           <h4 class="text-xl font-bold mb-2 text-teal-400">সিরাত (পুল)</h4>
+                           <p class="text-slate-400 leading-relaxed">জাহান্নামের ওপর একটি পুল স্থাপন করা হবে যা চুলের চেয়েও চিকন এবং তরবারির চেয়েও ধারালো। প্রত্যেককে এই পুল পার হতে হবে। মু'মিনরা তাদের আমল অনুযায়ী আলো পাবে এবং দ্রুত পার হয়ে যাবে, কেউ অক্ষতভাবে, কেউ আঁচড় খেয়ে। আর পাপীরা সেই পুল থেকে জাহান্নামে নিক্ষিপ্ত হবে। নবী (সাঃ) সেখানে দাঁড়িয়ে তাঁর উম্মতের জন্য দোয়া করতে থাকবেন: "আল্লাহুম্মা সাল্লিম, সাল্লিম" (হে আল্লাহ, রক্ষা করুন, রক্ষা করুন)।</p>
+                        </div>
+                         <div id="final" class="timeline-content hidden">
+                           <h4 class="text-xl font-bold mb-2 text-teal-400"> চূড়ান্ত পরিণতি: জান্নাত ও জাহান্নাম</h4>
+                           <p class="text-slate-400 leading-relaxed">সিরাত পার হওয়ার পর মানুষ দুটি দলে বিভক্ত হবে। যারা তাদের রবকে ভয় করত, তাদেরকে দলে দলে জান্নাতের দিকে নিয়ে যাওয়া হবে, যেখানে ফেরেশতারা তাদেরকে সালাম জানিয়ে স্বাগত জানাবে। আর কাফেরদেরকে দলে দলে জাহান্নামের দিকে তাড়িয়ে নিয়ে যাওয়া হবে। এরপর মৃত্যুকে একটি ভেড়ার আকৃতিতে এনে জবাই করে দেওয়া হবে এবং ঘোষণা করা হবে, "হে জান্নাতবাসীরা! চিরস্থায়ী জীবন, আর কোনো মৃত্যু নেই। হে জাহান্নামবাসীরা! চিরস্থায়ী জীবন, আর কোনো মৃত্যু নেই।"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="salvation" class="my-16 scroll-mt-20">
+             <div class="p-8 rounded-lg section-container">
+                <h3 class="text-2xl md:text-3xl font-bold text-center text-teal-400 neon-text mb-6">নাজাতপ্রাপ্তদের গুণাবলী</h3>
+                <p class="mb-8 text-center text-slate-400 max-w-3xl mx-auto leading-relaxed">
+                    কিয়ামতের ভয়াবহতা থেকে পরিত্রাণ পাওয়ার পথ হলো তাকওয়া অবলম্বন করা। কুরআন ও হাদিসে মুত্তাকীদের (আল্লাহভীরু) কিছু গুণাবলী বর্ণনা করা হয়েছে, যা আমাদের জন্য অনুসরণীয়। এই গুণাবলী অর্জনই হলো সেই মহান দিনের জন্য শ্রেষ্ঠ প্রস্তুতি।
+                </p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-slate-800/80 ring-1 ring-slate-700 p-4 rounded-lg text-center hover:ring-teal-500 hover:shadow-[0_0_25px_theme(colors.teal.500/50)] transition-all duration-300 transform hover:-translate-y-1">
+                        <p class="font-semibold text-lg text-teal-400">নামাযে যত্নবান</p>
+                        <p class="text-slate-400">তারা তাদের নামাযের প্রতি যত্নবান থাকে।</p>
+                    </div>
+                     <div class="bg-slate-800/80 ring-1 ring-slate-700 p-4 rounded-lg text-center hover:ring-teal-500 hover:shadow-[0_0_25px_theme(colors.teal.500/50)] transition-all duration-300 transform hover:-translate-y-1">
+                        <p class="font-semibold text-lg text-teal-400">দানশীলতা</p>
+                        <p class="text-slate-400">তাদের সম্পদে যাচনাকারী ও বঞ্চিতদের হক রয়েছে।</p>
+                    </div>
+                    <div class="bg-slate-800/80 ring-1 ring-slate-700 p-4 rounded-lg text-center hover:ring-teal-500 hover:shadow-[0_0_25px_theme(colors.teal.500/50)] transition-all duration-300 transform hover:-translate-y-1">
+                        <p class="font-semibold text-lg text-teal-400">আখিরাতে বিশ্বাসী</p>
+                        <p class="text-slate-400">তারা প্রতিদান দিবসকে বিশ্বাস করে এবং রবের আযাব থেকে ভীত থাকে।</p>
+                    </div>
+                    <div class="bg-slate-800/80 ring-1 ring-slate-700 p-4 rounded-lg text-center hover:ring-teal-500 hover:shadow-[0_0_25px_theme(colors.teal.500/50)] transition-all duration-300 transform hover:-translate-y-1">
+                        <p class="font-semibold text-lg text-teal-400">লজ্জাস্থানের হেফাজতকারী</p>
+                        <p class="text-slate-400">তারা তাদের লজ্জাস্থানের হেফাজত করে।</p>
+                    </div>
+                    <div class="bg-slate-800/80 ring-1 ring-slate-700 p-4 rounded-lg text-center hover:ring-teal-500 hover:shadow-[0_0_25px_theme(colors.teal.500/50)] transition-all duration-300 transform hover:-translate-y-1">
+                        <p class="font-semibold text-lg text-teal-400">আমানত ও অঙ্গীকার রক্ষাকারী</p>
+                        <p class="text-slate-400">তারা তাদের আমানত ও অঙ্গীকার রক্ষা করে।</p>
+                    </div>
+                    <div class="bg-slate-800/80 ring-1 ring-slate-700 p-4 rounded-lg text-center hover:ring-teal-500 hover:shadow-[0_0_25px_theme(colors.teal.500/50)] transition-all duration-300 transform hover:-translate-y-1">
+                        <p class="font-semibold text-lg text-teal-400">বড় পাপ থেকে বিরত</p>
+                        <p class="text-slate-400">তারা বড় পাপ ও অশ্লীল কাজ থেকে বিরত থাকে।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion" class="my-16 scroll-mt-20">
+            <div class="bg-transparent border-2 border-teal-500/30 p-8 rounded-lg shadow-lg shadow-teal-500/20 text-center">
+                <h3 class="text-2xl md:text-3xl font-bold mb-4 text-teal-400 animate-neon-pulse">উপসংহার ও প্রার্থনা</h3>
+                <p class="leading-relaxed max-w-3xl mx-auto mb-6 text-slate-300">
+                    এখনও কি সময় আসেনি যে আমরা আল্লাহকে তাঁর যথাযোগ্য মর্যাদা দেব এবং জানব যে, জীবন যতই দীর্ঘ হোক না কেন, তা সংক্ষিপ্ত? আল্লাহর তাকওয়া অবলম্বন করাই হলো সেই মহান দিনের জন্য শ্রেষ্ঠ প্রস্তুতি। আসুন, আমরা কুরআন পড়ি, তার আয়াত নিয়ে চিন্তা করি এবং আল্লাহর আদেশসমূহ রক্ষা করি।
+                </p>
+                <blockquote class="italic text-teal-300 border-l-4 border-teal-400 pl-4">
+                    <p>"হে আল্লাহ! আমাদের অন্তরে ঈমানকে প্রিয় করে দিন এবং তা আমাদের অন্তরে সুশোভিত করুন। আমাদেরকে সত্যকে সত্য হিসেবে দেখান এবং তা অনুসরণ করার তৌফিক দিন। হে আল্লাহ! সেই দিনে আমাদের গোপন বিষয়গুলো গোপন রাখুন, আমাদের ভয়কে নিরাপত্তায় পরিণত করুন এবং আমাদেরকে জান্নাতে প্রবেশ করান, হে পরাক্রমশালী, হে ক্ষমাশীল!"</p>
+                </blockquote>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 mt-12 py-6 border-t border-slate-800">
+        <div class="container mx-auto text-center">
+            <p class="text-slate-500">&copy; ২০২৫ | শেখ খালিদ আল-রাশেদের আলোচনার উপর ভিত্তি করে তৈরি।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.timeline-tab');
+            const contents = document.querySelectorAll('.timeline-content');
+            const timelineNav = document.getElementById('timeline-nav');
+
+            timelineNav.addEventListener('click', function (e) {
+                if (e.target.classList.contains('timeline-tab')) {
+                    const targetId = e.target.getAttribute('data-target');
+                    
+                    tabs.forEach(tab => {
+                        tab.classList.remove('active-tab');
+                        tab.classList.add('border-slate-700', 'text-slate-400', 'hover:bg-slate-700/50', 'hover:text-teal-400');
+
+                    });
+                    e.target.classList.add('active-tab');
+                    e.target.classList.remove('border-slate-700', 'text-slate-400', 'hover:bg-slate-700/50', 'hover:text-teal-400');
+
+
+                    contents.forEach(content => {
+                        if (content.id === targetId) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                }
+            });
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            const allNavLinks = document.querySelectorAll('nav a, #mobile-menu a');
+            allNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                         mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

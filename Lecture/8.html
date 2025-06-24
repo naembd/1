@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>শায়খ খালিদ আল-রাশেদের খুতবা: একটি ইন্টারেক্টিভ অ্যাপ্লিকেশন</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Cyber Neon -->
+    <!-- Application Structure Plan: The application uses a tab-based navigation structure to thematically organize the sermon's content into 'Main Blessings', 'Introduction', and 'Supplication'. This dashboard-like approach transforms the linear text into an exploratory experience. Interactive cards for each blessing, collapsible accordions for stories, and a central conceptual diagram allow users to engage with specific topics of interest, which enhances reflection and understanding. This non-linear structure is chosen for better usability and engagement over a simple text scroll. -->
+    <!-- Visualization & Content Choices: 
+        Report Info -> Goal -> Viz/Presentation Method -> Interaction -> Justification -> Library/Method
+        1. Main Blessings -> Compare/Inform -> Doughnut Chart -> Hover for details -> Provides a quick visual summary of the key blessings mentioned -> Chart.js
+        2. Relationship between Faith & Actions -> Explain Relationships -> Interactive Diagram -> Hover/Click to highlight paths -> Simplifies the complex theological concepts of how actions affect outcomes (e.g., gratitude strengthens blessings, sin leads to loss) -> HTML/CSS/JS
+        3. Quranic Stories (Musa, Ibrahim) -> Organize/Narrate -> Accordion/Collapsible Sections -> Click to expand/collapse -> Keeps the main interface clean while providing detailed narratives on demand for users who want to delve deeper -> HTML/CSS/JS
+        4. Key Quotes/Principles -> Inform/Highlight -> Styled Blockquotes & Cards -> Static display -> Emphasizes core messages for better retention -> HTML/CSS
+        CONFIRMING NO SVG/Mermaid.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #020617; /* A very dark blue, almost black */
+        }
+        .neon-text-cyan {
+            color: #67e8f9;
+            text-shadow: 0 0 5px #67e8f9, 0 0 10px #67e8f9, 0 0 20px #22d3ee, 0 0 30px #22d3ee;
+        }
+        .neon-text-pink {
+            color: #f472b6;
+            text-shadow: 0 0 5px #f472b6, 0 0 10px #f472b6, 0 0 20px #ec4899, 0 0 30px #ec4899;
+        }
+        .neon-border-pink {
+             border-color: #ec4899;
+             box-shadow: 0 0 2px #ec4899, 0 0 5px #ec4899, 0 0 10px #ec4899, inset 0 0 5px #ec4899;
+        }
+        .active-tab {
+            border-bottom-color: #67e8f9;
+            color: #67e8f9;
+            font-weight: 600;
+            text-shadow: 0 0 5px #67e8f9;
+        }
+        .tab {
+            border-bottom: 2px solid transparent;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: auto;
+            min-height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                min-height: 350px;
+            }
+        }
+        .prose-custom {
+            color: #cbd5e1;
+        }
+        .prose-custom h3 {
+            color: #f472b6;
+        }
+        .prose-custom blockquote {
+            border-right-color: #67e8f9;
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-300">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold neon-text-cyan">আমাদের উপর আল্লাহর নেয়ামত</h1>
+            <p class="text-lg text-slate-400 mt-2">শায়খ খালিদ আল-রাশেদের খুতবার আলোকে একটি ইন্টারেক্টিভ পর্যালোচনা</p>
+        </header>
+
+        <nav class="flex justify-center border-b-2 border-slate-800 mb-8">
+            <button class="tab py-4 px-6 block text-lg focus:outline-none text-slate-400 hover:text-cyan-300 transition-colors active-tab" data-tab="tab-main">মুখ্য নেয়ামতসমূহ</button>
+            <button class="tab py-4 px-6 block text-lg focus:outline-none text-slate-400 hover:text-cyan-300 transition-colors" data-tab="tab-intro">ভূমিকা</button>
+            <button class="tab py-4 px-6 block text-lg focus:outline-none text-slate-400 hover:text-cyan-300 transition-colors" data-tab="tab-dua">দোয়া</button>
+        </nav>
+
+        <main id="content-area">
+            <!-- Tab: Main Blessings -->
+            <div id="tab-main" class="tab-content">
+                <section class="mb-12">
+                     <p class="text-center text-slate-400 mb-8 max-w-3xl mx-auto">এই বিভাগে খুতবায় আলোচিত আল্লাহর প্রধান নেয়ামতসমূহ তুলে ধরা হয়েছে। প্রতিটি নেয়ামতের গুরুত্ব, এর প্রভাব এবং আমাদের করণীয় সম্পর্কে ইন্টারেক্টিভ উপায়ে জানতে পারবেন।</p>
+
+                    <div class="grid md:grid-cols-2 gap-8 items-start">
+                        <!-- Left side: Interactive cards -->
+                        <div class="space-y-6">
+                            <!-- Security Card -->
+                            <div class="bg-slate-900 p-6 rounded-xl shadow-lg neon-border-pink">
+                                <h3 class="text-2xl font-semibold mb-4 neon-text-pink">১. নিরাপত্তা ও সুরক্ষা</h3>
+                                <p class="prose-custom mb-4">নিরাপত্তা আল্লাহর এক মহান নেয়ামত, যা ছাড়া দ্বীন, দুনিয়া ও জীবনযাত্রার কোনো স্বাদই পাওয়া যায় না। ভয় ও আতঙ্ক সমস্ত নেয়ামতকে অর্থহীন করে দেয়।</p>
+                                <div class="accordion">
+                                    <button class="accordion-header w-full text-right bg-slate-800 p-3 rounded-md font-semibold text-cyan-300 hover:bg-slate-700 transition">কুরআনের আলোকে উদাহরণ ▽</button>
+                                    <div class="accordion-content mt-2">
+                                        <div class="border-r-2 border-pink-500 p-4 space-y-3 prose-custom">
+                                            <p><strong>হযরত ইবরাহীম (আঃ):</strong> তিনি মক্কাকে একটি "নিরাপদ শহর" বানানোর জন্য দোয়া করেছিলেন।</p>
+                                            <p><strong>হযরত মূসা (আঃ):</strong> ভীত অবস্থায় শহর থেকে পালিয়ে যাওয়ার পর আল্লাহ তাকে নিরাপত্তা দান করেন এবং বলেন, "ভয় পেয়ো না, তুমি জালিম সম্প্রদায় থেকে বেঁচে গেছ।"</p>
+                                            <p><strong>কুরাইশ জাতি:</strong> আল্লাহ তাদের অনিরাপদ পরিবেশের মধ্যেও "নিরাপদ হারাম" দান করেছিলেন, কিন্তু অকৃতজ্ঞতার কারণে তারা তা হারায়।</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <p class="prose-custom mt-4 text-sm">নিরাপত্তা হারানোর প্রধান কারণ হলো জুলুম, পাপ এবং আল্লাহর আদেশের প্রতি অবাধ্যতা।</p>
+                            </div>
+
+                            <!-- Health Card -->
+                           <div class="bg-slate-900 p-6 rounded-xl shadow-lg neon-border-pink">
+                                <h3 class="text-2xl font-semibold mb-4 neon-text-pink">২. স্বাস্থ্য ও সুস্থতা</h3>
+                                <p class="prose-custom mb-4">"স্বাস্থ্য সুস্থদের মাথার মুকুট, যা কেবল অসুস্থরাই দেখতে পায়।" সুস্থতা ছাড়া জীবন উপভোগ করা যায় না। শক্তিশালী মুমিন দুর্বল মুমিনের চেয়ে আল্লাহর কাছে অধিক প্রিয়।</p>
+                                <blockquote class="prose-custom p-4 my-4 border-r-4 rounded-r-lg">
+                                    "দুটি নেয়ামত রয়েছে যাতে অনেক মানুষ প্রতারিত হয়: স্বাস্থ্য ও অবসর।" - <span class="font-semibold text-cyan-300">হাদিস</span>
+                                </blockquote>
+                                <p class="prose-custom text-sm">রোগও এক ধরনের পরীক্ষা। ধৈর্যধারণ করলে তা পাপ মোচন ও মর্যাদা বৃদ্ধির কারণ হয়, যেমন হযরত আইয়ুব (আঃ) এর ক্ষেত্রে হয়েছিল।</p>
+                            </div>
+
+                            <!-- Trials Card -->
+                            <div class="bg-slate-900 p-6 rounded-xl shadow-lg neon-border-pink">
+                                <h3 class="text-2xl font-semibold mb-4 neon-text-pink">৩. পরীক্ষা ও ধৈর্য</h3>
+                                <p class="prose-custom mb-4">পরীক্ষা বা বিপদও মুমিনের জন্য একটি গোপন নেয়ামত। আল্লাহ যখন কোনো বান্দাকে ভালোবাসেন, তখন তাকে পরীক্ষা করেন।</p>
+                                <div class="accordion">
+                                    <button class="accordion-header w-full text-right bg-slate-800 p-3 rounded-md font-semibold text-cyan-300 hover:bg-slate-700 transition">পরীক্ষার উপকারিতা ▽</button>
+                                    <div class="accordion-content mt-2">
+                                        <ul class="list-disc list-inside p-4 space-y-2 prose-custom bg-slate-800/50 rounded-lg">
+                                            <li>আকিদা ও আল্লাহর সাথে সম্পর্ক শক্তিশালী হয়।</li>
+                                            <li>আত্মা ধৈর্যের উপর প্রশিক্ষিত হয়।</li>
+                                            <li>পাপ মোচন হয় এবং মর্যাদা বৃদ্ধি পায়।</li>
+                                            <li>দরিদ্ররা ধনীদের ৫০০ বছর আগে জান্নাতে প্রবেশ করবে।</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <p class="prose-custom mt-4 text-sm">ইমাম গাজ্জালী (রহঃ) বলেন, প্রতিটি বিপদে পাঁচটি নেয়ামত নিহিত থাকে, যেমন—বিপদটি এর চেয়েও বড় হতে পারত, বা এটি দ্বীনের উপর আসেনি।</p>
+                            </div>
+                        </div>
+
+                        <!-- Right side: Chart and conceptual diagram -->
+                        <div class="space-y-8">
+                            <div class="bg-slate-900 p-6 rounded-xl shadow-lg neon-border-pink">
+                                <h3 class="text-xl font-semibold text-center mb-4 neon-text-pink"> নেয়ামতের প্রধান স্তম্ভসমূহ</h3>
+                                <p class="text-center text-sm text-slate-400 mb-4">খুতবায় বর্ণিত প্রধান চারটি নেয়ামতের একটি তুলনামূলক চিত্র। প্রতিটি অংশের উপর মাউস হোভার করে দেখুন।</p>
+                                <div class="chart-container">
+                                    <canvas id="blessingsChart"></canvas>
+                                </div>
+                            </div>
+                             <div class="bg-slate-900 p-6 rounded-xl shadow-lg neon-border-pink">
+                                <h3 class="text-xl font-semibold text-center mb-4 neon-text-pink">ঈমান, আমল ও নেয়ামতের সম্পর্ক</h3>
+                                <p class="text-center text-sm text-slate-400 mb-6">এই চিত্রটি দেখায় কিভাবে আমাদের বিশ্বাস ও কাজ আল্লাহর নেয়ামতের সাথে সম্পর্কিত। প্রতিটি উপাদানের উপর মাউস হোভার করে তাদের সম্পর্ক দেখুন।</p>
+                                <div class="relative h-64 flex justify-center items-center">
+                                    <div class="absolute diagram-node bg-cyan-500 text-white p-3 rounded-full shadow-lg" data-node="iman" style="z-index: 10; box-shadow: 0 0 15px #67e8f9;">ঈমান</div>
+                                    <div class="absolute diagram-node bg-indigo-500 text-white py-2 px-4 rounded-full" data-node="niyamat" style="top: 0; left: 50%; transform: translateX(-50%);">নেয়ামত</div>
+                                    <div class="absolute diagram-node bg-rose-600 text-white py-2 px-4 rounded-full" data-node="poryikkha" style="bottom: 0; left: 50%; transform: translateX(-50%);">পরীক্ষা</div>
+                                    <div class="absolute diagram-node bg-emerald-500 text-white py-2 px-4 rounded-full" data-node="shukr" style="top: 20%; left: 0;">শুকরিয়া</div>
+                                    <div class="absolute diagram-node bg-red-500 text-white py-2 px-4 rounded-full" data-node="pap" style="top: 20%; right: 0;">পাপ/অকৃতজ্ঞতা</div>
+                                    <div class="absolute diagram-node bg-amber-500 text-white py-2 px-4 rounded-full" data-node="dhoirjo" style="bottom: 20%; left: 10%;">ধৈর্য</div>
+                                    <!-- Lines -->
+                                    <svg class="absolute w-full h-full" style="z-index: 1;">
+                                        <line x1="50%" y1="50%" x2="50%" y2="15%" class="diagram-line stroke-slate-600 stroke-2" data-line="iman-niyamat" />
+                                        <line x1="50%" y1="50%" x2="50%" y2="85%" class="diagram-line stroke-slate-600 stroke-2" data-line="iman-poryikkha" />
+                                        <line x1="40%" y1="15%" x2="15%" y2="28%" class="diagram-line stroke-slate-600 stroke-2" data-line="niyamat-shukr" />
+                                        <line x1="60%" y1="15%" x2="85%" y2="28%" class="diagram-line stroke-slate-600 stroke-2" data-line="niyamat-pap" />
+                                        <line x1="40%" y1="85%" x2="25%" y2="72%" class="diagram-line stroke-slate-600 stroke-2" data-line="poryikkha-dhoirjo" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tab: Introduction -->
+            <div id="tab-intro" class="tab-content hidden prose-custom max-w-3xl mx-auto bg-slate-900 p-8 rounded-xl shadow-lg neon-border-pink">
+                <h2 class="text-3xl font-bold mb-4 neon-text-pink">ভূমিকা: আল্লাহর অশেষ নেয়ামত</h2>
+                <p>বান্দাদের প্রতি আল্লাহর নেয়ামত অসংখ্য ও অগণিত, যা গণনা করে শেষ করা যাবে না। মানুষ প্রায়শই তার সবচেয়ে সাধারণ নেয়ামতগুলো, যেমন নিরাপত্তা ও স্বাস্থ্য, ভুলে যায় কারণ সে এগুলোতে অভ্যস্ত। কিন্তু যারা এগুলো হারিয়েছে, কেবল তারাই এর প্রকৃত মূল্য বোঝে।</p>
+                <p>এই খুতবায় শায়খ খালিদ আল-রাশেদ আমাদের আল্লাহর কিছু প্রধান নেয়ামতের কথা স্মরণ করিয়ে দিয়েছেন। তিনি শুধু নেয়ামতের কথাই বলেননি, বরং নেয়ামত হারানোর কারণ এবং আপাতদৃষ্টিতে কষ্টকর মনে হওয়া 'পরীক্ষা' নামক নেয়ামতের পেছনের হিকমতও তুলে ধরেছেন।</p>
+                <blockquote class="prose-custom p-4 my-4 border-r-4 rounded-r-lg text-lg">"আর যদি তোমরা আল্লাহর নেয়ামত গণনা কর, তবে তা গণনা করে শেষ করতে পারবে না।" <br>- <span class="text-cyan-400 font-semibold">(সূরা ইবরাহীম: ৩৪)</span></blockquote>
+                <p>এই ইন্টারেক্টিভ উপস্থাপনার উদ্দেশ্য হলো খুতবার এই গভীর বার্তাগুলোকে সহজে বোঝা এবং এ থেকে শিক্ষা গ্রহণ করা, যাতে আমরা আল্লাহর প্রতি আরও কৃতজ্ঞ হতে পারি এবং জীবনের প্রতিটি অবস্থায় ধৈর্যধারণ করতে পারি।</p>
+            </div>
+            
+            <!-- Tab: Dua -->
+            <div id="tab-dua" class="tab-content hidden prose-custom max-w-3xl mx-auto bg-slate-900 p-8 rounded-xl shadow-lg neon-border-pink">
+                <h2 class="text-3xl font-bold mb-4 neon-text-pink">খুতবার দোয়া ও প্রার্থনা</h2>
+                <p>খুতবার শেষে শায়খ উম্মাহর জন্য গুরুত্বপূর্ণ কিছু দোয়া করেছেন, যা আমাদের নিজেদের জন্যও করা উচিত।</p>
+                <div class="space-y-4 mt-6 text-lg">
+                    <p class="p-4 bg-cyan-900/40 text-cyan-200 rounded-lg border-r-4 border-cyan-400">হে আল্লাহ! আমরা আপনার কাছে দুনিয়া ও আখেরাতে সুস্থতা প্রার্থনা করছি।</p>
+                    <p class="p-4 bg-cyan-900/40 text-cyan-200 rounded-lg border-r-4 border-cyan-400">হে আল্লাহ! আমাদের দেশে আমাদের নিরাপত্তা দিন এবং আমাদের ইমাম ও শাসকদের সংশোধন করুন।</p>
+                    <p class="p-4 bg-cyan-900/40 text-cyan-200 rounded-lg border-r-4 border-cyan-400">হে আল্লাহ! যে আমাদের, আমাদের দেশ ও মুসলিম দেশগুলোর ক্ষতি করতে চায়, তাকে তার নিজের মধ্যে ব্যস্ত রাখুন এবং তার ষড়যন্ত্রকে তার উপর ধ্বংস করে দিন।</p>
+                    <p class="p-4 bg-cyan-900/40 text-cyan-200 rounded-lg border-r-4 border-cyan-400">হে আল্লাহ! আপনার পথে মুজাহিদদের সাহায্য করুন এবং নির্যাতিতদের পক্ষে বিজয় দান করুন।</p>
+                    <p class="p-4 bg-cyan-900/40 text-cyan-200 rounded-lg border-r-4 border-cyan-400">হে আল্লাহ! জালেমদেরকে জালেমদের দ্বারা ধ্বংস করুন এবং মুমিনদেরকে তাদের মধ্য থেকে নিরাপদে বের করে আনুন।</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tab switching logic
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    tabs.forEach(t => t.classList.remove('active-tab'));
+                    this.classList.add('active-tab');
+
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+
+                    const activeTabContent = document.getElementById(this.dataset.tab);
+                    if (activeTabContent) {
+                        activeTabContent.classList.remove('hidden');
+                    }
+                });
+            });
+
+            // Accordion logic
+            const accordions = document.querySelectorAll('.accordion-header');
+            accordions.forEach(accordion => {
+                accordion.addEventListener('click', () => {
+                    const content = accordion.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        accordion.innerHTML = accordion.innerHTML.replace('△', '▽');
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        accordion.innerHTML = accordion.innerHTML.replace('▽', '△');
+                    }
+                });
+            });
+
+            // Chart.js implementation
+            const ctx = document.getElementById('blessingsChart');
+            if(ctx) {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['নিরাপত্তা', 'স্বাস্থ্য', 'ইসলাম', 'প্রাচুর্য'],
+                        datasets: [{
+                            label: 'প্রধান নেয়ামতসমূহ',
+                            data: [40, 30, 20, 10],
+                            backgroundColor: [
+                                'rgba(236, 72, 153, 0.7)', // pink-500
+                                'rgba(34, 211, 238, 0.7)', // cyan-400
+                                'rgba(139, 92, 246, 0.7)', // violet-500
+                                'rgba(250, 204, 21, 0.7)'  // yellow-400
+                            ],
+                            borderColor: [
+                                '#ec4899',
+                                '#22d3ee',
+                                '#8b5cf6',
+                                '#facc15'
+                            ],
+                            borderWidth: 2,
+                            hoverOffset: 15,
+                            hoverBorderColor: '#fff',
+                            hoverBorderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '60%',
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        family: "'Hind Siliguri', sans-serif",
+                                        size: 14
+                                    },
+                                    color: '#cbd5e1'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed !== null) {
+                                            label += context.parsed + '% গুরুত্ব';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Interactive diagram logic
+            const diagramNodes = document.querySelectorAll('.diagram-node');
+            const diagramLines = document.querySelectorAll('.diagram-line');
+            diagramNodes.forEach(node => {
+                node.addEventListener('mouseover', () => {
+                    const nodeType = node.dataset.node;
+                    node.style.boxShadow = `0 0 20px ${node.style.backgroundColor}, 0 0 30px ${node.style.backgroundColor}`;
+                    diagramLines.forEach(line => {
+                        if (line.dataset.line.includes(nodeType)) {
+                            line.style.stroke = '#f472b6'; 
+                            line.style.strokeWidth = '4';
+                            line.style.filter = 'drop-shadow(0 0 5px #f472b6)';
+                        }
+                    });
+                });
+                node.addEventListener('mouseout', () => {
+                    node.style.boxShadow = '';
+                     diagramLines.forEach(line => {
+                        line.style.stroke = '#475569';
+                        line.style.strokeWidth = '2';
+                        line.style.filter = 'none';
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

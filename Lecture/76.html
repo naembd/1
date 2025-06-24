@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সময়ের মূল্য: একটি ইন্টারেক্টিভ ইনফোগ্রাফিক</title>
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: The SPA is designed as a single-page, vertical scrolling infographic with a sticky navigation bar. It includes thematic sections covering the importance of time, a data visualization of a lifespan, categories of people, 'thieves of time', and examples from the Salaf. This update adds two Gemini API-powered features: 1) A personalized action plan generator based on user-selected time-wasting habits. 2) A custom Dua (supplication) generator. These features add a layer of personalization and practical utility, making the application more interactive and helpful. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Breakdown of a 60-year life. -> Goal: Show proportions. -> Viz/Method: Chart.js Donut Chart. -> Interaction: Hover tooltips. -> Justification: Best for showing parts-of-a-whole data. -> Library: Chart.js.
+        - Report Info: Three categories of people. -> Goal: Compare/contrast. -> Viz/Method: Interactive HTML tabs. -> Interaction: Click to reveal. -> Justification: Focused comparison. -> Library: Vanilla JS.
+        - Report Info: Wisdom of the Salaf (quotes). -> Goal: Present wisdom. -> Viz/Method: HTML/CSS/JS carousel. -> Interaction: Click to navigate. -> Justification: Dynamic presentation. -> Library: Vanilla JS.
+        - User Input: Time-wasting habits. -> Goal: Provide actionable advice. -> Viz/Method: Gemini API text generation. -> Interaction: Select habits, click button. -> Justification: Creates personalized, practical value. -> Library: Gemini API via Fetch.
+        - User Input: Prayer need. -> Goal: Generate a relevant supplication. -> Viz/Method: Gemini API text generation. -> Interaction: Input text, click button. -> Justification: Offers spiritual and personal assistance. -> Library: Gemini API via Fetch.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #FDFBF6;
+            color: #403D39;
+        }
+        .nav-active {
+            color: #B08871;
+            font-weight: 600;
+        }
+        .tab-active {
+            background-color: #8D806F;
+            color: #FDFBF6;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+                max-height: 400px;
+            }
+        }
+        /* Modal styles */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
+        /* Checkbox styles */
+        .thief-checkbox:checked + div {
+            border-color: #8D806F;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Modal for Gemini API responses -->
+    <div id="gemini-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="modal-content transform -translate-y-10 bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 text-center">
+            <div id="modal-loading" class="hidden">
+                <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-[#8D806F] mx-auto"></div>
+                <p class="mt-4 text-lg">আপনার জন্য তৈরি করা হচ্ছে...</p>
+            </div>
+            <div id="modal-result">
+                <!-- Content will be injected here -->
+            </div>
+            <button id="modal-close-btn" class="mt-6 bg-[#8D806F] text-white py-2 px-6 rounded-lg hover:bg-[#7a6f60] transition-colors">বন্ধ করুন</button>
+        </div>
+    </div>
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-40 bg-[#FDFBF6]/80 backdrop-blur-sm shadow-sm">
+        <div class="container mx-auto px-4">
+            <nav class="flex flex-col md:flex-row items-center justify-between py-2">
+                <h1 class="text-2xl font-bold text-[#8D806F] mb-2 md:mb-0">সময়ের মূল্য</h1>
+                <ul class="flex flex-wrap justify-center space-x-3 md:space-x-5 text-sm font-medium">
+                    <li><a href="#intro" class="nav-link hover:text-[#B08871] transition-colors duration-300">ভূমিকা</a></li>
+                    <li><a href="#accounting" class="nav-link hover:text-[#B08871] transition-colors duration-300">জীবনের হিসাব</a></li>
+                    <li><a href="#categories" class="nav-link hover:text-[#B08871] transition-colors duration-300">মানুষের প্রকারভেদ</a></li>
+                    <li><a href="#thieves" class="nav-link hover:text-[#B08871] transition-colors duration-300">সময়ের চোর</a></li>
+                    <li><a href="#beacons" class="nav-link hover:text-[#B08871] transition-colors duration-300">আলোকবর্তিকা</a></li>
+                    <li><a href="#opportunity" class="nav-link hover:text-[#B08871] transition-colors duration-300">শেষ সুযোগ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+
+        <!-- Section 1: Introduction -->
+        <section id="intro" class="text-center mb-16 md:mb-24">
+            <h2 class="text-3xl md:text-4xl font-bold text-[#8D806F] mb-4">কেন সময় এত মূল্যবান?</h2>
+            <p class="max-w-3xl mx-auto text-base md:text-lg mb-8">
+                ইসলামে সময় শুধুমাত্র জীবনের একটি পরিমাপ নয়, বরং এটি স্বয়ং আল্লাহ প্রদত্ত এক পবিত্র আমানত। এর গুরুত্ব এতটাই যে, মহান আল্লাহ নিজে পবিত্র কুরআনে সময়ের শপথ করেছেন। সময়ই হলো মুমিনের মূলধন, যা দিয়ে সে আখিরাতের অনন্ত জীবনের জন্য ব্যবসা করে। এই অংশে আমরা সময়ের ঐশ্বরিক গুরুত্ব এবং এটিকে কেন জীবনের সবচেয়ে মূল্যবান সম্পদ হিসেবে দেখা হয়, তা অন্বেষণ করব।
+            </p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div class="bg-white/50 rounded-lg p-4 shadow-sm border border-gray-200">
+                    <p class="text-2xl font-serif text-[#7D8F69]">وَالْعَصْرِ</p>
+                    <p class="mt-2 text-sm">সময়ের শপথ</p>
+                    <p class="text-xs text-gray-500">(সূরা আল-আসর)</p>
+                </div>
+                <div class="bg-white/50 rounded-lg p-4 shadow-sm border border-gray-200">
+                    <p class="text-2xl font-serif text-[#7D8F69]">وَالضُّحَىٰ</p>
+                    <p class="mt-2 text-sm">শপথ পূর্বাহ্ণের</p>
+                    <p class="text-xs text-gray-500">(সূরা আদ-দুহা)</p>
+                </div>
+                <div class="bg-white/50 rounded-lg p-4 shadow-sm border border-gray-200">
+                    <p class="text-2xl font-serif text-[#7D8F69]">وَاللَّيْلِ</p>
+                    <p class="mt-2 text-sm">শপথ রাতের</p>
+                    <p class="text-xs text-gray-500">(সূরা আল-লাইল)</p>
+                </div>
+                <div class="bg-white/50 rounded-lg p-4 shadow-sm border border-gray-200">
+                    <p class="text-2xl font-serif text-[#7D8F69]">وَالْفَجْرِ</p>
+                    <p class="mt-2 text-sm">শপথ ফজরের</p>
+                    <p class="text-xs text-gray-500">(সূরা আল-ফজর)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Life's Accounting -->
+        <section id="accounting" class="mb-16 md:mb-24">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#8D806F] mb-4">জীবনের হিসাব: ৬০ বছরের বাস্তবতা</h2>
+            <p class="max-w-3xl mx-auto text-base md:text-lg text-center mb-8">
+                আমরা প্রায়ই ভাবি আমাদের হাতে অনেক সময় আছে। কিন্তু একটি ৬০ বছরের জীবনকে বিশ্লেষণ করলে এক চমকপ্রদ সত্য উন্মোচিত হয়। আমাদের জীবনের এক বিশাল অংশ ঘুম, শৈশব এবং দৈনন্দিন প্রয়োজনে ব্যয় হয়ে যায়। এই ডেটা ভিজ্যুয়ালাইজেশনটি আমাদের দেখায় যে ইবাদত এবং সৎকাজের জন্য প্রকৃত ব্যবহারযোগ্য সময় কতটা সীমিত, যা আমাদের প্রতিটি মুহূর্তকে কাজে লাগাতে উদ্বুদ্ধ করে।
+            </p>
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                <div class="w-full md:w-1/2">
+                    <div class="chart-container">
+                        <canvas id="lifeChart"></canvas>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 text-left space-y-4">
+                     <div class="bg-white/50 rounded-lg p-4 shadow-sm border-l-4 border-[#3D5A80]">
+                        <h3 class="font-bold text-lg">ঘুম (Sleep)</h3>
+                        <p>দৈনিক ৮ ঘণ্টা হিসাবে, জীবনের প্রায় ২০ বছর ঘুমিয়েই কেটে যায়।</p>
+                    </div>
+                     <div class="bg-white/50 rounded-lg p-4 shadow-sm border-l-4 border-[#98C1D9]">
+                        <h3 class="font-bold text-lg">শৈশব (Childhood)</h3>
+                        <p>ইসলামী শরীয়ত অনুযায়ী بالغ হওয়ার পূর্বের প্রায় ১৫ বছর হিসাবের বাইরে।</p>
+                    </div>
+                     <div class="bg-white/50 rounded-lg p-4 shadow-sm border-l-4 border-[#E0FBFC]">
+                        <h3 class="font-bold text-lg">দৈনন্দিন প্রয়োজন (Daily Needs)</h3>
+                        <p>খাওয়া, পান করা, এবং অন্যান্য ব্যক্তিগত কাজে প্রায় ২-৩ বছর চলে যায়।</p>
+                    </div>
+                     <div class="bg-white/50 rounded-lg p-4 shadow-sm border-l-4 border-[#EE6C4D]">
+                        <h3 class="font-bold text-lg text-red-700">আমলের জন্য অবশিষ্ট সময়</h3>
+                        <p>ফলাফলস্বরূপ, আমাদের হাতে থাকে মাত্র ২২-২৩ বছর, যা আমাদের আখিরাতের পাথেয় অর্জনের একমাত্র সুযোগ।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Categories of People -->
+        <section id="categories" class="mb-16 md:mb-24">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#8D806F] mb-4">সময়ের ব্যবহারে মানুষের প্রকারভেদ</h2>
+             <p class="max-w-3xl mx-auto text-base md:text-lg text-center mb-8">
+                পবিত্র কুরআনের সূরা ফাতির-এর ৩২ নম্বর আয়াতের আলোকে, সময়ের সদ্ব্যবহারের ভিত্তিতে মানুষকে তিনটি প্রধান ভাগে ভাগ করা যায়। এই ইন্টারেক্টিভ বিভাগটি আপনাকে প্রতিটি প্রকারের বৈশিষ্ট্য অন্বেষণ করতে এবং নিজের অবস্থান সম্পর্কে ভাবতে সাহায্য করবে। আপনি কোন দলে অন্তর্ভুক্ত হতে চান, সেই সিদ্ধান্ত আপনার।
+            </p>
+            <div class="w-full max-w-4xl mx-auto">
+                <div class="flex justify-center border-b border-gray-300 mb-6">
+                    <button class="category-tab tab-active py-2 px-6 font-semibold" data-target=" ظلم لنفسه">নিজের প্রতি অত্যাচারী</button>
+                    <button class="category-tab py-2 px-6 font-semibold" data-target="مقتصد">মধ্যমপন্থী</button>
+                    <button class="category-tab py-2 px-6 font-semibold" data-target="سابق بالخيرات">কল্যাণে অগ্রগামী</button>
+                </div>
+                <div id="category-content" class="p-2 md:p-6 bg-white/50 rounded-lg shadow-sm border border-gray-200 transition-all duration-300 min-h-[150px]">
+                    <!-- Content will be injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Thieves of Time (Gemini Enhanced) -->
+        <section id="thieves" class="mb-16 md:mb-24">
+             <h2 class="text-3xl md:text-4xl font-bold text-center text-[#8D806F] mb-4">সময়ের অদৃশ্য চোরেরা</h2>
+             <p class="max-w-3xl mx-auto text-base md:text-lg text-center mb-8">
+                আধুনিক জীবনে এমন অনেক অদৃশ্য "চোর" রয়েছে যারা আমাদের সময় চুরি করে। যে বিষয়গুলো আপনার জন্য প্রযোজ্য, সেগুলো চিহ্নিত করুন এবং আপনার জন্য একটি ব্যক্তিগত কর্ম-পরিকল্পনা তৈরি করতে নিচের বাটনে ক্লিক করুন।
+            </p>
+            <div id="thieves-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Checkboxes will be injected by JS -->
+            </div>
+            <div class="text-center mt-10">
+                <button id="generate-plan-btn" class="bg-gradient-to-r from-[#8D806F] to-[#B08871] text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+                    ✨ আমার জন্য কর্ম-পরিকল্পনা তৈরি করুন
+                </button>
+            </div>
+        </section>
+
+        <!-- Section 5: Beacons of Light -->
+        <section id="beacons" class="mb-16 md:mb-24">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#8D806F] mb-4">আলোকবর্তিকা: আমাদের পূর্বসূরিগণ</h2>
+            <p class="max-w-3xl mx-auto text-base md:text-lg text-center mb-8">
+                সময়ের মূল্য অনুধাবনে আমাদের জন্য শ্রেষ্ঠ উদাহরণ হলেন আমাদের পূর্বসূরিগণ (সালাফ আস-সালিহীন)। তাঁরা প্রতিটি মুহূর্তকে আখিরাতের জন্য বিনিয়োগ মনে করতেন। তাঁদের জীবন থেকে নেওয়া কিছু ঘটনা ও উক্তি আমাদের জন্য অনুপ্রেরণার বাতিঘর।
+            </p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <div>
+                    <h3 class="text-2xl font-bold text-center text-[#7D8F69] mb-6">সালাফদের প্রজ্ঞা</h3>
+                    <div id="salaf-quotes-carousel" class="relative bg-white/50 rounded-lg p-6 shadow-sm border border-gray-200 overflow-hidden min-h-[200px]">
+                        <!-- Carousel items will be injected by JS -->
+                    </div>
+                     <div class="flex justify-center mt-4 space-x-3">
+                        <button id="prev-quote" class="bg-[#8D806F] text-white rounded-full h-8 w-8 flex items-center justify-center transition-transform hover:scale-110">‹</button>
+                        <button id="next-quote" class="bg-[#8D806F] text-white rounded-full h-8 w-8 flex items-center justify-center transition-transform hover:scale-110">›</button>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-2xl font-bold text-center text-[#7D8F69] mb-6">কল্যাণের পথে প্রতিযোগিতার উদাহরণ</h3>
+                    <div class="space-y-4">
+                        <div class="bg-white/50 rounded-lg p-4 shadow-sm border-l-4 border-[#B08871]">
+                            <h4 class="font-bold">আবু বকর আস-সিদ্দীক (রাঃ)</h4>
+                            <p class="text-sm">তাবুকের যুদ্ধের জন্য সাহায্য চাওয়া হলে তিনি তাঁর সকল সম্পদ নিয়ে হাজির হন। রাসূল (ﷺ) জিজ্ঞেস করলে তিনি বলেন, "আমি তাদের জন্য আল্লাহ ও তাঁর রাসূলকে রেখে এসেছি।"</p>
+                        </div>
+                        <div class="bg-white/50 rounded-lg p-4 shadow-sm border-l-4 border-[#B08871]">
+                            <h4 class="font-bold">আয়েশা (রাঃ)</h4>
+                            <p class="text-sm">তিনি এক দিনে ৮০,০০০ দিনার দান করে দেন, অথচ সেদিন তিনি রোজা ছিলেন এবং ইফতারের জন্য তাঁর নিজের কাছে কিছুই অবশিষ্ট ছিল না।</p>
+                        </div>
+                        <div class="bg-white/50 rounded-lg p-4 shadow-sm border-l-4 border-[#B08871]">
+                            <h4 class="font-bold">তিন শহীদের মা</h4>
+                            <p class="text-sm">তিন ছেলের শাহাদাতের খবর শুনে তিনি জিজ্ঞেস করেন, "তারা কি മുന്നോട്ട് এগিয়ে শহীদ হয়েছে নাকি পালিয়ে আসার সময়?" മുന്നോട്ട് যাওয়ার কথা শুনে তিনি আল্লাহর শুকরিয়া আদায় করেন।</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: The Final Opportunity (Gemini Enhanced) -->
+        <section id="opportunity" class="text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-[#8D806F] mb-4">শেষ সুযোগ: বর্তমানকে কাজে লাগান</h2>
+            <p class="max-w-3xl mx-auto text-base md:text-lg mb-8">
+                অতীত চলে গেছে, ভবিষ্যৎ অনিশ্চিত। আমাদের হাতে আছে শুধু বর্তমান। হতাশ না হয়ে, অবশিষ্ট জীবনকে সংশোধন করার মধ্যেই রয়েছে মুক্তি।
+            </p>
+            <div class="max-w-2xl mx-auto bg-[#8D806F] text-white rounded-lg p-6 shadow-lg mb-12">
+                <p class="text-xl md:text-2xl font-bold mb-2">সুফিয়ান সাওরি (রহঃ) এর উপদেশ</p>
+                <p class="text-lg md:text-xl">"অবশিষ্ট জীবনে নিজেকে সংশোধন করো, তাহলে তোমার অতীত এবং ভবিষ্যতের গুনাহ ক্ষমা করে দেওয়া হবে।"</p>
+            </div>
+            
+             <h3 class="text-2xl font-bold text-center text-[#7D8F69] mb-6">মুমিনের জীবনবিধান: 'ইবাদুর রহমান'-এর গুণাবলী</h3>
+            <div id="blueprint-accordion" class="max-w-3xl mx-auto text-left mb-16">
+                <!-- Accordion items will be injected by JS -->
+            </div>
+
+            <div class="bg-white/50 p-8 rounded-lg shadow-md border max-w-3xl mx-auto">
+                <h3 class="text-2xl font-bold text-center text-[#8D806F] mb-4">✨ আপনার ব্যক্তিগত দোয়া তৈরি করুন</h3>
+                <p class="max-w-2xl mx-auto text-center mb-6">আপনার মনের কোনো ইচ্ছা বা প্রয়োজনের কথা লিখুন, আমরা কুরআনী ও নববী দোয়ার আলোকে আপনার জন্য একটি সুন্দর দোয়া তৈরি করে দেব।</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <input type="text" id="dua-prompt-input" placeholder="যেমন: নামাজে মনোযোগ বৃদ্ধির জন্য..." class="w-full sm:w-80 px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#B08871] focus:border-[#B08871]">
+                    <button id="generate-dua-btn" class="bg-gradient-to-r from-[#8D806F] to-[#B08871] text-white font-bold py-2 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
+                        দোয়া তৈরি করুন
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-6 mt-12 bg-white/50">
+        <p class="text-sm text-gray-600">শেখ খালিদ আল-রাশেদের "সময়ের সদ্ব্যবহার" আলোচনা অবলম্বনে নির্মিত।</p>
+        <p class="text-xs text-gray-500 mt-1">Gemini AI দ্বারা উন্নত একটি ইন্টারেক্টিভ উপস্থাপনা।</p>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Modal Logic ---
+    const modal = document.getElementById('gemini-modal');
+    const modalContent = document.querySelector('.modal-content');
+    const modalLoading = document.getElementById('modal-loading');
+    const modalResult = document.getElementById('modal-result');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+
+    function showModal(loading = true, content = '') {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        if (loading) {
+            modalLoading.classList.remove('hidden');
+            modalResult.classList.add('hidden');
+        } else {
+            modalLoading.classList.add('hidden');
+            modalResult.classList.remove('hidden');
+            modalResult.innerHTML = content;
+        }
+        setTimeout(() => modal.style.opacity = '1', 10);
+        setTimeout(() => modalContent.style.transform = 'translateY(0)', 10);
+    }
+
+    function hideModal() {
+        modal.style.opacity = '0';
+        modalContent.style.transform = 'translateY(-40px)';
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }, 250);
+    }
+
+    modalCloseBtn.addEventListener('click', hideModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            hideModal();
+        }
+    });
+
+    // --- Gemini API Call Function ---
+    async function callGemini(prompt) {
+        showModal(true);
+        let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+        const payload = { contents: chatHistory };
+        const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4"; // API Key will be handled by the environment
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                 const errorBody = await response.text();
+                 throw new Error(`API Error: ${response.status} ${response.statusText}. Details: ${errorBody}`);
+            }
+
+            const result = await response.json();
+            
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
+                const text = result.candidates[0].content.parts[0].text;
+                // Basic formatting
+                const formattedText = text
+                    .replace(/## (.*?)\n/g, '<h3 class="text-xl font-bold text-[#8D806F] my-3">$1</h3>')
+                    .replace(/\* \*\*(.*?)\*\*/g, '<li><strong>$1</strong>')
+                    .replace(/\* (.*?)\n/g, '<li class="mb-2 ml-4 list-disc">$1</li>')
+                    .replace(/\n/g, '<br>');
+
+                showModal(false, `<div class="text-left">${formattedText}</div>`);
+            } else {
+                throw new Error("Unexpected response structure from Gemini API.");
+            }
+        } catch (error) {
+            console.error("Gemini API call failed:", error);
+            showModal(false, `<p class="text-red-500">দুঃখিত, একটি সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।</p><p class="text-xs text-gray-500 mt-2">${error.message}</p>`);
+        }
+    }
+
+
+    // --- Chart.js ---
+    const ctx = document.getElementById('lifeChart');
+    if(ctx) {
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['ঘুম (Sleep)', 'শৈশব (Childhood)', 'দৈনন্দিন প্রয়োজন', 'আমলের জন্য সময়'],
+                datasets: [{
+                    label: 'জীবনকাল (বছর)',
+                    data: [20, 15, 3, 22],
+                    backgroundColor: ['#3D5A80', '#98C1D9', '#E0FBFC', '#EE6C4D'],
+                    borderColor: '#FDFBF6',
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { family: "'Hind Siliguri', sans-serif" }}},
+                    tooltip: { callbacks: { label: (c) => `${c.label}: ${c.parsed} বছর` }}
+                }
+            }
+        });
+    }
+
+    // --- Category Tabs ---
+    const categoryTabs = document.querySelectorAll('.category-tab');
+    const categoryContent = document.getElementById('category-content');
+    const categoriesData = {
+        ' ظلم لنفسه': { title: 'নিজের প্রতি অত্যাচারী (الظالم لنفسه)', description: 'এই শ্রেণীর মানুষ জীবনকে খেলাধুলা ও বিনোদনের সুযোগ মনে করে। তারা আল্লাহর স্মরণ থেকে গাফেল থাকে এবং তাদের সময় গান-বাজনা, খাওয়া-দাওয়া ও ঘুমে ব্যয় করে পাপ অর্জন করে।', verse: 'যাদের দুনিয়ার জীবনের সমস্ত প্রচেষ্টা পণ্ড হয়ে গেছে, অথচ তারা মনে করে যে তারা সৎকর্ম করছে। (সূরা আল-কাহফ, ১০৪)' },
+        'مقتصد': { title: 'মধ্যমপন্থী (المقتصد)', description: 'এই শ্রেণীর মানুষ ফরজ ইবাদতগুলো পালন করে এবং বড় ধরনের হারাম কাজ থেকে বিরত থাকে। কিন্তু তারা সুন্নত বা নফল ইবাদতের প্রতি আগ্রহী নয়। তাদের অবসর সময় অতিরিক্ত ঘুম, গল্পগুজব এবং অপ্রয়োজনীয় কাজে ব্যয় হয়।', verse: 'রাসূলুল্লাহ (ﷺ) পা ফুলে যাওয়া সত্ত্বেও রাতে নামাজে দাঁড়াতেন এবং বলতেন, "আমি কি একজন কৃতজ্ঞ বান্দা হব না?"' },
+        'سابق بالخيرات': { title: 'কল্যাণে অগ্রগামী (السابق بالخيرات)', description: 'এই শ্রেণীর মানুষ সময়ের মূল্য পুরোপুরি অনুধাবন করে। তারা দুনিয়াকে আখিরাতের শস্যক্ষেত্র মনে করে। তারা ফরজ ও নফল ইবাদতে প্রতিযোগিতা করে। তারাই উম্মাহর আশা।', verse: 'তোমরা তোমাদের প্রতিপালকের ক্ষমা এবং সেই জান্নাতের দিকে দৌড়ে যাও... (সূরা আল-হাদীদ, ২১)' }
+    };
+    function updateCategoryContent(target) {
+        const data = categoriesData[target];
+        if (data) categoryContent.innerHTML = `<h3 class="text-2xl font-bold text-[#8D806F] mb-3 text-center">${data.title}</h3><p class="mb-4 text-center">${data.description}</p><blockquote class="border-l-4 border-[#B08871] pl-4 italic text-gray-700 text-center mx-auto max-w-lg">${data.verse}</blockquote>`;
+    }
+    categoryTabs.forEach(tab => tab.addEventListener('click', () => {
+        categoryTabs.forEach(t => t.classList.remove('tab-active'));
+        tab.classList.add('tab-active');
+        updateCategoryContent(tab.dataset.target);
+    }));
+    if(categoryTabs.length > 0) updateCategoryContent(categoryTabs[0].dataset.target);
+
+    // --- Thieves of Time Checkboxes ---
+    const thievesGrid = document.getElementById('thieves-grid');
+    const thievesData = [
+        { id: 'thief1', icon: '📺', title: 'পর্দার আসক্তি', details: 'ফিল্ম, সিরিজ, ও গান-বাজনা।' },
+        { id: 'thief2', icon: '🗣️', title: 'জিহ্বার অপব্যবহার', details: 'গীবত, পরনিন্দা, অপ্রয়োজনীয় কথা।' },
+        { id: 'thief3', icon: '🛍️', title: 'উদ্দেশ্যহীন ঘোরাঘুরি', details: 'বিনা প্রয়োজনে শপিং মল বা বাজারে ঘোরা।' },
+        { id: 'thief4', icon: '📱', title: 'হারাম সম্পর্ক', details: 'ফোনে বা সামাজিক মাধ্যমে অবৈধ সম্পর্ক।' },
+        { id: 'thief5', icon: '📰', title: 'অহেতুক মিডিয়া', details: 'লাভজনক নয় এমন পত্রিকা বা খবর পড়া।' },
+        { id: 'thief6', icon: '😴', title: 'অতিরিক্ত ঘুম ও আলস্য', details: 'প্রয়োজনের অতিরিক্ত ঘুমানো।' }
+    ];
+    if (thievesGrid) {
+        thievesGrid.innerHTML = thievesData.map(thief => `
+            <label for="${thief.id}" class="cursor-pointer">
+                <input type="checkbox" id="${thief.id}" value="${thief.title}" class="thief-checkbox hidden">
+                <div class="bg-white/50 rounded-lg p-6 shadow-sm border-2 border-transparent hover:shadow-lg transition-all duration-300 h-full">
+                    <div class="text-4xl mb-3">${thief.icon}</div>
+                    <h3 class="text-xl font-bold mb-2">${thief.title}</h3>
+                    <p class="text-sm text-gray-600">${thief.details}</p>
+                </div>
+            </label>
+        `).join('');
+    }
+
+    // --- Gemini Plan Generator ---
+    const generatePlanBtn = document.getElementById('generate-plan-btn');
+    if (generatePlanBtn) {
+        generatePlanBtn.addEventListener('click', () => {
+            const selectedThieves = Array.from(document.querySelectorAll('.thief-checkbox:checked')).map(cb => cb.value);
+            if (selectedThieves.length === 0) {
+                showModal(false, '<p>অনুগ্রহ করে কমপক্ষে একটি বিষয় নির্বাচন করুন।</p>');
+                return;
+            }
+            const prompt = `একজন ইসলামি উপদেষ্টা হিসেবে, যে ব্যক্তি "${selectedThieves.join(', ')}" এই সমস্যাগুলোর সাথে লড়াই করছে, তার জন্য একটি বাস্তবসম্মত ও ধাপে ধাপে কর্ম-পরিকল্পনা তৈরি করুন। পরিকল্পনাটি অবশ্যই বাংলা ভাষায় হতে হবে এবং কুরআন ও সুন্নাহর আলোকে উৎসাহব্যঞ্জক ও প্রেরণাদায়ক হতে হবে। সুন্দরভাবে ফরম্যাট করে উত্তর দিন।`;
+            callGemini(prompt);
+        });
+    }
+
+    // --- Gemini Dua Generator ---
+    const generateDuaBtn = document.getElementById('generate-dua-btn');
+    const duaPromptInput = document.getElementById('dua-prompt-input');
+    if (generateDuaBtn) {
+        generateDuaBtn.addEventListener('click', () => {
+            const userNeed = duaPromptInput.value.trim();
+            if (userNeed === "") {
+                showModal(false, '<p>আপনার প্রয়োজন বা ইচ্ছার কথা লিখুন।</p>');
+                return;
+            }
+            const prompt = `একজন ইসলামি বিশেষজ্ঞ হিসেবে, যে ব্যক্তি "${userNeed}" এর জন্য দোয়া করতে চায়, তার জন্য একটি আন্তরিক ও সুন্দর দোয়া তৈরি করুন। দোয়াটি অবশ্যই বাংলা ভাষায় হতে হবে এবং এর ভাষা ও ভাব কুরআন ও নববী দোয়ার মতো হতে হবে।`;
+            callGemini(prompt);
+        });
+    }
+
+
+    // --- Salaf Quotes Carousel ---
+    const quotes = [
+        { speaker: 'ইবনে মাসউদ (রাঃ)', quote: 'আমি এমন কোনো দিনের জন্য এতটা অনুতপ্ত হই না, যার সূর্য ডুবে গেল, আমার আয়ু কমে গেল, কিন্তু আমার আমল বাড়লো না।' },
+        { speaker: 'উমর ইবনে আবদুল আজিজ (রহঃ)', quote: 'নিশ্চয়ই রাত ও দিন তোমার উপর কাজ করছে (তোমাকে ক্ষয় করছে), তাই তুমিও তাদের মধ্যে (সৎ) কাজ করো।' },
+        { speaker: 'হাসান আল-বসরী (রহঃ)', quote: 'হে আদম সন্তান, তুমি তো কয়েকটি দিনের সমষ্টি মাত্র। যখন একটি দিন চলে যায়, তখন তোমার কিছু অংশও চলে যায়।' },
+        { speaker: 'আমর ইবনে কাইস (রহঃ)', quote: 'এক ব্যক্তি তাকে বলেছিল, "আমার সাথে বসুন, কথা বলি।" তিনি উত্তর দিলেন, "তাহলে সূর্যকে থামান।"' }
+    ];
+    let currentQuoteIndex = 0;
+    const carouselContainer = document.getElementById('salaf-quotes-carousel');
+    const nextBtn = document.getElementById('next-quote');
+    const prevBtn = document.getElementById('prev-quote');
+    function showQuote(index) {
+        if (!carouselContainer) return;
+        carouselContainer.innerHTML = `<div class="text-center transition-opacity duration-500 opacity-100"><p class="text-lg italic mb-4">"${quotes[index].quote}"</p><p class="font-bold text-[#8D806F]">- ${quotes[index].speaker}</p></div>`;
+    }
+    if (nextBtn && prevBtn) {
+        nextBtn.addEventListener('click', () => { currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length; showQuote(currentQuoteIndex); });
+        prevBtn.addEventListener('click', () => { currentQuoteIndex = (currentQuoteIndex - 1 + quotes.length) % quotes.length; showQuote(currentQuoteIndex); });
+        showQuote(0);
+    }
+
+    // --- Blueprint Accordion ---
+    const blueprintItems = [
+        { title: 'বিনয়ী হয়ে চলা', content: 'তারা পৃথিবীতে নম্রভাবে চলাফেরা করে।' }, { title: 'শান্তিপূর্ণ উত্তর', content: 'মূর্খরা তাদের সাথে কথা বললে তারা বলে, ‘সালাম’।' }, { title: 'রাতের ইবাদত', content: 'তারা তাদের প্রতিপালকের উদ্দেশে সিজদাবনত ও দণ্ডায়মান অবস্থায় রাত্রি যাপন করে।' }, { title: 'জাহান্নাম থেকে পানাহ চাওয়া', content: 'তারা জাহান্নামের শাস্তি থেকে বাঁচার জন্য দোয়া করে।' }, { title: 'ব্যয়ে মধ্যমপন্থা', content: 'তারা যখন ব্যয় করে তখন অপচয় করে না এবং কার্পণ্যও করে না।' }, { title: 'শিরক, হত্যা ও যিনা থেকে বিরত থাকা', content: 'তারা আল্লাহর সাথে অন্য কোনো উপাস্যকে ডাকে না, অন্যায়ভাবে কাউকে হত্যা করে না এবং ব্যভিচার করে না।' }, { title: 'মিথ্যা সাক্ষ্য না দেওয়া', content: 'তারা মিথ্যা সাক্ষ্য দেয় না।' }, { title: 'অহেতুক বিষয় এড়িয়ে চলা', content: 'যখন তারা অহেতুক বিষয়ের পাশ দিয়ে যায়, তখন তারা ভদ্রভাবে চলে যায়।' }, { title: 'কুরআনের প্রতি মনোযোগী হওয়া', content: 'তাদেরকে তাদের প্রতিপালকের আয়াত স্মরণ করিয়ে দিলে তারা তার প্রতি অন্ধ ও বধির হয়ে থাকে না।' }, { title: 'পরিবারের জন্য দোয়া', content: 'তারা দোয়া করে, "হে আমাদের প্রতিপালক, আমাদের স্ত্রী ও সন্তানদেরকে চোখের শীতলতা দান করুন এবং আমাদেরকে মুত্তাকীদের নেতা বানান।"' }
+    ];
+    const accordionContainer = document.getElementById('blueprint-accordion');
+    if (accordionContainer) {
+        accordionContainer.innerHTML = blueprintItems.map((item, index) => `<div class="border-b border-gray-200"><h2><button type="button" class="flex items-center justify-between w-full p-4 font-semibold text-left" data-accordion-target="item-${index}"><span>${item.title}</span><span class="transform transition-transform duration-300 ">▼</span></button></h2><div id="item-${index}" class="hidden p-4 pt-0 text-gray-600">${item.content}</div></div>`).join('');
+        accordionContainer.addEventListener('click', e => {
+            const button = e.target.closest('[data-accordion-target]');
+            if (button) {
+                const targetPanel = document.getElementById(button.getAttribute('data-accordion-target'));
+                const isExpanded = targetPanel.style.display === 'block';
+                targetPanel.style.display = isExpanded ? 'none' : 'block';
+                button.querySelector('span:last-child').classList.toggle('rotate-180', !isExpanded);
+            }
+        });
+    }
+
+    // --- Active Nav Link on Scroll ---
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-link');
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => { if (pageYOffset >= section.offsetTop - 100) current = section.getAttribute('id'); });
+        navLinks.forEach(link => {
+            link.classList.remove('nav-active');
+            if (link.getAttribute('href').includes(current)) link.classList.add('nav-active');
+        });
+    });
+});
+</script>
+</body>
+</html>

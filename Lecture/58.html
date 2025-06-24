@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মু'তার যুদ্ধ: একটি ইন্টারেক্টিভ উপাখ্যান</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Neon Amber on Dark -->
+    <!-- Application Structure Plan: The application is designed as a single-page, top-to-bottom narrative scroll. This structure allows the user to experience the story of the Battle of Mu'tah chronologically, from its cause to its lessons. It starts with a hero section, moves to the force comparison (visualized with a chart), details the martyrdom of the three commanders in an interactive card-based timeline, explains Khalid ibn al-Walid's strategy, and concludes with the return and key takeaways. This narrative-driven structure is more engaging and easier to follow for a historical account than a dashboard layout, making the complex event digestible and impactful. -->
+    <!-- Visualization & Content Choices: 
+    1. Force Comparison: Report Info: 3,000 Muslims vs. 200,000 Romans. Goal: Compare. Viz/Method: Horizontal Bar Chart. Interaction: Hover tooltips show exact numbers. Justification: A chart provides an immediate, powerful visual impact of the disparity that text alone cannot convey. Library: Chart.js.
+    2. Commanders' Martyrdom: Report Info: Sequential command and martyrdom of Zayd, Ja'far, and Abdullah. Goal: Organize. Viz/Method: Interactive cards navigated by "Next/Previous" buttons. Interaction: Clicking buttons to cycle through each commander's story. Justification: This breaks down the narrative into focused, digestible segments, preventing user overload and making the heroic sacrifices more personal and memorable. Library/Method: Vanilla JS.
+    3. Khalid's Tactic: Report Info: Re-arrangement of army wings. Goal: Explain. Viz/Method: A simple before/after diagram using styled HTML divs. Interaction: A button toggles the visibility of the tactic's outcome. Justification: A visual diagram simplifies a complex military maneuver, enhancing user understanding. Library/Method: Vanilla JS.
+    All choices confirm to the NO SVG/Mermaid rule, using Canvas and HTML/CSS for all visual elements. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+            color: #D1D5DB; /* text-gray-300 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 350px;
+            }
+        }
+        .neon-text {
+            color: #FBBF24; /* text-amber-400 */
+            text-shadow: 0 0 5px rgba(251, 191, 36, 0.7), 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        .card-shadow {
+             background-color: #1F2937; /* bg-gray-800 */
+             box-shadow: 0 0 15px rgba(251, 191, 36, 0.2), 0 0 5px rgba(251, 191, 36, 0.1);
+             border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+        .btn-primary {
+            background-color: #FBBF24; /* bg-amber-400 */
+            color: #111827;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        .btn-primary:hover {
+            background-color: #F59E0B; /* bg-amber-500 */
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.7);
+        }
+        .nav-button {
+            background-color: rgba(251, 191, 36, 0.1);
+            color: #FBBF24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            transition: all 0.3s;
+        }
+        .nav-button:hover {
+            background-color: rgba(251, 191, 36, 0.2);
+            color: #F59E0B;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <main class="container mx-auto px-4 py-8 md:py-16">
+
+        <header class="text-center mb-12 md:mb-20">
+            <h1 class="text-4xl md:text-6xl font-bold neon-text mb-4">মু'তার যুদ্ধ</h1>
+            <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">ঈমানের এক মহাকাব্য, যেখানে সংখ্যা নয়, বিশ্বাসই ছিল মূল শক্তি</p>
+        </header>
+
+        <section id="cause" class="mb-12 md:mb-20 max-w-4xl mx-auto">
+             <div class="p-6 md:p-8 rounded-lg card-shadow border-l-4 border-amber-500">
+                <h2 class="text-2xl md:text-3xl font-bold neon-text mb-4">যুদ্ধের কারণ</h2>
+                <p class="text-base md:text-lg text-gray-300 leading-relaxed">
+                    রাসূলুল্লাহ (সাঃ) হারিস ইবনে উমায়ের আল-আজদীকে একটি চিঠি দিয়ে বصرার বাদশাহর কাছে প্রেরণ করেন। কিন্তু মু'তা নামক স্থানে পৌঁছালে, রোমান মিত্র গাসসানী শাসক শুরাহবিল ইবনে আমর তাকে আটক করে এবং সকল প্রকার কূটনৈতিক শিষ্টাচার লঙ্ঘন করে হত্যা করে। দূত হত্যা একটি অমার্জনীয় অপরাধ হওয়ায় রাসূল (সাঃ) এই বিশ্বাসঘাতকদের শাস্তি দেওয়ার জন্য একটি বাহিনী প্রেরণের সিদ্ধান্ত নেন।
+                </p>
+            </div>
+        </section>
+
+        <section id="forces" class="mb-12 md:mb-20 text-center">
+            <h2 class="text-2xl md:text-3xl font-bold neon-text mb-4">অসম শক্তির মোকাবেলা</h2>
+            <p class="text-base md:text-lg text-gray-400 max-w-3xl mx-auto mb-8">
+                মুসলিম বাহিনী ছিল মাত্র ৩,০০০ সৈন্যের, অন্যদিকে রোমান ও তাদের মিত্রদের সম্মিলিত বাহিনী ছিল ২,০০,০০০। এই বিশাল ব্যবধান সত্ত্বেও, ঈমানের বলে বলীয়ান হয়ে মুসলিমরা ময়দানে নামেন। নিচের চার্টে দুই বাহিনীর আকারের পার্থক্য দেখুন।
+            </p>
+            <div class="p-4 md:p-8 rounded-lg card-shadow">
+                <div class="chart-container">
+                    <canvas id="forcesChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="commanders" class="mb-12 md:mb-20">
+            <h2 class="text-2xl md:text-3xl font-bold neon-text text-center mb-4">শাহাদাতের অমর উপাখ্যান</h2>
+            <p class="text-base md:text-lg text-gray-400 max-w-3xl mx-auto text-center mb-8">
+                রাসূল (সাঃ) তিনজন সেনাপতি নিযুক্ত করেছিলেন। তারা প্রত্যেকেই বীরত্বের সাথে যুদ্ধ করে শাহাদাতের সর্বোচ্চ মর্যাদা লাভ করেন। তাদের বীরত্বগাথা জানতে নেভিগেশন বাটন ব্যবহার করুন।
+            </p>
+            <div class="relative p-6 md:p-8 rounded-lg card-shadow overflow-hidden">
+                <div id="commander-cards" class="flex transition-transform duration-500 ease-in-out">
+                    
+                    <div class="w-full flex-shrink-0" data-card="0">
+                        <div class="text-center">
+                            <h3 class="text-xl md:text-2xl font-bold text-amber-400">১. যায়েদ ইবনে হারিসা (রাঃ)</h3>
+                            <p class="text-gray-300 mt-4 leading-relaxed max-w-2xl mx-auto">
+                                প্রথম সেনাপতি হিসেবে রাসূলের (সাঃ) প্রিয় সাহাবী যায়েদ ইবনে হারিসা (রাঃ) পতাকা হাতে নেন। তিনি অসীম সাহসিকতার সাথে যুদ্ধ পরিচালনা করেন এবং মুসলিম বাহিনীকে নেতৃত্ব দেন। যুদ্ধের একপর্যায়ে শত্রুর বর্শার আঘাতে তিনি শহীদ হয়ে যান।
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="w-full flex-shrink-0" data-card="1">
+                        <div class="text-center">
+                            <h3 class="text-xl md:text-2xl font-bold text-amber-400">২. জাফর ইবনে আবি তালিব (রাঃ)</h3>
+                            <p class="text-gray-300 mt-4 leading-relaxed max-w-2xl mx-auto">
+                                যায়েদের (রাঃ) শাহাদাতের পর جعفر ইবনে আবি তালিব (রাঃ) পতাকা তুলে নেন। শত্রুরা তাকে ঘিরে ফেললে তার ডান হাত কেটে ফেলা হয়, তিনি বাম হাতে পতাকা ধরেন। বাম হাতও কাটা গেলে তিনি দুই বাহু দিয়ে পতাকা আগলে রাখেন। অবশেষে, শরীরে নব্বইটিরও বেশি আঘাত নিয়ে তিনি শহীদ হন। আল্লাহ তাকে জান্নাতে দুটি ডানা দান করেন, তাই তাকে 'জাফর আত-তাইয়ার' (উড়ন্ত জাফর) বলা হয়।
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="w-full flex-shrink-0" data-card="2">
+                        <div class="text-center">
+                            <h3 class="text-xl md:text-2xl font-bold text-amber-400">৩. আব্দুল্লাহ ইবনে রাওয়াহা (রাঃ)</h3>
+                             <p class="text-gray-300 mt-4 leading-relaxed max-w-2xl mx-auto">
+                                তৃতীয় সেনাপতি আব্দুল্লাহ ইবনে রাওয়াহা (রাঃ) পতাকা হাতে তুলে নেন। তিনি একজন কবি ছিলেন এবং নিজের內সকে জিহাদের জন্য উদ্বুদ্ধ করে কবিতা আবৃত্তি করতে করতে শত্রুর উপর ঝাঁপিয়ে পড়েন। তিনিও বীরের মতো যুদ্ধ করে শাহাদাতের অমীয় সুধা পান করেন।
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <button id="prev-commander" class="nav-button absolute top-1/2 left-2 md:left-4 transform -translate-y-1/2 rounded-full w-10 h-10 flex items-center justify-center">&lt;</button>
+                <button id="next-commander" class="nav-button absolute top-1/2 right-2 md:right-4 transform -translate-y-1/2 rounded-full w-10 h-10 flex items-center justify-center">&gt;</button>
+            </div>
+        </section>
+
+        <section id="khalid" class="mb-12 md:mb-20">
+            <h2 class="text-2xl md:text-3xl font-bold neon-text text-center mb-8">সাইফুল্লাহর রণকৌশল</h2>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="p-6 md:p-8 rounded-lg card-shadow">
+                    <p class="text-gray-300 leading-relaxed">
+                        তিনজন সেনাপতির শাহাদাতের পর, মুসলিম বাহিনী যখন নেতৃত্বহীন, তখন 'সাইফুল্লাহ' বা 'আল্লাহর তলোয়ার' খ্যাত খালিদ বিন ওয়ালিদ (রাঃ) সেনাপতির দায়িত্ব নেন। তিনি মাত্র তিন মাস আগে ইসলাম গ্রহণ করলেও তার সামরিক প্রজ্ঞা ছিল কিংবদন্তিতুল্য। তিনি মুসলিম বাহিনীকে নিশ্চিত ধ্বংসের হাত থেকে বাঁচাতে এক অসাধারণ রণকৌশল অবলম্বন করেন।
+                        <br><br>
+                        রাতের আঁধারে তিনি বাহিনীর বিন্যাস পুরোপুরি বদলে দেন। পেছনের সৈন্যদের সামনে, সামনের সৈন্যদের পেছনে, এবং ডান ও বাম বাহুর সৈন্যদের অবস্থান পরিবর্তন করে দেন।
+                    </p>
+                </div>
+                <div class="p-6 md:p-8 rounded-lg card-shadow text-center">
+                    <h3 class="font-semibold text-lg mb-4 text-amber-400">কৌশলের ফলাফল</h3>
+                    <p class="text-gray-400 mb-4">সকালে রোমানরা নতুন সৈন্যদের দেখে ভাবে যে মদিনা থেকে বিশাল এক সাহায্যকারী বাহিনী এসে পৌঁছেছে। এটি তাদের মনোবল সম্পূর্ণ ভেঙে দেয়।</p>
+                    <button id="strategy-btn" class="btn-primary font-bold py-2 px-4 rounded-lg">
+                        কৌশলটি দেখতে ক্লিক করুন
+                    </button>
+                    <div id="strategy-result" class="hidden mt-4 text-green-400 font-semibold text-lg">
+                        <p>রোমান বাহিনী ভীত হয়ে পড়ে এবং মুসলিমরা নিরাপদে ফিরে আসে!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="lesson" class="max-w-4xl mx-auto">
+            <div class="bg-gray-800 p-6 md:p-8 rounded-lg border-t-4 border-amber-500 card-shadow">
+                <h2 class="text-2xl md:text-3xl font-bold neon-text mb-4 text-center">প্রত্যাবর্তন ও চূড়ান্ত শিক্ষা</h2>
+                <blockquote class="text-center italic text-gray-400 text-lg md:text-xl leading-relaxed">
+                    "মুসলিম বাহিনী মদিনায় পৌঁছালে কিছু লোক তাদেরকে 'পলায়নকারী' বলে তিরস্কার করে। কিন্তু রাসূল (সাঃ) তাদের রক্ষা করে বলেন, 'তারা পলায়নকারী নয়, বরং তারা পুনরায় আক্রমণকারী, ইনশাআল্লাহ।'"
+                </blockquote>
+                <p class="mt-6 text-gray-300 text-base md:text-lg leading-relaxed text-justify">
+                    মু'তার যুদ্ধ আমাদের শেখায় যে, বিজয় সংখ্যা বা অস্ত্রের উপর নির্ভর করে না, বরং ঈমান, আল্লাহর উপর ভরসা এবং শাহাদাতের আকাঙ্ক্ষার উপর নির্ভর করে। এটি সাহসিকতা, আত্মত্যাগ এবং প্রতিকূল পরিস্থিতিতে অটল থাকার এক চিরন্তন শিক্ষা।
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-6 border-t border-gray-700">
+        <p class="text-gray-500">শেখ খালিদ আল-রাশেদের খুতবার উপর ভিত্তি করে নির্মিত।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const forcesCtx = document.getElementById('forcesChart').getContext('2d');
+            new Chart(forcesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['মুসলিম বাহিনী', 'রোমান ও মিত্র বাহিনী'],
+                    datasets: [{
+                        label: 'সৈন্য সংখ্যা',
+                        data: [3000, 200000],
+                        backgroundColor: [
+                            'rgba(251, 191, 36, 0.6)', /* amber-400 */
+                            'rgba(156, 163, 175, 0.4)'  /* gray-400 */
+                        ],
+                        borderColor: [
+                            '#FBBF24',
+                            '#9CA3AF'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            bodyColor: '#E5E7EB',
+                            titleColor: '#FBBF24',
+                            backgroundColor: '#1F2937',
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        label += new Intl.NumberFormat('bn-BD').format(context.parsed.x);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#9CA3AF',
+                                callback: function(value, index, values) {
+                                    if (value >= 1000) {
+                                        return (value / 1000) + ' হাজার';
+                                    }
+                                    return value;
+                                }
+                            },
+                             grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#D1D5DB'
+                            },
+                             grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            const commanderCardsContainer = document.getElementById('commander-cards');
+            const prevBtn = document.getElementById('prev-commander');
+            const nextBtn = document.getElementById('next-commander');
+            const totalCards = commanderCardsContainer.children.length;
+            let currentCard = 0;
+
+            function updateSlider() {
+                const offset = -currentCard * 100;
+                commanderCardsContainer.style.transform = `translateX(${offset}%)`;
+            }
+
+            nextBtn.addEventListener('click', () => {
+                currentCard = (currentCard + 1) % totalCards;
+                updateSlider();
+            });
+
+            prevBtn.addEventListener('click', () => {
+                currentCard = (currentCard - 1 + totalCards) % totalCards;
+                updateSlider();
+            });
+            
+            const strategyBtn = document.getElementById('strategy-btn');
+            const strategyResult = document.getElementById('strategy-result');
+            strategyBtn.addEventListener('click', () => {
+                strategyResult.classList.remove('hidden');
+                setTimeout(() => {
+                    strategyResult.classList.add('hidden');
+                }, 4000);
+            });
+        });
+    </script>
+
+</body>
+</html>

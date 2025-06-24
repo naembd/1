@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইসলামের ইতিহাসে নারী সাহাবীদের বীরত্বগাথা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Sand and Olive -->
+    <!-- Application Structure Plan: The application uses a narrative, single-page scroll structure. It begins with the foundational concept of a woman's status in Islam, transitions to an interactive gallery of four key heroines, followed by a comparative analysis visualization, and concludes with a contemporary call to action. This structure was chosen to first establish the core principle, then allow users to explore individual stories in a non-linear way through interactive tabs, and finally synthesize the information through a comparative chart. This flow guides the user from understanding the 'why' to exploring the 'who' and 'how', making the content more digestible and impactful than a simple linear text report. Gemini API features are added to deepen reflection on each story and provide personalized inspiration. -->
+    <!-- Visualization & Content Choices: 
+        1. Heroine Stories: Report Info -> Goal: Inform/Organize -> Viz: Interactive Tabbed Cards (HTML/CSS/JS) -> Interaction: Click tabs to reveal detailed stories. -> Justification: Breaks down dense text into user-controlled, digestible segments.
+        2. Gemini Moral Lessons: Report Info -> Goal: Reflect/Apply -> Viz: Dynamically generated text block (JS/API) -> Interaction: Button click. -> Justification: Uses Gemini API to generate context-specific moral takeaways from each story, making the content personally applicable.
+        3. Quantitative Highlights: Report Info -> Goal: Inform/Highlight -> Viz: Bar Chart (Chart.js/Canvas) -> Interaction: Hover tooltips. -> Justification: Visualizes numerical data points, adding a quantifiable flair.
+        4. Virtue Comparison: Report Info -> Goal: Compare/Synthesize -> Viz: Polar Area Chart (Chart.js/Canvas) -> Interaction: Hover tooltips. -> Justification: Provides a high-level, visually engaging summary of core virtues.
+        5. Gemini Inspirational Quote: Report Info -> Goal: Inspire -> Viz: Modal with dynamic text (JS/API) -> Interaction: Button click -> Justification: Provides a moment of personalized reflection and motivation based on the app's themes.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #FDFBF5;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: #556B2F;
+            color: #FDFBF5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .content-card {
+            background-color: #FFFFFF;
+            border-left: 5px solid #8F9779;
+        }
+        .hero-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .gemini-button {
+            background-color: #556B2F;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        .gemini-button:hover {
+            background-color: #6B8E23;
+        }
+        .gemini-response {
+            background-color: #F0F2EB;
+            border-left: 3px solid #556B2F;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #556B2F;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-md py-6">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-5xl font-bold text-[#556B2F]">ইসলামের ইতিহাসে নারী সাহাবীদের বীরত্বগাথা</h1>
+            <p class="mt-2 text-lg text-gray-600">ত্যাগ, বীরত্ব এবং ঈমানের এক অবিস্মরণীয় উপাখ্যান</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+        
+        <section id="foundation" class="mb-16 text-center">
+            <h2 class="text-2xl md:text-3xl font-semibold text-[#556B2F] mb-4">ইসলামে নারীর ভিত্তি ও মর্যাদা</h2>
+            <p class="max-w-3xl mx-auto text-gray-700 leading-relaxed">
+                ইসলাম নারীকে কেবল সম্মান দেয় না, বরং সমাজের ভিত্তি হিসেবে প্রতিষ্ঠা করে। বলা হয়, "নারী সমাজের অর্ধেক, এবং তিনি বাকি অর্ধেকের জন্ম দেন—সুতরাং, তিনিই পুরো সমাজ।" এই উক্তিটি নারীর ভূমিকাকে এক নতুন উচ্চতায় নিয়ে যায়, যেখানে তাঁর চরিত্র, জ্ঞান এবং ঈমানই একটি সভ্যতার মূল ভিত্তি তৈরি করে।
+            </p>
+        </section>
+
+        <section id="heroines" class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-semibold text-center text-[#556B2F] mb-4">অবিস্মরণীয় চার মহীয়সী নারী</h2>
+            <p class="text-center max-w-3xl mx-auto text-gray-700 mb-8">
+                ইসলামের ইতিহাসের পাতায় এমন কিছু নারীর নাম স্বর্ণাক্ষরে লেখা আছে যাদের ত্যাগ, বীরত্ব ও ঈমানের গল্প যুগ যুগ ধরে অনুপ্রেরণা যোগায়। এখানে আমরা চারজন মহীয়সী নারী সাহাবীর জীবনের বিশেষ কিছু দিক তুলে ধরব। নিচের ট্যাব থেকে যেকোনো একজনের সম্পর্কে জানতে ক্লিক করুন।
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                <button class="tab-button active py-2 px-4 rounded-lg bg-white shadow-md font-semibold text-gray-700" onclick="showTab('sumayyah')">সুমাইয়া বিনতে খাব্বাত (রা)</button>
+                <button class="tab-button py-2 px-4 rounded-lg bg-white shadow-md font-semibold text-gray-700" onclick="showTab('khawla')">খাওলা বিনতে আযওয়ার (রা)</button>
+                <button class="tab-button py-2 px-4 rounded-lg bg-white shadow-md font-semibold text-gray-700" onclick="showTab('umm_hakim')">উম্মে হাকিম (রা)</button>
+                <button class="tab-button py-2 px-4 rounded-lg bg-white shadow-md font-semibold text-gray-700" onclick="showTab('nusaybah')">নুসাইবা বিনতে কা'ব (রা)</button>
+            </div>
+
+            <div id="tab-content" class="mt-8">
+            </div>
+        </section>
+
+        <section id="comparison" class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-semibold text-center text-[#556B2F] mb-4">চারিত্রিক বৈশিষ্ট্যের তুলনামূলক চিত্র</h2>
+            <p class="text-center max-w-3xl mx-auto text-gray-700 mb-8">
+                এই চার্টটি তাঁদের প্রধান গুণাবলী যেমন—সবর (ধৈর্য), বীরত্ব, দৃঢ়তা এবং উৎসর্গ—এর একটি তুলনামূলক চিত্র তুলে ধরে। প্রতিটি গুণই তাঁদের ঈমানের গভীরতার প্রতিফলন।
+            </p>
+            <div class="chart-container bg-white p-4 rounded-xl shadow-lg">
+                <canvas id="virtuesChart"></canvas>
+            </div>
+        </section>
+
+        <section id="legacy" class="text-center bg-white p-8 rounded-xl shadow-lg">
+            <h2 class="text-2xl md:text-3xl font-semibold text-[#556B2F] mb-4">বর্তমান প্রজন্মের জন্য শিক্ষা</h2>
+            <p class="max-w-3xl mx-auto text-gray-700 leading-relaxed mb-6">
+                এই মহীয়সী নারীদের জীবন আজকের দিনের নারীদের জন্য এক শক্তিশালী বার্তা বহন করে। তাঁদের দেখানো পথ অনুসরণ করে আজকের নারীরাও পরিবার, সমাজ এবং উম্মাহর জন্য পথপ্রদর্শক হতে পারেন।
+            </p>
+            <button id="getInspirationBtn" class="gemini-button font-bold py-3 px-6 rounded-lg inline-flex items-center gap-2">
+                ✨ আমার জন্য একটি অনুপ্রেরণামূলক বার্তা দিন
+            </button>
+            <div id="inspirationResult" class="mt-6 text-left"></div>
+        </section>
+
+    </main>
+    
+    <footer class="text-center py-6 mt-8 bg-gray-100">
+        <p class="text-gray-600">&copy; 2024 - ইসলামিক নারী বীরত্বগাথা। ঐতিহাসিক উৎসের উপর ভিত্তি করে তৈরি।</p>
+    </footer>
+
+    <script>
+        const heroinesData = {
+            sumayyah: {
+                name: "সুমাইয়া বিনতে খাব্বাত (রা)",
+                title: "ইসলামের প্রথম শহীদ",
+                icon: "🛡️",
+                story: "তিনি ছিলেন একজন বয়স্ক এবং দুর্বল দাসী, কিন্তু তাঁর ঈমান ছিল পর্বতের মতো অটল। ইসলাম গ্রহণের 'অপরাধে' আবু জাহেল ও তার সঙ্গীরা তাঁকে মরুভূমির তপ্ত বালুতে অকথ্য নির্যাতন করত। কিন্তু তিনি এক মুহূর্তের জন্যও ঈমান থেকে বিচ্যুত হননি। আবু জাহেলের বর্শার আঘাতে শহীদ হয়ে তিনি ইসলামের ইতিহাসে প্রথম শহীদের মর্যাদা লাভ করেন। তাঁর এই আত্মত্যাগ প্রমাণ করে যে, শারীরিক দুর্বলতা ঈমানের শক্তির সামনে কিছুই নয়।",
+                chartData: { labels: ['ঈমানের দৃঢ়তা'], values: [100], label: 'আত্মত্যাগ' }
+            },
+            khawla: {
+                name: "খাওলা বিনতে আযওয়ার (রা)",
+                title: "পর্দানশীল বীর যোদ্ধা",
+                icon: "⚔️",
+                story: "ইয়ারমুকের যুদ্ধে যখন মুসলিম বাহিনী কিছুটা বিপর্যস্ত, তখন কালো কাপড়ে মুখ ঢাকা এক অশ্বারোহী বিদ্যুতের গতিতে রোমান বাহিনীর উপর ঝাঁপিয়ে পড়েন। তাঁর বীরত্ব দেখে সেনাপতি খালিদ বিন ওয়ালিদ (রা) পর্যন্ত অবাক হয়েছিলেন। পরে জানা যায়, এই বীর যোদ্ধা ছিলেন খাওলা বিনতে আযওয়ার (রা)। তিনি প্রমাণ করেছেন, পর্দা এবং বীরত্ব একসাথে চলতে পারে। তিনি বন্দী অবস্থায় অন্য নারীদের নিয়ে তাঁবুর খুঁটি দিয়ে যুদ্ধ করে নিজেদের রক্ষা করেছিলেন।",
+                chartData: { labels: ['সাহসিকতা'], values: [100], label: 'বীরত্ব' }
+            },
+            umm_hakim: {
+                name: "উম্মে হাকিম বিনতে হারিস (রা)",
+                title: "নববধূ শহীদ",
+                icon: "💔",
+                story: "ইয়ারমুকের যুদ্ধের ময়দানে তাঁর বিয়ে হয়। বিয়ের পরের দিন সকালেই তাঁর স্বামী শহীদ হন। শোকাহত হওয়ার বদলে তিনি তাঁর বিয়ের তাঁবুর খুঁটিকেই অস্ত্র বানিয়ে ফেলেন এবং একাই ৭ জন রোমান সৈন্যকে হত্যা করেন। তাঁর এই ঘটনা চরম ব্যক্তিগত ত্যাগের এক অসাধারণ উদাহরণ, যেখানে দ্বীনের মর্যাদা ব্যক্তিগত সুখের ঊর্ধ্বে স্থান পেয়েছিল।",
+                chartData: { labels: ['হত্যা করা শত্রু সৈন্য'], values: [7], label: 'সংখ্যা' }
+            },
+            nusaybah: {
+                name: "নুসাইবা বিনতে কা'ব (রা)",
+                title: "রাসূল (ﷺ) এর ঢাল",
+                icon: "❤️",
+                story: "উহুদের যুদ্ধে যখন মুসলিমদের অবস্থা সঙ্গীন এবং রাসূল (ﷺ) বিপদের মুখে, তখন নুসাইবা (রা) নিজের শরীরকে ঢাল বানিয়ে রাসূল (ﷺ) কে রক্ষা করেছিলেন। তিনি একাই ১৩টি আঘাত পেয়েছিলেন। রাসূল (ﷺ) বলেছিলেন, 'আমি ডানে-বামে যেখানেই তাকিয়েছি, নুসাইবাকেই আমাকে রক্ষা করতে দেখেছি।' তাঁর একমাত্র আরজি ছিল জান্নাতে রাসূল (ﷺ)-এর সঙ্গী হওয়া। তাঁর জীবন ছিল ঈমান, ভালোবাসা এবং উৎসর্গের এক জীবন্ত প্রতিচ্ছবি।",
+                 chartData: { labels: ['শরীরে আঘাতের সংখ্যা'], values: [13], label: 'সংখ্যা' }
+            }
+        };
+
+        let activeTab = 'sumayyah';
+        const contentContainer = document.getElementById('tab-content');
+        let smallChartInstance = null;
+        let virtuesChartInstance = null;
+
+        async function getGeminiResponse(prompt) {
+            const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4"; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{
+                    role: "user",
+                    parts: [{ text: prompt }]
+                }],
+                generationConfig: {
+                    temperature: 0.7,
+                    topK: 1,
+                    topP: 1,
+                    maxOutputTokens: 2048,
+                }
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    return "দুঃখিত, এই মুহূর্তে কোনো উত্তর তৈরি করা সম্ভব হচ্ছে না।";
+                }
+            } catch (error) {
+                console.error("Gemini API call failed:", error);
+                return "দুঃখিত, একটি প্রযুক্তিগত সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।";
+            }
+        }
+
+        function showTab(tabName) {
+            activeTab = tabName;
+            updateContent();
+            
+            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+            document.querySelector(`.tab-button[onclick="showTab('${tabName}')"]`).classList.add('active');
+        }
+
+        function updateContent() {
+            const data = heroinesData[activeTab];
+            contentContainer.innerHTML = `
+                <div class="content-card p-6 md:p-8 rounded-xl shadow-lg animate-fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-2">
+                            <h3 class="text-2xl font-bold text-[#556B2F] flex items-center gap-3">
+                                <span class="hero-icon">${data.icon}</span>
+                                ${data.name}
+                            </h3>
+                            <p class="text-lg font-semibold text-gray-500 mb-4">${data.title}</p>
+                            <p class="text-gray-700 leading-relaxed">${data.story}</p>
+                            <button class="gemini-button font-bold py-2 px-4 rounded-lg mt-6 inline-flex items-center gap-2" onclick="getMoralLessons()">
+                                ✨ এই ঘটনা থেকে কী শিক্ষা পাই?
+                            </button>
+                            <div id="lessonsResult" class="mt-4"></div>
+                        </div>
+                        <div class="flex items-center justify-center p-4">
+                            <div class="h-48 md:h-64 w-full">
+                                 <canvas id="smallChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            createSmallChart(data.chartData);
+        }
+
+        async function getMoralLessons() {
+            const resultDiv = document.getElementById('lessonsResult');
+            resultDiv.innerHTML = '<div class="flex justify-start items-center gap-2 text-gray-600"><div class="loader"></div><span>শিক্ষা তৈরি করা হচ্ছে...</span></div>';
+            
+            const story = heroinesData[activeTab].story;
+            const prompt = `Based on the following story in Bengali, generate 2-3 key moral lessons that a modern person can apply to their life. The story is: "${story}". Respond ONLY in concise, encouraging Bengali, formatted as a list.`;
+            
+            const lessons = await getGeminiResponse(prompt);
+            
+            resultDiv.innerHTML = `<div class="gemini-response p-4 mt-2 rounded-md">${lessons.replace(/\n/g, '<br>')}</div>`;
+        }
+
+
+        function createSmallChart(data) {
+            if (smallChartInstance) smallChartInstance.destroy();
+            const ctx = document.getElementById('smallChart').getContext('2d');
+            smallChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: data.label,
+                        data: data.values,
+                        backgroundColor: '#8F9779',
+                        borderColor: '#556B2F',
+                        borderWidth: 2,
+                        borderRadius: 5,
+                        barThickness: 50,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { beginAtZero: true, grid: { display: false }, ticks: { font: { family: "'Hind Siliguri', sans-serif" }} },
+                        y: { grid: { display: false }, ticks: { font: { family: "'Hind Siliguri', sans-serif" }} }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#556B2F',
+                            titleFont: { size: 14, family: "'Hind Siliguri', sans-serif" },
+                            bodyFont: { size: 12, family: "'Hind Siliguri', sans-serif" }
+                        }
+                    }
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            showTab('sumayyah');
+
+            const virtuesCtx = document.getElementById('virtuesChart').getContext('2d');
+            if (virtuesChartInstance) virtuesChartInstance.destroy();
+            virtuesChartInstance = new Chart(virtuesCtx, {
+                type: 'polarArea',
+                data: {
+                    labels: ['সুমাইয়া (সবর)', 'খাওলা (বীরত্ব)', 'উম্মে হাকিম (দৃঢ়তা)', 'নুসাইবা (উৎসর্গ)'],
+                    datasets: [{
+                        label: 'প্রধান চারিত্রিক গুণাবলী',
+                        data: [10, 9, 8, 10],
+                        backgroundColor: ['rgba(143, 151, 121, 0.7)','rgba(85, 107, 47, 0.7)','rgba(189, 183, 107, 0.7)','rgba(205, 133, 63, 0.7)']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            pointLabels: { display: true, centerPointLabels: true, font: { size: 13, family: "'Hind Siliguri', sans-serif" }},
+                             grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                             ticks: { backdropColor: 'rgba(253, 251, 245, 0.75)', color: '#333', font: { family: "'Hind Siliguri', sans-serif" }}
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top', labels: { font: { size: 14, family: "'Hind Siliguri', sans-serif" }}},
+                        tooltip: {
+                            backgroundColor: '#556B2F',
+                            titleFont: { size: 16, family: "'Hind Siliguri', sans-serif" },
+                            bodyFont: { size: 14, family: "'Hind Siliguri', sans-serif" },
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label || ''}: ${context.label}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('getInspirationBtn').addEventListener('click', async () => {
+                const resultDiv = document.getElementById('inspirationResult');
+                resultDiv.innerHTML = '<div class="flex justify-center items-center gap-2 text-gray-600"><div class="loader"></div><span>বার্তা তৈরি করা হচ্ছে...</span></div>';
+                
+                const prompt = `Based on the collective spirit of heroic women from Islamic history who showed immense faith, courage, sacrifice, and patience, generate a short, single, powerful, and personal inspirational message for someone today seeking strength. Respond ONLY in encouraging Bengali.`;
+                
+                const inspiration = await getGeminiResponse(prompt);
+                resultDiv.innerHTML = `<div class="gemini-response p-4 mt-2 rounded-md text-center text-lg italic">${inspiration}</div>`;
+            });
+        });
+
+    </script>
+</body>
+</html>

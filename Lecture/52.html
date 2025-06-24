@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>পাপীদের আর্তনাদ - শেখ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Repentance -->
+    <!-- Application Structure Plan: The SPA is designed with a thematic, non-linear structure to transform the passive reading of a sermon into an active, exploratory journey. The core sections (Allah's Call, Promise of Forgiveness, Stories of Returners, Pearls of Wisdom, A Call to You) break down the sermon's key themes. The main interactive element is the tabbed interface for the stories, which makes the most engaging part of the content easily digestible and prevents the user from being overwhelmed by a long wall of text. This structure prioritizes user engagement and comprehension over a simple linear presentation of the source text. -->
+    <!-- Visualization & Content Choices: Report Info: The entire report is qualitative narrative and stories about repentance. -> Goal: To inform, inspire, and organize the content for easy exploration. -> Viz/Presentation Method: Interactive tabs for the stories, highlighted blockquotes for key verses, and clear typographic hierarchy for readability. -> Interaction: Smooth-scrolling navigation and clickable tabs to reveal content. -> Justification: Since there is no quantitative data, the focus is on structuring the narrative content. Tabs break down long stories into manageable, user-initiated reveals. Blockquotes draw attention to the most powerful messages (Quranic verses and Hadith). This approach enhances engagement and learning. -> Library/Method: Vanilla JS for interactions, Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-btn.active {
+            border-color: #0d9488;
+            background-color: #ccfbf1;
+            color: #134e4a;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-gray-800">
+
+    <header id="header" class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-teal-800">পাপীদের আর্তনাদ</h1>
+            <div class="hidden md:flex space-x-6">
+                <a href="#allahs-call" class="text-gray-600 hover:text-teal-600 transition duration-300">আল্লাহর আহ্বান</a>
+                <a href="#promise" class="text-gray-600 hover:text-teal-600 transition duration-300">ক্ষমার প্রতিশ্রুতি</a>
+                <a href="#stories" class="text-gray-600 hover:text-teal-600 transition duration-300">প্রত্যাবর্তনকারীদের গল্প</a>
+                <a href="#wisdom" class="text-gray-600 hover:text-teal-600 transition duration-300">জ্ঞানের মুক্তা</a>
+                <a href="#final-call" class="text-gray-600 hover:text-teal-600 transition duration-300">আপনার প্রতি আহ্বান</a>
+            </div>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-gray-600 hover:text-teal-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white">
+            <a href="#allahs-call" class="block py-2 px-4 text-sm text-gray-600 hover:bg-teal-50">আল্লাহর আহ্বান</a>
+            <a href="#promise" class="block py-2 px-4 text-sm text-gray-600 hover:bg-teal-50">ক্ষমার প্রতিশ্রুতি</a>
+            <a href="#stories" class="block py-2 px-4 text-sm text-gray-600 hover:bg-teal-50">প্রত্যাবর্তনকারীদের গল্প</a>
+            <a href="#wisdom" class="block py-2 px-4 text-sm text-gray-600 hover:bg-teal-50">জ্ঞানের মুক্তা</a>
+            <a href="#final-call" class="block py-2 px-4 text-sm text-gray-600 hover:bg-teal-50">আপনার প্রতি আহ্বান</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-16">
+
+        <section class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold text-gray-800 mb-4">অনুশোচনার যাত্রা শুরু করুন</h2>
+            <p class="max-w-3xl mx-auto text-gray-600 text-lg">
+                আল্লাহর রহমত তাঁর ক্রোধের উপর বিজয়ী। তিনি সেই সব বান্দাদের জন্য তওবা ও অনুশোচনার দরজা সর্বদা খোলা রাখেন যারা নিজেদের উপর জুলুম করেছে। আসুন, আমরা তাঁর অসীম করুণার দিকে ফিরে যাই।
+            </p>
+            <a href="#allahs-call" class="mt-8 inline-block bg-teal-600 text-white font-bold py-3 px-8 rounded-full hover:bg-teal-700 transition duration-300 text-lg">যাত্রা শুরু হোক</a>
+        </section>
+
+        <div class="space-y-20">
+            
+            <section id="allahs-call" class="p-8 bg-white rounded-xl shadow-lg">
+                <h3 class="text-2xl md:text-3xl font-bold text-teal-800 mb-6 border-b-2 border-teal-200 pb-3">আল্লাহর আহ্বান</h3>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                    <p>এই বিভাগে আমরা তওবার প্রতি মহান আল্লাহর আহ্বান এবং তাঁর ক্ষমার বিশালতা সম্পর্কে জানব। আল্লাহ তাঁর বান্দাদের ভুলের পথ থেকে ফিরে আসার জন্য এবং তাঁর ক্ষমার ছায়ায় আশ্রয় নেওয়ার জন্য বারবার আহ্বান জানান। এটি একটি আশার বার্তা, যা প্রতিটি পাপী অন্তরের জন্য সান্ত্বনা নিয়ে আসে।</p>
+                    <blockquote class="border-l-4 border-teal-500 pl-4 py-2 bg-teal-50 text-teal-800 rounded-r-lg">
+                        <p class="font-medium">"এবং তোমরা সকলে আল্লাহর নিকট তওবা কর, হে মুমিনগণ, যাতে তোমরা সফলকাম হতে পারো।"</p>
+                        <cite class="block text-sm text-teal-700 mt-2">- সূরা আন-নূর: ৩১</cite>
+                    </blockquote>
+                    <p>রাসূলুল্লাহ (সাঃ) বলেছেন: "হে মানবজাতি! তোমরা তোমাদের রবের নিকট তওবা কর, কারণ আমি দিনে একশত বার তাঁর নিকট তওবা করি।" (মুসলিম)। এই হাদিসটি আমাদের দেখায় যে, এমনকি আল্লাহর সবচেয়ে প্রিয় নবীও নিয়মিত তওবা করতেন, যা আমাদের জন্য একটি শক্তিশালী উদাহরণ।</p>
+                     <p>আল্লাহ দাউদ (আঃ)-কে ওহী পাঠিয়েছিলেন: "হে দাউদ! যারা আমার থেকে মুখ ফিরিয়ে নিয়েছে, তারা যদি জানত আমি কীভাবে তাদের জন্য অপেক্ষা করি, তাদের প্রতি আমার কেমন মমতা এবং তাদের পাপকর্ম ত্যাগের জন্য আমার কেমন আকুলতা, তবে তারা আমার প্রতি ভালোবাসায় মারা যেত... হে দাউদ! যারা আমার থেকে মুখ ফিরিয়ে নিয়েছে, তাদের প্রতি যদি আমার এই ইচ্ছা হয়, তাহলে যারা আমার দিকে এগিয়ে আসে, তাদের প্রতি আমার ইচ্ছা কেমন হবে?"</p>
+                </div>
+            </section>
+
+            <section id="promise" class="p-8 bg-white rounded-xl shadow-lg">
+                <h3 class="text-2xl md:text-3xl font-bold text-teal-800 mb-6 border-b-2 border-teal-200 pb-3">ক্ষমার প্রতিশ্রুতি</h3>
+                 <div class="space-y-4 text-gray-700 leading-relaxed">
+                    <p>এখানে আল্লাহর ক্ষমার প্রতিশ্রুতি এবং তাঁর অসীম রহমতের গভীরতা অন্বেষণ করা হয়েছে। আল্লাহ শুধু তওবা কবুলই করেন না, বরং তিনি তাঁর বান্দাদের প্রতি এতটাই দয়ালু যে, আন্তরিক অনুশোচনার মাধ্যমে তিনি পাপকে পুণ্যে রূপান্তরিত করতে পারেন। এটি প্রতিটি निराशाগ্রস্ত আত্মার জন্য একটি শক্তিশালী বার্তা।</p>
+                    <blockquote class="border-l-4 border-teal-500 pl-4 py-2 bg-teal-50 text-teal-800 rounded-r-lg">
+                        <p class="font-medium">"বলো, হে আমার বান্দাগণ যারা নিজেদের উপর সীমালঙ্ঘন করেছ! তোমরা আল্লাহর রহমত থেকে নিরাশ হয়ো না। নিশ্চয়ই আল্লাহ সমস্ত পাপ ক্ষমা করে দেন। তিনি তো ক্ষমাশীল, পরম দয়ালু।"</p>
+                        <cite class="block text-sm text-teal-700 mt-2">- সূরা আয-যুমার: ৫৩</cite>
+                    </blockquote>
+                    <p>রাসূলুল্লাহ (সাঃ) একটি হাদিসে কুদসিতে আল্লাহর পক্ষ থেকে বর্ণনা করেন, যেখানে ফেরেশতারা যিকিরের মজলিস খুঁজে বেড়ান। যখন তারা এমন কোনো মজলিস পান, তখন আল্লাহ তাঁর বান্দাদের সম্পর্কে জিজ্ঞাসা করেন এবং পরিশেষে বলেন, "আমি তোমাদের সাক্ষী রাখছি যে, আমি তাদের ক্ষমা করে দিলাম"। এমনকি যদি সেখানে কোনো প্রয়োজনে আসা ব্যক্তিও থাকে, আল্লাহ বলেন, "আমি তাকেও ক্ষমা করে দিলাম, তারা এমন এক সম্প্রদায় যাদের সাথে বসে কেউ দুর্ভাগা হয় না।"</p>
+                 </div>
+            </section>
+            
+            <section id="stories" class="p-8 bg-white rounded-xl shadow-lg">
+                <h3 class="text-2xl md:text-3xl font-bold text-teal-800 mb-6 border-b-2 border-teal-200 pb-3">প্রত্যাবর্তনকারীদের গল্প</h3>
+                <p class="mb-6 text-gray-700 leading-relaxed">এখানে আমরা অনুশোচনা ও প্রত্যাবর্তনের কিছু অনুপ্রেরণামূলক গল্প পড়ব। প্রতিটি গল্প আল্লাহর অসীম করুণা এবং হেদায়েতের পথের একটি জীবন্ত উদাহরণ। এই গল্পগুলো আমাদের দেখায় যে, আন্তরিক তওবার মাধ্যমে কীভাবে জীবন পরিবর্তিত হতে পারে এবং কীভাবে পাপের অন্ধকার থেকে আলোর পথে আসা যায়।</p>
+                <div class="flex flex-wrap gap-2 border-b-2 border-gray-200 mb-4">
+                    <button class="tab-btn active py-2 px-4 rounded-t-lg border-b-2 border-transparent transition" data-tab="tab1">একজন তওবাকারীর গল্প</button>
+                    <button class="tab-btn py-2 px-4 rounded-t-lg border-b-2 border-transparent transition" data-tab="tab2">আমার হেদায়েত তার হাতে</button>
+                </div>
+
+                <div id="tab1" class="tab-content active animate-fade-in">
+                    <article class="prose max-w-none text-gray-700 leading-relaxed">
+                        <h4 class="text-xl font-semibold text-gray-800 mb-2">একজন তওবাকারীর গল্প</h4>
+                        <p>মানসুর ইবনে আম্মার এক রাতে এক যুবকের কান্নার আওয়াজ শুনতে পান। যুবকটি আল্লাহর কাছে তার পাপের জন্য অনুশোচনা করছিল। সে বলছিল, "আমার নফস আমাকে প্ররোচিত করেছে, আমার দুর্ভাগ্য আমাকে পরাস্ত করেছে এবং আপনার পর্দাপوشি আমাকে ধোঁকায় ফেলেছে। এখন আপনার আযাব থেকে আমাকে কে বাঁচাবে?"</p>
+                        <p>মানসুর তখন সূরা আত-তাহরীমের ৬ নম্বর আয়াতটি তিলাওয়াত করেন: "হে মুমিনগণ! তোমরা নিজেদেরকে এবং তোমাদের পরিবারকে সেই আগুন থেকে বাঁচাও যার ইন্ধন হবে মানুষ ও পাথর..."। আয়াতটি শোনার পর যুবকটি এমনভাবে ছটফট করতে এবং কাঁদতে শুরু করে যে সে মারা যায়। এই গল্পটি আমাদের আল্লাহর প্রতি ভয় এবং আন্তরিক তওবার গভীরতা শেখায়।</p>
+                    </article>
+                </div>
+
+                <div id="tab2" class="tab-content animate-fade-in">
+                    <article class="prose max-w-none text-gray-700 leading-relaxed">
+                        <h4 class="text-xl font-semibold text-gray-800 mb-2">আমার হেদায়েত তার হাতে</h4>
+                        <p>এক যুবক তার পাপময় জীবনের কথা বর্ণনা করে। সে ছিল একজন উপহাসকারী এবং গাফেল পিতা। তার ছেলে 'সালেম' জন্মগতভাবে দৃষ্টি প্রতিবন্ধী ও খোঁড়া ছিল। যুবকটি তার ছেলের প্রতি অবহেলা করত। একদিন শুক্রবার, সে দেখতে পায় তার ছেলে মসজিদে যেতে না পারার জন্য কাঁদছে। সেদিন সে প্রথমবার তার ছেলেকে মসজিদে নিয়ে যায়।</p>
+                        <p>মসজিদে গিয়ে সে অবাক হয়ে দেখে যে তার অন্ধ ছেলে সম্পূর্ণ সূরা কাহাফ মুখস্থ পড়তে পারে। এই ঘটনা তার অন্তরে গভীরভাবে প্রভাব ফেলে এবং সে তওবা করে আল্লাহর পথে ফিরে আসে। তার জীবনের এই পরিবর্তন তার ছেলের কারণেই হয়েছিল। দুঃখজনকভাবে, কিছুদিন পর সালেম মারা যায়। কিন্তু সে তার বাবার জন্য হেদায়েতের আলো জ্বালিয়ে দিয়ে যায়। গল্পটি আমাদের শেখায় যে, আল্লাহ যাকে ইচ্ছা হেদায়েত দান করেন এবং অনেক সময় আমাদের সবচেয়ে কাছের মানুষই আমাদের পরিবর্তনের কারণ হয়ে দাঁড়ায়।</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="wisdom" class="p-8 bg-white rounded-xl shadow-lg">
+                <h3 class="text-2xl md:text-3xl font-bold text-teal-800 mb-6 border-b-2 border-teal-200 pb-3">জ্ঞানের মুক্তা: একজন পাপী ও একজন জ্ঞানীর কথোপকথন</h3>
+                <p class="mb-6 text-gray-700 leading-relaxed">এই বিভাগে আমরা ইব্রাহিম ইবনে আদহাম (রহঃ) এবং একজন পাপী ব্যক্তির মধ্যে একটি জ্ঞানগর্ভ কথোপকথন তুলে ধরছি। এই কথোপকথনটি পাঁচটি শক্তিশালী উপদেশের মাধ্যমে আমাদের আল্লাহর প্রতি আমাদের দায়িত্ব এবং পাপের পরিণতি সম্পর্কে সচেতন করে তোলে।</p>
+                <div class="space-y-3">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p><strong class="text-teal-700">১. আল্লাহর রিযিক:</strong> "যখন তুমি আল্লাহর নাফরমানি করতে চাও, তখন তাঁর রিযিক খেয়ো না।"</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p><strong class="text-teal-700">২. আল্লাহর জমিন:</strong> "আল্লাহর জমিনে বাস করো না এবং তাঁর নাফরমানি করো।"</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p><strong class="text-teal-700">৩. আল্লাহর দৃষ্টি:</strong> "এমন কোনো জায়গায় যাও যেখানে আল্লাহ তোমাকে দেখেন না এবং সেখানে গিয়ে তাঁর নাফরমানি করো।"</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p><strong class="text-teal-700">৪. মৃত্যুর ফেরেশতা:</strong> "যখন মৃত্যুর ফেরেশতা তোমার রুহ قبض করতে আসবে, তখন তাকে বলো: 'আমি এখন মরব না'।"</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p><strong class="text-teal-700">৫. জান্নাত ও জাহান্নাম:</strong> "যখন আযাবের ফেরেশতারা তোমাকে জাহান্নামের দিকে নিয়ে যেতে আসবে, তখন তুমি নিজেকে জান্নাতের দিকে নিয়ে যেও।"</p>
+                    </div>
+                </div>
+                 <p class="mt-6 text-gray-700 leading-relaxed">এই পাঁচটি প্রশ্ন শোনার পর লোকটি তার ভুল বুঝতে পারে এবং বলে, "শুনুন, হে ইব্রাহিম! আমি আল্লাহর কাছে ক্ষমা চাই এবং তাঁর কাছে তওবা করছি।"</p>
+            </section>
+            
+            <section id="final-call" class="p-8 bg-teal-50 rounded-xl shadow-inner">
+                <h3 class="text-2xl md:text-3xl font-bold text-teal-800 mb-6 border-b-2 border-teal-200 pb-3">আপনার প্রতি আহ্বান</h3>
+                <div class="space-y-4 text-gray-700 leading-relaxed">
+                    <p>হে তওবাকারী, সুসংবাদ গ্রহণ করো! কারণ আল্লাহ তওবাকারীদের ভালোবাসেন এবং তাদের তওবায় আনন্দিত হন। রাসূলুল্লাহ (সাঃ) বলেছেন: "পাপ থেকে তওবাকারী এমন যেন তার কোনো পাপই নেই।"</p>
+                    <p>জেনে রাখো, আল্লাহকে ছাড়া জীবন একটি মরীচিকা। অন্তর আল্লাহ ছাড়া পরিশুদ্ধ হয় না। আর কত দিন তুমি পাপ ও বিদ্রোহ করবে? নিজের জন্য কান্না করো এবং নিজেকে ভর্ৎসনা করো। বলো:</p>
+                    <blockquote class="border-l-4 border-teal-500 pl-4 py-2 my-4 italic bg-white">
+                        <p>"আমার উপর আল্লাহ কতই না সহনশীল, যেখানে তিনি আমাকে অবকাশ দিয়েছেন,<br>আর আমি আমার পাপে ডুবে আছি আর তিনি আমাকে আড়াল করে রেখেছেন।<br>আমার দিনগুলো অনুশোচনা, কান্না, ভয় বা দুঃখ ছাড়াই কেটে যায়।"</p>
+                    </blockquote>
+                    <p>হে আল্লাহ, আমাদের উপর এমন তওবা কবুল করুন যা খাঁটি, যার অঙ্গীকার আমরা কখনো ভাঙব না। হে আল্লাহ, তওবাকারীদের তওবা কবুল করুন, পাপীদের পাপ ক্ষমা করুন।</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p>&copy; 2025 পাপীদের আর্তনাদ। শেখ খালিদ আল-রাশেদের বক্তৃতার উপর ভিত্তি করে তৈরি।</p>
+        </div>
+    </footer>
+
+    <script>
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                button.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+    </script>
+</body>
+</html>

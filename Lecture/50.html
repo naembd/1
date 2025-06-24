@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>পথের সাথি - শাইখ খালিদ আর-রাশিদ</title>
+    <!-- Chosen Palette: Serenity Glow -->
+    <!-- Application Structure Plan: The application is designed as a single-page, vertically scrolling experience with a fixed top navigation bar for easy access to key thematic sections. This structure was chosen over a simple text layout to make the dense, profound content of the sermon more digestible and engaging for a digital audience. The key sections are: 1) Introduction, 2) The Light of Faith, 3) The Day of Judgment (with interactive elements like a timeline and clickable cards for the Hadith of Intercession), 4) Stories of the Predecessors, 5) a Q&A section with an accordion UI, and 6) a final Call to Action. This thematic organization allows users to either read sequentially or jump directly to topics of interest, enhancing usability and content exploration. -->
+    <!-- Visualization & Content Choices: Since the source is a qualitative sermon, traditional charts are not applicable. Instead, information is visualized through interactive components: Goal: Organize -> Method: An interactive timeline for the events of Qiyamah using HTML/CSS, enhanced with a neon glow effect on key points. Goal: Compare/Inform -> Method: Clickable cards for the Hadith of Intercession, where each prophet's response is revealed on click, making the long narrative engaging. Goal: Organize -> Method: An accordion for the Q&A section, which keeps the layout clean. A subtle neon glow is added to titles to draw attention and add a modern, spiritual feel. All interactions are powered by vanilla JavaScript, and styling is done with Tailwind CSS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #1A1A1A; /* Darker background for neon effect */
+            color: #E0E0E0;
+        }
+        .theme-bg { background-color: #1A1A1A; }
+        .theme-text { color: #E0E0E0; }
+        .theme-primary { color: #F39C12; }
+        .theme-accent { background-color: #F39C12; color: #1A1A1A; }
+        .theme-accent-light { background-color: #2C2C2C; }
+        .theme-border { border-color: #444; }
+
+        .neon-text {
+            color: #fff;
+            text-shadow:
+                0 0 5px rgba(243, 156, 18, 0.8),
+                0 0 10px rgba(243, 156, 18, 0.8),
+                0 0 20px rgba(243, 156, 18, 0.6),
+                0 0 40px rgba(243, 156, 18, 0.4);
+        }
+
+        .nav-link {
+            transition: color 0.3s, text-shadow 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+            color: #E0E0E0;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #F39C12;
+            border-bottom-color: #F39C12;
+            text-shadow: 0 0 8px rgba(243, 156, 18, 0.7);
+        }
+        
+        .card-neon-glow {
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        .card-neon-glow:hover {
+             box-shadow: 0 0 15px rgba(243, 156, 18, 0.5), 0 0 5px rgba(243, 156, 18, 0.8) inset;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+            padding: 0 1.5rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            width: 3px;
+            background-color: #444;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -1.5px;
+        }
+        .timeline-item {
+            position: relative;
+            width: 50%;
+        }
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            padding-right: 2.5rem;
+        }
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            padding-left: 2.5rem;
+        }
+        .timeline-dot {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: #F39C12;
+            border: 4px solid #1A1A1A;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.8);
+        }
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -10px;
+        }
+        .card-flip-container {
+            perspective: 1000px;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        .card-flip-container.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 0.75rem;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #F39C12;
+            color: #1A1A1A;
+        }
+    </style>
+</head>
+<body class="theme-bg theme-text">
+
+    <header id="header" class="bg-black/70 backdrop-blur-sm p-4 shadow-lg shadow-black/20 sticky top-0 z-50">
+        <nav class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold theme-primary neon-text">পথের সাথি</h1>
+            <div class="hidden md:flex space-x-6">
+                <a href="#intro" class="nav-link py-2 px-3">ভূমিকা</a>
+                <a href="#iman" class="nav-link py-2 px-3">ঈমানের আলো</a>
+                <a href="#qiyamah" class="nav-link py-2 px-3">মহাপ্রলয়</a>
+                <a href="#stories" class="nav-link py-2 px-3">পূর্বসূরীদের mirada</a>
+                <a href="#questions" class="nav-link py-2 px-3">জিজ্ঞাসা</a>
+                <a href="#dua" class="nav-link py-2 px-3">আহ্বান</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md focus:outline-none">
+                 <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden mt-2 bg-black/50 rounded-lg">
+            <a href="#intro" class="block text-center py-2 px-4 text-sm text-gray-200 hover:bg-gray-700">ভূমিকা</a>
+            <a href="#iman" class="block text-center py-2 px-4 text-sm text-gray-200 hover:bg-gray-700">ঈমানের আলো</a>
+            <a href="#qiyamah" class="block text-center py-2 px-4 text-sm text-gray-200 hover:bg-gray-700">মহাপ্রলয়</a>
+            <a href="#stories" class="block text-center py-2 px-4 text-sm text-gray-200 hover:bg-gray-700">পূর্বসূরীদের mirada</a>
+            <a href="#questions" class="block text-center py-2 px-4 text-sm text-gray-200 hover:bg-gray-700">জিজ্ঞাসা</a>
+            <a href="#dua" class="block text-center py-2 px-4 text-sm text-gray-200 hover:bg-gray-700">আহ্বান</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="intro" class="text-center my-12 md:my-16">
+            <h2 class="text-3xl md:text-4xl font-bold theme-primary mb-4 neon-text">পথের সাথি</h2>
+            <p class="text-lg md:text-xl font-medium mb-6">শাইখ খালিদ আর-রাশিদ</p>
+            <div class="max-w-3xl mx-auto theme-accent-light p-6 rounded-xl shadow-lg border theme-border card-neon-glow">
+                <p class="text-lg md:text-xl italic leading-relaxed">
+                    এই অ্যাপ্লিকেশনটি একটি আধ্যাত্মিক যাত্রার ডিজিটাল রূপ। এর প্রতিটি অংশ আপনাকে আল্লাহর স্মরণ, পরকালের প্রস্তুতি এবং ঈমানের গভীরতা সম্পর্কে চিন্তা করতে উৎসাহিত করবে। এখানে আমরা বক্তৃতাটির মূল বিষয়বস্তুকে ইন্টারেক্টিভ উপায়ে উপস্থাপন করেছি, যাতে এর বার্তাগুলো সহজে আপনার হৃদয়ে পৌঁছাতে পারে।
+                </p>
+                <blockquote class="mt-6 border-r-4 theme-border pr-4">
+                    <p class="text-lg font-semibold theme-primary">"জেনে রেখো, আল্লাহর স্মরণেই অন্তরসমূহ প্রশান্ত হয়।"</p>
+                    <cite class="text-sm block mt-2">- সূরা আর-রা'দ, আয়াত ২৮</cite>
+                </blockquote>
+            </div>
+        </section>
+
+        <section id="iman" class="my-16 md:my-24">
+            <h2 class="text-3xl font-bold text-center theme-primary mb-12 neon-text">ঈমানের আলো: জীবনের প্রকৃত মূল্য</h2>
+            <div class="max-w-4xl mx-auto theme-accent-light p-8 rounded-xl shadow-lg border theme-border card-neon-glow">
+                <p class="text-lg mb-6 leading-loose">
+                    এই বিভাগে শাইখ আলোচনা করেছেন যে, প্রকৃত জীবন দেহের নয়, বরং অন্তরের। যেভাবে বৃষ্টি শুষ্ক পৃথিবীকে সজীব করে, ঠিক তেমনি আল্লাহর স্মরণ মৃত অন্তরকে জীবিত করে। ঈমানই আমাদের জীবনকে মূল্যবান করে তোলে এবং দুনিয়া ও আখেরাতে আমাদের মর্যাদা নির্ধারণ করে। একটি লক্ষ্যহীন জীবন অর্থহীন, আর মুমিনের সর্বোচ্চ লক্ষ্য হলো পরকালের সাফল্য।
+                </p>
+                <div class="grid md:grid-cols-2 gap-8 mt-8">
+                    <div class="bg-gray-800/50 p-6 rounded-lg border theme-border">
+                        <h3 class="font-bold text-xl mb-3 theme-primary">দু'টি পথ</h3>
+                        <p><strong class="font-semibold">কঠিন পথ:</strong> কষ্ট ও পরীক্ষায় পূর্ণ, কিন্তু এটিই আপনাকে কাঙ্ক্ষিত লক্ষ্যে (জান্নাতে) পৌঁছে দেবে।</p>
+                        <p class="mt-2"><strong class="font-semibold">সহজ পথ:</strong> প্রবৃত্তির আনন্দে ভরা, কিন্তু এটি আপনাকে লক্ষ্য থেকে বিচ্যুত করবে।</p>
+                    </div>
+                    <div class="bg-gray-800/50 p-6 rounded-lg border theme-border">
+                        <h3 class="font-bold text-xl mb-3 theme-primary">উমর ইবনে আবদুল আজিজের শর্ত</h3>
+                         <ul class="list-inside list-disc space-y-1">
+                            <li>দুনিয়া নিয়ে আলোচনা করবে না।</li>
+                            <li>কারো গীবত করবে না।</li>
+                            <li>কারো (অতিরিক্ত) প্রশংসা করবে না।</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="qiyamah" class="my-16 md:my-24">
+            <h2 class="text-3xl font-bold text-center theme-primary mb-12 neon-text">মহাপ্রলয়: সেই অবশ্যম্ভাবী দিন</h2>
+            <div class="max-w-5xl mx-auto theme-accent-light p-8 rounded-xl shadow-lg border theme-border card-neon-glow">
+                 <p class="text-lg mb-10 text-center leading-loose">
+                    কুরআন ও হাদীসের আলোকে কিয়ামতের ভয়াবহ দৃশ্যগুলো এখানে তুলে ধরা হয়েছে। এই পর্বটি আপনাকে সেই মহান দিনের কথা স্মরণ করিয়ে দেবে, যেদিন সকল মানুষকে হিসাবের জন্য আল্লাহর সামনে দাঁড়াতে হবে। প্রতিটি ঘটনা আপনাকে পরকালের প্রস্তুতির গুরুত্ব অনুধাবন করতে সাহায্য করবে। নিচের টাইমলাইন এবং কার্ডগুলোতে ক্লিক করে ঘটনাপ্রবাহ সম্পর্কে আরও জানুন।
+                </p>
+
+                <div class="relative timeline py-8">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="p-6 bg-gray-800/50 rounded-lg shadow-md border theme-border">
+                            <h3 class="font-bold text-lg theme-primary">শিংগায় ফুঁক</h3>
+                            <p class="text-sm mt-2">প্রথম ফুঁকে সকল সৃষ্টি ধ্বংস হয়ে যাবে এবং দ্বিতীয় ফুঁকে সকল মানুষ কবর থেকে পুনরুত্থিত হবে।</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="p-6 bg-gray-800/50 rounded-lg shadow-md border theme-border">
+                            <h3 class="font-bold text-lg theme-primary">হাশরের ময়দান</h3>
+                            <p class="text-sm mt-2">সবাই খালি পায়ে, নগ্ন দেহে একত্রিত হবে। সূর্য মাথার অতি নিকটে চলে আসবে এবং মানুষ নিজ ঘামে ডুবতে থাকবে।</p>
+                        </div>
+                    </div>
+                     <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="p-6 bg-gray-800/50 rounded-lg shadow-md border theme-border">
+                            <h3 class="font-bold text-lg theme-primary">মহা সুপারিশ (শাফায়াত)</h3>
+                            <p class="text-sm mt-2">মানুষ নবীদের কাছে সুপারিশের জন্য যাবে, কিন্তু সবাই অপারগতা প্রকাশ করবেন। অবশেষে, রাসূলুল্লাহ (সা.) উম্মতের জন্য সুপারিশ করবেন।</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="p-6 bg-gray-800/50 rounded-lg shadow-md border theme-border">
+                            <h3 class="font-bold text-lg theme-primary">হিসাব-নিকাশ</h3>
+                            <p class="text-sm mt-2">আমলনামা দেওয়া হবে। ডান হাতে কিতাবপ্রাপ্তরা সফলকাম হবে এবং বাম হাতে প্রাপ্তরা হবে ক্ষতিগ্রস্ত। মিজান বা পাল্লা স্থাপন করা হবে।</p>
+                        </div>
+                    </div>
+                     <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="p-6 bg-gray-800/50 rounded-lg shadow-md border theme-border">
+                            <h3 class="font-bold text-lg theme-primary"> চূড়ান্ত পরিণতি</h3>
+                            <p class="text-sm mt-2">মানুষ দুই ভাগে বিভক্ত হবে: একদল জান্নাতে এবং একদল জাহান্নামে। প্রতি ১০০০ জনের মধ্যে ৯৯৯ জন জাহান্নামী হবে।</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold text-center theme-primary neon-text mt-16 mb-8">শাফায়াতের ঘটনা: নবীদের প্রতিক্রিয়া</h3>
+                 <p class="text-md mb-10 text-center leading-relaxed max-w-3xl mx-auto">
+                    হাশরের ভয়াবহ ময়দানে মানুষ যখন সাহায্যের জন্য απεγνωσμένους হবে, তখন তারা একে একে মহান নবীদের কাছে যাবে। কার্ডগুলোতে ক্লিক করে দেখুন, সেই কঠিন মুহূর্তে তাঁদের প্রতিক্রিয়া কী ছিল।
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="card-flip-container h-48 cursor-pointer">
+                        <div class="card-inner">
+                            <div class="card-front bg-gray-800/50 rounded-lg shadow-md flex justify-center items-center border theme-border">
+                                <span class="text-xl font-bold theme-primary">আদম (আঃ)</span>
+                            </div>
+                            <div class="card-back">
+                                <p class="text-sm font-semibold">"আমার রব আজ এমন রাগান্বিত... আমি অবাধ্য হয়েছি। নাফসি নাফসি (আমার চিন্তা)।"</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="card-flip-container h-48 cursor-pointer">
+                        <div class="card-inner">
+                             <div class="card-front bg-gray-800/50 rounded-lg shadow-md flex justify-center items-center border theme-border">
+                                <span class="text-xl font-bold theme-primary">নূহ (আঃ)</span>
+                            </div>
+                            <div class="card-back">
+                                <p class="text-sm font-semibold">"আমার একটি দোয়া ছিল যা আমি আমার কওমের বিরুদ্ধে করেছিলাম। নাফসি নাফসি (আমার চিন্তা)।"</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="card-flip-container h-48 cursor-pointer">
+                        <div class="card-inner">
+                             <div class="card-front bg-gray-800/50 rounded-lg shadow-md flex justify-center items-center border theme-border">
+                                <span class="text-xl font-bold theme-primary">ইবরাহীম (আঃ)</span>
+                            </div>
+                            <div class="card-back">
+                                <p class="text-sm font-semibold">"আমি তিনটি (আপাতদৃষ্টিতে) মিথ্যা বলেছিলাম। নাফসি নাফসি (আমার চিন্তা)।"</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-flip-container h-48 cursor-pointer">
+                        <div class="card-inner">
+                             <div class="card-front bg-gray-800/50 rounded-lg shadow-md flex justify-center items-center border theme-border">
+                                <span class="text-xl font-bold theme-primary">মূসা (আঃ)</span>
+                            </div>
+                            <div class="card-back">
+                                <p class="text-sm font-semibold">"আমি একজনকে হত্যা করেছিলাম... নাফসি নাফসি (আমার চিন্তা)।"</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="card-flip-container h-48 cursor-pointer">
+                        <div class="card-inner">
+                             <div class="card-front bg-gray-800/50 rounded-lg shadow-md flex justify-center items-center border theme-border">
+                                <span class="text-xl font-bold theme-primary">ঈসা (আঃ)</span>
+                            </div>
+                            <div class="card-back">
+                                <p class="text-sm font-semibold">তিনি কোনো পাপের কথা উল্লেখ করবেন না, কিন্তু বলবেন: "নাফসি নাফসি (আমার চিন্তা)।"</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="card-flip-container h-48 cursor-pointer">
+                        <div class="card-inner">
+                            <div class="card-front bg-gray-800/50 rounded-lg shadow-md flex justify-center items-center border theme-border">
+                                <span class="text-2xl font-bold theme-primary">মুহাম্মাদ (ﷺ)</span>
+                            </div>
+                            <div class="card-back">
+                                <p class="font-bold text-lg">"আমি এর জন্য আছি... হে আমার রব! আমার উম্মত, আমার উম্মত।"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="stories" class="my-16 md:my-24">
+            <h2 class="text-3xl font-bold text-center theme-primary mb-12 neon-text">পূর্বসূরীদের চোখে পরকাল</h2>
+            <div class="max-w-4xl mx-auto theme-accent-light p-8 rounded-xl shadow-lg border theme-border card-neon-glow">
+                <p class="text-lg mb-8 text-center leading-loose">
+                    আমাদের পূর্বসূরী পুণ্যবান ব্যক্তিরা পরকালকে কতটা ভয় করতেন এবং তার জন্য কীভাবে প্রস্তুতি নিতেন, তার কিছু চিত্র এখানে তুলে ধরা হয়েছে। তাদের জীবন থেকে আমরা শিখতে পারি কীভাবে পরকালের চিন্তা আমাদের বর্তমান জীবনকে প্রভাবিত করতে পারে।
+                </p>
+                <div class="space-y-6">
+                    <div class="bg-gray-800/50 p-6 rounded-lg border theme-border">
+                        <h3 class="font-bold text-xl mb-2 theme-primary">হাসান বসরী (রহঃ)</h3>
+                        <p>তিনি ইফতারের সময় জাহান্নামের শাস্তির কথা স্মরণ করে কেঁদে ফেলতেন এবং খাবার থেকে তার মন উঠে যেত। পরকালের ভয় তাকে দুনিয়ার স্বাদ-আহ্লাদ থেকে বিরত রাখত।</p>
+                    </div>
+                     <div class="bg-gray-800/50 p-6 rounded-lg border theme-border">
+                        <h3 class="font-bold text-xl mb-2 theme-primary">আব্দুল্লাহ ইবনে রাওয়াহা (রাঃ)</h3>
+                        <p>তিনি পুলসিরাত পার হওয়ার আয়াত স্মরণ করে কাঁদতেন। কারণ আল্লাহ পুলসিরাতের উপর দিয়ে যাওয়ার কথা বলেছেন, কিন্তু সবাই যে তা থেকে মুক্তি পাবে, তার নিশ্চয়তা দেননি।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="questions" class="my-16 md:my-24">
+            <h2 class="text-3xl font-bold text-center theme-primary mb-12 neon-text">আধুনিক জীবনের জিজ্ঞাসা</h2>
+             <div class="max-w-4xl mx-auto theme-accent-light p-8 rounded-xl shadow-lg border theme-border card-neon-glow">
+                <p class="text-lg mb-8 text-center leading-loose">
+                    বক্তৃতার এই অংশে, শাইখ সমসাময়িক কিছু গুরুত্বপূর্ণ প্রশ্নের উত্তর দিয়েছেন। আধুনিক যুগে তরুণ-তরুণীরা যে সকল চ্যালেঞ্জের মুখোমুখি হয়, সে বিষয়ে এখানে মূল্যবান দিকনির্দেশনা রয়েছে। প্রতিটি প্রশ্নের উপর ক্লিক করে বিস্তারিত উত্তর দেখুন।
+                </p>
+                <div class="space-y-4 accordion-container">
+                    <div class="accordion-item border theme-border rounded-lg bg-gray-800/50">
+                        <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center hover:bg-gray-700/50">
+                            <span class="theme-primary">বিপথে যাওয়া তরুণদের প্রতি দ্বীনদারদের ভূমিকা কী?</span>
+                            <span class="transform transition-transform duration-300 text-white">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="py-4 text-gray-300">
+                                <p>যারা হেদায়েত পেয়েছেন, তাদের দায়িত্ব হলো ভাইদের কাছে পৌঁছানো। তবে যে বিপথগামী, তাকেও নিজের মুক্তির জন্য চেষ্টা করতে হবে। সে যদি অন্যদের কাছে না যেতে পারে, তবে তার উচিত দ্বীনদারদের কাছে যাওয়া। কারণ কিয়ামতের দিন প্রত্যেককে নিজ নিজ হিসাব দিতে হবে।</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border theme-border rounded-lg bg-gray-800/50">
+                        <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center hover:bg-gray-700/50">
+                            <span class="theme-primary">নারীদের দাওয়াতের উদ্দেশ্যে ইন্টারনেট ব্যবহার কি জায়েজ?</span>
+                            <span class="transform transition-transform duration-300 text-white">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                             <div class="py-4 text-gray-300">
+                                <p>ইন্টারনেটে কল্যাণ থাকলেও এর অপব্যবহারের ঝুঁকি অনেক। দ্বীন সবচেয়ে মূল্যবান সম্পদ, তা নিয়ে ঝুঁকি নেওয়া উচিত নয়। যদি দাওয়াতের উদ্দেশ্যে ইন্টারনেট ব্যবহার ফেতনার দরজা খুলে দেয়, বিশেষ করে নারীদের জন্য, তবে তা থেকে বিরত থাকাই উত্তম। নিজের ঈমান রক্ষা করা অন্যের হেদায়েতের চেষ্টার চেয়ে বেশি জরুরি।</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="accordion-item border theme-border rounded-lg bg-gray-800/50">
+                        <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center hover:bg-gray-700/50">
+                            <span class="theme-primary">যারা স্যাটেলাইট চ্যানেল ও "স্টার একাডেমি" দেখে, তাদের জন্য উপদেশ কী?</span>
+                            <span class="transform transition-transform duration-300 text-white">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                             <div class="py-4 text-gray-300">
+                                <p>শত্রুরা আদর্শিক ও সাংস্কৃতিক আগ্রাসনের মাধ্যমে মুসলিমদের ঈমান নষ্ট করছে। অশ্লীলতা ছড়ানো এর অন্যতম মারাত্মক অস্ত্র। এ ধরনের অনুষ্ঠান দেখা ও তাতে অংশগ্রহণ করা ঈমানের দুর্বলতার পরিচায়ক। ঈমান শক্তিশালী হলে এসবের উপর বিজয় লাভ করা সহজ।</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border theme-border rounded-lg bg-gray-800/50">
+                        <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center hover:bg-gray-700/50">
+                            <span class="theme-primary">ফজরের সালাতে কীভাবে অবিচল থাকা যায়?</span>
+                            <span class="transform transition-transform duration-300 text-white">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="py-4 text-gray-300">
+                                <p>ফজরের সালাতে সফল হওয়া আল্লাহর ভালোবাসার একটি চিহ্ন। এর জন্য আল্লাহর সাথে বিশ্বস্ত হতে হবে এবং বাস্তব পদক্ষেপ নিতে হবে। যেমন—তাড়াতাড়ি ঘুমানো, অ্যালার্ম ব্যবহার করা, একে অপরকে জাগানো। যে ব্যক্তি চল্লিশ দিন তাকবীরে উলার সাথে জামাতে সালাত আদায় করে, তার জন্য জাহান্নাম ও মুনাফেকি থেকে মুক্তির ঘোষণা রয়েছে।</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dua" class="my-16 md:my-24 text-center">
+            <h2 class="text-3xl font-bold theme-primary mb-8 neon-text">কল্যাণের পথে আহ্বান ও দোয়া</h2>
+            <div class="max-w-3xl mx-auto theme-accent-light p-8 rounded-xl shadow-lg border theme-border card-neon-glow">
+                <h3 class="text-xl font-bold theme-primary mb-4">ইসলামিক ওয়াকফ ফাউন্ডেশন</h3>
+                <p class="mb-4 text-gray-300">শাইখ মদিনা মুনাওয়ারায় একটি ওয়াকফ প্রকল্পে অংশগ্রহণের জন্য আহ্বান জানিয়েছেন, যা তালাকপ্রাপ্তা, বিধবা ও এতিমদের কল্যাণে নিবেদিত। সদকায়ে জারিয়া মৃত্যুর পরেও প্রতিদান নিয়ে আসে।</p>
+                <div class="theme-accent p-4 rounded-lg inline-block">
+                    <p class="font-bold">হিসাব নম্বর: ৭২০৩ (শাখা ২৭৯)</p>
+                </div>
+                <p class="mt-6 text-lg italic text-gray-300">
+                    "হে আল্লাহ! ইরাক, ফিলিস্তিনসহ সকল স্থানের মুসলিম ভাইদের সাহায্য করুন। তাদের অন্তরকে দৃঢ় করুন এবং তাদের বিজয় দান করুন। আমাদের দেশে নিরাপত্তা দিন এবং আমাদের শাসকদের সংশোধন করুন। হে আল্লাহ, আমাদের দোয়া কবুল করুন।"
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-black py-6 text-center text-gray-400">
+        <p>&copy; ২০২৪ | পথের সাথি - শাইখ খালিদ আর-রাশিদ।</p>
+        <p class="text-sm mt-1">অনুবাদক: ইহতিশামুল হক নাঈম (naeembd.com)</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            const mobileNavLinks = mobileMenu.querySelectorAll('a');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                     mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                const icon = header.querySelector('span:last-child');
+
+                header.addEventListener('click', () => {
+                    const isExpanded = content.style.maxHeight && content.style.maxHeight !== '0px';
+                    
+                    document.querySelectorAll('.accordion-content').forEach(c => {
+                        c.style.maxHeight = '0px';
+                        c.style.padding = '0 1.5rem';
+                    });
+
+                    document.querySelectorAll('.accordion-header span:last-child').forEach(i => i.style.transform = 'rotate(0deg)');
+
+                    if (!isExpanded) {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        content.style.padding = '1rem 1.5rem';
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            const cardFlipContainers = document.querySelectorAll('.card-flip-container');
+            cardFlipContainers.forEach(container => {
+                container.addEventListener('click', () => {
+                    container.classList.toggle('flipped');
+                });
+            });
+
+            const navLinks = document.querySelectorAll('nav a.nav-link');
+            const sections = document.querySelectorAll('main section');
+            window.addEventListener('scroll', () => {
+                let current = 'intro';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

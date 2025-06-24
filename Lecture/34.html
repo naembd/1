@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কেয়ামত সন্নিকটে | The Hour Has Approached</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Noto+Kufi+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #1a202c;
+        }
+        .font-arabic {
+            font-family: 'Noto Kufi Arabic', sans-serif;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: #FFD700;
+            border: 4px solid #101940;
+            z-index: 1;
+        }
+        .card {
+            background-color: rgba(45, 55, 72, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gemini-loader {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #FFD700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-[#101940] text-gray-200">
+
+    <!-- 
+    SOURCE MATERIAL INTEGRATION PLAN 
+    
+    Chosen Color Palette: "Theological Journey Palette"
+    - Primary Background: Deep Night Blue (#101940) / Charcoal (#1a202c)
+    - Earthy Tones (Intro): Sand (#C2B280) / Clay (#B97956)
+    - Accent: Gold (#FFD700) / White (#FFFFFF)
+    - This palette was chosen to represent the narrative shift from the temporary, earthy Dunya to the solemn, infinite nature of the Akhirah, with Gold representing divine truth and light.
+
+    Narrative & Structure Plan:
+    The infographic follows the sermon's logical progression to create a compelling narrative journey for the user, structured as a single, scrollable page:
+    1.  Introduction (The Hook): Contrasts the fleeting worldly life (Dunya) with the eternal afterlife (Akhirah) to establish relevance.
+    2.  Certainty of Resurrection: Builds conviction using the concept of Quranic proofs.
+    3.  Timeline of Judgment (The Core Narrative): Details the main events of the Day of Judgment.
+    4.  The Five Questions (The Personal Climax): Shifts to a direct checklist for self-accountability.
+    5.  Gemini Feature 1: AI Personal Reflection: An interactive section for personal reflection on one's deeds.
+    6.  Conclusion & Gemini Feature 2: A hopeful message with an AI Dua Helper.
+
+    Visualization Selection & Justification (NO SVG / NO MERMAID JS):
+    - Section 1 (Introduction): Goal: Inform. Visualization: Styled Text with Unicode Icon (⌛). Method: HTML/CSS.
+    - Section 2 (Resurrection): Goal: Inform. Visualization: Styled Text with Unicode Icon (🌱). Method: HTML/CSS.
+    - Section 3 (Timeline of Judgment): Goal: Organize. Visualization: HTML/CSS Vertical Timeline. Method: HTML/CSS.
+    - Section 4 (The Five Questions): Goal: Organize/Inform. Visualization: Styled HTML List. Method: HTML/CSS.
+    - Section 5 (AI Reflection): Goal: Interact/Inform. Visualization: Text Area & Button. Method: HTML/CSS/JS with Gemini API.
+    - Section 6 (Conclusion & AI Dua): Goal: Inform/Interact. Visualization: Text Input & Button. Method: HTML/CSS/JS with Gemini API.
+    
+    NEITHER Mermaid JS NOR SVG were used anywhere in the output.
+    -->
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-bold text-[#FFD700] mb-2">কেয়ামত সন্নিকটে</h1>
+            <p class="text-xl md:text-2xl text-gray-300">The Hour Has Approached</p>
+            <p class="text-sm text-gray-400 mt-2">Based on the sermon by Sheikh Khalid Al-Rashed</p>
+        </header>
+
+        <main class="space-y-16">
+            
+            <section id="dunya" class="card rounded-2xl shadow-2xl p-6 md:p-8 bg-[#b97956] text-gray-900">
+                <div class="flex flex-col md:flex-row items-center gap-6">
+                    <div class="text-6xl text-white opacity-80">⌛</div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-3">ভূমিকা: ক্ষণস্থায়ী জীবন</h2>
+                        <p class="text-lg mb-4">এই দুনিয়া একটি পরীক্ষাক্ষেত্র এবং আমাদের জীবন খুবই সংক্ষিপ্ত। আসল জীবন হলো পরকাল, যার জন্য আমাদের প্রস্তুতি নিতে হবে।</p>
+                        <p class="font-arabic text-xl text-right text-white" dir="rtl">﴿كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ﴾</p>
+                        <p class="text-right text-sm text-white/80">"প্রতিটি প্রাণ মৃত্যুর স্বাদ গ্রহণ করবে"</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="resurrection" class="card rounded-2xl shadow-2xl p-6 md:p-8">
+                <div class="flex flex-col md:flex-row items-center gap-6">
+                    <div class="text-6xl text-[#FFD700]">🌱</div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-[#FFD700] mb-3">পুনরুত্থানের নিশ্চয়তা</h2>
+                        <p class="text-lg mb-4">আল্লাহ্‌র জন্য মৃতকে জীবিত করা ততটাই সহজ, যতটা সহজ শুষ্ক জমিতে বৃষ্টি দিয়ে প্রাণের সঞ্চার করা। কুরআন এর বহু প্রমাণ দিয়েছে।</p>
+                        <p class="font-arabic text-xl text-right" dir="rtl">﴿وَأَنَّ السَّاعَةَ آتِيَةٌ لَا رَيْبَ فِيهَا وَأَنَّ اللَّهَ يَبْعَثُ مَنْ فِي الْقُبُورِ﴾</p>
+                        <p class="text-right text-sm text-gray-400">"এবং কিয়ামত আসবেই, এতে কোনো সন্দেহ নেই, এবং আল্লাহ্‌ কবরে থাকা সকলকে পুনরুত্থিত করবেন"</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="judgment-day">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-[#FFD700] mb-8">কেয়ামত: চূড়ান্ত বিচারের দিন</h2>
+                <div class="relative pl-8 border-l-4 border-dashed border-[#FFD700]/50 space-y-16">
+                    <div class="timeline-item"><div class="card rounded-2xl shadow-2xl p-6"><h3 class="text-xl font-bold text-gray-100 mb-3 flex items-center gap-4"><span class="text-4xl">👥</span> হাশর: মহা সমাবেশ</h3><p class="mb-4">প্রথম থেকে শেষ পর্যন্ত সমস্ত মানবজাতিকে বিচারের জন্য একত্রিত করা হবে। একজনও বাদ যাবে না।</p><p class="font-arabic text-lg text-right" dir="rtl">﴿يَوْمَ يَجْمَعُكُمْ لِيَوْمِ الْجَمْعِ﴾</p><p class="text-right text-xs text-gray-400">"তিনি তোমাদের সমাবেশের দিনে একত্রিত করবেন"</p></div></div>
+                    <div class="timeline-item"><div class="card rounded-2xl shadow-2xl p-6"><h3 class="text-xl font-bold text-gray-100 mb-3 flex items-center gap-4"><span class="text-4xl">📖</span> আমলনামা: কর্মের দলিল</h3><p class="mb-4">প্রতিটি ছোট-বড় কাজের পুঙ্খানুপুঙ্খ রেকর্ড সংবলিত আমলনামা সামনে আনা হবে। কোনো কিছুই গোপন থাকবে না।</p><p class="font-arabic text-lg text-right" dir="rtl">﴿مَالِ هَذَا الْكِتَابِ لَا يُغَادِرُ صَغِيرَةً وَلَا كَبِيرَةً إِلَّا أَحْصَاهَا﴾</p><p class="text-right text-xs text-gray-400">"এ কেমন কিতাব, যা ছোট-বড় কিছুই বাদ দেয়নি, সবই গণনা করে রেখেছে"</p></div></div>
+                    <div class="timeline-item"><div class="card rounded-2xl shadow-2xl p-6"><h3 class="text-xl font-bold text-gray-100 mb-3 flex items-center gap-4"><span class="text-4xl">⚖️</span> মীযান: ন্যায়বিচারের দাঁড়িপাল্লা</h3><p class="mb-4">নিখুঁত ন্যায়বিচারের দাঁড়িপাল্লা স্থাপন করা হবে। অণু পরিমাণ ভালো বা মন্দ কাজেরও ওজন করা হবে।</p><p class="font-arabic text-lg text-right" dir="rtl">﴿وَنَضَعُ الْمَوَازِينَ الْقِسْطَ لِيَوْمِ الْقِيَامَةِ﴾</p><p class="text-right text-xs text-gray-400">"আমি কিয়ামতের দিনে ন্যায়বিচারের দাঁড়িপাল্লা স্থাপন করব"</p></div></div>
+                    <div class="timeline-item"><div class="card rounded-2xl shadow-2xl p-6"><h3 class="text-xl font-bold text-gray-100 mb-3 flex items-center gap-4"><span class="text-4xl">👁️‍🗨️</span> সাক্ষী: মানব অঙ্গপ্রত্যঙ্গ</h3><p class="mb-4">মুখ বন্ধ করে দেওয়া হবে। তখন মানুষের হাত, পা এবং ত্বক তাদের কৃতকর্মের সাক্ষ্য দেবে।</p><p class="font-arabic text-lg text-right" dir="rtl">﴿الْيَوْمَ نَخْتِمُ عَلَى أَفْوَاهِهِمْ وَتُكَلِّمُنَا أَيْدِيهِم﴾</p><p class="text-right text-xs text-gray-400">"আজ আমি তাদের মুখে মোহর এঁটে দেব, এবং তাদের হাত আমার সাথে কথা বলবে"</p></div></div>
+                </div>
+            </section>
+            
+            <section id="five-questions" class="card rounded-2xl shadow-2xl p-6 md:p-8 ring-2 ring-[#FFD700]">
+                <h2 class="text-3xl font-bold text-center text-[#FFD700] mb-2">পাঁচটি প্রশ্ন: চূড়ান্ত হিসাব</h2>
+                <p class="text-center text-gray-300 mb-8">প্রতিটি আত্মাকে অবশ্যই ৫টি প্রশ্নের উত্তর দিতে হবে, যার প্রস্তুতি এই দুনিয়াতেই নিতে হবে।</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+                    <div class="p-4 bg-[#101940] rounded-lg"><div class="text-4xl mb-2">❤️</div><h3 class="text-lg font-semibold">জীবন</h3><p>কিভাবে ব্যয় করেছ?</p></div>
+                    <div class="p-4 bg-[#101940] rounded-lg"><div class="text-4xl mb-2">💪</div><h3 class="text-lg font-semibold">যৌবন</h3><p>কি কাজে লাগিয়েছ?</p></div>
+                    <div class="p-4 bg-[#101940] rounded-lg col-span-1 md:col-span-2 lg:col-span-1"><div class="text-4xl mb-2">📚</div><h3 class="text-lg font-semibold">জ্ঞান</h3><p>যা জানতে, তার কতটুকু আমল করেছ?</p></div>
+                    <div class="p-4 bg-[#101940] rounded-lg md:col-start-1 lg:col-start-auto"><div class="text-4xl mb-2">💰➡️</div><h3 class="text-lg font-semibold">সম্পদ (উপার্জন)</h3><p>কোথা থেকে আয় করেছ?</p></div>
+                    <div class="p-4 bg-[#101940] rounded-lg"><div class="text-4xl mb-2">💰⬅️</div><h3 class="text-lg font-semibold">সম্পদ (ব্যয়)</h3><p>কোথায় ব্যয় করেছ?</p></div>
+                </div>
+                <p class="font-arabic text-lg text-center mt-8 text-gray-400" dir="rtl">"لا تزول قدما ابن آدم يوم القيامة...حتى يسأل عن خمس"</p>
+                <p class="text-center text-xs text-gray-500">"কিয়ামতের দিন আদম সন্তানের পা এক কদমও নড়বে না, যতক্ষণ না তাকে পাঁচটি বিষয়ে প্রশ্ন করা হয়"</p>
+            </section>
+
+            <section id="ai-reflection" class="card rounded-2xl shadow-2xl p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-center text-[#FFD700] mb-2"> ব্যক্তিগত প্রতিফলন সহকারী</h2>
+                <p class="text-center text-gray-300 mb-6">আপনার দিনের কোনো কাজ বা চিন্তার কথা লিখুন এবং দেখুন কিভাবে তা পরকালের প্রস্তুতির সাথে সম্পর্কিত হতে পারে।</p>
+                <div class="flex flex-col gap-4">
+                    <textarea id="reflection-input" class="w-full bg-[#101940] border border-gray-600 rounded-lg p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#FFD700] focus:outline-none transition" rows="3" placeholder="উদাহরণ: আজ আমি বন্ধুদের সাথে অনেক সময় কাটিয়েছি..."></textarea>
+                    <button id="reflection-btn" class="bg-[#FFD700] text-[#101940] font-bold py-3 px-6 rounded-lg hover:bg-yellow-400 transition duration-300 flex items-center justify-center gap-2">
+                        <span id="reflection-btn-text">আমার কর্ম নিয়ে চিন্তা করুন</span>
+                        <div id="reflection-loader" class="gemini-loader hidden"></div>
+                    </button>
+                </div>
+                <div id="reflection-output" class="mt-6 p-4 bg-[#101940]/50 rounded-lg border border-gray-700 hidden"></div>
+            </section>
+            
+            <section id="conclusion" class="card rounded-2xl shadow-2xl p-6 md:p-8">
+                 <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                    <div class="text-6xl text-[#FFD700]">🙏</div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-[#FFD700] mb-3">উপসংহার: এখনো সময় আছে</h2>
+                        <p class="text-lg mb-4">গাফলতি থেকে জেগে উঠুন। মৃত্যুর আগে আন্তরিকভাবে তওবা করুন এবং সৎকর্মের মাধ্যমে পরকালের জন্য প্রস্তুতি নিন।</p>
+                        <p class="font-arabic text-xl text-center md:text-right" dir="rtl">﴿يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ وَلْتَنْظُرْ نَفْسٌ مَا قَدَّمَتْ لِغَدٍ﴾</p>
+                        <p class="text-center md:text-right text-sm text-gray-400">"হে মু’মিনগণ, আল্লাহকে ভয় কর এবং প্রত্যেকের উচিত চিন্তা করে দেখা যে, সে আগামীকালের জন্য কী প্রেরণ করেছে"</p>
+                    </div>
+                </div>
+                <div class="mt-8 border-t border-gray-700 pt-6">
+                     <h3 class="text-2xl font-bold text-center text-[#FFD700] mb-2">দু'আ সহকারী</h3>
+                     <p class="text-center text-gray-300 mb-6">আপনার প্রয়োজন বা অনুভূতি লিখুন, এবং আমি একটি প্রাসঙ্গিক দু'আ খুঁজে পেতে সাহায্য করব।</p>
+                     <div class="flex flex-col sm:flex-row gap-4">
+                        <input type="text" id="dua-input" class="w-full bg-[#101940] border border-gray-600 rounded-lg p-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-[#FFD700] focus:outline-none transition" placeholder="উদাহরণ: ক্ষমা, ধৈর্য, অথবা পরীক্ষার জন্য সাহায্য...">
+                        <button id="dua-btn" class="bg-[#FFD700] text-[#101940] font-bold py-3 px-6 rounded-lg hover:bg-yellow-400 transition duration-300 flex items-center justify-center gap-2">
+                             <span id="dua-btn-text">দু'আ প্রার্থনা করুন</span>
+                             <div id="dua-loader" class="gemini-loader hidden"></div>
+                        </button>
+                     </div>
+                     <div id="dua-output" class="mt-6 p-4 bg-[#101940]/50 rounded-lg border border-gray-700 hidden"></div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center text-gray-500 text-sm mt-16 py-4 border-t border-gray-700/50">
+            <p>&copy; Naeembd.com</p>
+            <p>Inspired by'Iqtarabat as-Sā'ah' by Sheikh Khalid Al-Rashed.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- Gemini API Integration ---
+
+        const reflectionBtn = document.getElementById('reflection-btn');
+        const reflectionInput = document.getElementById('reflection-input');
+        const reflectionOutput = document.getElementById('reflection-output');
+        const reflectionLoader = document.getElementById('reflection-loader');
+        const reflectionBtnText = document.getElementById('reflection-btn-text');
+
+        const duaBtn = document.getElementById('dua-btn');
+        const duaInput = document.getElementById('dua-input');
+        const duaOutput = document.getElementById('dua-output');
+        const duaLoader = document.getElementById('dua-loader');
+        const duaBtnText = document.getElementById('dua-btn-text');
+        
+        const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4"; // API key will be automatically provided in the environment.
+
+        const callGemini = async (prompt, outputElement, loaderElement, btnTextElement) => {
+            loaderElement.classList.remove('hidden');
+            btnTextElement.classList.add('hidden');
+            outputElement.classList.add('hidden');
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: prompt }] }]
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+                
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                    // Replace markdown-like bolding with HTML tags for styling
+                    let text = result.candidates[0].content.parts[0].text;
+                    text = text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-[#FFD700] font-semibold">$1</strong>');
+                    text = text.replace(/\n/g, '<br>');
+                    outputElement.innerHTML = text;
+                    outputElement.classList.remove('hidden');
+                } else {
+                    // Handle cases where content is missing or in an unexpected format
+                    console.error('Unexpected response structure:', result);
+                    outputElement.innerHTML = '<p class="text-red-400">একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন।</p>';
+                    outputElement.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error calling Gemini API:', error);
+                outputElement.innerHTML = `<p class="text-red-400">দুঃখিত, একটি ত্রুটি ঘটেছে। আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন এবং আবার চেষ্টা করুন। (${error.message})</p>`;
+                outputElement.classList.remove('hidden');
+            } finally {
+                loaderElement.classList.add('hidden');
+                btnTextElement.classList.remove('hidden');
+            }
+        };
+
+        reflectionBtn.addEventListener('click', () => {
+            const userInput = reflectionInput.value;
+            if (!userInput.trim()) {
+                reflectionOutput.innerHTML = '<p class="text-yellow-400">অনুগ্রহ করে চিন্তা করার জন্য কিছু লিখুন।</p>';
+                reflectionOutput.classList.remove('hidden');
+                return;
+            }
+
+            const prompt = `একজন জ্ঞানী এবং সহানুভূতিশীল ইসলামিক উপদেষ্টা হিসেবে কাজ করুন। ব্যবহারকারী তার দিন সম্পর্কে বাংলায় লিখেছেন: "${userInput}"। 
+            
+            কিয়ামতের দিনের ৫টি প্রশ্নের আলোকে এই কাজটি বিশ্লেষণ করুন:
+            1.  জীবন: এই কাজটি কি জীবনকে আল্লাহর পথে ব্যয় করতে সাহায্য করেছে?
+            2.  যৌবন: যদি কাজটি যৌবনে করা হয়, তবে তা কি গঠনমূলক ছিল?
+            3.  জ্ঞান: অর্জিত জ্ঞান কি এই কাজে ব্যবহৃত হয়েছে?
+            4.  সম্পদ (আয় ও ব্যয়): এই কাজে কি হালাল উপায়ে সম্পদ জড়িত ছিল?
+
+            একটি দয়ালু, বিচারহীন এবং গঠনমূলক উত্তর দিন। ব্যবহারকারীকে তার কাজকে কিভাবে পরকালের জন্য উপকারী করা যায় সে বিষয়ে ভাবতে উৎসাহিত করুন। উত্তরটি বাংলায় দিন।`;
+            
+            callGemini(prompt, reflectionOutput, reflectionLoader, reflectionBtnText);
+        });
+
+        duaBtn.addEventListener('click', () => {
+            const userInput = duaInput.value;
+            if (!userInput.trim()) {
+                duaOutput.innerHTML = '<p class="text-yellow-400">অনুগ্রহ করে আপনার প্রয়োজন বা অনুভূতি লিখুন।</p>';
+                duaOutput.classList.remove('hidden');
+                return;
+            }
+
+            const prompt = `একজন জ্ঞানী ইসলামিক স্কলার হিসেবে, ব্যবহারকারীর প্রয়োজন "${userInput}" এর উপর ভিত্তি করে একটি উপযুক্ত এবং হৃদয়গ্রাহী দু'আ তৈরি করুন।
+            
+            আপনার উত্তরে অন্তর্ভুক্ত করুন:
+            1.  আরবীতে দু'আটির একটি লাইন (যদি সম্ভব হয়)।
+            2.  দু'আটির বাংলা উচ্চারণ।
+            3.  দু'আটির সহজ বাংলা অনুবাদ।
+            
+            উত্তরটি এমনভাবে সাজান যা ব্যবহারকারীর জন্য শান্তিদায়ক এবং আশাব্যঞ্জক হয়। উত্তরটি বাংলায় দিন।`;
+            
+            callGemini(prompt, duaOutput, duaLoader, duaBtnText);
+        });
+    </script>
+
+</body>
+</html>

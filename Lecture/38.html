@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>জান্নাত ও জাহান্নাম: একটি ইন্টারেক্টিভ পরিক্রমা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .tab-active {
+            border-bottom-color: #17a2b8;
+            color: #17a2b8;
+            font-weight: 700;
+        }
+        .tab-active-jahannam {
+            border-bottom-color: #dc3545;
+            color: #dc3545;
+            font-weight: 700;
+        }
+        .section-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+        .section-card h2 {
+            font-weight: 700;
+            font-size: 1.75rem;
+            line-height: 2.25rem;
+        }
+        .jannah-card { border-left: 5px solid #28a745; }
+        .jahannam-card { border-left: 5px solid #dc3545; }
+        .icon {
+            font-size: 2rem;
+            line-height: 2.5rem;
+            width: 4rem;
+            height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+        }
+        .jannah-icon { background-color: rgba(40, 167, 69, 0.1); color: #28a745; }
+        .jahannam-icon { background-color: rgba(220, 53, 69, 0.1); color: #dc3545; }
+        .gemini-btn {
+            background-color: #4a5568;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .gemini-btn:hover {
+            background-color: #2d3748;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-gray-800 text-white text-center py-12 px-4 shadow-lg">
+        <h1 class="text-4xl md:text-5xl font-bold">পরকালের প্রতিচ্ছবি</h1>
+        <p class="text-lg md:text-xl mt-4 max-w-3xl mx-auto">"সেই দিন মানবজাতি দুই দলে বিভক্ত হয়ে পড়বে: একদল জান্নাতে এবং একদল জ্বলন্ত আগুনে।"</p>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <section id="intro" class="text-center mb-12">
+            <h2 class="text-3xl font-bold mb-4">দুটি চূড়ান্ত আবাস</h2>
+            <p class="max-w-4xl mx-auto text-lg text-gray-600">আল্লাহ তা'আলা মানবজাতিকে পথ প্রদর্শন করেছেন এবং انتخاب করার স্বাধীনতা দিয়েছেন। এই জীবনের পরীক্ষার উপর ভিত্তি করেই নির্ধারিত হবে আমাদের অনন্তকালের আবাস। হয় সে কৃতজ্ঞ হবে, না হয় সে অকৃতজ্ঞ হবে। নিচের ট্যাবগুলো থেকে জান্নাত ও জাহান্নামের বিস্তারিত বিবরণ দেখুন।</p>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Jahanannam Section -->
+            <div id="jahannam-section" class="section-card jahannam-card p-6">
+                <h2 class="text-center text-red-700 mb-6">গজবের আবাস: জাহান্নাম</h2>
+                <div class="border-b border-gray-200 mb-6">
+                    <nav class="-mb-px flex justify-center space-x-2 md:space-x-4 text-xs md:text-sm" aria-label="Tabs">
+                        <button onclick="showTab('jahannam', 'jahannam-intro', this)" class="jahannam-tab tab-active-jahannam whitespace-nowrap py-4 px-1 border-b-2 font-medium">তুলনা</button>
+                        <button onclick="showTab('jahannam', 'jahannam-nature', this)" class="jahannam-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-gray-500 hover:text-red-700">শাস্তি</button>
+                        <button onclick="showTab('jahannam', 'jahannam-people', this)" class="jahannam-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-gray-500 hover:text-red-700">অধিবাসী</button>
+                        <button onclick="showTab('jahannam', 'gemini-sahaba-fear', this)" class="jahannam-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-gray-500 hover:text-red-700">✨ সাহাবাদের ভয়</button>
+                    </nav>
+                </div>
+                <div id="jahannam-content" class="space-y-6 min-h-[300px]">
+                </div>
+            </div>
+
+            <!-- Jannah Section -->
+            <div id="jannah-section" class="section-card jannah-card p-6">
+                <h2 class="text-center text-green-700 mb-6">রহমতের আবাস: জান্নাত</h2>
+                <div class="border-b border-gray-200 mb-6">
+                    <nav class="-mb-px flex justify-center space-x-2 md:space-x-4 text-xs md:text-sm" aria-label="Tabs">
+                        <button onclick="showTab('jannah', 'jannah-intro', this)" class="jannah-tab tab-active whitespace-nowrap py-4 px-1 border-b-2 font-medium">তুলনা</button>
+                        <button onclick="showTab('jannah', 'jannah-nature', this)" class="jannah-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-gray-500 hover:text-green-700">নেয়ামত</button>
+                        <button onclick="showTab('jannah', 'jannah-people', this)" class="jannah-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-gray-500 hover:text-green-700">অধিবাসী</button>
+                        <button onclick="showTab('jannah', 'gemini-sahaba-hope', this)" class="jannah-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-gray-500 hover:text-green-700">✨ সাহাবাদের আশা</button>
+                    </nav>
+                </div>
+                <div id="jannah-content" class="space-y-6 min-h-[300px]">
+                </div>
+            </div>
+        </div>
+        
+        <section id="ultimate-reward" class="mt-16 section-card p-8">
+            <h2 class="text-center text-4xl font-bold mb-6 text-yellow-600">চূড়ান্ত পুরস্কার: আল্লাহর দিদার</h2>
+            <div class="prose prose-lg max-w-none text-gray-700 space-y-4">
+                <p>জান্নাতের সমস্ত নিয়ামত পাওয়ার পর, জান্নাতবাসীরা এমন এক পুরস্কার লাভ করবে যা অন্য সব কিছুকে ছাড়িয়ে যাবে। আল্লাহ তাদের ডাকবেন, "হে জান্নাতবাসী, তোমাদের রব তোমাদেরকে তাঁর সাথে সাক্ষাতের জন্য আহ্বান করছেন!"</p>
+                <p>একটি বিশাল উপত্যকায় তাদের জন্য আলো, সোনা ও মুক্তার সিংহাসন স্থাপন করা হবে। তখন একজন ঘোষক বলবেন, "আল্লাহর কাছে তোমাদের জন্য একটি প্রতিশ্রুতি রয়েছে যা তিনি আজ পূরণ করতে চান।" তারা বলবে, "তিনি তো আমাদের মুখমণ্ডল উজ্জ্বল করেছেন, আমাদের জাহান্নাম থেকে মুক্তি দিয়েছেন!"</p>
+                <blockquote class="border-r-4 border-yellow-500 pr-4 text-right">
+                    <p class="font-semibold">"তারা বলবে: হে আমাদের রব, আপনার সম্মানিত চেহারা আমাদের দেখান, আমরা আপনার দিকে তাকাতে চাই।"</p>
+                </blockquote>
+                <p>তখন আল্লাহ তাঁর حجاب (পর্দা) তুলে নেবেন। তারা তাদের রবের সম্মানিত চেহারার দিকে তাকাবে। এই দৃষ্টির চেয়ে বড় কোনো নিয়ামত তাদের দেওয়া হবে না। এটি এমন এক আনন্দ যা জান্নাতের অন্য সকল আনন্দকে ম্লান করে দেবে। আল্লাহ প্রত্যেকের সাথে একান্তে কথা বলবেন, যা হবে বান্দার জন্য সর্বশ্রেষ্ঠ সম্মান।</p>
+            </div>
+        </section>
+
+        <section id="gemini-dua" class="mt-16 section-card p-8">
+            <h2 class="text-center text-3xl font-bold mb-2">✨ ব্যক্তিগত দোয়া তৈরি করুন</h2>
+            <p class="text-center text-gray-600 mb-6 max-w-2xl mx-auto">আপনার মনের অবস্থা বা প্রার্থনা এখানে লিখুন। আমরা আপনার জন্য একটি বিশেষ দোয়া তৈরি করার চেষ্টা করব।</p>
+            <div class="max-w-xl mx-auto">
+                <textarea id="dua-prompt" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400" rows="3" placeholder="যেমন: আমি আমার পরীক্ষায় সফল হতে চাই..."></textarea>
+                <button id="generate-dua-btn" class="gemini-btn w-full mt-4">আমার জন্য দোয়া তৈরি করুন</button>
+                <div id="dua-result" class="mt-6"></div>
+            </div>
+        </section>
+
+        <section id="action" class="mt-16 bg-gray-800 text-white rounded-lg p-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">আত্মচিন্তা ও কর্মের আহ্বান</h2>
+            <p class="text-lg mb-6 max-w-3xl mx-auto">এই জীবন একটি সংক্ষিপ্ত পরীক্ষা। দুটি পথ এবং দুটি পরিণতি আপনার সামনে তুলে ধরা হয়েছে। এখন সিদ্ধান্ত আপনার। আসুন, আমরা আল্লাহর কাছে আশ্রয় ও হেদায়েত প্রার্থনা করি।</p>
+            <div class="bg-gray-700 rounded-lg p-6 max-w-2xl mx-auto">
+                <p class="text-2xl md:text-3xl font-semibold mb-4">اللهم إنا نسألك الجنة وما قرب إليها من قول أو عمل، ونعوذ بك من النار وما قرب إليها من قول أو عمل</p>
+                <p class="text-lg">"হে আল্লাহ, আমরা আপনার কাছে জান্নাত এবং এমন সকল কথা ও কাজের সামর্থ্য প্রার্থনা করি যা আমাদের জান্নাতের নিকটবর্তী করে দেয়। আর আমরা আপনার কাছে জাহান্নাম এবং এমন সকল কথা ও কাজ থেকে আশ্রয় চাই যা আমাদের জাহান্নামের নিকটবর্তী করে দেয়।"</p>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+        const contentData = {
+            'jahannam-intro': `...`, 
+            'jahannam-nature': `...`,
+            'jahannam-people': `...`,
+            'jannah-intro': `...`,
+            'jannah-nature': `...`,
+            'jannah-people': `...` 
+        };
+        // To save space, the static content is truncated in this view but exists in the code.
+        Object.assign(contentData, {
+            'jahannam-intro': `<div class="flex items-start space-x-4"><div class="icon jahannam-icon">🚪</div><div><h3 class="font-bold text-lg">৭টি প্রবেশদ্বার</h3><p class="text-gray-600">প্রতিটি নির্দিষ্ট শ্রেণীর পাপীদের জন্য নির্ধারিত।</p></div></div><div class="flex items-start space-x-4"><div class="icon jahannam-icon">🔥</div><div><h3 class="font-bold text-lg">জ্বলন্ত আগুন</h3><p class="text-gray-600">তীব্র তাপ, লোহার গদা, অন্ধকার এবং হতাশার পরিবেশ।</p></div></div><div class="flex items-start space-x-4"><div class="icon jahannam-icon">🌵</div><div><h3 class="font-bold text-lg">যাক্কুম ও কাঁটাযুক্ত ফল</h3><p class="text-gray-600">খাদ্য হিসেবে থাকবে যাক্কুম বৃক্ষ ও 'দ্বরি' নামক কাঁটাযুক্ত ফল। পানীয় হবে ফুটন্ত পানি ও পুঁজ।</p></div></div><div class="flex items-start space-x-4"><div class="icon jahannam-icon">😞</div><div><h3 class="font-bold text-lg">অনন্ত হতাশা</h3><p class="text-gray-600">তীব্র অনুশোচনা, অসহনীয় যন্ত্রণা এবং চরম অপমান।</p></div></div>`,
+            'jahannam-nature': `<h3 class="font-bold text-xl mb-2 text-center">দৈহিক ও মানসিক শাস্তি</h3><div class="flex items-start space-x-4"><div class="icon jahannam-icon">🔥</div><div><h3 class="font-bold text-lg">আগুন ও উত্তাপ</h3><p class="text-gray-600">এর জ্বালানি হবে মানুষ ও পাথর। তাদের জন্য থাকবে লোহার হাতুড়ি। যখনই তাদের চামড়া পুড়ে যাবে, তা নতুন চামড়া দিয়ে পাল্টে দেওয়া হবে।</p></div></div><div class="flex items-start space-x-4"><div class="icon jahannam-icon">💧</div><div><h3 class="font-bold text-lg">খাদ্য ও পানীয়</h3><p class="text-gray-600">যাক্কুম বৃক্ষের ফল পেটের মধ্যে ফুটন্ত পানির মতো ফুটতে থাকবে। পানীয় হবে ফুটন্ত পানি যা অন্ত্র ছিন্নভিন্ন করে দেবে।</p></div></div><div class="flex items-start space-x-4"><div class="icon jahannam-icon">😭</div><div><h3 class="font-bold text-lg">প্রত্যাখ্যাত মিনতি</h3><p class="text-gray-600">তারা মুক্তির জন্য আর্তনাদ করবে, কিন্তু উত্তর আসবে: 'তোরা এখানেই ধিক্কৃত অবস্থায় থাক এবং আমার সাথে কথা বলবি না।'</p></div></div><div class="flex items-start space-x-4"><div class="icon jahannam-icon">🔗</div><div><h3 class="font-bold text-lg">চরম অপমান</h3><p class="text-gray-600">জান্নাতীদের কাছে পানি ভিক্ষা চাইলে উত্তর আসবে: 'আল্লাহ এই দুটি জিনিসই কাফিরদের জন্য হারাম করেছেন।'</p></div></div>`,
+            'jahannam-people': `<h3 class="font-bold text-xl mb-4 text-center">ধ্বংসের পথে যাত্রীরা</h3><ul class="list-disc list-inside space-y-2 text-gray-700"><li>একগুঁয়ে কাফির ও সত্যকে প্রত্যাখ্যানকারী।</li><li>কল্যাণের কাজে বাধাদানকারী ও সীমালঙ্ঘনকারী।</li><li>আল্লাহর সাথে অন্য উপাস্য গ্রহণকারী।</li><li>পরকাল সম্পর্কে উদাসীন ও গাফিল।</li><li>জালিম ও অত্যাচারী।</li></ul>`,
+            'jannah-intro': `<div class="flex items-start space-x-4"><div class="icon jannah-icon">🚪</div><div><h3 class="font-bold text-lg">৮টি প্রবেশদ্বার</h3><p class="text-gray-600">বিশ্বাসীদের সম্মানে প্রশস্ত এবং ভিড়ে পরিপূর্ণ থাকবে।</p></div></div><div class="flex items-start space-x-4"><div class="icon jannah-icon">🌳</div><div><h3 class="font-bold text-lg">স্নিগ্ধ বাগান</h3><p class="text-gray-600">প্রবহমান নদী, মুক্তার প্রাসাদ, আলো এবং অনাবিল প্রশান্তি।</p></div></div><div class="flex items-start space-x-4"><div class="icon jannah-icon">🍇</div><div><h3 class="font-bold text-lg">সুস্বাদু ফল ও পানীয়</h3><p class="text-gray-600">পবিত্র পানীয় এবং সব ধরণের কাঙ্ক্ষিত খাবার।</p></div></div><div class="flex items-start space-x-4"><div class="icon jannah-icon">😊</div><div><h3 class="font-bold text-lg">পরম শান্তি</h3><p class="text-gray-600">অনাবিল আনন্দ, চিরস্থায়ী সন্তুষ্টি এবং সীমাহীন সম্মান।</p></div></div>`,
+            'jannah-nature': `<h3 class="font-bold text-xl mb-2 text-center">জান্নাতের দৃশ্য ও অনুভূতি</h3><div class="flex items-start space-x-4"><div class="icon jannah-icon">💎</div><div><h3 class="font-bold text-lg">মুক্তার প্রাসাদ</h3><p class="text-gray-600">তাদের প্রাসাদগুলো বিভিন্ন রঙের আলোয় ঝলমল করবে। ভেতরে থাকবে উন্নত বিছানা ও মনোরম গালিচা।</p></div></div><div class="flex items-start space-x-4"><div class="icon jannah-icon">💧</div><div><h3 class="font-bold text-lg">সৌন্দর্য</h3><p class="text-gray-600">দুটি ঝর্ণা থেকে পান করার পর তাদের ভেতর ও বাহির থেকে সমস্ত কষ্ট দূর হয়ে যাবে এবং চেহারায় নিয়ামতের উজ্জ্বলতা ফুটে উঠবে।</p></div></div><div class="flex items-start space-x-4"><div class="icon jannah-icon">💖</div><div><h3 class="font-bold text-lg">হুর ও সঙ্গী</h3><p class="text-gray-600">পবিত্র সঙ্গীরা, যাদের সৌন্দর্য ইয়াকুত ও প্রবালের ন্যায়। তাদের মাথার উড়নাও দুনিয়া ও এর মাঝে যা কিছু আছে তার চেয়ে উত্তম।</p></div></div><div class="flex items-start space-x-4"><div class="icon jannah-icon">📈</div><div><h3 class="font-bold text-lg">ক্রমবর্ধমান আনন্দ</h3><p class="text-gray-600">জান্নাতীদের আনন্দ স্থির থাকবে না, বরং তারা ক্রমাগত আরও উচ্চ স্তরের নিয়ামত ও সৌন্দর্য আবিষ্কার করতে থাকবে।</p></div></div>`,
+            'jannah-people': `<h3 class="font-bold text-xl mb-4 text-center">মুক্তির পথে যাত্রীরা</h3><ul class="list-disc list-inside space-y-2 text-gray-700"><li>যারা আল্লাহর আয়াতে বিশ্বাসী এবং আত্মসমর্পণকারী ছিল।</li><li>যারা না দেখেও পরম করুণাময় আল্লাহকে ভয় করত।</li><li>যারা তওবাকারী ও অনুতপ্ত হৃদয় নিয়ে ফিরে আসত।</li><li>যারা সৎকর্মে অগ্রগামী ছিল।</li><li>যারা নিজেদের জীবন ও সম্পদ দিয়ে আল্লাহর পথে সংগ্রাম করেছিল।</li></ul>`
+        });
+
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4`;
+
+        async function callGeminiAPI(prompt) {
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: prompt }] }],
+                "generationConfig": {
+                    "temperature": 0.7,
+                    "topK": 1,
+                    "topP": 1,
+                    "maxOutputTokens": 8192,
+                    "stopSequences": []
+                },
+            };
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.statusText}`);
+                }
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                }
+                return "দুঃখিত, কোনো উত্তর পাওয়া যায়নি।";
+            } catch (error) {
+                console.error("Gemini API call failed:", error);
+                return "একটি সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।";
+            }
+        }
+
+        async function showTab(section, tabName, element) {
+            const contentDiv = document.getElementById(`${section}-content`);
+            
+            const tabs = document.querySelectorAll(`.${section}-tab`);
+            tabs.forEach(tab => {
+                tab.classList.remove(section === 'jannah' ? 'tab-active' : 'tab-active-jahannam');
+                tab.classList.add('text-gray-500');
+            });
+            element.classList.add(section === 'jannah' ? 'tab-active' : 'tab-active-jahannam');
+            element.classList.remove('text-gray-500');
+
+            if (tabName.startsWith('gemini-')) {
+                contentDiv.innerHTML = `<div class="loader"></div>`;
+                let prompt = '';
+                if (tabName === 'gemini-sahaba-hope') {
+                    prompt = "জান্নাতের আশা এবং আকাঙ্ক্ষা নিয়ে একজন সাহাবীর একটি সংক্ষিপ্ত, অনুপ্রেরণামূলক গল্প বলুন। তার কোন আমল বা উক্তি তাকে জান্নাতের প্রতি আশাবাদী করেছিল তা উল্লেখ করুন। উত্তরটি বাংলায় দিন।";
+                } else if (tabName === 'gemini-sahaba-fear') {
+                    prompt = "জাহান্নামের ভয় এবং আল্লাহভীতি নিয়ে একজন সাহাবীর একটি সংক্ষিপ্ত, অনুপ্রেরণামূলক গল্প বলুন। এই ভয় কীভাবে তাকে সৎকাজে অনুপ্রাণিত করেছিল তা উল্লেখ করুন। উত্তরটি বাংলায় দিন।";
+                }
+                const result = await callGeminiAPI(prompt);
+                contentDiv.innerHTML = `<div class="prose prose-sm max-w-none">${result.replace(/\n/g, '<br>')}</div>`;
+            } else {
+                contentDiv.innerHTML = contentData[tabName];
+            }
+        }
+        
+        document.getElementById('generate-dua-btn').addEventListener('click', async () => {
+            const userInput = document.getElementById('dua-prompt').value;
+            const resultDiv = document.getElementById('dua-result');
+            if (!userInput.trim()) {
+                resultDiv.innerHTML = `<p class="text-red-500 text-center">অনুগ্রহ করে আপনার অনুভূতি বা প্রার্থনা লিখুন।</p>`;
+                return;
+            }
+            resultDiv.innerHTML = `<div class="loader"></div>`;
+            const prompt = `একজন ব্যবহারকারী তার ব্যক্তিগত অনুভূতির কথা জানিয়েছে: "${userInput}". এই অনুভূতির উপর ভিত্তি করে তার জন্য একটি সুন্দর, হৃদয়গ্রাহী এবং ইসলামিক দোয়া তৈরি করুন। দোয়াটি আরবিতে, বাংলা উচ্চারণে এবং বাংলা অনুবাদ সহ দিন। উত্তরটি সুন্দরভাবে ফরম্যাট করে দিন।`;
+            const result = await callGeminiAPI(prompt);
+            resultDiv.innerHTML = `<div class="bg-gray-100 p-4 rounded-lg prose max-w-none">${result.replace(/\n/g, '<br>')}</div>`;
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('jahannam-content').innerHTML = contentData['jahannam-intro'];
+            document.getElementById('jannah-content').innerHTML = contentData['jannah-intro'];
+        });
+    </script>
+</body>
+</html>

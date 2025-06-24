@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>শাইখ খালিদ আর রাশেদের লেকচার সমগ্র</title>
+    
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Hind Siliguri for Bengali text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Apply the Bengali font and a professional background color */
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #f4f7f9; /* Light, clean background */
+        }
+
+        /* Styling for the main header */
+        .main-header {
+            color: #1a202c; /* Dark, legible text color */
+        }
+        
+        /* Card design for each title link */
+        .title-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            border-left-width: 5px; /* Colored border on the left */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+        }
+
+        .title-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* The link inside the card */
+        .title-card a {
+            color: #2d3748; /* Dark text for readability */
+            font-weight: 500;
+            width: 100%;
+            padding: 16px;
+            text-decoration: none; /* Remove underline from links */
+        }
+
+        /* Footer with Neon Effect */
+        .neon-footer {
+            background-color: #111827; /* Dark background for the footer */
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .neon-footer-text {
+            color: #39ff14; /* Bright neon green */
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-shadow:
+                0 0 5px #39ff14,
+                0 0 10px #39ff14,
+                0 0 20px #39ff14,
+                0 0 40px #1c7a0a;
+        }
+    </style>
+</head>
+<body class="text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Main container -->
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 flex-grow">
+
+        <!-- MAIN PAGE VIEW -->
+        <main id="main-view" class="w-full max-w-6xl mx-auto">
+            <header class="text-center mb-10">
+                <h1 class="text-4xl sm:text-5xl font-bold main-header mb-2">শাইখ খালিদ আর রাশেদের লেকচার সমগ্র</h1>
+                <p class="text-gray-600">যেকোনো শিরোনামে ক্লিক করে তার পাতায় যান।</p>
+            </header>
+            
+            <!-- This container will hold the generated link cards -->
+            <div id="links-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                <!-- Link cards will be dynamically inserted here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="neon-footer">
+        <p class="neon-footer-text">www.naeembd.com | +8801626211926</p>
+    </footer>
+
+    <script>
+        // --- DOM ELEMENT REFERENCES ---
+        const linksContainer = document.getElementById('links-container');
+
+        // --- DATA ---
+        const bengaliTitles = [
+            "অচল অস্ত্র", "অবরোধের মধ্যে সুসংবাদ", "আকাশছোঁয়া উচ্চাকাঙ্ক্ষা", "আগামীকাল আপনার ঘর কোথায়", "আপনারা তাদের তুলনায় কোথায়",
+            "আপনি আমার হৃদয়কে ভেঙে দিয়েছেন এবং রক্তাক্ত করেছেন", "আবেদনের পথ", "আমাদের উপর আল্লাহর নেয়ামত", "আমাদের পাপই আমাদের ধ্বংসের কারণ",
+            "আমি কীভাবে আল্লাহকে লজ্জা করব", "আল-মাহদী", "আল্লাহর প্রতি লজ্জা", "আল্লাহর মহত্ত্ব", "আহওয়াল আল-গারিকাত",
+            "ইয়াজুজ ও মাজুজ", "ইসরা ও মি'রাজ", "ইসলামে দাম্পত্য অধিকার ও কর্তব্য", "ইসলামের ইতিহাসে নারী সাহাবীদের বীরত্বগাথা", "ঈমানের ইমারত",
+            "ঈমানের যাত্রা", "উদারতা, কার্পণ্য এবং মহত্ত্ব", "উমর ইবনে আবদুল আজিজের জীবন", "উহুদের শিক্ষা", "এক অবস্থা থেকে অন্য অবস্থায়",
+            "এক পঙ্গু ব্যক্তি যেভাবে একটি জাতিকে জাগিয়ে তুলেছিল", "এক বীরের উপাখ্যান", "একজন রোজাদারের একাকীত্ব", "একটি আশ্চর্যজনক ঘটনা",
+            "একটি ভাষণ", "একনিষ্ঠ তওবা", "কবরে পরীক্ষা", "কুরআনের আলো", "কেয়ামতের দিন", "কেয়ামত সন্নিকটে",
+            "ক্ষমা কর রমাদান", "গাফলাত (উদাসীনতা)", "ঘুমের নেয়ামত ও আদব", "জান্নাত ও জাহান্নাম", "জান্নাতই আমাদের মিলনস্থল",
+            "জিবরাইল (আঃ) এর উপদেশাবলী", "জীবনের যাত্রা", "জীবনের সদ্ব্যবহার", "তাকে শত্রু হিসেবে গ্রহণ কর", "তারা আল্লাহকে যথাযোগ্য মর্যাদা দেয়নি",
+            "তারা ছিল যুবক যারা তাদের রবের প্রতি ঈমান এনেছিল", "তিনি এবং তাঁর সাথে লজ্জাশীলতাও মারা গেছে", "দীর্ঘ আশা", "দুঃখের যাত্রা",
+            "নারীদের প্রতি কোমল হও", "পথের সাথি", "পলায়নের দিন", "পাপীদের আর্তনাদ", "প্রত্যাবর্তনকারীদের কাফেলা", "ফালুজ্জার পুরুষেরা",
+            "বরং সর্বোচ্চ বন্ধুর কাছে", "মাসীহ দাজ্জাল", "মুক্তির সন্ধানে", "মৃত্যু তার দৃঢ়", "মুনাফিকগণ", "মুমিনদের জামা'আতকে হিতকারী",
+            "মুমিনের অস্ত্র", "মৃত্যুর তরঙ্গে ভূমিস্পৃশ্য (দৃষ্টিশক্তিসম্পন্নদের জন্য উপদেশ)", "যাতে শিশুকে আবর্জনার স্তূপে পাওয়া না যায়",
+            "যাদের সংখ্যা বিশ্বে অধিক নয়", "যার অন্তর আছে তার জন্য", "যিনি তোমাকে দেখেন যখন তুমি দাঁড়াও", "যুবকদের সাথে খোলামেলা কথা",
+            "যেদিন আমরা আমানত হারিয়ে ফেলেছি", "রমজানে মক্কা বিজয়", "রাস্তার দুর্ঘটনা", "লজ্জা", "লাব্বাইক আল্লাহুম্মা লাব্বাইক", "সংবাদ বুলেটিন",
+            "সত্যবাদীদের সঙ্গী", "সময়ের গুরুত্ব এবং সন্তানদের প্রতিপালনে অবহেলার বিপদ", "সময়ের মূল্য", "সালাতের প্রতি আহ্বান", "হত্যাকারী ও নিহত",
+            "হে তাহাজ্জুদ আদায়কারীর অস্ত্র", "হে সালাত ত্যাগকারী"
+        ];
+        
+        // Professional color palette for the card borders
+        const colorPalette = [
+            '#2a9d8f', '#e9c46a', '#f4a261', '#e76f51', '#264653', '#8ab17d', '#e07a5f'
+        ];
+
+        // --- INITIALIZATION ---
+        /**
+         * Creates and appends the lecture links to the container.
+         * Each link points to a real file inside the "Lecture" folder.
+         */
+        function generateLinks() {
+            const fragment = document.createDocumentFragment();
+
+            bengaliTitles.forEach((title, index) => {
+                // Create the card element (the container for the link)
+                const card = document.createElement('div');
+                card.className = 'title-card';
+                
+                // Assign a color from the palette based on the index
+                card.style.borderColor = colorPalette[index % colorPalette.length];
+
+                // Create the actual link (<a>) element
+                const link = document.createElement('a');
+                link.textContent = title;
+                
+                // Set the href to point to the correct file in the "Lecture" folder
+                // The file names are 1-based, e.g., 1.html, 2.html
+                link.href = `Lecture/${index + 1}.html`;
+                
+                // It's good practice to open these in a new tab
+                link.target = "_blank"; 
+
+                // Add the link to the card, and the card to the fragment
+                card.appendChild(link);
+                fragment.appendChild(card);
+            });
+            
+            // Append all generated cards to the container at once for better performance
+            linksContainer.appendChild(fragment);
+        }
+
+        // --- START THE APP ---
+        // Generate all the links as soon as the page loads.
+        generateLinks();
+    </script>
+
+</body>
+</html>

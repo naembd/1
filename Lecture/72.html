@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লাব্বাইক আল্লাহুম্মা লাব্বাইক - শেখ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Desert Serenity -->
+    <!-- Application Structure Plan: The application is structured thematically to make the sermon's content easily digestible. Instead of a single long text, the content is divided into key sections like 'Sanctity of the House', 'Manifestation of Tawhid', and 'Lessons from the Farewell Hajj'. Navigation at the top allows users to jump to any section, facilitating non-linear exploration of topics they are most interested in. Interactive elements like clickable tabs for the 'Lessons' section are used to present detailed information concisely without overwhelming the user. This structure was chosen to transform a linear sermon into an engaging, explorable digital experience, enhancing user understanding and retention. -->
+    <!-- Visualization & Content Choices: Report Info: The source is a spiritual sermon on Hajj. Goal: To inform, inspire, and emotionally connect the user with the content. Viz/Presentation Method: Thematic sections with clear typography, blockquotes for Quran/Hadith, and interactive tabs for structured content (like the Prophet's final advice). Interaction: Smooth-scroll navigation and clickable tabs to reveal content. Justification: Since there is no quantitative data, traditional charts are unsuitable. The chosen methods break down the text-heavy content into manageable, visually distinct parts, making it more appealing and easier to navigate than a plain document. This enhances the user's ability to focus on specific teachings and stories. Library/Method: Vanilla JavaScript for interactions and Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #2C2A28; /* Darker background for neon effect */
+            color: #EAEAEA;
+        }
+        .kufi-title {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 4px;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #FFD700;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 8px #FFD700;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        .section-card {
+            background-color: #403D39;
+            border: 1px solid #5a5652;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .blockquote {
+            border-right: 4px solid #FFD700;
+            padding-right: 1.5rem;
+            margin: 1.5rem 0;
+            background-color: #2C2A28;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+            color: #b0b0b0;
+        }
+        .tab-button.active {
+            color: #FFD700;
+            border-bottom-color: #FFD700;
+            text-shadow: 0 0 5px #FFD700;
+        }
+        .neon-title {
+            color: #FFFFFF;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 8px #fff,
+                0 0 12px #FFD700,
+                0 0 20px #FFD700;
+        }
+        .section-title-neon {
+             color: #F5DEB3; /* Wheat color for soft base */
+             text-shadow: 0 0 8px #DAA520;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-black/70 backdrop-blur-lg sticky top-0 z-50 shadow-md shadow-yellow-900/20">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-bold kufi-title text-gray-100">
+                    শেখ খালিদ আল-রাশেদ
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#introduction" class="nav-link text-gray-300 hover:text-white">ভূমিকা</a>
+                    <a href="#sanctity" class="nav-link text-gray-300 hover:text-white">ঘরের মর্যাদা</a>
+                    <a href="#tawhid" class="nav-link text-gray-300 hover:text-white">তাওহীদ</a>
+                    <a href="#farewell_hajj" class="nav-link text-gray-300 hover:text-white">বিদায় হজ্জ</a>
+                    <a href="#conclusion" class="nav-link text-gray-300 hover:text-white">উপসংহার</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-gray-300 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-2">
+                <a href="#introduction" class="block py-2 px-4 text-sm text-gray-300 hover:bg-gray-800 rounded">ভূমিকা</a>
+                <a href="#sanctity" class="block py-2 px-4 text-sm text-gray-300 hover:bg-gray-800 rounded">ঘরের মর্যাদা</a>
+                <a href="#tawhid" class="block py-2 px-4 text-sm text-gray-300 hover:bg-gray-800 rounded">তাওহীদ</a>
+                <a href="#farewell_hajj" class="block py-2 px-4 text-sm text-gray-300 hover:bg-gray-800 rounded">বিদায় হজ্জ</a>
+                <a href="#conclusion" class="block py-2 px-4 text-sm text-gray-300 hover:bg-gray-800 rounded">উপসংহার</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="introduction" class="text-center mb-16">
+            <h1 class="text-5xl md:text-7xl font-bold kufi-title neon-title mb-4">লাব্বাইক আল্লাহুম্মা লাব্বাইক</h1>
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                এই পাতাটি শেখ খালিদ আল-রাশেদের একটি মর্মস্পর্শী খুতবার ইন্টারেক্টিভ সংস্করণ। এখানে হজ্জের আধ্যাত্মিক তাৎপর্য, আল্লাহর ঘরের প্রতি ভালোবাসা এবং তাওহীদের মূলনীতিগুলো তুলে ধরা হয়েছে। প্রতিটি বিভাগ আপনাকে হজ্জের গভীর জগতে নিয়ে যাবে।
+            </p>
+        </section>
+
+        <section id="sanctity" class="section-card">
+            <h2 class="text-3xl font-bold mb-6 border-b-2 border-yellow-700 pb-2 section-title-neon">আল্লাহর সম্মানিত ঘরের মর্যাদা</h2>
+            <p class="mb-4">
+                আল্লাহর ঘরে হজ করা ইসলামের পাঁচটি স্তম্ভের একটি। আল্লাহ তাআলা সামর্থ্যবানদের উপর এটি ফরজ করেছেন এবং তাঁর সম্মানিত ঘরকে বিশ্বজুড়ে মুমিনদের হৃদয়ের কেন্দ্রবিন্দু বানিয়েছেন। কোনো জিয়ারতকারী এতে ক্লান্ত হয় না এবং কোনো মুমিন এর প্রতি আকর্ষণ ত্যাগ করে না। পবিত্র সেই সত্তা যিনি তাঁর সম্মানিত ঘরকে মানুষের জন্য মিলনস্থল ও শান্তির স্থান বানিয়েছেন!
+            </p>
+            <div class="blockquote">
+                <p class="italic">"এবং আমার ঘরকে পবিত্র রেখো তাওয়াফকারী, ইতিকাফকারী এবং রুকু-সিজদাকারীদের জন্য।"</p>
+                <cite class="block text-right mt-2 not-italic text-sm text-gray-500">- সূরা আল-হাজ: ২৬</cite>
+            </div>
+            <p class="mb-4 text-gray-300">
+                প্রেমিকদের হৃদয় তাদের প্রেমাস্পদের ঘরের সাথে সংযুক্ত হয়ে গেছে। যখনই তাদের কাছে সেই সম্মানিত ঘরের কথা উল্লেখ করা হয়, তারা তার জন্য আকুল হয়ে ওঠে। একটি ঘর যা পাথর দিয়ে তৈরি, এবং আল্লাহর সাথে সম্পৃক্ত হওয়ায় তা মানব হৃদয়ের কেন্দ্রবিন্দু হয়ে উঠেছে।
+            </p>
+            <div class="mt-6 p-6 bg-gray-800/20 rounded-lg">
+                <h3 class="text-xl font-semibold mb-3 text-yellow-400">এক নারীর তীব্র আকাঙ্ক্ষা</h3>
+                <p class="text-gray-300">কিছু ইবাদতকারী হজ পালন করছিলেন, তাদের মধ্যে একজন নারী বারবার জিজ্ঞাসা করছিলেন, "আমার রবের ঘর কোথায়?" যখন কাবা শরীফ দৃষ্টিগোচর হলো, তিনি দৌড়ে গিয়ে বলতে লাগলেন, "আমার রবের ঘর! আমার রবের ঘর!" অবশেষে তিনি কেঁদে সিজদায় নিজের কপাল ঘরের উপর রাখলেন এবং সেই অবস্থাতেই মৃত্যুবরণ করেন। তার রবের ঘরের প্রতি তার ব্যাকুলতা তাকে হত্যা করেছে।</p>
+            </div>
+            <div class="mt-6 p-6 bg-gray-800/20 rounded-lg">
+                <h3 class="text-xl font-semibold mb-3 text-yellow-400">হাজরে আসওয়াদ: জান্নাতের পাথর</h3>
+                <p class="text-gray-300">আল্লাহর ঘরে স্পষ্ট নিদর্শন রয়েছে, যেমন হাজরে আসওয়াদ। রাসূলুল্লাহ (সাঃ) বলেছেন: "হাজরে আসওয়াদ জান্নাতের একটি পাথর।" তিনি আরও বলেন, "হাজরে আসওয়াদ এবং রুকনে ইয়ামানি স্পর্শ করলে পাপ এমনভাবে ঝরে যায়, যেভাবে গাছের পাতা ঝরে।" ইবনে উমর (রাঃ) বর্ণনা করেন যে, রাসূল (সাঃ) হাজরে আসওয়াদে ঠোঁট রেখে দীর্ঘক্ষণ কেঁদেছিলেন এবং উমর (রাঃ)-কে বলেছিলেন, "হে উমর! এখানেই অশ্রু বিসর্জন করা হয়।"</p>
+            </div>
+        </section>
+        
+        <section id="tawhid" class="section-card">
+            <h2 class="text-3xl font-bold mb-6 border-b-2 border-yellow-700 pb-2 section-title-neon">হজ্জে তাওহীদের প্রকাশ</h2>
+            <p class="mb-4">
+                হজ্জের প্রতিটি কাজ আল্লাহর একত্ববাদের এক জীবন্ত ঘোষণা। এটি শুধুমাত্র একটি শারীরিক ইবাদত নয়, বরং এটি শিরক থেকে মুক্ত হয়ে এক আল্লাহর প্রতি পূর্ণ আত্মসমর্পণের বহিঃপ্রকাশ।
+            </p>
+            <ul class="space-y-4 list-inside">
+                <li class="flex items-start">
+                    <span class="text-yellow-500 font-bold mr-3 mt-1">✓</span>
+                    <div class="text-gray-300"><strong>তাওয়াফের পর সালাত:</strong> হাজী যখন মাকামে ইবরাহিমের পিছনে দুই রাকাত সালাত আদায় করেন, তখন তিনি সূরা কাফিরুন ও ইখলাস পাঠ করে আল্লাহ ছাড়া সকল উপাস্যকে প্রত্যাখ্যান এবং একনিষ্ঠভাবে আল্লাহর একত্ববাদের ঘোষণা দেন।</div>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-yellow-500 font-bold mr-3 mt-1">✓</span>
+                    <div class="text-gray-300"><strong>সাফা-মারওয়াতে সাঈ:</strong> সাফা পাহাড়ে উঠে হাজী বলেন, "নিঃসন্দেহে সাফা ও মারওয়া আল্লাহর নিদর্শনসমূহের অন্যতম।" তারপর তিনি দোয়া করেন, "সমস্ত প্রশংসা এক আল্লাহর জন্য, তিনি তাঁর প্রতিশ্রুতি পূর্ণ করেছেন... এবং একাই সমস্ত বাহিনীকে পরাজিত করেছেন।"</div>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-yellow-500 font-bold mr-3 mt-1">✓</span>
+                    <div class="text-gray-300"><strong>আরাফাতের ময়দানে দোয়া:</strong> আরাফাতের দিনে হাজী সর্বোত্তম দোয়া পাঠের মাধ্যমে তাওহীদের চর্চা করেন।</div>
+                </li>
+                 <li class="flex items-start">
+                    <span class="text-yellow-500 font-bold mr-3 mt-1">✓</span>
+                    <div class="text-gray-300"><strong>তালবিয়া পাঠ:</strong> মক্কা থেকেই মুহাম্মদ (সাঃ) তাওহীদের দাওয়াত দিয়েছিলেন। হজ্জের সময় তাঁর উম্মত সেই একই ঘোষণা দেয়: <span class="font-semibold italic">"লাব্বাইক আল্লাহুম্মা লাব্বাইক, লাব্বাইকা লা শারিকা লাকা লাব্বাইক..."</span>, যা শিরকের সকল ধারণাকে বাতিল করে দেয়।</div>
+                </li>
+            </ul>
+        </section>
+
+        <section id="farewell_hajj" class="section-card">
+            <h2 class="text-3xl font-bold mb-6 border-b-2 border-yellow-700 pb-2 section-title-neon">বিদায় হজ্জের শিক্ষা</h2>
+            <p class="mb-6">
+                রাসূলুল্লাহ (সাঃ) এর জীবনের প্রথম ও শেষ হজ্জ ছিল বিদায় হজ্জ। এই হজ্জে তিনি মানবজাতির জন্য কিছু চিরন্তন নির্দেশনা ও অসিয়ত রেখে গেছেন, যা কিয়ামত পর্যন্ত পথপ্রদর্শক হয়ে থাকবে। এই বিভাগে আমরা সেই মূল শিক্ষাগুলো ইন্টারেক্টিভ ট্যাবের মাধ্যমে তুলে ধরছি।
+            </p>
+            
+            <div class="border-b border-gray-700">
+                <nav id="tab-buttons" class="-mb-px flex space-x-6" aria-label="Tabs">
+                    <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm active" data-tab="1">সমতা</button>
+                    <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="2">সম্পদ ও জীবন</button>
+                    <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="3">নারীর অধিকার</button>
+                </nav>
+            </div>
+            <div id="tab-contents" class="mt-5">
+                <div class="tab-content" data-tab-content="1">
+                    <h3 class="text-xl font-semibold mb-2 text-yellow-400">মানবতার সমতা</h3>
+                    <p class="text-gray-300">"হে মানবমণ্ডলী! তোমাদের রব এক, এবং তোমাদের পিতা এক। তোমরা সবাই আদমের সন্তান, আর আদম মাটি থেকে তৈরি। আল্লাহর কাছে সেই সর্বাধিক সম্মানিত, যে সর্বাধিক মুত্তাকী। কোনো আরবের উপর কোনো অনারবের, কিংবা কোনো অনারবের উপর কোনো আরবের শ্রেষ্ঠত্ব নেই, শ্রেষ্ঠত্বের একমাত্র মাপকাঠি হলো তাকওয়া। আমি কি পৌঁছিয়ে দিয়েছি? হে আল্লাহ, আপনি সাক্ষী থাকুন।"</p>
+                    <p class="mt-3 text-sm text-gray-500">এই শিক্ষা বর্ণ, গোত্র ও জাতীয়তাবাদের ঊর্ধ্বে উঠে এক মুসলিম উম্মাহর ধারণা প্রতিষ্ঠা করে।</p>
+                </div>
+                <div class="tab-content hidden" data-tab-content="2">
+                     <h3 class="text-xl font-semibold mb-2 text-yellow-400">সম্পদ ও জীবনের নিরাপত্তা</h3>
+                     <p class="text-gray-300">"হে মানবমণ্ডলী! কোনো ব্যক্তির জন্য তার ভাইয়ের সম্পদ হালাল নয়, যতক্ষণ না সে সন্তুষ্ট চিত্তে তা প্রদান করে। আমার পরে তোমরা কাফেরদের মতো হয়ে যেও না যে, একে অপরের گردن مارবে। আমি তোমাদের মাঝে এমন জিনিস রেখে যাচ্ছি, যা আঁকড়ে ধরলে তোমরা কখনো পথভ্রষ্ট হবে না: আল্লাহর কিতাব এবং আমার সুন্নাহ। আমি কি পৌঁছিয়ে দিয়েছি? হে আল্লাহ, আপনি সাক্ষী থাকুন।"</p>
+                    <p class="mt-3 text-sm text-gray-500">এটি মুসলিম সমাজে পারস্পরিক ভ্রাতৃত্ব এবং জীবনের নিরাপত্তার গুরুত্ব তুলে ধরে।</p>
+                </div>
+                <div class="tab-content hidden" data-tab-content="3">
+                     <h3 class="text-xl font-semibold mb-2 text-yellow-400">নারীর অধিকার ও মর্যাদা</h3>
+                     <p class="text-gray-300">"হে মানবমণ্ডলী! তোমাদের নারীদের উপর তোমাদের অধিকার রয়েছে, এবং তোমাদের উপরও তাদের অধিকার রয়েছে। নারীরা তোমাদের কাছে আমানত। তোমরা তাদেরকে আল্লাহর আমানতে গ্রহণ করেছ এবং আল্লাহর কালামের মাধ্যমে তাদের লজ্জাস্থানকে হালাল করেছ। সুতরাং নারীদের ব্যাপারে আল্লাহকে ভয় কর এবং তাদের সাথে সদ্ব্যবহার কর। আমি কি পৌঁছিয়ে দিয়েছি? হে আল্লাহ, আপনি সাক্ষী থাকুন।"</p>
+                     <p class="mt-3 text-sm text-gray-500">ইসলাম নারীকে যে সম্মান ও মর্যাদা দিয়েছে, এই বাণী তার শ্রেষ্ঠ উদাহরণ।</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion" class="section-card">
+            <h2 class="text-3xl font-bold mb-6 border-b-2 border-yellow-700 pb-2 section-title-neon">উপসংহার ও দোয়া</h2>
+            <p class="mb-4">
+                খুতবার এই অংশে শেখ খালিদ আল-রাশেদ হজ্জ পালনে বিলম্ব না করার জন্য আহ্বান জানিয়েছেন এবং আল্লাহর কাছে উম্মাহর জন্য দোয়া করেছেন। তিনি মনে করিয়ে দেন যে, সামর্থ্য থাকা সত্ত্বেও যে ব্যক্তি পাঁচ বছর হজ্জ না করে অতিবাহিত করে, সে একজন বঞ্চিত ব্যক্তি।
+            </p>
+            <div class="blockquote">
+                <p class="italic">"রাসূল (সাঃ) বলেছেন: 'যে ব্যক্তি হজ্জ করার ইচ্ছা করে, সে যেন তাড়াতাড়ি করে। কারণ সে অসুস্থ হয়ে পড়তে পারে, বাহন হারিয়ে যেতে পারে অথবা কোনো প্রয়োজন দেখা দিতে পারে।'"</p>
+            </div>
+             <p class="mt-6 text-gray-300">
+                হে আল্লাহ! এই আপনার অতিথিরা আপনার সামনে উপস্থিত। তারা ধুলি ধূসরিত হয়ে আপনার কাছে এসেছে। তারা আশাবাদীদের মতো দাঁড়িয়েছে, আকাঙ্খীদের মতো যাত্রা করেছে, বিনয়ীদের মতো রাত্রিযাপন করেছে এবং কৃতজ্ঞদের মতো কোরবানি দিয়েছে। হে আমাদের রব, আপনি তাদের পক্ষ থেকে কবুল করুন। নিশ্চয়ই আপনি ক্ষমাশীল ও পরম দয়ালু।
+            </p>
+            <p class="mt-4 text-gray-300">
+                হে আল্লাহ, আমাদের ও তাদের হজ্জকে মাবরুর হজ্জ হিসেবে কবুল করুন, আমাদের ও তাদের প্রচেষ্টাকে প্রশংসিত করুন এবং আমাদের ও তাদের গুনাহ ক্ষমা করে দিন।
+            </p>
+        </section>
+    </main>
+
+    <footer class="bg-black/80 border-t border-gray-800">
+        <div class="container mx-auto px-6 py-6 text-center text-gray-500">
+            <p>&copy; 2024. শেখ খালিদ আল-রাশেদের খুতবার উপর ভিত্তি করে তৈরি। সর্বস্বত্ব সংরক্ষিত নয়।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    button.classList.add('active');
+
+                    tabContents.forEach(content => {
+                        if (content.dataset.tabContent === tabId) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

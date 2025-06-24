@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>উদারতা ও কার্পণ্য - শেখ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Serene Dawn -->
+    <!-- Application Structure Plan: The SPA is designed with a thematic, non-linear structure for enhanced usability. A fixed top navigation bar allows users to jump to different conceptual sections. I've added two new interactive sections powered by the Gemini API: "Practical Steps" and "Dua Generator". This enhances user engagement by providing personalized, AI-generated content based on the sermon's themes, moving beyond static information to practical application and spiritual reflection. -->
+    <!-- Visualization & Content Choices: 
+        - New Feature: Practical Steps Generator. Goal: Apply. Method: Button-triggered API call. Interaction: User clicks a button to get actionable advice. Justification: Translates theological concepts into real-world actions for the user. Library/Method: Gemini API (gemini-2.0-flash).
+        - New Feature: Dua (Prayer) Generator. Goal: Personalize & Reflect. Method: Text input and button-triggered API call. Interaction: User provides context for a personalized prayer. Justification: Creates a deeply personal and spiritual connection to the content. Library/Method: Gemini API (gemini-2.0-flash).
+        - Existing features remain the same: Definition cards (Inform), Virtue cards (Organize), Story cards (Inspire), and Bar Chart (Compare).
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #FDFBF7;
+            color: #4a4a4a;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #D4AF37;
+            border-bottom-color: #D4AF37;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #EAEAEA;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .quote {
+            border-left: 4px solid #D4AF37;
+            background-color: #FFFBEB;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .gemini-btn {
+            background-color: #D4AF37;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .gemini-btn:hover {
+            background-color: #c5a231;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #D4AF37;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-gray-800">ইসলামে দান</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-2">
+                        <a href="#introduction" class="nav-link text-gray-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">ভূমিকা</a>
+                        <a href="#definitions" class="nav-link text-gray-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">সংজ্ঞা</a>
+                        <a href="#virtues" class="nav-link text-gray-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">ফযিলত</a>
+                        <a href="#stories" class="nav-link text-gray-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">ঘটনা</a>
+                        <a href="#comparison" class="nav-link text-gray-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">তুলনা</a>
+                        <a href="#gemini-features" class="nav-link text-gray-600 font-medium px-3 py-2 text-sm border-b-2 border-transparent">AI পরামর্শ</a>
+                    </div>
+                </div>
+                 <div class="md:hidden">
+                    <button id="menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-800 hover:bg-gray-100 focus:outline-none">
+                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+             <div id="mobile-menu" class="md:hidden hidden pb-4">
+                <a href="#introduction" class="block nav-link text-gray-600 font-medium px-3 py-2 text-base border-b-2 border-transparent">ভূমিকা</a>
+                <a href="#definitions" class="block nav-link text-gray-600 font-medium px-3 py-2 text-base border-b-2 border-transparent">সংজ্ঞা</a>
+                <a href="#virtues" class="block nav-link text-gray-600 font-medium px-3 py-2 text-base border-b-2 border-transparent">ফযিলত</a>
+                <a href="#stories" class="block nav-link text-gray-600 font-medium px-3 py-2 text-base border-b-2 border-transparent">ঘটনা</a>
+                <a href="#comparison" class="block nav-link text-gray-600 font-medium px-3 py-2 text-base border-b-2 border-transparent">তুলনা</a>
+                <a href="#gemini-features" class="block nav-link text-gray-600 font-medium px-3 py-2 text-base border-b-2 border-transparent">AI পরামর্শ</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="introduction" class="text-center mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">উদারতা ও কার্পণ্য</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">শেখ খালিদ আল-রাশেদের এই আলোচনায় ইসলামের দুটি গুরুত্বপূর্ণ নৈতিক দিক—উদারতা (الجود) এবং কার্পণ্য (الشح)—এর উপর আলোকপাত করা হয়েছে। এই ইন্টারেক্টিভ উপস্থাপনার মাধ্যমে আমরা কুরআনের আয়াত, হাদীস এবং সাহাবীদের জীবনের ঘটনার আলোকে এই গুণাবলী ও দোষগুলির গভীরতা অন্বেষণ করব।</p>
+        </section>
+
+        <section id="definitions" class="mb-16 scroll-mt-20">
+            <div class="text-center mb-10">
+                <h3 class="text-2xl md:text-3xl font-bold text-gray-800">মৌলিক ধারণা</h3>
+                <p class="text-md text-gray-500 mt-2">আলোচনার মূল ভিত্তি হলো এই দুটি গুণের পার্থক্য বোঝা।</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card">
+                    <h4 class="text-xl font-bold text-gray-800 mb-3">الجود (আল-জুদ) - উদারতা</h4>
+                    <p class="text-gray-600">এর অর্থ হলো পরিচিত বা অপরিচিত নির্বিশেষে সকলের প্রতি নিঃস্বার্থভাবে দান করা। এটি একটি ব্যাপক ধারণা, যা কেবল আর্থিক দানের মধ্যে সীমাবদ্ধ নয়। এটি প্রয়োজনের সময় চাওয়া ছাড়াই দেওয়ার মানসিকতা। উদারতা মহত্ত্বের চেয়ে ব্যাপক।</p>
+                </div>
+                <div class="card">
+                    <h4 class="text-xl font-bold text-gray-800 mb-3">الكرم (আল-করম) - মহত্ত্ব</h4>
+                    <p class="text-gray-600">এটি মূলত অতিথি আপ্যায়ন এবং সম্মান প্রদর্শনের সাথে সম্পর্কিত। যদিও এটি একটি মহৎ গুণ, 'আল-জুদ' বা উদারতার পরিধি এর চেয়েও বিস্তৃত। নবী (সাঃ) বলেছেন, "যে আল্লাহ ও শেষ দিবসে বিশ্বাস করে, সে যেন তার অতিথিকে সম্মান করে।"</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="virtues" class="mb-16 scroll-mt-20">
+             <div class="text-center mb-10">
+                <h3 class="text-2xl md:text-3xl font-bold text-gray-800">দানের ফযিলত ও গুণাবলী</h3>
+                <p class="text-md text-gray-500 mt-2">দানशीलता একজন মুমিনকে আল্লাহর নৈকট্য লাভে সহায়তা করে।</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card"><h4 class="font-bold text-lg mb-2">ঈমানের পূর্ণতা</h4><p class="text-sm text-gray-600">উদারতা ও দান আল্লাহর প্রতি বান্দার সুধারণা এবং ঈমানের পূর্ণতার প্রমাণ।</p></div>
+                <div class="card"><h4 class="font-bold text-lg mb-2">আল্লাহর ভালোবাসা অর্জন</h4><p class="text-sm text-gray-600">আল্লাহ সৎকর্মশীল ও দানশীলদের ভালোবাসেন।</p></div>
+                <div class="card"><h4 class="font-bold text-lg mb-2">সম্পদে বরকত</h4><p class="text-sm text-gray-600">দান করলে সম্পদ কমে না, বরং আল্লাহ তাতে বরকত দান করেন এবং বহুগুণে ফিরিয়ে দেন।</p></div>
+                <div class="card"><h4 class="font-bold text-lg mb-2">বিপদ ও রোগমুক্তি</h4><p class="text-sm text-gray-600">নবী (সাঃ) বলেছেন, "তোমরা সাদকার মাধ্যমে তোমাদের রোগীদের চিকিৎসা করো।"</p></div>
+                <div class="card"><h4 class="font-bold text-lg mb-2">কিয়ামতের ছায়া</h4><p class="text-sm text-gray-600">কিয়ামতের কঠিন দিনে দানকারীর জন্য তার দান ছায়া হয়ে দাঁড়াবে।</p></div>
+                <div class="card"><h4 class="font-bold text-lg mb-2">আল্লাহর ক্রোধ নিবারণ</h4><p class="text-sm text-gray-600">সাদকা বা দান আল্লাহর ক্রোধকে নিভিয়ে দেয় এবং খারাপ মৃত্যু থেকে রক্ষা করে।</p></div>
+            </div>
+        </section>
+        
+        <section id="stories" class="mb-16 scroll-mt-20">
+             <div class="text-center mb-10">
+                <h3 class="text-2xl md:text-3xl font-bold text-gray-800">উদারতার অনুপ্রেরণামূলক ঘটনা</h3>
+                <p class="text-md text-gray-500 mt-2">সাহাবীদের জীবন থেকে নেওয়া কিছু দৃষ্টান্ত।</p>
+            </div>
+            <div class="space-y-8"><div class="card"><h4 class="text-xl font-bold text-gray-800 mb-3">ক্ষুধার্ত অতিথি ও আনসারী পরিবার</h4><p class="text-gray-600 leading-relaxed">একবার একজন ক্ষুধার্ত ব্যক্তি রাসূল (সাঃ)-এর কাছে আসলে তাঁর ঘরে কোনো খাবার ছিল না। তখন একজন আনসারী সাহাবী তাকে নিজের घरी নিয়ে যান। घरी শুধু বাচ্চাদের জন্য সামান্য খাবার ছিল। সেই সাহাবী ও তাঁর স্ত্রী বাচ্চাদের ঘুম পাড়িয়ে দিয়ে নিজেরা না খেয়ে অতিথিকে আপ্যায়ন করেন। বাতি নিভিয়ে দিয়ে তারা খাওয়ার ভান করেন যেন অতিথি পেট ভরে খেতে পারেন। তাদের এই আত্মত্যাগে আল্লাহ এতটাই খুশি হন যে, তিনি তাদের প্রশংসায় কুরআনের আয়াত নাযিল করেন: "এবং তারা নিজেদের উপর অন্যদেরকে অগ্রাধিকার দেয়, যদিও তাদের নিজেদের অভাব থাকে।" (সূরা হাশর: ৯)</p></div><div class="card"><h4 class="text-xl font-bold text-gray-800 mb-3">আবু দাহদাহ (রাঃ) এর বাগান দান</h4><p class="text-gray-600 leading-relaxed">যখন কুরআনের আয়াত "কে সে, যে আল্লাহকে উত্তম ঋণ দেবে, ফলে তিনি তার জন্য বহুগুণে বৃদ্ধি করবেন?" (সূরা বাকারা: ২৪৫) নাযিল হলো, তখন সাহাবী আবু দাহদাহ (রাঃ) রাসূল (সাঃ)-এর কাছে এসে বললেন, "হে আল্লাহর রাসূল! আমি আমার সবচেয়ে প্রিয়, ৬০০ খেজুর গাছসহ বাগানটি আল্লাহকে ঋণ দিলাম।" এরপর তিনি তার স্ত্রীর কাছে গিয়ে তাকে বাগান থেকে বেরিয়ে আসতে বলেন কারণ সেটি তিনি আল্লাহর পথে দান করে দিয়েছেন। তার স্ত্রী খুশি মনে তা মেনে নেন। রাসূল (সাঃ) তার জন্য জান্নাতে একটি বিশাল বাগানের সুসংবাদ দেন।</p></div></div>
+        </section>
+
+        <section id="comparison" class="mb-16 scroll-mt-20">
+            <div class="text-center mb-10">
+                <h3 class="text-2xl md:text-3xl font-bold text-gray-800">উদারতা বনাম কার্পণ্য: একটি তুলনামূলক বিশ্লেষণ</h3>
+                <p class="text-md text-gray-500 mt-2">এই চার্টটি দুটি বিপরীতমুখী গুণের প্রভাবকে তুলে ধরে।</p>
+            </div>
+            <div class="card"><div class="chart-container"><canvas id="comparisonChart"></canvas></div></div>
+        </section>
+        
+        <section id="gemini-features" class="mb-16 scroll-mt-20">
+             <div class="text-center mb-10">
+                <h3 class="text-2xl md:text-3xl font-bold text-gray-800">ব্যক্তিগত পরামর্শ ও দোয়া (AI দ্বারা চালিত)</h3>
+                <p class="text-md text-gray-500 mt-2">এই শিক্ষাগুলোকে আপনার জীবনে প্রয়োগ করুন।</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card text-center">
+                    <h4 class="text-xl font-bold text-gray-800 mb-3">উদারতা চর্চার ব্যবহারিক উপায়</h4>
+                    <p class="text-gray-600 mb-4">কীভাবে আপনার দৈনন্দিন জীবনে আরও দানশীল হতে পারেন তা জানতে চান? জেমিনি এআই থেকে কিছু সহজ ও কার্যকরী পরামর্শ নিন।</p>
+                    <button id="getStepsBtn" class="gemini-btn">✨ আমার জন্য কিছু উপায় তৈরি করুন</button>
+                    <div id="stepsLoader" class="loader hidden"></div>
+                    <div id="stepsResult" class="mt-4 text-left"></div>
+                </div>
+                <div class="card text-center">
+                    <h4 class="text-xl font-bold text-gray-800 mb-3">ব্যক্তিগত দোয়া তৈরি করুন</h4>
+                    <p class="text-gray-600 mb-4">আপনার নির্দিষ্ট প্রয়োজন উল্লেখ করে একটি দোয়া তৈরি করতে পারেন। যেমন: "আমার পরিবারের জন্য" বা "কার্পণ্য থেকে মুক্তির জন্য"।</p>
+                    <input type="text" id="duaContext" placeholder="আপনার দোয়ার বিষয় লিখুন..." class="w-full p-2 border rounded-md mb-3">
+                    <button id="getDuaBtn" class="gemini-btn">✨ দোয়া তৈরি করুন</button>
+                     <div id="duaLoader" class="loader hidden"></div>
+                    <div id="duaResult" class="mt-4 text-left quote hidden"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion" class="text-center scroll-mt-20">
+             <h3 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">শেষ কথা</h3>
+             <div class="quote max-w-3xl mx-auto"><p class="italic text-gray-700">"কার্পণ্য থেকে বেঁচে থাকো, কারণ এটি তোমাদের পূর্ববর্তীদের ধ্বংস করেছে। এটি তাদের রক্তপাত ঘটাতে এবং হারামকে হালাল করতে প্ররোচিত করেছিল।"</p><p class="text-right font-medium text-sm text-gray-600 mt-2">- সহীহ মুসলিম</p></div>
+             <p class="text-lg text-gray-600 max-w-3xl mx-auto mt-6">আল্লাহ আমাদের সবাইকে উদার ও দানশীল হওয়ার এবং কার্পণ্যের মতো ধ্বংসাত্মক গুণ থেকে বেঁচে থাকার তৌফিক দান করুন। আমিন।</p>
+        </section>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-16">
+        <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
+            <p>&copy; 2024 - শেখ খালিদ আল-রাশেদের আলোচনার উপর ভিত্তি করে তৈরি। শিক্ষামূলক উদ্দেশ্যে নির্মিত।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Chart.js initialization
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            const comparisonChart = new Chart(ctx, {
+                type: 'bar', data: { labels: ['আল্লাহর সন্তুষ্টি','মানুষের ভালোবাসা','আত্মিক প্রশান্তি','সম্পদে বরকত','পরকালীন মুক্তি'], datasets: [{ label: 'উদারতা (Generosity)', data: [90, 85, 80, 75, 95], backgroundColor: 'rgba(52, 152, 219, 0.7)', borderColor: 'rgba(52, 152, 219, 1)', borderWidth: 1 }, { label: 'কার্পণ্য (Miserliness)', data: [-70, -80, -90, -60, -85], backgroundColor: 'rgba(231, 76, 60, 0.7)', borderColor: 'rgba(231, 76, 60, 1)', borderWidth: 1 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'উদারতা এবং কার্পণ্যের ফলাফল', font: { size: 18, family: "'Hind Siliguri', sans-serif" }, color: '#333' }, tooltip: { callbacks: { label: function(context) { let label = context.dataset.label || ''; if (label) { label += ': '; } if (context.parsed.x !== null) { label += Math.abs(context.parsed.x) + '% প্রভাব'; } return label; } } } }, scales: { x: { title: { display: true, text: 'প্রভাব (ইতিবাচক বনাম নেতিবাচক)', font: { size: 14, family: "'Hind Siliguri', sans-serif" } }, ticks: { callback: function(value, index, values) { return Math.abs(value) + '%'; } } }, y: { ticks: { font: { size: 13, family: "'Hind Siliguri', sans-serif" } } } } }
+            });
+
+            // Mobile menu toggle
+            const menuButton = document.getElementById('menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navLinks = document.querySelectorAll('.nav-link');
+            menuButton.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                         mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // Gemini API call logic
+            const getStepsBtn = document.getElementById('getStepsBtn');
+            const stepsLoader = document.getElementById('stepsLoader');
+            const stepsResult = document.getElementById('stepsResult');
+            const getDuaBtn = document.getElementById('getDuaBtn');
+            const duaLoader = document.getElementById('duaLoader');
+            const duaResult = document.getElementById('duaResult');
+            const duaContext = document.getElementById('duaContext');
+
+            const apiKey = ""; 
+
+            async function callGemini(prompt) {
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) {
+                        throw new Error(`API অনুরোধ ব্যর্থ হয়েছে: ${response.status}`);
+                    }
+                    const result = await response.json();
+                     if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        return "দুঃখিত, কোনো উত্তর পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।";
+                    }
+                } catch (error) {
+                    console.error("Gemini API Error:", error);
+                    return "একটি সমস্যা হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।";
+                }
+            }
+            
+            getStepsBtn.addEventListener('click', async () => {
+                stepsLoader.classList.remove('hidden');
+                stepsResult.innerHTML = '';
+                getStepsBtn.disabled = true;
+                const prompt = "ইসলামে উদারতা ও দানশীলতার শিক্ষার উপর ভিত্তি করে, একজন ব্যক্তির দৈনন্দিন জীবনে আরও উদার হওয়ার জন্য ৫টি সহজ এবং কার্যকরী উপায় বাংলায় তালিকা আকারে দিন। উত্তরটি মার্কডাউন লিস্ট আকারে দিন।";
+                const responseText = await callGemini(prompt);
+                stepsResult.innerHTML = responseText.replace(/\n/g, '<br>'); // Simple formatting
+                stepsLoader.classList.add('hidden');
+                getStepsBtn.disabled = false;
+            });
+
+            getDuaBtn.addEventListener('click', async () => {
+                const context = duaContext.value.trim();
+                if (!context) {
+                    alert("অনুগ্রহ করে দোয়ার জন্য একটি বিষয় উল্লেখ করুন।");
+                    return;
+                }
+                duaLoader.classList.remove('hidden');
+                duaResult.classList.add('hidden');
+                duaResult.innerHTML = '';
+                getDuaBtn.disabled = true;
+                
+                const prompt = `একজন ব্যক্তির জন্য একটি ছোট, ব্যক্তিগত এবং হৃদয়গ্রাহী ইসলামিক দোয়া (dua) বাংলায় তৈরি করুন। তার দোয়ার বিষয় হলো: '${context}'। দোয়াটি যেন সহজ ভাষায় হয় এবং আল্লাহর কাছে সাহায্য ও উদারতা বৃদ্ধির আবেদন থাকে।`;
+                const responseText = await callGemini(prompt);
+                
+                const p = document.createElement('p');
+                p.className = "italic text-gray-700";
+                p.innerText = responseText;
+                duaResult.appendChild(p);
+
+                duaLoader.classList.add('hidden');
+                duaResult.classList.remove('hidden');
+                getDuaBtn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রমজানে মক্কা বিজয়: একটি ইন্টারেক্টিভ পর্যালোচনা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cyberpunk Neon on Dark -->
+    <!-- Application Structure Plan: The application uses a single-page, thematic structure with a top navigation bar for easy access to key sections. The flow is designed to be non-linear, allowing users to explore topics of interest. Sections include: 'Context' (using a timeline-like flow), 'The Historic Moment' (with info cards and a chart), 'Character of the Victor' (highlighting humility and forgiveness), 'Youth: Past & Present' (a comparative two-column layout), and 'Lessons'. This structure breaks down the long sermon into digestible, engaging modules, enhancing user understanding and exploration over a simple linear reading of the report. -->
+    <!-- Visualization & Content Choices: 
+        - Timeline (HTML/CSS): Goal: Show process. Method: Styled divs to visualize the events leading to the conquest. Justification: More engaging than text for a sequence.
+        - Bar Chart (Chart.js): Goal: Inform with data. Method: Visualizes the Muslim army's size (10,000 soldiers). Justification: Makes the number memorable.
+        - Info Cards (HTML/CSS): Goal: Organize/Inform. Method: To highlight key figures like Mus'ab ibn Umayr and Usama ibn Zayd. Justification: Breaks down biographical info into scannable units.
+        - Comparative Layout (Flexbox): Goal: Compare. Method: A side-by-side view of youth from the past vs. the sermon's critique of the present. Justification: Emphasizes a core theme of the sermon.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --surface-color: #161b22;
+            --text-color: #c9d1d9;
+            --text-color-muted: #8b949e;
+            --neon-color: #22d3ee;
+            --neon-shadow: 0 0 5px var(--neon-color), 0 0 10px var(--neon-color), 0 0 15px var(--neon-color);
+            --neon-shadow-light: 0 0 5px var(--neon-color);
+        }
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        .neon-text {
+            color: var(--neon-color);
+            text-shadow: var(--neon-shadow-light);
+        }
+        header {
+           background-color: rgba(13, 17, 23, 0.8) !important;
+        }
+        .nav-link {
+            transition: color 0.3s, text-shadow 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--neon-color);
+            border-bottom-color: var(--neon-color);
+            text-shadow: var(--neon-shadow-light);
+        }
+        .card {
+            background-color: var(--surface-color);
+            border: 1px solid #30363d;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-color);
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--neon-color);
+            border: 2px solid var(--bg-color);
+            box-shadow: var(--neon-shadow-light);
+        }
+        .timeline-line {
+            position: absolute;
+            left: -15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #30363d;
+        }
+        .section-title {
+            color: white;
+            text-shadow: var(--neon-shadow);
+        }
+    </style>
+</head>
+<body class="scroll-smooth">
+
+    <header class="backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-black/20">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold neon-text">মক্কা বিজয়</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#introduction" class="nav-link">ভূমিকা</a>
+                <a href="#context" class="nav-link">প্রেক্ষাপট</a>
+                <a href="#moment" class="nav-link">ঐতিহাসিক মুহূর্ত</a>
+                <a href="#character" class="nav-link">বিজয়ীর চরিত্র</a>
+                <a href="#youth" class="nav-link">যুবসমাজ</a>
+                <a href="#lessons" class="nav-link">শিক্ষা</a>
+            </div>
+            <div class="md:hidden">
+                <select id="mobile-nav" class="bg-gray-800 border border-gray-600 rounded-md p-2 text-white">
+                    <option value="#introduction">ভূমিকা</option>
+                    <option value="#context">প্রেক্ষাপট</option>
+                    <option value="#moment">ঐতিহাসিক মুহূর্ত</option>
+                    <option value="#character">বিজয়ীর চরিত্র</option>
+                    <option value="#youth">যুবসমাজ</option>
+                    <option value="#lessons">শিক্ষা</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-12">
+
+        <section id="introduction" class="text-center min-h-[60vh] flex flex-col justify-center items-center">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 leading-tight section-title">রমজানে মক্কা বিজয়</h2>
+            <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">
+                শাইখ খালিদ আর-রাশিদের বয়ানের আলোকে একটি ইন্টারেক্টিভ পর্যালোচনা। এই অ্যাপটি আপনাকে সেই ঐতিহাসিক বিজয়ের বিভিন্ন দিক অন্বেষণ করতে সাহায্য করবে, যা ঈমান, ধৈর্য এবং নৈতিকতার এক উজ্জ্বল দৃষ্টান্ত।
+            </p>
+            <div class="mt-8 p-6 border-l-4 border-cyan-400 bg-gray-900/50">
+                <blockquote class="text-xl italic text-gray-300">
+                    "মক্কা বিজয় সকল দিক থেকে তাওহীদপন্থীদের জন্য একটি বিজয় ছিল। আর তা সম্ভব হয়েছিল এমন কিছু ব্যক্তির কারণে, যারা এই দ্বীনের সাহায্যের জন্য নিজেদের সময়, সম্পদ এবং জীবন উৎসর্গ করেছিলেন।"
+                </blockquote>
+            </div>
+        </section>
+
+        <div class="my-16 border-t border-gray-800"></div>
+
+        <section id="context" class="py-12">
+            <h2 class="text-3xl font-bold text-center mb-2 section-title">বিজয়ের প্রেক্ষাপট</h2>
+            <p class="text-center text-gray-400 mb-12 max-w-2xl mx-auto">
+                মক্কা বিজয়ের পটভূমি তৈরি হয়েছিল হুদায়বিয়ার সন্ধি ভঙ্গের মাধ্যমে। এই разделе আমরা সেই ঘটনাক্রম দেখব যা এই মহান বিজয়ের দিকে পরিচালিত করেছিল।
+            </p>
+            <div class="relative max-w-2xl mx-auto pl-8">
+                <div class="timeline-line"></div>
+                <div class="space-y-12">
+                    <div class="relative timeline-item">
+                        <h3 class="text-xl font-bold mb-2 neon-text">হুদায়বিয়ার সন্ধি</h3>
+                        <p class="text-gray-400">নবী (সাঃ) ও কুরাইশদের মধ্যে দশ বছরের জন্য একটি ঐতিহাসিক যুদ্ধবিরতি চুক্তি স্বাক্ষরিত হয়। এর শর্তানুযায়ী, কোনো পক্ষ বা তাদের মিত্ররা একে অপরের উপর আক্রমণ করবে না।</p>
+                    </div>
+                    <div class="relative timeline-item">
+                        <h3 class="text-xl font-bold mb-2 neon-text">চুক্তি ভঙ্গ</h3>
+                        <p class="text-gray-400">কুরাইশদের মিত্র কিনানা গোত্র, মুসলিমদের মিত্র খুযা'আ গোত্রের উপর অতর্কিত আক্রমণ করে এবং হারামের সীমানার ভেতরে ২৫ জনেরও বেশি লোককে হত্যা করে। কুরাইশরা এই আক্রমণে সহায়তা করে, যা ছিল সরাসরি চুক্তি লঙ্ঘন।</p>
+                    </div>
+                    <div class="relative timeline-item">
+                        <h3 class="text-xl font-bold mb-2 neon-text">নবী (সাঃ) এর প্রস্তাব</h3>
+                        <p class="text-gray-400">চুক্তি ভঙ্গের পর, নবী (সাঃ) কুরাইশদের তিনটি বিকল্প দেন: (১) নিহতদের রক্তপণ প্রদান করা, (২) বিশ্বাসঘাতক কিনানা গোত্রের সাথে সম্পর্ক ছিন্ন করা, অথবা (৩) যুদ্ধের জন্য প্রস্তুত হওয়া।</p>
+                    </div>
+                    <div class="relative timeline-item">
+                        <h3 class="text-xl font-bold mb-2 neon-text">কুরাইশদের ঔদ্ধত্য</h3>
+                        <p class="text-gray-400">অহংকারী কুরাইশরা প্রথম দুটি প্রস্তাব প্রত্যাখ্যান করে এবং যুদ্ধকে বেছে নেয়। তারা তাদের বিশ্বাসঘাতকতা নিয়ে গর্ব করে, যা মক্কা অভিযানের পথ খুলে দেয়।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="my-16 border-t border-gray-800"></div>
+
+        <section id="moment" class="py-12">
+            <h2 class="text-3xl font-bold text-center mb-2 section-title">ঐতিহাসিক মুহূর্ত</h2>
+            <p class="text-center text-gray-400 mb-12 max-w-2xl mx-auto">
+                কুরাইশদের বিশ্বাসঘাতকতার জবাবে, নবী (সাঃ) এক বিশাল বাহিনী নিয়ে মক্কার দিকে যাত্রা করেন। এই section-এ আমরা সেই শ্বাসরুদ্ধকর মুহূর্তগুলো দেখব।
+            </p>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-6">
+                    <div class="card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-2 neon-text">সেনাবাহিনীর আগমন</h3>
+                        <p class="text-gray-400">নবী (সাঃ) দশ হাজার যোদ্ধার এক বিশাল সেনাবাহিনী নিয়ে মদিনা থেকে যাত্রা করেন। আল্লাহ মক্কাবাসীদের কাছ থেকে এই খবর গোপন রাখেন, ফলে তারা desprevenido ছিল।</p>
+                    </div>
+                     <div class="card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-2 neon-text">আবু সুফিয়ানের উপলব্ধি</h3>
+                        <p class="text-gray-400">মক্কার নেতা আবু সুফিয়ান মুসলিম বাহিনীর বিশালতা দেখে হতবাক হয়ে যান। তিনি আব্বাস (রাঃ) কে বলেন, "তোমার ভাতিজার রাজত্ব তো বিশাল হয়ে গেছে।" আব্বাস (রাঃ) উত্তর দেন, "এটা নবুয়ত, এবং এটা বিশ্বজগতের প্রতিপালকের সাহায্য।"</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="chart-container">
+                        <canvas id="armySizeChart"></canvas>
+                    </div>
+                    <p class="text-center mt-4 text-gray-400">মুসলিম সেনাবাহিনীর আকার</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="my-16 border-t border-gray-800"></div>
+
+        <section id="character" class="py-12 text-center">
+            <h2 class="text-3xl font-bold mb-2 section-title">বিজয়ীর চরিত্র: ক্ষমা ও বিনয়</h2>
+            <p class="text-center text-gray-400 mb-12 max-w-2xl mx-auto">
+                ক্ষমতা থাকা সত্ত্বেও প্রতিশোধ নয়, বরং ক্ষমা ও বিনয় ছিল মক্কা বিজয়ের মূল চালিকাশক্তি। এই section টি রাসূলুল্লাহ (সাঃ) এর মহানুভবতার উপর আলোকপাত করে।
+            </p>
+            <div class="max-w-3xl mx-auto p-8 rounded-lg card">
+                <p class="text-2xl leading-relaxed text-center font-serif mb-4 neon-text">
+                    "আজ তোমাদের বিরুদ্ধে কোনো অভিযোগ নেই। যাও, তোমরা সবাই মুক্ত।"
+                </p>
+                <p class="font-bold text-lg text-white">- মুহাম্মদ (সাঃ), মক্কাবাসীদের উদ্দেশ্যে</p>
+                <hr class="my-6 border-gray-700">
+                <p class="text-left text-gray-300 space-y-4">
+                    <span>রাসূলুল্লাহ (সাঃ) বিজয়ীর বেশে মক্কায় প্রবেশ করেন মাথা নত করে। তাঁর চোখ দিয়ে অশ্রু ঝরছিল, আর তিনি আল্লাহর প্রশংসায় মগ্ন ছিলেন।</span>
+                    <span>তিনি সেই সমস্ত লোকদের জন্য সাধারণ ক্ষমা ঘোষণা করেন যারা তাঁকে ও তাঁর সাহাবীদের উপর অকথ্য নির্যাতন চালিয়েছিল, তাঁকে হত্যার ষড়যন্ত্র করেছিল এবং জন্মভূমি থেকে বিতাড়িত করেছিল। এটি ছিল ক্ষমতার সর্বোচ্চ শিখরে থেকেও ক্ষমার এক অতুলনীয় দৃষ্টান্ত।</span>
+                </p>
+            </div>
+        </section>
+
+        <div class="my-16 border-t border-gray-800"></div>
+
+        <section id="youth" class="py-12">
+            <h2 class="text-3xl font-bold text-center mb-2 section-title">যুবসমাজ: অতীত ও বর্তমান</h2>
+             <p class="text-center text-gray-400 mb-12 max-w-2xl mx-auto">
+                ঐতিহাসিক বিজয়গুলো সম্ভব হয়েছিল ঈমানদার ও দৃঢ়প্রতিজ্ঞ যুবকদের মাধ্যমে। বয়ানে শাইখ খালিদ আর-রাশিদ তৎকালীন যুবকদের সাথে বর্তমান যুবকদের একটি তুলনা করেছেন, যা আমাদের জন্য এক গভীর চিন্তার খোরাক।
+            </p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-4 text-center border-b pb-2 border-gray-700 neon-text">অতীতের যুবক: ঈমানের প্রতিচ্ছবি</h3>
+                    <div class="space-y-4 mt-4">
+                        <div>
+                            <h4 class="font-bold text-lg text-white">
+                                <span class="text-cyan-400 mr-2">❖</span>মুস'আব ইবনে উমাইর (রাঃ)
+                            </h4>
+                            <p class="pl-6 text-gray-400">মক্কার সবচেয়ে ধনী ও সুদর্শন যুবক হয়েও তিনি ইসলামের জন্য সমস্ত বিলাসিতা ত্যাগ করেন। তিনি ছিলেন ইসলামের প্রথম দূত, যিনি একা মদিনায় গিয়ে তার অধিবাসীদের হৃদয় জয় করেন এবং হিজরতের জন্য ক্ষেত্র প্রস্তুত করেন।</p>
+                        </div>
+                        <div>
+                           <h4 class="font-bold text-lg text-white">
+                                <span class="text-cyan-400 mr-2">❖</span>উসামা বিন যায়েদ (রাঃ)
+                            </h4>
+                            <p class="pl-6 text-gray-400">মাত্র বিশ বছর বয়সের আগেই নবী (সাঃ) তাকে এমন এক বিশাল সেনাবাহিনীর সেনাপতি নিযুক্ত করেন যেখানে আবু বকর (রাঃ) ও উমর (রাঃ) এর মতো সাহাবীরাও ছিলেন। তারুণ্য ও ঈমানের এমন সমন্বয় ছিল তাঁদের বৈশিষ্ট্য।</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-4 text-center border-b pb-2 border-gray-700 neon-text">বর্তমান যুবকদের প্রতি আহ্বান</h3>
+                     <div class="space-y-4 mt-4">
+                         <p class="text-gray-300">শাইখ দুঃখ প্রকাশ করে বলেন, আজকের অনেক যুবক সঙ্গীত, অর্থহীন অনুষ্ঠান, এবং খেলাধুলায় মগ্ন। তিনি প্রশ্ন তোলেন:</p>
+                        <blockquote class="border-l-4 border-gray-500 pl-4 italic text-gray-400">
+                            "ইতিহাস কি লিখবে যে আমরা এক উদাসীন জাতি, যারা নিজেদের দেশের পতন দেখেছে, আর তাদের চোখ ছিল বলের উপর?"
+                        </blockquote>
+                        <p class="text-gray-300">তিনি যুবকদেরকে খেল-তামাশা ছেড়ে আল্লাহর দিকে ফিরে আসার, ঈমানের মিষ্টতা অন্বেষণ করার এবং পূর্বসূরীদের মতো দ্বীনের জন্য কাজ করার আহ্বান জানান।</p>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="my-16 border-t border-gray-800"></div>
+
+        <section id="lessons" class="py-12">
+            <h2 class="text-3xl font-bold text-center mb-12 section-title">মক্কা বিজয় থেকে আমাদের শিক্ষা</h2>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-bold mb-2 neon-text">ঈমান ও ধৈর্য</h3>
+                    <p class="text-gray-400">বিজয় আসে আল্লাহর উপর দৃঢ় বিশ্বাস এবং কঠিন সময়ে ধৈর্য ধারণ করার মাধ্যমে।</p>
+                </div>
+                <div class="card p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-bold mb-2 neon-text">নৈতিকতার শক্তি</h3>
+                    <p class="text-gray-400">প্রতিশ্রুতি রক্ষা, সততা এবং ক্ষমতা থাকা সত্ত্বেও ক্ষমা করার মতো নৈতিক গুণাবলীই প্রকৃত বিজয়ের ভিত্তি।</p>
+                </div>
+                <div class="card p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-bold mb-2 neon-text">ঐক্য ও প্রস্তুতি</h3>
+                    <p class="text-gray-400">মুমিনদের ঐক্যবদ্ধ প্রচেষ্টা এবং সঠিক প্রস্তুতি ছাড়া কোনো বড় লক্ষ্য অর্জন সম্ভব নয়।</p>
+                </div>
+                <div class="card p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-bold mb-2 neon-text">আল্লাহর সাহায্য</h3>
+                    <p class="text-gray-400">চূড়ান্ত বিজয় আল্লাহর পক্ষ থেকেই আসে। "যদি তোমরা আল্লাহকে সাহায্য কর, তবে তিনি তোমাদের সাহায্য করবেন।"</p>
+                </div>
+                <div class="card p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-bold mb-2 neon-text">বিনয় ও কৃতজ্ঞতা</h3>
+                    <p class="text-gray-400">সাফল্যের সর্বোচ্চ শিখরে পৌঁছেও অহংকারী না হয়ে আল্লাহর প্রতি বিনয়ী ও কৃতজ্ঞ থাকা উচিত।</p>
+                </div>
+                 <div class="card p-6 rounded-lg text-center">
+                    <h3 class="text-xl font-bold mb-2 neon-text">যুবকদের ভূমিকা</h3>
+                    <p class="text-gray-400">একটি জাতির উত্থান ও সাফল্য নির্ভর করে তার ঈমানদার ও কর্মঠ যুবসমাজের উপর।</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-black/50 text-gray-500 text-center py-4 mt-12">
+        <p>শাইখ খালিদ আর-রাশিদের বয়ানের উপর ভিত্তি করে তৈরি।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('armySizeChart').getContext('2d');
+            const neonColor = '#22d3ee';
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['মুসলিম সেনাবাহিনী'],
+                    datasets: [{
+                        label: 'যোদ্ধার সংখ্যা',
+                        data: [10000],
+                        backgroundColor: [neonColor+'4D'],
+                        borderColor: [neonColor],
+                        borderWidth: 2,
+                        barPercentage: 0.5,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#0d1117',
+                            titleColor: '#c9d1d9',
+                            bodyColor: '#c9d1d9',
+                            borderColor: '#30363d',
+                            borderWidth: 1,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('bn-BD').format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                           ticks: { color: '#8b949e' },
+                           grid: { color: 'rgba(139, 148, 158, 0.2)' }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#8b949e',
+                                callback: function(value, index, values) {
+                                    return new Intl.NumberFormat('bn-BD').format(value);
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(139, 148, 158, 0.2)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.addEventListener('change', function() {
+                const targetId = this.value;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 70) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+
+                const activeLink = document.querySelector(`.nav-link[href="#${current}"]`);
+                if(activeLink){
+                    const mobileNavOption = mobileNav.querySelector(`option[value="#${current}"]`);
+                    if(mobileNavOption) mobileNav.value = mobileNavOption.value;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

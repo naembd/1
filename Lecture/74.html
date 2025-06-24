@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সত্যবাদীদের মুক্তি - শাইখ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cyber Neon (Background: #1A202C, Text: #E2E8F0, Primary Accent: #08D9D6, Secondary Accent: #FF2E63) -->
+    <!-- Application Structure Plan: The application is designed as a single-page thematic dashboard. It uses a top navigation bar to allow users to jump between the core themes of the sermon: 'Introduction', 'Importance', 'The Example of As-Siddiq', 'Domains of Truthfulness', and 'Conclusion'. This non-linear structure transforms the long-form sermon into digestible, self-contained sections. This approach was chosen to enhance user engagement and comprehension by allowing them to explore the content based on their interest, rather than being forced into a linear reading. The flow moves from the abstract concept of truthfulness to its practical manifestation and application, fostering a deeper understanding. -->
+    <!-- Visualization & Content Choices: 
+        - Sermon's Core Concepts -> Goal: Inform -> Presentation: Thematic text blocks with clear headings. -> Interaction: Users select sections via navigation. -> Justification: Breaks down the sermon into logical, manageable parts for better readability and focus. -> Method: Styled HTML with Tailwind.
+        - Quranic Verses & Hadith -> Goal: Emphasize -> Presentation: Distinctly styled blockquotes. -> Interaction: Static. -> Justification: To give prominence to the sacred and authoritative texts, separating them from the commentary. -> Method: Styled HTML with Tailwind.
+        - Story of Abu Bakr As-Siddiq -> Goal: Illustrate -> Presentation: A narrative-focused section with clear sub-headings for each incident. -> Interaction: Static. -> Justification: Provides a powerful, concrete example of the abstract concept of truthfulness. -> Method: Styled HTML with Tailwind.
+        - Domains of Truthfulness -> Goal: Organize/Explore -> Presentation: An interactive grid of cards. -> Interaction: Clicking on a card reveals detailed text. -> Justification: This key interactive element encourages user engagement and makes the different facets of truthfulness easy to explore and compare. -> Method: Vanilla JS and Tailwind CSS.
+        - Conclusion/Dua -> Goal: Conclude/Call to Action -> Presentation: A final, focused text block. -> Interaction: Static. -> Justification: To provide a clear and impactful closing message and prayer. -> Method: Styled HTML with Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #1A202C;
+            color: #E2E8F0;
+        }
+        .neon-text-main {
+            text-shadow: 0 0 5px rgba(255, 46, 99, 0.7), 0 0 10px rgba(255, 46, 99, 0.7), 0 0 20px rgba(255, 46, 99, 0.7), 0 0 40px rgba(255, 46, 99, 0.5);
+        }
+        .neon-text-secondary {
+             text-shadow: 0 0 3px rgba(8, 217, 214, 0.8), 0 0 5px rgba(8, 217, 214, 0.6);
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+            color: #08D9D6;
+            border: 1px solid transparent;
+        }
+        .nav-button.active, .nav-button:hover {
+            color: #E2E8F0;
+            background-color: rgba(8, 217, 214, 0.1);
+            border-color: rgba(8, 217, 214, 0.5);
+            text-shadow: 0 0 5px rgba(8, 217, 214, 0.8);
+        }
+        .content-section {
+            display: none;
+            background-color: rgba(45, 55, 72, 0.7);
+            border: 1px solid rgba(136, 152, 179, 0.2);
+        }
+        .content-section.active {
+            display: block;
+        }
+        .card {
+            background-color: #2D3748;
+            border: 1px solid rgba(136, 152, 179, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(8, 217, 214, 0.3);
+            border-color: rgba(8, 217, 214, 0.6);
+        }
+        blockquote {
+            background-color: rgba(255, 46, 99, 0.05);
+            border-right: 4px solid #FF2E63;
+            box-shadow: -5px 0 15px -5px rgba(255, 46, 99, 0.2);
+        }
+        .info-box {
+            background-color: rgba(8, 217, 214, 0.05);
+            border: 1px solid rgba(8, 217, 214, 0.2);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-5xl font-bold text-[#FF2E63] mb-2 neon-text-main">সত্যবাদীদের মুক্তি</h1>
+            <p class="text-lg text-gray-400">শাইখ খালিদ আল-রাশেদ এর আলোচনার উপর ভিত্তি করে</p>
+        </header>
+
+        <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 bg-black/30 backdrop-blur-sm sticky top-2 p-3 rounded-full shadow-lg z-10">
+            <button class="nav-button active px-4 py-2 rounded-full font-semibold" onclick="showSection('intro')">ভূমিকা</button>
+            <button class="nav-button px-4 py-2 rounded-full font-semibold" onclick="showSection('importance')">গুরুত্ব</button>
+            <button class="nav-button px-4 py-2 rounded-full font-semibold" onclick="showSection('siddiq')">সিদ্দীকের দৃষ্টান্ত</button>
+            <button class="nav-button px-4 py-2 rounded-full font-semibold" onclick="showSection('domains')">ক্ষেত্রসমূহ</button>
+            <button class="nav-button px-4 py-2 rounded-full font-semibold" onclick="showSection('conclusion')">উপসংহার</button>
+        </nav>
+
+        <main id="app-content">
+
+            <section id="intro" class="content-section active p-6 md:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-4 text-[#08D9D6] neon-text-secondary">ভূমিকা: সত্যবাদিতার মর্যাদা</h2>
+                <div class="space-y-4 text-gray-300 leading-relaxed">
+                    <p>এই আলোচনাটি সত্যবাদিতার অপরিমেয় গুরুত্ব এবং ইসলামে এর উচ্চ মর্যাদা তুলে ধরে। সত্যবাদিতা বা 'সিদক' কেবল একটি গুণ নয়, এটি এমন একটি মহান স্তর যা নবুয়তের পদের পরেই এবং শহীদদের পদের উপরে অবস্থিত। এটি এমন একটি বিষয় যার জন্য প্রত্যেক মুমিনের প্রতিযোগিতা করা উচিত।</p>
+                    <p>সত্যবাদিতার ধারণা শুধুমাত্র কথায় সীমাবদ্ধ নয়, বরং এর পরিধি আরও বিস্তৃত ও ব্যাপক। এই অ্যাপ্লিকেশনটির মাধ্যমে আমরা সত্যবাদিতার বিভিন্ন দিক, এর পুরস্কার এবং বাস্তব জীবনের উদাহরণ অন্বেষণ করব, যাতে আমরা এই মহান গুণটি আমাদের জীবনে ধারণ করতে পারি।</p>
+                </div>
+            </section>
+
+            <section id="importance" class="content-section p-6 md:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-4 text-[#08D9D6] neon-text-secondary">সত্যবাদিতার গুরুত্ব ও পরিণতি</h2>
+                 <div class="space-y-6 text-gray-300 leading-relaxed">
+                    <p>আলোচনার এই অংশে, সত্যবাদিতার অপরিহার্যতা এবং সমাজে এর প্রভাব সম্পর্কে আলোকপাত করা হয়েছে। বর্তমান সময়ে সত্য বলা কতটা কঠিন হয়ে পড়েছে এবং মিথ্যা কতটা সহজলভ্য হয়েছে, তা একটি বাস্তব ঘটনার মাধ্যমে তুলে ধরা হয়েছে।</p>
+                    
+                    <div class="p-4 rounded-lg info-box">
+                        <h3 class="font-semibold text-lg mb-2 text-white">একটি চিন্তার খোরাক</h3>
+                        <p>বক্তা একটি ব্যক্তিগত অভিজ্ঞতা বর্ণনা করেছেন যেখানে একজন ব্যক্তি কর্মস্থলে দেরিতে পৌঁছানোর জন্য সত্য বলার পরিবর্তে মিথ্যা অজুহাত খুঁজছিলেন। এটি আমাদের সমাজের একটি বাস্তব চিত্র তুলে ধরে, যেখানে প্রায়শই সত্যের চেয়ে মিথ্যাকে বেশি গ্রহণযোগ্য মনে করা হয়। নবী (সাঃ) এর হাদিস অনুযায়ী, এটি শেষ জামানার একটি লক্ষণ, যেখানে মিথ্যাবাদীকে সত্যবাদী এবং সত্যবাদীকে মিথ্যাবাদী মনে করা হবে।</p>
+                    </div>
+
+                    <p>মূল প্রশ্নটি হলো, আমরা কার সন্তুষ্টি চাই - আল্লাহর নাকি মানুষের? সত্য কথা বললে আল্লাহর সন্তুষ্টি অর্জন করা যায়, যদিও মানুষ অসন্তুষ্ট হতে পারে। আর মানুষের সন্তুষ্টির জন্য মিথ্যা বললে আল্লাহর অসন্তুষ্টি অবধারিত।</p>
+                    
+                    <blockquote class="p-4 my-4">
+                        <p class="italic text-gray-200">"জেনে রাখুন, সত্যবাদিতা একটি পরীক্ষা, কিন্তু এর পরিণতি সর্বদা প্রশংসনীয়। আর মিথ্যা তার অধিকারীর জন্য অমঙ্গল ও অনিষ্টকর এবং এর পরিণতি সর্বদা ভয়াবহ।"</p>
+                    </blockquote>
+                    
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-[#08D9D6] neon-text-secondary">কুরআনের আলোকে মর্যাদা</h3>
+                    <p>ইবনুল কাইয়্যিম (রহঃ) বলেন, সত্যবাদীদের স্তর মু'মিন এবং মুনাফিকদের মধ্যে পার্থক্যকারী। আল্লাহ তা'আলা বলেন:</p>
+                    
+                    <blockquote class="p-4 my-4 text-right" dir="rtl">
+                        <p class="text-xl text-gray-200">هَذَا يَوْمُ يَنفَعُ الصَّادِقِينَ صِدْقُهُمْ</p>
+                        <p class="text-left mt-2 italic text-gray-400" dir="ltr">"এটি এমন দিন, যেদিন সত্যবাদীদের সত্যবাদিতা তাদের উপকারে আসবে।" [আল-মায়িদাহ: ১১৯]</p>
+                    </blockquote>
+                    <blockquote class="p-4 my-4 text-right" dir="rtl">
+                        <p class="text-xl text-gray-200">فَأُوْلَئِكَ مَعَ الَّذِينَ أَنْعَمَ اللَّهُ عَلَيْهِمْ مِنَ النَّبِيِّينَ وَالصِّدِّيقِينَ وَالشُّهَدَاءِ وَالصَّالِحِينَ</p>
+                        <p class="text-left mt-2 italic text-gray-400" dir="ltr">"...তারা তাদের সঙ্গী হবে, যাদের প্রতি আল্লাহ নেয়ামত দান করেছেন, অর্থাৎ নবীগণ, সিদ্দীকগণ, শহীদগণ ও সৎকর্মশীলগণ।" [আন-নিসা: ৬৯]</p>
+                    </blockquote>
+                </div>
+            </section>
+
+            <section id="siddiq" class="content-section p-6 md:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-4 text-[#08D9D6] neon-text-secondary">আবু বকর (রাঃ): সত্যবাদিতার মূর্ত প্রতীক</h2>
+                <div class="space-y-6 text-gray-300 leading-relaxed">
+                    <p>সত্যবাদিতার একটি মূর্ত প্রতীক হলেন আবু বকর (রাঃ)। তিনি শুধুমাত্র কথায় নয়, বরং তাঁর কাজের মাধ্যমে এই 'সিদ্দীক' উপাধি অর্জন করেছেন। তাঁর জীবনের কিছু ঘটনা নিচে তুলে ধরা হলো যা তাঁর অতুলনীয় সত্যনিষ্ঠার প্রমাণ দেয়।</p>
+                    
+                    <div class="p-4 rounded-lg info-box mt-4">
+                        <h3 class="font-semibold text-lg mb-2 text-white">মি'রাজের ঘটনায় বিশ্বাস</h3>
+                        <p>যখন মক্কার কাফিররা নবী (সাঃ) এর ইসরা ও মি'রাজের ঘটনা নিয়ে আবু বকর (রাঃ) এর কাছে এসে তাঁকে অবিশ্বাস্য বলে প্রমাণ করার চেষ্টা করেছিল, তিনি কোনো দ্বিধা ছাড়াই বলেছিলেন, "যদি তিনি বলে থাকেন, তবে তিনি সত্য বলেছেন।" তিনি যুক্তি দিয়েছিলেন, "আমরা তো এর চেয়েও বড় বিষয়ে, অর্থাৎ সকাল-সন্ধ্যার আসমানী খবরের উপর তাঁকে বিশ্বাস করি।" এই ঘটনার পরই তিনি 'সিদ্দীক' বা পরম সত্যবাদী উপাধিতে ভূষিত হন।</p>
+                    </div>
+
+                    <blockquote class="p-4 my-4 text-right" dir="rtl">
+                        <p class="text-xl text-gray-200">إِنَّمَا الْمُؤْمِنُونَ الَّذِينَ آمَنُوا بِاللَّهِ وَرَسُولِهِ ثُمَّ لَمْ يَرْتَابُوا</p>
+                        <p class="text-left mt-2 italic text-gray-400" dir="ltr">"প্রকৃত মুমিন তারাই যারা আল্লাহ ও তাঁর রাসূলের প্রতি ঈমান আনার পর সন্দেহ পোষণ করে না।" [আল-হুজুরাত: ১৫]</p>
+                    </blockquote>
+
+                    <div class="p-4 rounded-lg info-box mt-4">
+                        <h3 class="font-semibold text-lg mb-2 text-white">আল্লাহর পথে সর্বস্ব দান</h3>
+                        <p>তাবুকের যুদ্ধের প্রস্তুতির সময় যখন নবী (সাঃ) দানের আহ্বান জানালেন, উমর (রাঃ) তার অর্ধেক সম্পদ নিয়ে এলেন। কিন্তু আবু বকর (রাঃ) তাঁর সমস্ত সম্পদ নিয়ে হাজির হলেন। নবী (সাঃ) যখন জিজ্ঞাসা করলেন, "পরিবারের জন্য কী রেখে এসেছ?", তিনি জবাব দিলেন, "তাদের জন্য আল্লাহ এবং তাঁর রাসূলকে রেখে এসেছি।"</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="domains" class="content-section p-6 md:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-4 text-[#08D9D6] neon-text-secondary">সত্যবাদিতার ক্ষেত্রসমূহ</h2>
+                <p class="mb-6 text-gray-400">সত্যবাদিতা জীবনের প্রতিটি ক্ষেত্রে প্রযোজ্য। এটি কেবল মানুষের সাথে কথোপকথনে সীমাবদ্ধ নয়। এই অংশে আমরা সত্যবাদিতার প্রধান ক্ষেত্রগুলো সম্পর্কে জানব। প্রতিটি কার্ডে ক্লিক করে বিস্তারিত পড়ুন।</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="card p-6 rounded-xl cursor-pointer" onclick="toggleCard(this)">
+                        <h3 class="text-xl font-bold mb-2 text-[#08D9D6] neon-text-secondary">১. আল্লাহর সাথে সত্যবাদিতা</h3>
+                        <div class="details hidden mt-4 space-y-2 text-gray-300 leading-relaxed">
+                            <p>এর অর্থ হলো, আল্লাহ যেখানে আপনাকে দেখতে চান, সেখানে উপস্থিত থাকা এবং যেখানে তিনি নিষেধ করেছেন, সেখান থেকে বিরত থাকা। একজন সত্যবাদী ব্যক্তি কি কখনো সালাত থেকে ঘুমিয়ে থাকতে পারে? সালাতে অলসতা মুনাফিকের লক্ষণ। তাই আল্লাহর সাথে সত্যবাদী হওয়ার প্রথম ধাপ হলো তাঁর আদেশসমূহ আন্তরিকভাবে পালন করা।</p>
+                        </div>
+                    </div>
+                    <div class="card p-6 rounded-xl cursor-pointer" onclick="toggleCard(this)">
+                        <h3 class="text-xl font-bold mb-2 text-[#08D9D6] neon-text-secondary">২. নিজের সাথে সত্যবাদিতা</h3>
+                        <div class="details hidden mt-4 space-y-2 text-gray-300 leading-relaxed">
+                            <p>যে ব্যক্তি আল্লাহর সাথে সত্যবাদী, সে নিজের সাথেও সত্যবাদী হয়। সে নিজের দুর্বলতাগুলো জানে, নিজের ভুল স্বীকার করে এবং নিজেকে সংশোধনের চেষ্টা করে। সে আত্ম-প্রতারণায় লিপ্ত হয় না।</p>
+                        </div>
+                    </div>
+                    <div class="card p-6 rounded-xl cursor-pointer" onclick="toggleCard(this)">
+                        <h3 class="text-xl font-bold mb-2 text-[#08D9D6] neon-text-secondary">৩. মানুষের সাথে সত্যবাদিতা</h3>
+                        <div class="details hidden mt-4 space-y-2 text-gray-300 leading-relaxed">
+                            <p>এর অর্থ হলো, অন্যের জন্য তাই পছন্দ করা যা নিজের জন্য পছন্দ করা হয়। মানুষের সাথে লেনদেন, কথা-বার্তা, প্রতিশ্রুতি রক্ষা - সকল ক্ষেত্রে সৎ ও স্বচ্ছ থাকা। এটি সামাজিক সম্প্রীতি ও বিশ্বাসের ভিত্তি।</p>
+                        </div>
+                    </div>
+                    <div class="card p-6 rounded-xl cursor-pointer" onclick="toggleCard(this)">
+                        <h3 class="text-xl font-bold mb-2 text-[#08D9D6] neon-text-secondary">৪. তওবায় সত্যবাদিতা</h3>
+                        <div class="details hidden mt-4 space-y-2 text-gray-300 leading-relaxed">
+                            <p>সত্যবাদী সে, যে তার তওবায় আন্তরিক। সে পাপকাজ থেকে ফিরে আসে এবং পুনরায় সেই পাপে লিপ্ত না হওয়ার জন্য দৃঢ়প্রতিজ্ঞ হয়। সূরা তওবায় আল্লাহ বলেন:</p>
+                            <blockquote class="p-3 my-2 text-right text-lg" dir="rtl">
+                                <p class="text-gray-200">يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ وَكُونُوا مَعَ الصَّادِقِينَ</p>
+                                <p class="text-left mt-1 italic text-base text-gray-400" dir="ltr">"হে ঈমানদারগণ, আল্লাহকে ভয় কর এবং সত্যবাদীদের সাথে থাক।" [আত-তওবা: ১১৯]</p>
+                            </blockquote>
+                            <p>অর্থাৎ, তাদের সাথে থাক যারা তাদের তওবায় সত্যবাদী।</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="conclusion" class="content-section p-6 md:p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-4 text-[#08D9D6] neon-text-secondary">উপসংহার: জান্নাতের পথ</h2>
+                <div class="space-y-4 text-gray-300 leading-relaxed">
+                    <p>সত্যবাদিতা জান্নাতের দিকে পরিচালিত করে, আর মিথ্যাচার জাহান্নামের দিকে। নবী (সাঃ) বলেছেন:</p>
+                     <blockquote class="p-4 my-4">
+                        <p class="italic text-gray-200">"নিশ্চয়ই সত্যবাদিতা পুণ্যের দিকে পথ দেখায়, আর পুণ্য জান্নাতের দিকে পথ দেখায়। একজন ব্যক্তি সত্য বলতে থাকে এবং সত্যের অন্বেষণ করতে থাকে যতক্ষণ না তাকে আল্লাহর কাছে 'সিদ্দীক' (সত্যনিষ্ঠ) হিসেবে লেখা হয়।"</p>
+                    </blockquote>
+                    <p>সত্যবাদীদের জীবনে পরীক্ষা আসতে পারে, কিন্তু তারা কখনো পরাজিত হয় না। কারণ তারা জানে যে, এই দৃঢ়তার প্রতিদান হলো জান্নাত।</p>
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-[#08D9D6] neon-text-secondary">আমাদের প্রার্থনা</h3>
+                    <p>হে আল্লাহ, আমাদেরকে সত্যবাদীদের অন্তর্ভুক্ত করুন। আমাদেরকে সত্যের পথে প্রবেশ করান এবং সত্যের পথে বের করুন। আমাদের অন্তরে ঈমানকে প্রিয় করে দিন এবং কুফর, ফাসিকী ও অবাধ্যতাকে অপ্রিয় করে দিন। হে আল্লাহ, আমাদেরকে সত্যকে সত্য হিসেবে দেখার এবং তা অনুসরণ করার তৌফিক দিন, আর বাতিলকে বাতিল হিসেবে চিনে তা থেকে বেঁচে থাকার তৌফিক দিন। আমীন।</p>
+                </div>
+            </section>
+            
+        </main>
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('.content-section');
+        const navButtons = document.querySelectorAll('.nav-button');
+
+        function showSection(id) {
+            sections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === id) {
+                    section.classList.add('active');
+                }
+            });
+            navButtons.forEach(button => {
+                button.classList.remove('active');
+                if (button.getAttribute('onclick').includes(`'${id}'`)) {
+                    button.classList.add('active');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function toggleCard(cardElement) {
+            const details = cardElement.querySelector('.details');
+            details.classList.toggle('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('intro');
+        });
+    </script>
+
+</body>
+</html>

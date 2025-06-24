@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>একজন রোজাদারের একাকীত্ব - শেখ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: "Reverent Glow" - A warm neutral base with a glowing deep teal accent for a modern, yet respectful feel. -->
+    <!-- Application Structure Plan: A thematic, single-page vertical scrolling application. The structure is not linear like the sermon but broken into key themes for better digital consumption. A sticky navigation bar allows users to jump between sections like 'Virtues of Ramadan', 'Essence of Taqwa', 'Our Predecessors', and a comparative 'Our Condition' section. This design enhances usability by making the dense text explorable and digestible through interactive cards and a conceptual chart, guiding the user through a journey of reflection. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: List of Ramadan's virtues. -> Goal: Inform. -> Viz: Interactive cards. -> Interaction: Click to reveal details. -> Justification: Breaks down lists into engaging, bite-sized pieces. -> Library/Method: HTML/CSS/JS.
+        - Report Info: Stories of the Salaf (predecessors). -> Goal: Inspire/Inform. -> Viz: Tabbed content for men and women with cards for each individual. -> Interaction: Clicking a tab or name reveals their story. -> Justification: Organizes multiple narratives cleanly and prevents a long wall of text. -> Library/Method: HTML/CSS/JS.
+        - Report Info: Comparison between Salaf's devotion and modern distractions. -> Goal: Compare. -> Viz: A conceptual bar chart and side-by-side text blocks. -> Interaction: The chart visually contrasts the two approaches on page load. -> Justification: A simple chart provides a powerful, immediate visual representation of the sermon's core critique. -> Library/Method: Chart.js (Canvas).
+        - Report Info: Different types of fasts. -> Goal: Organize/Inform. -> Viz: An accordion-style list. -> Interaction: Clicking a title expands to show the description. -> Justification: Condenses a list into a compact, user-driven interactive element. -> Library/Method: HTML/CSS/JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #2c3e50; /* Dark Slate Blue */
+            color: #ecf0f1; /* Light Gray */
+        }
+        .nav-link {
+            transition: color 0.3s, text-shadow 0.3s, border-bottom-color 0.3s;
+            color: #bdc3c7; /* Silver */
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #00e5e5; /* Neon Cyan */
+            text-shadow: 0 0 5px #00e5e5, 0 0 10px #00e5e5;
+            border-bottom-color: #00e5e5;
+        }
+        .card {
+            background-color: #34495e; /* Darker Slate Blue */
+            border-left: 4px solid #00e5e5; /* Neon Cyan */
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 5px rgba(0, 229, 229, 0.2);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(0, 229, 229, 0.5), 0 0 25px rgba(0, 229, 229, 0.3);
+        }
+        .tab {
+            color: #bdc3c7;
+        }
+        .tab.active {
+            border-color: #00e5e5;
+            background-color: rgba(0, 229, 229, 0.1);
+            color: #00e5e5;
+            text-shadow: 0 0 3px #00e5e5;
+        }
+        .accordion-header {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+        .accordion-content {
+            background-color: #34495e;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        .section-title {
+            color: #00e5e5; /* Neon Cyan */
+            text-shadow: 0 0 8px rgba(0, 229, 229, 0.7), 0 0 12px rgba(0, 229, 229, 0.5);
+        }
+        .header-title {
+             text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #00e5e5, 0 0 40px #00e5e5;
+        }
+        .text-muted {
+            color: #bdc3c7;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="bg-cover bg-center py-20" style="background-color: #1a2533;">
+        <div class="container mx-auto text-center px-4">
+            <h1 class="header-title text-4xl md:text-6xl font-bold mb-4 leading-tight text-white">একজন রোজাদারের একাকীত্ব</h1>
+            <p class="text-lg md:text-xl font-light text-gray-300">শেখ খালিদ আল-রাশেদ</p>
+            <p class="mt-6 text-xl italic max-w-3xl mx-auto text-gray-400">"ইসলাম অপরিচিত হিসেবে শুরু হয়েছিল এবং আবার অপরিচিত হয়ে ফিরে আসবে, সুতরাং গরীবদের (অপরিচিতদের) জন্য সুসংবাদ।"</p>
+        </div>
+    </header>
+
+    <!-- Sticky Navigation -->
+    <nav id="navbar" class="sticky top-0 bg-[#2c3e50]/90 backdrop-blur-sm z-50 shadow-lg shadow-black/20">
+        <div class="container mx-auto">
+            <div class="flex justify-center items-center space-x-4 sm:space-x-8 p-4 overflow-x-auto">
+                <a href="#introduction" class="nav-link text-sm sm:text-base font-medium py-2 border-b-2 border-transparent whitespace-nowrap">ভূমিকা</a>
+                <a href="#virtues" class="nav-link text-sm sm:text-base font-medium py-2 border-b-2 border-transparent whitespace-nowrap">রমজানের ফযিলত</a>
+                <a href="#taqwa" class="nav-link text-sm sm:text-base font-medium py-2 border-b-2 border-transparent whitespace-nowrap">তাকওয়ার মর্ম</a>
+                <a href="#predecessors" class="nav-link text-sm sm:text-base font-medium py-2 border-b-2 border-transparent whitespace-nowrap">আমাদের পূর্বসূরিগণ</a>
+                <a href="#comparison" class="nav-link text-sm sm:text-base font-medium py-2 border-b-2 border-transparent whitespace-nowrap">আমাদের অবস্থা</a>
+                <a href="#types" class="nav-link text-sm sm:text-base font-medium py-2 border-b-2 border-transparent whitespace-nowrap">রোজার প্রকারভেদ</a>
+                <a href="#final-call" class="nav-link text-sm sm:text-base font-medium py-2 border-b-2 border-transparent whitespace-nowrap">শেষ আহ্বান</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4 md:p-8">
+
+        <!-- Introduction Section -->
+        <section id="introduction" class="py-16 scroll-mt-24">
+            <h2 class="section-title text-3xl font-bold text-center mb-4">ভূমিকা: সময়ের স্রোত</h2>
+            <p class="text-center max-w-3xl mx-auto mb-12 text-lg text-muted">এই বিভাগে আমরা সময়ের দ্রুত অতিবাহিত হওয়ার বিষয়টি স্মরণ করব। গত রমজান যেন এই সেদিন শেষ হলো, আর একটি নতুন রমজান আমাদের দোরগোড়ায়। জীবন কতটা ক্ষণস্থায়ী এবং প্রতিটি মুহূর্তকে আল্লাহর আনুগত্যে কাজে লাগানো কতটা জরুরি, তা এই অংশটি আমাদের ভাবতে সাহায্য করবে।</p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-3 text-white">সময়ের পালাবদল</h3>
+                    <p class="text-muted">"একটি পুরো বছর তার দিন ও রাতসহ তার তাঁবু গুটিয়ে নিয়েছে... আল্লাহ সত্য বলেছেন: 'আর এই দিনগুলোকে আমি মানুষের মধ্যে পালাক্রমে আবর্তন করাই...'"</p>
+                    <p class="text-sm text-gray-500 mt-2">(সূরা আলে ইমরান: ১৪০)</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-3 text-white">পাঁচটি অমূল্য সম্পদ</h3>
+                    <p class="text-muted">"পাঁচটি জিনিসকে পাঁচটি জিনিসের আগে غنیمت মনে কর: জীবনকে মৃত্যুর আগে, স্বাস্থ্যকে অসুস্থতার আগে, অবসরকে ব্যস্ততার আগে, যৌবনকে বার্ধক্যের আগে এবং সচ্ছলতাকে দারিদ্র্যের আগে।"</p>
+                     <p class="text-sm text-gray-500 mt-2">(হাদিস)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Virtues of Ramadan Section -->
+        <section id="virtues" class="py-16 bg-[#34495e]/60 rounded-lg scroll-mt-24">
+            <h2 class="section-title text-3xl font-bold text-center mb-4">রমজানের ফযিলত</h2>
+             <p class="text-center max-w-3xl mx-auto mb-12 text-lg text-muted">রমজান মাস কেন এত মহিমান্বিত? এই অংশে আমরা কুরআন ও হাদিসের আলোকে রমজানের বিশেষত্বগুলো তুলে ধরব। এটি শুধু উপবাসের মাস নয়, বরং রহমত, বরকত এবং ক্ষমার এক অসীম ভান্ডার। ইন্টারেক্টিভ কার্ডের মাধ্যমে এর প্রতিটি ফযিলত অন্বেষণ করুন।</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card p-6 text-center">
+                    <span class="text-4xl">📖</span>
+                    <h3 class="text-xl font-semibold mt-3 mb-2 text-white">কুরআন নাযিলের মাস</h3>
+                    <p class="text-muted">"রমজান মাস, যাতে কুরআন নাযিল করা হয়েছে মানুষের জন্য হেদায়েতস্বরূপ..."</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <span class="text-4xl">🚪</span>
+                    <h3 class="text-xl font-semibold mt-3 mb-2 text-white">জান্নাতের উন্মুক্ত দরজা</h3>
+                    <p class="text-muted">"এতে জান্নাতের দরজাগুলো খুলে দেওয়া হয়, জাহান্নামের দরজাগুলো বন্ধ করে দেওয়া হয়..."</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <span class="text-4xl">🔗</span>
+                    <h3 class="text-xl font-semibold mt-3 mb-2 text-white">শয়তানকে শিকলবদ্ধ করা</h3>
+                    <p class="text-muted">"...এবং শয়তানদেরকে শিকলবদ্ধ করা হয়।"</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <span class="text-4xl">🌙</span>
+                    <h3 class="text-xl font-semibold mt-3 mb-2 text-white">হাজার মাসের সেরা রাত</h3>
+                    <p class="text-muted">"এতে এমন একটি রাত আছে যা হাজার মাসের চেয়েও উত্তম। (লাইলাতুল কদর)"</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <span class="text-4xl">🤲</span>
+                    <h3 class="text-xl font-semibold mt-3 mb-2 text-white">তওবা ও ক্ষমা</h3>
+                    <p class="text-muted">রমজানে তওবা কবুল হয় এবং পাপ মোচন করা হয়, যা আল্লাহর রহমতের নিদর্শন।</p>
+                </div>
+                <div class="card p-6 text-center">
+                     <span class="text-4xl">🎁</span>
+                    <h3 class="text-xl font-semibold mt-3 mb-2 text-white">অশেষ প্রতিদান</h3>
+                    <p class="text-muted">রমজানে প্রতিটি নেক আমলের সওয়াব বহুগুণে বৃদ্ধি করা হয়।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Taqwa Section -->
+        <section id="taqwa" class="py-16 scroll-mt-24">
+            <h2 class="section-title text-3xl font-bold text-center mb-4">রোজার মূল উদ্দেশ্য: তাকওয়া</h2>
+            <p class="text-center max-w-3xl mx-auto mb-12 text-lg text-muted">রোজা রাখার চূড়ান্ত লক্ষ্য কী? আল্লাহ তা'আলা বলেছেন, "যাতে তোমরা তাকওয়া অবলম্বন করতে পার"। এই বিভাগে আমরা তাকওয়ার অর্থ এবং আমাদের পূর্বসূরিদের জীবনে এর কিছু বাস্তব উদাহরণ দেখব। তাকওয়া কেবল বাহ্যিক আমল নয়, বরং এটি অন্তরের একটি অবস্থা।</p>
+            <div class="max-w-4xl mx-auto">
+                <div class="card p-8 text-center mb-8">
+                    <h3 class="text-2xl font-semibold mb-3 text-white">তাকওয়া কী?</h3>
+                    <p class="text-lg text-muted">"তাকওয়ার সহজতম অর্থ হলো: আদিষ্ট কাজ করা এবং নিষিদ্ধ কাজ পরিহার করা। এটিই হলো উদ্দিষ্ট লক্ষ্য এবং হারানো গুণ।"</p>
+                    <p class="text-gray-400 mt-4 italic">"যে ব্যক্তি মিথ্যা কথা ও সে অনুযায়ী আমল পরিহার করল না, তার খাবার ও পানীয় ত্যাগ করায় আল্লাহর কোনো প্রয়োজন নেই।" (হাদিস)</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="card p-6">
+                        <p class="font-semibold text-white">ইমাম বুখারী (রহঃ) বলেন:</p>
+                        <p class="text-muted italic">"প্রাপ্তবয়স্ক হওয়ার পর থেকে আমি কোনো মুসলিমের গীবত করিনি।"</p>
+                    </div>
+                    <div class="card p-6">
+                        <p class="font-semibold text-white">ইমাম শাফিঈ (রহঃ) বলেন:</p>
+                        <p class="text-muted italic">"আমি কখনো সত্য বা মিথ্যা কোনো কসম খাইনি। যদি জানতাম পানি আমার ব্যক্তিত্ব নষ্ট করবে, তবে তাও পান করতাম না।"</p>
+                    </div>
+                     <div class="card p-6">
+                        <p class="font-semibold text-white">হযরত মাসরুক (রহঃ) সম্পর্কে:</p>
+                        <p class="text-muted italic">"তিনি হজ্জ করেছেন এবং সিজদারত অবস্থা ছাড়া ঘুমাননি।"</p>
+                    </div>
+                     <div class="card p-6">
+                        <p class="font-semibold text-white">আবু সুলাইমান দারানী (রহঃ) বলেন:</p>
+                        <p class="text-muted italic">"প্রতিদিন আমি আয়নায় তাকাই, আমার মুখ পাপের কারণে কালো হয়ে গেল কিনা তা দেখার জন্য।"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Predecessors Section -->
+        <section id="predecessors" class="py-16 bg-[#34495e]/60 rounded-lg scroll-mt-24">
+            <h2 class="section-title text-3xl font-bold text-center mb-4">আমাদের পূর্বসূরিগণ: ইবাদতের নমুনা</h2>
+            <p class="text-center max-w-3xl mx-auto mb-12 text-lg text-muted">"ইসলাম অপরিচিত হিসেবে শুরু হয়েছিল..." এই হাদিসের আলোকে খুতবায় আমাদের পূর্বসূরিদের (সালাফদের) ইবাদতের চিত্র তুলে ধরা হয়েছে। তারা ছিলেন ইবাদতে "অপরিচিত" বা অনন্য। এই বিভাগে আমরা ট্যাব ব্যবহার করে তাদের পুরুষ ও নারী ব্যক্তিত্বদের জীবনের কিছু ঘটনা দেখব, যা আমাদের জন্য অনুপ্রেরণার উৎস।</p>
+            <div>
+                <div class="flex justify-center border-b-2 border-gray-700 mb-8">
+                    <button data-tab="men" class="tab py-2 px-6 text-lg font-medium border-b-2 border-transparent active">পুরুষ</button>
+                    <button data-tab="women" class="tab py-2 px-6 text-lg font-medium border-b-2 border-transparent">নারী</button>
+                </div>
+                <div id="tab-content">
+                    <div data-content="men" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold mb-2 text-white">হযরত উসমান (রাঃ)</h3>
+                            <p class="text-muted">দিনের বেলায় তার অংশ ছিল ক্ষুধা ও রোজা, আর রাতের বেলায় সিজদা ও কিয়াম। তিনি সারাজীবন রোজা রাখতেন এবং রাতের শুরুতে সামান্য ঘুমাতেন।</p>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold mb-2 text-white">আবু তালহা আনসারী (রাঃ)</h3>
+                            <p class="text-muted">নবী (ﷺ) এর সময়ে জিহাদের কারণে রোজা রাখতেন না, কিন্তু তাঁর ইন্তেকালের পর থেকে মৃত্যু পর্যন্ত ঈদ ছাড়া কখনো রোজা ছাড়েননি।</p>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold mb-2 text-white">আব্দুল্লাহ ইবনে উমর (রাঃ)</h3>
+                            <p class="text-muted">সফরে রোজা রাখতেন না, কিন্তু বাড়িতে থাকলে প্রায় কখনোই রোজা ভাঙতেন না। মৃত্যুর সময় আফসোস করেছিলেন গরমের রোজা ও রাতের ইবাদতের জন্য।</p>
+                        </div>
+                    </div>
+                    <div data-content="women" class="hidden grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold mb-2 text-white">হযরত আইশা (রাঃ)</h3>
+                            <p class="text-muted">তিনি সারাজীবন রোজা রাখতেন, শুধু ঈদের দিন ছাড়া। একবার এক লক্ষ দিরহাম দান করে দিয়েছিলেন, নিজের ইফতারের জন্য এক দিরহামের মাংস কেনার কথাও ভুলে গিয়েছিলেন।</p>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold mb-2 text-white">হযরত হাফসা (রাঃ)</h3>
+                            <p class="text-muted">জিব্রাইল (আঃ) তাঁর সম্পর্কে বলেন: "হাফসাকে ফিরিয়ে নিন, কারণ তিনি অনেক বেশি রোজা রাখেন এবং অনেক বেশি কিয়াম করেন। তিনি জান্নাতেও আপনার স্ত্রী হবেন।"</p>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold mb-2 text-white">রাহমা আল-আবিদাহ (রহঃ)</h3>
+                            <p class="text-muted">তিনি এত বেশি ইবাদত করতেন যে তার শরীর সবুজ হয়ে গিয়েছিল। তিনি বলতেন, "এগুলো তো গণনার কয়েকটি দিন, আজ যা হারাব, কাল তা পাব না।"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Section -->
+        <section id="comparison" class="py-16 scroll-mt-24">
+            <h2 class="section-title text-3xl font-bold text-center mb-4">পূর্বসূরিগণ বনাম আমরা: একটি আত্মবীক্ষণ</h2>
+             <p class="text-center max-w-3xl mx-auto mb-12 text-lg text-muted">পূর্বসূরিদের ইবাদতের চিত্র দেখার পর, খুতবায় আমাদের বর্তমান অবস্থার একটি বেদনাদায়ক চিত্র তুলে ধরা হয়েছে। এই বিভাগটি আমাদের আত্মবীক্ষণের জন্য। একটি ধারণাগত চার্ট এবং তুলনামূলক তালিকার মাধ্যমে আমরা দেখব, রমজানের সময়কে আমরা কীভাবে ব্যবহার করছি।</p>
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-2xl font-semibold text-center mb-6 text-white">সময় ব্যবহারের ধারণাগত তুলনা</h3>
+                    <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <div class="mb-8">
+                        <h4 class="text-xl font-bold mb-3 text-gray-200">পূর্বসূরিদের রমজান</h4>
+                        <ul class="list-disc list-inside space-y-2 text-muted">
+                            <li>দিনে রোজা ও জ্ঞানচর্চা</li>
+                            <li>রাতে কিয়াম, তেলাওয়াত ও দোয়া</li>
+                            <li>দান-সদকা ও মানুষের সেবা</li>
+                            <li>আল্লাহর ভয়ে ক্রন্দন</li>
+                            <li>দুনিয়া বিমুখতা ও আখেরাতের প্রস্তুতি</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-3 text-red-400">আমাদের অনেকের রমজান (খুতবা অনুযায়ী)</h4>
+                         <ul class="list-disc list-inside space-y-2 text-muted">
+                            <li>টিভি ও স্যাটেলাইট চ্যানেলে রাত পার</li>
+                            <li>খেলার মাঠ বা তাস খেলে সময় নষ্ট</li>
+                            <li>বাজারে ও পার্কে উদ্দেশ্যহীন ঘোরাঘুরি</li>
+                            <li>দিনে ঘুম ও কাজে অবহেলা</li>
+                            <li>ইবাদতের চেয়ে খাওয়া-দাওয়া ও সামাজিকতায় বেশি মনোযোগ</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Types of Fasts Section -->
+        <section id="types" class="py-16 bg-[#34495e]/60 rounded-lg scroll-mt-24">
+            <h2 class="section-title text-3xl font-bold text-center mb-4">রোজাদারদের প্রকারভেদ</h2>
+            <p class="text-center max-w-3xl mx-auto mb-12 text-lg text-muted">সকল রোজাদারের রোজা এক নয়। ইবনুল কাইয়্যিম (রহঃ) এর আলোকে এবং খুতবার বর্ণনানুযায়ী, রোজার বিভিন্ন স্তর রয়েছে। আপনার রোজা কোন স্তরের? নিচের তালিকা থেকে প্রতিটি প্রকার সম্পর্কে জানুন এবং নিজের রোজাকে উন্নত করার চেষ্টা করুন।</p>
+            <div id="accordion" class="max-w-3xl mx-auto space-y-4">
+                 <div class="accordion-item border border-gray-700 rounded-lg">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                        <span>অভ্যাসের রোজা</span>
+                        <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content px-4 pb-4 text-muted">
+                        <p>যে শুধু খাবার ও পানীয় থেকে বিরত থাকে, তার রোজা একটি নিছক অভ্যাস। এর আধ্যাত্মিক কোনো মূল্য নেই যদি না পাপ থেকে বিরত থাকা যায়।</p>
+                    </div>
+                </div>
+                 <div class="accordion-item border border-gray-700 rounded-lg">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                        <span>তাকওয়ার রোজা</span>
+                         <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content px-4 pb-4 text-muted">
+                        <p>যে ব্যক্তি সকল প্রকার পাপ ও অশ্লীলতা থেকে নিজেকে বিরত রাখে এবং আল্লাহর কাছে তওবা করে, তার রোজা হলো তাকওয়ার রোজা। এটিই রোজার মূল উদ্দেশ্য।</p>
+                    </div>
+                </div>
+                 <div class="accordion-item border border-gray-700 rounded-lg">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                        <span>জ্ঞানীদের রোজা</span>
+                         <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content px-4 pb-4 text-muted">
+                        <p>যে ব্যক্তি গীবত ও মিথ্যাচার থেকে বিরত থেকে কুরআন তেলাওয়াতে মগ্ন থাকে, তার রোজা হলো জ্ঞান ও হেদায়েতের রোজা।</p>
+                    </div>
+                </div>
+                 <div class="accordion-item border border-gray-700 rounded-lg">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                        <span>আত্মসংযমের রোজা</span>
+                         <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content px-4 pb-4 text-muted">
+                        <p>যে ব্যক্তি নিজের নফস ও কুপ্রবৃত্তির বিরুদ্ধে সংগ্রাম করে এবং আল্লাহর প্রতি কৃতজ্ঞতা ও সন্তুষ্টি প্রকাশ করে, তার রোজা হলো সফলতার রোজা।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final Call Section -->
+        <section id="final-call" class="py-20 text-center scroll-mt-24">
+            <h2 class="section-title text-3xl font-bold mb-4">শেষ আহ্বান: ফিরে আসার এখনই সময়</h2>
+            <p class="text-center max-w-3xl mx-auto mb-12 text-lg text-muted">খুতবার এই শেষ অংশে একটি আবেগঘন আহ্বান জানানো হয়েছে। غفلت বা উদাসীনতার মেঘ সরিয়ে ঈমানের সূর্যকে উদিত করার সময় এখনই। রমজান আমাদের ডাকছে ক্ষমার দিকে, আল্লাহর দিকে। এই আহ্বান আমাদের সবার জন্য।</p>
+            <div class="max-w-2xl mx-auto space-y-6">
+                 <p class="text-xl italic text-gray-300">"হে غفلت বা উদাসীনতার মেঘ, হৃদয় থেকে সরে যাও! হে তাকওয়া ও ঈমানের সূর্য, উদিত হও এবং আলোকিত কর! হে রোজাদারদের হৃদয়, বিনয়ী হও এবং মিনতি কর!"</p>
+                 <p class="text-xl italic text-gray-300">"আশ্চর্যের বিষয় তার জন্য যে তোমাকে চিনেও অন্যকে ভালোবেসেছে! আশ্চর্যের বিষয় তার জন্য যে তোমার আহ্বান শুনেও তোমার থেকে পিছিয়ে থেকেছে!"</p>
+                <div class="mt-10">
+                    <h3 class="text-2xl font-semibold mb-4 text-white">দোয়া</h3>
+                    <p class="text-lg text-muted">"হে আল্লাহ, আমাদের রমজান পর্যন্ত পৌঁছার তৌফিক দিন। হে আল্লাহ, আমাদের ঈমান ও ইহতিসাবের সাথে এর রোজা ও কিয়াম পালন করার তৌফিক দিন। হে আল্লাহ, আমাদের মাঝে যারা পথভ্রষ্ট, তাদের হেদায়েত দিন এবং আমাদের সকলকে আপনার আনুগত্যে জীবন অতিবাহিত করার তৌফিক দিন।"</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-[#1a2533] text-gray-400 py-6">
+        <div class="container mx-auto text-center">
+            <p>&copy; ২০২৪। শেখ খালিদ আল-রাশেদের খুতবার উপর ভিত্তি করে নির্মিত।</p>
+            <p class="text-sm mt-2">উৎস: ইসলাম ওয়েব</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tabs functionality
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('[data-content]');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.dataset.tab;
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    tabContents.forEach(content => {
+                        if (content.dataset.content === target) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // Accordion functionality
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('span:last-child');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null);
+                        document.querySelectorAll('.accordion-header span:last-child').forEach(i => i.style.transform = 'rotate(0deg)');
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            // Chart.js global settings for dark theme
+            Chart.defaults.color = '#bdc3c7';
+            Chart.defaults.borderColor = 'rgba(189, 195, 199, 0.1)';
+
+            // Comparison Chart
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['ইবাদত ও আত্মগঠন', 'অনর্থক ও বিনোদন'],
+                    datasets: [{
+                        label: 'পূর্বসূরিগণ',
+                        data: [85, 15],
+                        backgroundColor: 'rgba(0, 229, 229, 0.7)',
+                        borderColor: '#00e5e5',
+                        borderWidth: 1
+                    }, {
+                        label: 'আমাদের অনেকের অবস্থা (খুতবা অনুযায়ী)',
+                        data: [20, 80],
+                        backgroundColor: 'rgba(212, 163, 115, 0.5)',
+                        borderColor: '#D4A373',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            stacked: true,
+                            ticks: {
+                                color: '#bdc3c7',
+                                callback: function(value) { return value + '%' }
+                            },
+                            grid: { color: 'rgba(189, 195, 199, 0.1)' }
+                        },
+                        y: {
+                            stacked: true,
+                            ticks: { color: '#bdc3c7' },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: false,
+                        },
+                        legend: {
+                            labels: { color: '#ecf0f1' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Active nav link on scroll
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 150) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+             // Smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

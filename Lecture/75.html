@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সময়ের গুরুত্ব ও সন্তান প্রতিপালন - শাইখ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: The application uses a tab-based navigation SPA structure to segment the sermon's primary themes and new AI tools. This allows users to directly access topics of interest. The flow begins with an introduction, then users can explore interactive sections on time, parenting, key lessons, and a new 'AI Advice' section. This new section contains two Gemini-powered features: a personalized action plan generator and a dua generator, transforming the app from a static summary into a dynamic, personal guidance tool. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Three types of people regarding time. -> Goal: Compare/Inform -> Viz: Doughnut Chart -> Interaction: Hover tooltips -> Justification: Visually represents proportions. -> Library: Chart.js (Canvas).
+        2. Report Info: Four stages of life. -> Goal: Organize/Inform -> Viz: CSS Flexbox Diagram -> Justification: Simplifies life's progression. -> Method: HTML/Tailwind.
+        3. Report Info: Dangers of neglecting children. -> Goal: Warn/Organize -> Viz: CSS Hub-and-Spoke Diagram -> Justification: Illustrates multiple negative influences. -> Method: HTML/Tailwind.
+        4. Report Info: Tragic case studies. -> Goal: Inform/Warn -> Viz: Accordion/Collapsible Text -> Interaction: Click to expand/collapse -> Justification: Presents stories non-intrusively. -> Method: HTML/JS.
+        5. New Feature: Personalized Action Plan -> Goal: Guide/Advise -> Viz: Text Input + Generated Text Output -> Interaction: User input triggers Gemini API call -> Justification: Provides actionable, personalized religious guidance. -> Method: Gemini API.
+        6. New Feature: Dua Generator -> Goal: Support/Inspire -> Viz: Text Input + Generated Text Output -> Interaction: User input triggers Gemini API call -> Justification: Offers spiritual support by generating context-specific prayers. -> Method: Gemini API.
+        All choices adhere to the NO SVG/Mermaid constraint. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+        }
+        .nav-button.active {
+            background-color: #0369a1; /* sky-700 */
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .gemini-output {
+            white-space: pre-wrap;
+            background-color: #f8fafc;
+            border-left: 4px solid #0ea5e9;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-sky-800">সময়ের গুরুত্ব এবং সন্তান প্রতিপালন</h1>
+            <p class="text-lg text-gray-600 mt-2">শাইখ খালিদ আল-রাশেদের একটি জীবন ঘনিষ্ঠ আলোচনা</p>
+        </header>
+
+        <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+            <button class="nav-button active py-2 px-4 bg-white rounded-lg shadow-sm font-semibold text-gray-700 hover:bg-sky-100" onclick="showSection('intro')">ভূমিকা</button>
+            <button class="nav-button py-2 px-4 bg-white rounded-lg shadow-sm font-semibold text-gray-700 hover:bg-sky-100" onclick="showSection('time')">সময়ের মূল্য</button>
+            <button class="nav-button py-2 px-4 bg-white rounded-lg shadow-sm font-semibold text-gray-700 hover:bg-sky-100" onclick="showSection('parenting')">সন্তান প্রতিপালন</button>
+            <button class="nav-button py-2 px-4 bg-white rounded-lg shadow-sm font-semibold text-gray-700 hover:bg-sky-100" onclick="showSection('lessons')">মূল শিক্ষা</button>
+            <button class="nav-button py-2 px-4 bg-white rounded-lg shadow-sm font-semibold text-gray-700 hover:bg-sky-100" onclick="showSection('ai_advice')">✨ AI পরামর্শ</button>
+        </nav>
+
+        <main id="main-content">
+            <section id="intro" class="content-section active">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-sky-700 mb-4 border-b-2 border-sky-200 pb-2">আলোচনার সারসংক্ষেপ</h2>
+                    <p class="text-base md:text-lg leading-relaxed text-gray-700">এই ইন্টারেক্টিভ অ্যাপ্লিকেশনটি শাইখ খালিদ আল-রাশেদের একটি গুরুত্বপূর্ণ বক্তৃতার উপর ভিত্তি করে তৈরি। এখানে দুটি প্রধান বিষয়ের উপর আলোকপাত করা হয়েছে: প্রথমত, জীবনের প্রতিটি মুহূর্ত কতটা মূল্যবান এবং সময়ের সঠিক ব্যবহার কেন জরুরি। দ্বিতীয়ত, সন্তানদের প্রতিপালনে বাবা-মায়ের অবহেলার ভয়াবহ পরিণতি এবং এর থেকে উত্তরণের উপায়। এই ডিজিটাল উপস্থাপনার উদ্দেশ্য হলো বার্তাগুলোকে সহজ ও আকর্ষণীয়ভাবে তুলে ধরা, যাতে আমরা সবাই নিজেদের জীবন নিয়ে ভাবতে পারি এবং প্রয়োজনীয় পদক্ষেপ নিতে পারি। আসুন, আমরা এই গুরুত্বপূর্ণ বিষয়গুলো সম্পর্কে জানি এবং নিজেদের জীবনে প্রয়োগ করার চেষ্টা করি।</p>
+                </div>
+            </section>
+
+            <section id="time" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-sky-700 mb-4 border-b-2 border-sky-200 pb-2">সময়ের মূল্য</h2>
+                    <p class="mb-6 text-gray-600">সময় হলো আল্লাহ প্রদত্ত সবচেয়ে বড় নিয়ামতগুলোর একটি। এটি এমন এক মূলধন যা একবার হারিয়ে গেলে আর ফিরে পাওয়া যায় না। এই বিভাগে আমরা জানব সময়ের ব্যাপারে মানুষের বিভিন্ন শ্রেণী এবং জীবনের পর্যায়গুলো সম্পর্কে।</p>
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div class="chart-container"><canvas id="timeUsageChart"></canvas><p class="text-center text-sm text-gray-500 mt-2">সময় ব্যবহারে তিন শ্রেণীর মানুষ</p></div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-sky-700 mb-4">জীবনের চারটি পর্যায়</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-4 p-3 bg-sky-50 rounded-lg"><span class="flex items-center justify-center h-10 w-10 rounded-full bg-sky-200 text-sky-700 font-bold">১</span><p class="font-medium">মায়ের গর্ভ: নিরাপদ আশ্রয়</p></div>
+                                <div class="flex items-center gap-4 p-3 bg-teal-50 rounded-lg"><span class="flex items-center justify-center h-10 w-10 rounded-full bg-teal-200 text-teal-700 font-bold">২</span><p class="font-medium">দুনিয়ার জীবন: পরীক্ষার স্থান</p></div>
+                                <div class="flex items-center gap-4 p-3 bg-amber-50 rounded-lg"><span class="flex items-center justify-center h-10 w-10 rounded-full bg-amber-200 text-amber-700 font-bold">৩</span><p class="font-medium">কবরের জীবন: প্রতিদানের শুরু</p></div>
+                                <div class="flex items-center gap-4 p-3 bg-red-50 rounded-lg"><span class="flex items-center justify-center h-10 w-10 rounded-full bg-red-200 text-red-700 font-bold">৪</span><p class="font-medium">আখিরাত: চূড়ান্ত ও永স্থায়ী ঠিকানা</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="parenting" class="content-section">
+                 <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-sky-700 mb-4 border-b-2 border-sky-200 pb-2">সন্তান প্রতিপালনে অবহেলা</h2>
+                    <p class="mb-6 text-gray-600">বাবা-মায়ের সামান্য অবহেলা সন্তানদের জীবনকে ধ্বংসের দ্বারপ্রান্তে নিয়ে যেতে পারে। এই বিভাগে আমরা অবহেলার কিছু ভয়াবহ পরিণতি এবং আমাদের করণীয় সম্পর্কে জানব।</p>
+                    <h3 class="text-xl font-semibold text-center text-sky-700 mb-4">অবহেলায় সন্তান যাদের দ্বারা প্রভাবিত হয়</h3>
+                    <div class="flex justify-center items-center mb-8 min-h-[200px]">
+                        <div class="relative flex justify-center items-center">
+                            <div class="w-32 h-32 rounded-full bg-red-500 text-white flex items-center justify-center text-center font-bold p-2">অবহেলিত সন্তান</div>
+                            <div class="absolute text-center" style="transform: translate(120px, 0px);"><p class="p-2 bg-red-100 rounded-lg shadow-sm">খারাপ বন্ধু</p></div>
+                            <div class="absolute text-center" style="transform: translate(-130px, 0px);"><p class="p-2 bg-red-100 rounded-lg shadow-sm">অশ্লীল মিডিয়া</p></div>
+                            <div class="absolute text-center" style="transform: translate(0px, 90px);"><p class="p-2 bg-red-100 rounded-lg shadow-sm">মাদক</p></div>
+                            <div class="absolute text-center" style="transform: translate(0px, -90px);"><p class="p-2 bg-red-100 rounded-lg shadow-sm">রাস্তার পরিবেশ</p></div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold text-center text-red-700 mb-4">দুটি হৃদয়বিদারক ঘটনা</h3>
+                        <div>
+                            <button class="accordion-toggle w-full text-left p-4 bg-red-100 hover:bg-red-200 rounded-lg font-semibold flex justify-between items-center transition">প্রথম ঘটনা: মাদকাসক্ত সন্তানের করুন পরিণতি<span class="transform transition-transform duration-300">▼</span></button>
+                            <div class="accordion-content"><p class="p-4 bg-gray-50 rounded-b-lg text-gray-700 leading-relaxed">একজন বাবা কান্নাজড়িত কণ্ঠে বর্ণনা করেন, তার একসময়ের ভালো এবং ধার্মিক ছেলেটি ধীরে ধীরে খারাপ संगतের পাল্লায় পড়ে। সে রাত জাগতে শুরু করে, রাস্তায় সময় কাটাতে থাকে এবং এক পর্যায়ে মাদকাসক্ত হয়ে পড়ে। বাবা অনেক চেষ্টা করেও তাকে ফেরাতে পারেননি। অবশেষে তিনি তাকে ঘরে বন্দী করেন, কিন্তু দাদীর দয়ায় সে পালিয়ে যায়। কয়েকদিন পর পুলিশ একটি শপিং মলের বাথরুম থেকে তার লাশ উদ্ধার করে। বাবা-মায়ের সামান্য অবহেলা একটি সম্ভাবনাময় জীবনকে শেষ করে দেয়।</p></div>
+                        </div>
+                        <div>
+                            <button class="accordion-toggle w-full text-left p-4 bg-red-100 hover:bg-red-200 rounded-lg font-semibold flex justify-between items-center transition">দ্বিতীয় ঘটনা: পারিবারিক বিপর্যয়<span class="transform transition-transform duration-300">▼</span></button>
+                            <div class="accordion-content"><p class="p-4 bg-gray-50 rounded-b-lg text-gray-700 leading-relaxed">শাইখ আরেকটি ভয়াবহ ঘটনার কথা বলেন। একজন লোক এসে জানান, তার ২০ বছর বয়সী ছেলে, যাকে কোনোদিন শাসন করা হয়নি, সে মদ্যপ অবস্থায় নিজের ১৭ বছর বয়সী বোনের সাথে জিনা করে ফেলে। এর ফলে মেয়েটি গর্ভবতী হয়ে পড়ে। পরিবারটি এক চরম বিপর্যয়ের সম্মুখীন হয়। এই ঘটনাটি দেখায় যে, ঘরে ইসলামী পরিবেশ না থাকা এবং সন্তানদের অবাধ স্বাধীনতা দেওয়ার পরিণতি কতটা ভয়ংকর হতে পারে।</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="lessons" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-sky-700 mb-4 border-b-2 border-sky-200 pb-2">মূল শিক্ষা ও করণীয়</h2>
+                    <p class="mb-6 text-gray-600">এই আলোচনা থেকে আমরা সময় ও পরিবারের বিষয়ে অনেক গুরুত্বপূর্ণ শিক্ষা লাভ করতে পারি। নিচে কিছু প্রধান করণীয় উল্লেখ করা হলো।</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-sky-50 p-4 rounded-lg"><h3 class="text-xl font-semibold text-sky-800 mb-3">সময়ের সদ্ব্যবহার</h3><ul class="space-y-2 list-inside list-disc text-gray-700"><li>প্রতিটি মুহূর্তকে আল্লাহর ইবাদত ও ভালো কাজে ব্যয় করা।</li><li>অযথা সময় নষ্ট করা থেকে বিরত থাকা।</li><li>স্বাস্থ্য ও অবসরকে আল্লাহর নিয়ামত মনে করে কাজে লাগানো।</li><li>মৃত্যুর জন্য সর্বদা প্রস্তুত থাকা এবং পরকালের জন্য কাজ করা।</li></ul></div>
+                        <div class="bg-teal-50 p-4 rounded-lg"><h3 class="text-xl font-semibold text-teal-800 mb-3">সঠিক প্রতিপালন</h3><ul class="space-y-2 list-inside list-disc text-gray-700"><li>সন্তানদেরকে দ্বীনি শিক্ষা দেওয়া।</li><li>ঘরে একটি সুস্থ ও ইসলামী পরিবেশ বজায় রাখা।</li><li>টিভি ও ইন্টারনেটের খারাপ প্রভাব থেকে তাদের রক্ষা করা।</li><li>তাদের বন্ধুদের ব্যাপারে খোঁজখবর রাখা।</li><li>বিপদ ঘটার আগেই সতর্ক হওয়া এবং প্রতিকার করা।</li></ul></div>
+                    </div>
+                    <div class="mt-8 text-center bg-amber-100 p-4 rounded-lg"><p class="text-amber-800 font-semibold">"হে মুমিনগণ! তোমরা নিজেদেরকে এবং তোমাদের পরিবার-পরিজনকে সেই আগুন থেকে বাঁচাও, যার ইন্ধন হবে মানুষ ও পাথর।" (সূরা আত-তাহরীম: ৬)</p></div>
+                </div>
+            </section>
+
+            <section id="ai_advice" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-sky-700 mb-4 border-b-2 border-sky-200 pb-2">✨ ব্যক্তিগত পরামর্শ ও দোয়া</h2>
+                    <p class="mb-6 text-gray-600">এখানে আপনি আপনার ব্যক্তিগত সমস্যা বা সন্তানের জন্য নির্দিষ্ট কোনো বিষয়ে AI-এর মাধ্যমে ইসলামিক দৃষ্টিকোণ থেকে পরামর্শ এবং দোয়া পেতে পারেন। দয়া করে নিচের সংশ্লিষ্ট অংশে আপনার সমস্যাটি বর্ণনা করুন।</p>
+
+                    <div class="grid md:grid-cols-1 gap-12">
+                        <!-- Action Plan Generator -->
+                        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-semibold text-sky-800 mb-3">ব্যক্তিগত কর্ম পরিকল্পনা</h3>
+                            <label for="problem_input" class="block mb-2 font-medium text-gray-700">আপনার ব্যক্তিগত চ্যালেঞ্জ বা সমস্যাটি সংক্ষেপে লিখুন (যেমন: নামাজে মনোযোগ ধরে রাখতে পারি না, অলসতা কাজ করে ইত্যাদি)।</label>
+                            <textarea id="problem_input" rows="3" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500" placeholder="এখানে আপনার সমস্যাটি লিখুন..."></textarea>
+                            <button id="get_plan_button" onclick="generateActionPlan()" class="mt-4 px-6 py-2 bg-sky-600 text-white font-semibold rounded-lg hover:bg-sky-700 transition duration-300 flex items-center justify-center">
+                                ✨ পরামর্শ তৈরি করুন
+                            </button>
+                            <div id="plan_loader" class="hidden mt-4 text-center">লোড হচ্ছে...</div>
+                            <div id="plan_output" class="gemini-output mt-4 p-4 rounded-lg hidden"></div>
+                        </div>
+
+                        <!-- Dua Generator -->
+                        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-semibold text-teal-800 mb-3">সন্তানের জন্য দোয়া</h3>
+                            <label for="dua_input" class="block mb-2 font-medium text-gray-700">আপনার সন্তানের কোন নির্দিষ্ট বিষয়ের জন্য দোয়া প্রয়োজন তা লিখুন (যেমন: পড়ালেখায় মনোযোগ নেই, কথা শোনে না, অসুস্থ ইত্যাদি)।</label>
+                            <textarea id="dua_input" rows="3" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" placeholder="এখানে আপনার প্রয়োজনটি লিখুন..."></textarea>
+                            <button id="get_dua_button" onclick="generateDua()" class="mt-4 px-6 py-2 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition duration-300 flex items-center justify-center">
+                                ✨ দোয়া তৈরি করুন
+                            </button>
+                            <div id="dua_loader" class="hidden mt-4 text-center">লোড হচ্ছে...</div>
+                            <div id="dua_output" class="gemini-output mt-4 p-4 rounded-lg hidden"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('.content-section');
+        const navButtons = document.querySelectorAll('.nav-button');
+        let timeChart;
+
+        function showSection(sectionId) {
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            navButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelector(`button[onclick="showSection('${sectionId}')"]`).classList.add('active');
+            
+            if (sectionId === 'time' && !timeChart) {
+                renderTimeUsageChart();
+            }
+        }
+        
+        function renderTimeUsageChart() {
+            const ctx = document.getElementById('timeUsageChart').getContext('2d');
+            timeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['সৎকাজে অগ্রগামী', 'অলস ও শৈথিল্যপূর্ণ', 'সম্পূর্ণ উদাসীন'],
+                    datasets: [{
+                        label: 'মানুষের শ্রেণী',
+                        data: [20, 35, 45],
+                        backgroundColor: ['rgba(34, 197, 94, 0.7)', 'rgba(245, 158, 11, 0.7)', 'rgba(239, 68, 68, 0.7)'],
+                        borderColor: ['rgba(34, 197, 94, 1)', 'rgba(245, 158, 11, 1)', 'rgba(239, 68, 68, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: { callbacks: { label: (c) => `${c.label}: ${c.raw}%` } }
+                    }
+                }
+            });
+        }
+        
+        document.querySelectorAll('.accordion-toggle').forEach(button => {
+            button.addEventListener('click', () => {
+                const accordionContent = button.nextElementSibling;
+                const arrow = button.querySelector('span');
+                button.classList.toggle('active');
+                if (button.classList.contains('active')) {
+                    accordionContent.style.maxHeight = accordionContent.scrollHeight + "px";
+                    arrow.style.transform = 'rotate(180deg)';
+                } else {
+                    accordionContent.style.maxHeight = 0;
+                    arrow.style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+        
+        async function callGemini(prompt, loaderId, outputId, buttonId) {
+            const loader = document.getElementById(loaderId);
+            const output = document.getElementById(outputId);
+            const button = document.getElementById(buttonId);
+
+            loader.classList.remove('hidden');
+            output.classList.add('hidden');
+            button.disabled = true;
+
+            try {
+                const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                const payload = {
+                    contents: [{
+                        role: "user",
+                        parts: [{ text: prompt }]
+                    }]
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API অনুরোধ ব্যর্থ হয়েছে: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    output.textContent = text;
+                    output.classList.remove('hidden');
+                } else {
+                    throw new Error('কোনো উত্তর পাওয়া যায়নি।');
+                }
+
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                output.textContent = 'দুঃখিত, একটি ত্রুটি হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।';
+                output.classList.remove('hidden');
+            } finally {
+                loader.classList.add('hidden');
+                button.disabled = false;
+            }
+        }
+
+        function generateActionPlan() {
+            const userInput = document.getElementById('problem_input').value;
+            if (!userInput.trim()) {
+                alert('অনুগ্রহ করে আপনার সমস্যাটি লিখুন।');
+                return;
+            }
+            const prompt = `শাইখ খালিদ আল-রাশেদের "সময়ের গুরুত্ব ও সন্তান প্রতিপালন" বিষয়ক আলোচনার আলোকে, একজন ব্যবহারকারী তার ব্যক্তিগত এই সমস্যাটির জন্য ইসলামিক সমাধান ও একটি বাস্তবসম্মত কর্মপরিকল্পনা জানতে চেয়েছেন: "${userInput}"। তাকে বাংলায় একটি সহানুভূতিশীল এবং কার্যকরী পরামর্শ দিন।`;
+            callGemini(prompt, 'plan_loader', 'plan_output', 'get_plan_button');
+        }
+
+        function generateDua() {
+            const userInput = document.getElementById('dua_input').value;
+            if (!userInput.trim()) {
+                alert('অনুগ্রহ করে আপনার প্রয়োজনটি লিখুন।');
+                return;
+            }
+            const prompt = `একজন অভিভাবক তার সন্তানের জন্য এই নির্দিষ্ট বিষয়ে দোয়া করতে চান: "${userInput}"। তার জন্য কুরআন ও সুন্নাহর আলোকে বাংলায় একটি আন্তরিক ও جامع (পূর্ণাঙ্গ) দোয়া তৈরি করে দিন।`;
+            callGemini(prompt, 'dua_loader', 'dua_output', 'get_dua_button');
+        }
+
+        window.onload = () => {
+            showSection('intro');
+        };
+    </script>
+
+</body>
+</html>

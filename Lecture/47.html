@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="bn" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>দীর্ঘ আশা ফিলিস্তিনকে ধ্বংস করেছে - একটি ইন্টারেক্টিভ বিশ্লেষণ</title>
+    <!-- Chosen Palette: Neon Glow on Dark -->
+    <!-- Application Structure Plan: A thematic, single-page scrolling application designed to guide the user through the sermon's core argument. The structure is: 1) Hero section for introduction, 2) Diagnosis of the spiritual disease ('Tūl al-Amal'), 3) Contrast between the Islamic ideal and modern reality, 4) Consequences of the disease, visualized conceptually, and 5) The Prescription or cure. This thematic flow, supported by a sticky navigation, makes the complex qualitative argument more digestible and engaging than a simple text dump. It encourages exploration rather than linear reading. -->
+    <!-- Visualization & Content Choices: 
+        - Goal: Inform/Diagnose -> Method: Interactive cards with hover effects to explain 'Tūl al-Amal', its causes, and symptoms. Justification: Breaks down the core concept into manageable pieces.
+        - Goal: Compare -> Method: A two-column layout contrasting the Prophet's asceticism with modern materialism. Justification: Creates a clear visual and conceptual dichotomy.
+        - Goal: Show Consequence -> Method: A conceptual bar chart (Chart.js) illustrating the Ummah's weakness due to 'Wahn'. Justification: Provides a simple visual metaphor for a key abstract point. An interactive list highlights affected regions. Justification: Connects the spiritual problem to real-world issues mentioned in the sermon.
+        - Goal: Organize/Prescribe -> Method: A tabbed interface presenting the cures. Justification: Organizes actionable steps cleanly.
+        - Library/Method: Vanilla JS for interactivity (tabs, navigation), Chart.js for visualization. This structure supports the user's journey from understanding the problem to seeing its effects and finding the solution. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            scroll-behavior: smooth;
+            background-color: #030712; /* gray-950 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        
+        .neon-text {
+            color: #ecfdf5; /* emerald-50 */
+            text-shadow: 0 0 7px #34d399, 0 0 10px #34d399, 0 0 21px #34d399, 0 0 42px #10b981, 0 0 82px #10b981;
+        }
+
+        .neon-text-h1 {
+            color: #d1fae5;
+            animation: flicker 2.5s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                text-shadow:
+                    0 0 5px #fff,
+                    0 0 10px #34d399,
+                    0 0 20px #34d399,
+                    0 0 40px #10b981,
+                    0 0 80px #10b981;
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+            }
+        }
+
+        .neon-border {
+            border: 1px solid #10b981;
+            box-shadow: 0 0 2px #fff, 0 0 5px #10b981, 0 0 10px #10b981, 0 0 15px #10b981 inset;
+        }
+        
+        .nav-link.active {
+            color: #34d399; /* emerald-400 */
+            text-shadow: 0 0 5px #34d399;
+            font-weight: 700;
+        }
+        .dark-card {
+            background: rgba(17, 24, 39, 0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-300">
+
+    <!-- Header & Navigation -->
+    <header id="header" class="bg-gray-950/70 backdrop-blur-sm shadow-md sticky top-0 z-50 transition-all duration-300 shadow-emerald-900/20">
+        <nav class="container mx-auto px-6 py-3">
+            <ul class="flex items-center justify-center space-x-4 sm:space-x-8">
+                <li><a href="#hero" class="nav-link text-gray-300 hover:text-emerald-400 transition-colors duration-300">মূল পাতা</a></li>
+                <li><a href="#diagnosis" class="nav-link text-gray-300 hover:text-emerald-400 transition-colors duration-300">রোগ নির্ণয়</a></li>
+                <li><a href="#contrast" class="nav-link text-gray-300 hover:text-emerald-400 transition-colors duration-300">তুলনা</a></li>
+                <li><a href="#consequences" class="nav-link text-gray-300 hover:text-emerald-400 transition-colors duration-300">পরিণতি</a></li>
+                <li><a href="#cure" class="nav-link text-gray-300 hover:text-emerald-400 transition-colors duration-300">প্রতিকার</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen bg-gray-950 flex items-center justify-center text-center p-6">
+            <div class="max-w-3xl">
+                <h1 class="text-4xl md:text-6xl font-bold mb-4 neon-text-h1">দীর্ঘ আশা</h1>
+                <p class="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto">"দীর্ঘ আশা একটি মারাত্মক মানসিক রোগ এবং অন্তরের ব্যাধি, যা দুনিয়ার প্রতি ভালোবাসা, এর বাস্তবতা সম্পর্কে অজ্ঞতা এবং মৃত্যুকে ভুলে যাওয়া থেকে উদ্ভূত হয়।"</p>
+                <a href="#diagnosis" class="bg-emerald-600/10 text-emerald-300 font-bold py-3 px-8 rounded-full hover:bg-emerald-500/20 transition-all duration-300 neon-border">বার্তাটি আবিষ্কার করুন</a>
+            </div>
+        </section>
+
+        <!-- Diagnosis Section -->
+        <section id="diagnosis" class="py-20 px-6 bg-gray-950">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-100 mb-2 neon-text">রোগ নির্ণয়: দীর্ঘ আশার রোগটি কী?</h2>
+                    <p class="text-md text-gray-400 max-w-2xl mx-auto">এই বিভাগটি "দীর্ঘ আশা"-কে একটি আধ্যাত্মিক রোগ হিসাবে বিশ্লেষণ করে এবং এর মূল কারণগুলো তুলে ধরে, যা জাতিকে দুর্বল করে এবং তার আসল লক্ষ্য থেকে দূরে সরিয়ে দেয়।</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="dark-card p-6 rounded-lg hover:shadow-emerald-500/20 hover:-translate-y-2 transition-all duration-300">
+                        <h3 class="text-xl font-bold text-emerald-400 mb-3">সংজ্ঞা</h3>
+                        <p class="text-gray-400">এটি পরকালকে ভুলে গিয়ে দুনিয়াতে দীর্ঘকাল বেঁচে থাকার আকাঙ্ক্ষা, যা তওবা করতে দেরি এবং ইবাদতে অলসতা সৃষ্টি করে।</p>
+                    </div>
+                    <div class="dark-card p-6 rounded-lg hover:shadow-emerald-500/20 hover:-translate-y-2 transition-all duration-300">
+                        <h3 class="text-xl font-bold text-emerald-400 mb-3">প্রথম কারণ: দুনিয়ার প্রতি ভালোবাসা</h3>
+                        <p class="text-gray-400">দুনিয়ার মোহ এবং আকর্ষণের সাথে জড়িয়ে পড়লে তা ত্যাগ করা কঠিন হয়ে যায় এবং মৃত্যুচিন্তা অপ্রিয় লাগে কারণ তা মানুষের لذت নষ্ট করে।</p>
+                    </div>
+                    <div class="dark-card p-6 rounded-lg hover:shadow-emerald-500/20 hover:-translate-y-2 transition-all duration-300">
+                        <h3 class="text-xl font-bold text-emerald-400 mb-3">দ্বিতীয় কারণ: অজ্ঞতা ও উদাসীনতা</h3>
+                        <p class="text-gray-400">ক্ষণস্থায়ী দুনিয়া এবং চিরস্থায়ী পরকালের বাস্তবতা সম্পর্কে অজ্ঞতা, এবং মৃত্যু যে কোনো মুহূর্তে আসতে পারে সে সম্পর্কে উদাসীন থাকা।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contrast Section -->
+        <section id="contrast" class="py-20 px-6 bg-gray-900">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-100 mb-2 neon-text">তুলনা: আমাদের পূর্বসূরি এবং আমাদের অবস্থা</h2>
+                    <p class="text-md text-gray-400 max-w-2xl mx-auto">এখানে আমরা নবী ﷺ এবং পুণ্যবান পূর্বসূরীদের দুনিয়ার সাথে আচরণের পদ্ধতির সাথে আজকের অনেক মানুষের বাস্তবতার বিশাল পার্থক্য দেখতে পাই, যারা জীবনের মোহে ডুবে আছে।</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="dark-card p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold text-emerald-400 mb-4 text-center">পূর্বসূরীদের পথনির্দেশ</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-gray-950/50 rounded-md">
+                                <p class="font-semibold text-emerald-200">নবী ﷺ বলেছেন:</p>
+                                <blockquote class="text-gray-300 italic mt-1">"দুনিয়ার সাথে আমার কী সম্পর্ক? আমি তো দুনিয়াতে একজন পথিকের মতো, যে একটি গাছের ছায়ায় কিছুক্ষণ বিশ্রাম নেয়, তারপর তা ছেড়ে চলে যায়।"</blockquote>
+                            </div>
+                            <div class="p-4 bg-gray-950/50 rounded-md">
+                                <p class="font-semibold text-emerald-200">ইবনে উমর (রাঃ) বলতেন:</p>
+                                <blockquote class="text-gray-300 italic mt-1">"যখন তুমি সকালে উপনীত হও, তখন সন্ধ্যার জন্য অপেক্ষা করো না, আর যখন সন্ধ্যায় উপনীত হও, তখন সকালের জন্য অপেক্ষা করো না।"</blockquote>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dark-card p-6 rounded-lg">
+                        <h3 class="text-2xl font-bold text-rose-400 mb-4 text-center">আমাদের বেদনাদায়ক বাস্তবতা</h3>
+                         <div class="space-y-4">
+                            <div class="flex items-center p-4 bg-gray-950/50 rounded-md">
+                                <span class="text-rose-400 ml-4">●</span>
+                                <p>দুনিয়ার সম্পদ সংগ্রহ এবং দালানকোঠা নির্মাণে ব্যস্ত থাকা।</p>
+                            </div>
+                             <div class="flex items-center p-4 bg-gray-950/50 rounded-md">
+                                <span class="text-rose-400 ml-4">●</span>
+                                <p>নামাজ, বিশেষ করে ফজরের নামাজের ব্যাপারে উদাসীনতা।</p>
+                            </div>
+                             <div class="flex items-center p-4 bg-gray-950/50 rounded-md">
+                                <span class="text-rose-400 ml-4">●</span>
+                                <p>টিভি এবং বিভিন্ন চ্যানেলের সামনে অহেতুক সময় নষ্ট করা।</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Consequences Section -->
+        <section id="consequences" class="py-20 px-6 bg-gray-950">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-100 mb-2 neon-text">পরিণতি: উদাসীনতার ফল</h2>
+                    <p class="text-md text-gray-400 max-w-2xl mx-auto">দুনিয়ার প্রতি ভালোবাসা এবং দীর্ঘ আশার ভয়াবহ পরিণতি রয়েছে ব্যক্তি ও জাতির উপর। এই বিভাগটি "ওয়াহ্​ন" বা দুর্বলতার উপর আলোকপাত করে, যা সম্পর্কে নবী ﷺ সতর্ক করেছিলেন এবং এটি কীভাবে জাতির ভাগ্য নির্ধারণী বিষয়গুলোকে প্রভাবিত করেছে।</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4 text-emerald-400">ওয়াহ্​ন: জাতির দুর্বলতা</h3>
+                        <p class="text-gray-400 mb-6">যখন নবী ﷺ-কে "ওয়াহ্​ন" সম্পর্কে জিজ্ঞাসা করা হয়েছিল, তখন তিনি এর ব্যাখ্যা দিয়েছিলেন "দুনিয়ার প্রতি ভালোবাসা এবং মৃত্যুকে অপছন্দ করা" বলে। এই রোগটিই জাতিকে সংখ্যায় বেশি হওয়া সত্ত্বেও বন্যার পানির উপর ভাসমান ফেনার মতো শক্তিহীন ও প্রভাবহীন করে তোলে।</p>
+                        <div class="chart-container">
+                            <canvas id="wahnChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4 text-rose-400">দেশ হারানো</h3>
+                        <p class="text-gray-400 mb-6">ফিলিস্তিনের মতো মুসলমানদের বড় বড় সমস্যাগুলোর প্রতি নীরবতা এবং উদাসীনতা এই রোগের অন্যতম স্পষ্ট লক্ষণ। খুতবাটি আমাদের আধ্যাত্মিক দুর্বলতা এবং আমাদের পবিত্র স্থান হারানোর মধ্যে একটি শক্তিশালী যোগসূত্র স্থাপন করে।</p>
+                        <div class="space-y-3">
+                            <div class="dark-card p-4 rounded-lg">
+                                <p class="font-bold text-rose-300">ফিলিস্তিন</p>
+                                <p class="text-sm text-gray-400">ঐক্যের অভাবে এবং জাতির উদাসীনতার কারণে আল-কুদস ডাকছে কিন্তু কেউ সাড়া দিচ্ছে না।</p>
+                            </div>
+                            <div class="dark-card p-4 rounded-lg">
+                                <p class="font-bold text-rose-300">ইরাক, চেচনিয়া ও আফগানিস্তান</p>
+                                <p class="text-sm text-gray-400">খুতবাতে এই অঞ্চলের মুসলমানদের বেদনাকে অসুস্থ দেহের প্রমাণ হিসেবে উল্লেখ করা হয়েছে।</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cure Section -->
+        <section id="cure" class="py-20 px-6 bg-gray-900">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-100 mb-2 neon-text">প্রতিকার: কীভাবে আমরা উদাসীনতা থেকে জাগব?</h2>
+                    <p class="text-md text-gray-400 max-w-2xl mx-auto">প্রত্যেক রোগেরই প্রতিকার আছে, এবং দীর্ঘ আশার রোগের প্রতিকার হলো ইসলামের স্বচ্ছ উৎসের দিকে ফিরে আসা। এই বিভাগটি খুতবা থেকে অনুপ্রাণিত হয়ে প্রতিকারের জন্য বাস্তব পদক্ষেপগুলো উপস্থাপন করে।</p>
+                </div>
+                <div>
+                    <div class="flex justify-center border-b border-gray-700 mb-6">
+                        <button data-tab="tab1" class="tab-btn py-2 px-6 text-lg font-semibold border-b-2 border-emerald-400 text-emerald-400">মৃত্যুর স্মরণ</button>
+                        <button data-tab="tab2" class="tab-btn py-2 px-6 text-lg text-gray-500 border-b-2 border-transparent">দুনিয়ার বাস্তবতা</button>
+                        <button data-tab="tab3" class="tab-btn py-2 px-6 text-lg text-gray-500 border-b-2 border-transparent">তাৎক্ষণিক আমল</button>
+                    </div>
+                    <div id="tab-content" class="max-w-3xl mx-auto p-6 dark-card rounded-lg">
+                        <div id="tab1" class="tab-pane">
+                            <h4 class="text-xl font-bold mb-3 text-emerald-300">জীবনের স্বাদ হরণকারী মৃত্যুকে বেশি বেশি স্মরণ করুন</h4>
+                            <p class="text-gray-300">কবর জিয়ারত, জানাজায় অংশ নেওয়া এবং আমাদের পূর্বসূরীদের নিয়ে চিন্তা করা—এই সব কাজ অন্তরকে জাগ্রত করে এবং পরকালকে স্মরণ করিয়ে দেয়। নবী ﷺ বলেছেন: "আমি তোমাদের কবর জিয়ারত করতে নিষেধ করেছিলাম, এখন থেকে জিয়ারত করো, কারণ তা তোমাদের পরকালকে স্মরণ করিয়ে দেয়।"</p>
+                        </div>
+                        <div id="tab2" class="tab-pane hidden">
+                            <h4 class="text-xl font-bold mb-3 text-emerald-300">দুনিয়ার বাস্তবতা জানুন</h4>
+                            <p class="text-gray-300">দুনিয়া হলো একটি যাত্রাপথ, স্থায়ী ঠিকানা নয়। এটি পরকালের দিকে একটি ক্রসিং মাত্র। এই বাস্তবতা বোঝা মানুষকে দুনিয়ার প্রতি উদাসীন করে এবং যা স্থায়ী তার উপর মনোযোগ কেন্দ্রীভূত করতে সাহায্য করে। আল্লাহ বলেন: "তাদের কাছে দুনিয়ার জীবনের উপমা তুলে ধরো, তা হলো পানির মতো যা আমি আকাশ থেকে বর্ষণ করি..."</p>
+                        </div>
+                        <div id="tab3" class="tab-pane hidden">
+                             <h4 class="text-xl font-bold mb-3 text-emerald-300">এখনই নিজের হিসাব নিন</h4>
+                            <p class="text-gray-300">তওবা বা সৎকাজে দেরি করবেন না। আপনি কেবল বর্তমান মুহূর্তটিরই মালিক। আলী (রাঃ) বলেছেন: "তোমাদের হিসাব নেওয়ার আগে নিজেরাই নিজেদের হিসাব নাও, এবং তোমাদের আমল ওজন করার আগে নিজেরাই তা ওজন করো।" এখনই নামাজ, কুরআন এবং আপনার ভাইদের জন্য দোয়া দিয়ে শুরু করুন।</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-950 border-t border-emerald-900/20 py-8">
+        <div class="container mx-auto text-center text-gray-400">
+            <p class="mb-4 text-emerald-400/70">"হে আল্লাহ, আমাদের সত্যকে সত্য হিসেবে দেখান এবং তা অনুসরণ করার তৌফিক দিন, এবং বাতিলকে বাতিল হিসেবে দেখান এবং তা থেকে বিরত থাকার তৌফিক দিন।"</p>
+            <p class="text-sm">শেখ খালেদ আল-রাশেদের "দীর্ঘ আশা ফিলিস্তিনকে ধ্বংস করেছে" খুতবা থেকে অনুপ্রাণিত একটি ইন্টারেক্টিভ বিশ্লেষণ।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Chart.js implementation for dark theme
+            const ctx = document.getElementById('wahnChart').getContext('2d');
+            const wahnChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['উচ্চাকাঙ্ক্ষী উম্মাহ (ঈমান)', 'দুর্বলতায় আক্রান্ত উম্মাহ (দুনিয়ার ভালোবাসা)'],
+                    datasets: [{
+                        label: 'উম্মাহর শক্তি (ধারণাগত)',
+                        data: [90, 25],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.5)', // Emerald
+                            'rgba(244, 63, 94, 0.5)'  // Rose
+                        ],
+                        borderColor: [
+                            'rgba(52, 211, 153, 1)',
+                            'rgba(251, 113, 133, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9ca3af', // gray-400
+                                font: {
+                                    family: "'Hind Siliguri', sans-serif"
+                                }
+                            }
+                        },
+                        y: {
+                           grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                           ticks: {
+                                color: '#d1d5db', // gray-300
+                                font: {
+                                    family: "'Hind Siliguri', sans-serif",
+                                    size: 14
+                                }
+                            } 
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(17, 24, 39, 0.8)',
+                            titleColor: '#6ee7b7', // emerald-300
+                            bodyColor: '#d1d5db', // gray-300
+                            titleFont: {
+                                family: "'Hind Siliguri', sans-serif"
+                            },
+                            bodyFont: {
+                                family: "'Hind Siliguri', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Tabs functionality
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('border-emerald-400', 'text-emerald-400');
+                        btn.classList.add('text-gray-500', 'border-transparent');
+                    });
+                    button.classList.add('border-emerald-400', 'text-emerald-400');
+                    button.classList.remove('text-gray-500', 'border-transparent');
+
+                    tabPanes.forEach(pane => {
+                        if (pane.id === tabId) {
+                            pane.classList.remove('hidden');
+                        } else {
+                            pane.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // Active nav link highlighting on scroll
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

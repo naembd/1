@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অবরোধের মধ্যে সুসংবাদ - শেখ খালেদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Teal Accent & Neon Glow -->
+    <!-- Application Structure Plan: A thematic, tab-based single-page application. The sermon is broken down into five core themes: 1) Core Principles, 2) Historical Context (Battle of the Trench), 3) Strength of Faith, 4) Promise of Victory, and 5) Contemporary Message. This structure allows users to explore the sermon's key ideas in a non-linear way, focusing on what interests them most. A top navigation bar facilitates easy switching between these thematic sections, which are dynamically displayed in the main content area. This design prioritizes user-guided exploration over a simple linear reading of the text. A dark mode with neon effects has been added for enhanced visual appeal. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: The concepts of trials, faith, patience, and divine help. Goal: To summarize the core requirements for steadfastness. Viz/Presentation Method: Doughnut Chart (Chart.js). Interaction: Hovering over segments reveals tooltips with explanations. Justification: A conceptual chart visually represents the key pillars of faith in a memorable way, fulfilling the library requirement creatively for a text-heavy report.
+        - Report Info: The historical narrative of the Battle of the Trench. Goal: To present the sequence of events engagingly. Viz/Presentation Method: Interactive Timeline (HTML/CSS/JS). Interaction: Clicking on a timeline event displays the detailed description. Justification: A timeline makes the historical account more dynamic and easier to follow than a long block of text.
+        - Report Info: Stories of individual courage. Goal: To highlight powerful examples. Viz/Presentation Method: Card-based layout with "Read More" functionality. Interaction: Clicking expands to show the full story. Justification: This emphasizes the stories while keeping the main interface clean.
+        - Report Info: The concluding prayer (Dua). Goal: To present the prayer respectfully. Viz/Presentation Method: A distinct, scrollable text block. Interaction: None, to maintain focus on the prayer's content. Justification: Simple, focused presentation is most appropriate for a prayer.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            scroll-behavior: smooth;
+            transition: background-color 0.5s, color 0.5s;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        
+        .neon-text {
+            transition: text-shadow 0.3s ease-in-out;
+        }
+        .dark .neon-text {
+            text-shadow: 0 0 5px #2dd4bf, 0 0 10px #2dd4bf, 0 0 15px #2dd4bf;
+        }
+
+        .nav-btn.active {
+            background-color: #0d9488;
+            color: white;
+            border-color: #0d9488;
+        }
+        .dark .nav-btn.active {
+             box-shadow: 0 0 8px #2dd4bf, 0 0 12px #2dd4bf;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #0d9488;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            transition: box-shadow 0.3s ease;
+        }
+        .dark .timeline::after {
+            box-shadow: 0 0 8px #2dd4bf;
+        }
+        .timeline-container {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        .timeline-container.left {
+            left: 0;
+        }
+        .timeline-container.right {
+            left: 50%;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: white;
+            border: 4px solid #0d9488;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+            transition: background-color 0.5s, box-shadow 0.3s;
+        }
+        .dark .timeline-container::after {
+            background-color: #374151;
+            box-shadow: 0 0 8px #2dd4bf;
+        }
+        .left::after {
+            right: -13px;
+        }
+        .right::after {
+            left: -13px;
+        }
+        .timeline-content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.5s;
+        }
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+         .dark .timeline-content:hover {
+            box-shadow: 0 0 15px rgba(45, 212, 191, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 dark:bg-gray-900 dark:text-stone-200">
+
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8 relative">
+            <h1 class="text-4xl md:text-5xl font-bold text-teal-800 dark:text-teal-400 neon-text">অবরোধের মধ্যে সুসংবাদ</h1>
+            <p class="text-xl text-stone-600 dark:text-stone-400 mt-2">শেখ খালেদ আল-রাশেদ</p>
+            <div class="absolute top-0 right-0">
+                <label for="theme-toggle" class="flex items-center cursor-pointer">
+                    <div class="relative">
+                        <input type="checkbox" id="theme-toggle" class="sr-only">
+                        <div class="block bg-gray-600 w-14 h-8 rounded-full"></div>
+                        <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
+                    </div>
+                    <div class="ml-3 text-gray-700 dark:text-gray-300 font-medium">
+                        <span class="sun hidden">☀️</span>
+                        <span class="moon">🌙</span>
+                    </div>
+                </label>
+            </div>
+        </header>
+
+        <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-10 pb-4 border-b border-stone-200 dark:border-gray-700">
+            <button class="nav-btn active text-sm md:text-base" data-tab="principles">⚖️ মূলনীতি</button>
+            <button class="nav-btn text-sm md:text-base" data-tab="history">📜 ঐতিহাসিক প্রেক্ষাপট</button>
+            <button class="nav-btn text-sm md:text-base" data-tab="faith">💪 ঈমানের শক্তি</button>
+            <button class="nav-btn text-sm md:text-base" data-tab="victory">✨ বিজয়ের প্রতিশ্রুতি</button>
+            <button class="nav-btn text-sm md:text-base" data-tab="message">🌍 সমসাময়িক বার্তা</button>
+        </nav>
+
+        <main id="content-area">
+            <section id="principles" class="content-section">
+                <div class="max-w-4xl mx-auto">
+                    <p class="text-lg mb-6 text-center text-stone-700 dark:text-stone-300">এই অংশে শেখ খালেদ আল-রাশেদের আলোচনার মূল ভিত্তিগুলো তুলে ধরা হয়েছে। এখানে মুমিনদের জন্য আল্লাহর পরীক্ষার বিধান এবং সত্য ও মিথ্যার মধ্যে চিরন্তন সংগ্রামের ধারণাগুলো ব্যাখ্যা করা হয়েছে, যা পুরো আলোচনার ভিত্তি স্থাপন করে।</p>
+                    <div class="space-y-6">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-teal-600 dark:border-teal-400">
+                            <h3 class="text-2xl font-semibold mb-3 text-teal-700 dark:text-teal-300">পরীক্ষা একটি চলমান রীতি</h3>
+                            <p class="text-stone-700 dark:text-stone-300 leading-relaxed">আল্লাহ তাআলা তাঁর বান্দাদের ঈমান বৃদ্ধি, মর্যাদা উন্নত করা এবং সত্যবাদীদেরকে মিথ্যাবাদীদের থেকে পৃথক করার জন্য পরীক্ষা করেন। এটি আল্লাহর একটি অপরিবর্তনীয় বিধান। কোরআনে বলা হয়েছে, “তোমরা কি মনে করেছ যে তোমরা জান্নাতে প্রবেশ করবে, অথচ আল্লাহ এখনও জানেন না তোমাদের মধ্যে কারা জিহাদ করেছে এবং কারা ধৈর্যশীল?” [আল-ইমরান: ১৪২]। এই পরীক্ষা পূর্ববর্তীদের উপরও এসেছিল এবং কেয়ামত পর্যন্ত চলমান থাকবে।</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border-l-4 border-teal-600 dark:border-teal-400">
+                            <h3 class="text-2xl font-semibold mb-3 text-teal-700 dark:text-teal-300">সত্য ও মিথ্যার সংগ্রাম</h3>
+                            <p class="text-stone-700 dark:text-stone-300 leading-relaxed">যখন থেকে মানুষ মুমিন ও কাফিরে বিভক্ত হয়েছে, তখন থেকেই সত্য ও মিথ্যার মধ্যে সংগ্রাম শুরু হয়েছে। এই সংঘাত আল্লাহর একটি মহাজাগতিক বিধান। আল্লাহ বলেন, “এবং যদি আল্লাহ মানুষকে একে অপরের দ্বারা প্রতিহত না করতেন, তবে পৃথিবী বিপর্যস্ত হয়ে যেত।” [আল-বাকারা: ২৫১]। কাফিররা সর্বদা ইসলাম ও মুসলিমদের বিরুদ্ধে ষড়যন্ত্র করে, কিন্তু আল্লাহই সর্বোত্তম পরিকল্পনাকারী। এই পরিস্থিতিতে মুমিনদের হীনবল না হয়ে ধৈর্য ধারণ করতে এবং আল্লাহর উপর ভরসা রাখতে বলা হয়েছে।</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="history" class="content-section hidden">
+                <div class="max-w-5xl mx-auto">
+                    <p class="text-lg mb-8 text-center text-stone-700 dark:text-stone-300">এখানে খন্দকের যুদ্ধের ঐতিহাসিক ঘটনাপ্রবাহ একটি ইন্টারেক্টিভ টাইমলাইনের মাধ্যমে উপস্থাপন করা হয়েছে। ব্যবহারকারীরা প্রতিটি ধাপে ক্লিক করে সেই সময়ের ঘটনা, মুসলিমদের চ্যালেঞ্জ এবং রাসূল (সাঃ) এর নেতৃত্ব সম্পর্কে বিস্তারিত জানতে পারবেন।</p>
+                    <div class="timeline">
+                        <div class="timeline-container left">
+                            <div class="timeline-content dark:bg-gray-800 dark:border-gray-600" onclick="showHistoryDetail('detail-1')">
+                                <h3 class="text-xl font-semibold text-teal-700 dark:text-teal-300">ষড়যন্ত্রের শুরু</h3>
+                                <p class="text-sm text-stone-600 dark:text-stone-400">বিস্তারিত জানতে ক্লিক করুন।</p>
+                            </div>
+                        </div>
+                        <div class="timeline-container right">
+                            <div class="timeline-content dark:bg-gray-800 dark:border-gray-600" onclick="showHistoryDetail('detail-2')">
+                                <h3 class="text-xl font-semibold text-teal-700 dark:text-teal-300">খন্দক খনন</h3>
+                                <p class="text-sm text-stone-600 dark:text-stone-400">বিস্তারিত জানতে ক্লিক করুন।</p>
+                            </div>
+                        </div>
+                        <div class="timeline-container left">
+                            <div class="timeline-content dark:bg-gray-800 dark:border-gray-600" onclick="showHistoryDetail('detail-3')">
+                                <h3 class="text-xl font-semibold text-teal-700 dark:text-teal-300">অবরোধ ও ভয়</h3>
+                                <p class="text-sm text-stone-600 dark:text-stone-400">বিস্তারিত জানতে ক্লিক করুন।</p>
+                            </div>
+                        </div>
+                         <div class="timeline-container right">
+                            <div class="timeline-content dark:bg-gray-800 dark:border-gray-600" onclick="showHistoryDetail('detail-4')">
+                                <h3 class="text-xl font-semibold text-teal-700 dark:text-teal-300">নবী (সাঃ) এর সুসংবাদ</h3>
+                                <p class="text-sm text-stone-600 dark:text-stone-400">বিস্তারিত জানতে ক্লিক করুন।</p>
+                            </div>
+                        </div>
+                        <div class="timeline-container left">
+                             <div class="timeline-content dark:bg-gray-800 dark:border-gray-600" onclick="showHistoryDetail('detail-5')">
+                                <h3 class="text-xl font-semibold text-teal-700 dark:text-teal-300">ঐশ্বরিক সাহায্য ও বিজয়</h3>
+                                <p class="text-sm text-stone-600 dark:text-stone-400">বিস্তারিত জানতে ক্লিক করুন।</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="history-details" class="mt-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border-t-4 border-teal-600 dark:border-teal-400">
+                        <div id="detail-default">
+                            <p class="text-stone-700 dark:text-stone-300 text-center">টাইমলাইনের যেকোনো একটি ঘটনা নির্বাচন করুন।</p>
+                        </div>
+                        <div id="detail-1" class="hidden">
+                            <h4 class="text-2xl font-bold mb-3 text-teal-800 dark:text-teal-300">ষড়যন্ত্রের শুরু</h4>
+                            <p class="text-stone-700 dark:text-stone-300 leading-relaxed">ইসলামের শক্তি বৃদ্ধি পাওয়ায় মুনাফিক, মুশরিক এবং ইহুদিরা ষড়যন্ত্র শুরু করে। খায়বারের ইহুদিরা মক্কায় গিয়ে কুরাইশদের মদিনা আক্রমণের জন্য প্ররোচিত করে। তারা মুসলিমদের সম্পদ ও নারীদের ভাগাভাগি করার প্রতিশ্রুতি দেয়। ফলে মক্কা, ইহুদি এবং অন্যান্য পৌত্তলিক গোত্রগুলো একত্রিত হয়ে প্রায় দশ হাজার সৈন্যের এক বিশাল বাহিনী নিয়ে মদিনা অবরোধ করে।</p>
+                        </div>
+                        <div id="detail-2" class="hidden">
+                            <h4 class="text-2xl font-bold mb-3 text-teal-800 dark:text-teal-300">খন্দক খনন</h4>
+                            <p class="text-stone-700 dark:text-stone-300 leading-relaxed">বিশাল শত্রু বাহিনীর মোকাবিলায় সালমান ফারসি (রাঃ) মদিনার চারপাশে খন্দক বা পরিখা খননের পরামর্শ দেন। রাসূল (সাঃ) ও সাহাবীরা চরম ক্ষুধা ও কষ্ট সহ্য করে এই খন্দক খনন করেন। এটি ছিল আরবদের জন্য একটি নতুন যুদ্ধ কৌশল এবং এটি শত্রুদের অগ্রযাত্রা থামিয়ে দেয়।</p>
+                        </div>
+                        <div id="detail-3" class="hidden">
+                            <h4 class="text-2xl font-bold mb-3 text-teal-800 dark:text-teal-300">অবরোধ ও ভয়</h4>
+                            <p class="text-stone-700 dark:text-stone-300 leading-relaxed">অবরোধ দীর্ঘায়িত হলে মুসলিমদের মধ্যে ভয় ও হতাশা ছড়িয়ে পড়ে। আল্লাহ এই পরিস্থিতির বর্ণনা দিয়ে বলেন, "যখন চোখগুলো বিস্ফোরিত হয়েছিল এবং হৃদয়গুলো কণ্ঠনালীতে পৌঁছে গিয়েছিল এবং তোমরা আল্লাহ সম্পর্কে নানা ধারণা করছিলে।" [আল-আহযাব: ১০]। এই কঠিন মুহূর্তে মুনাফিকরা মুসলিমদের মনোবল ভাঙার চেষ্টা করে, কিন্তু মুমিনরা আল্লাহর প্রতিশ্রুতির উপর অটল থাকেন।</p>
+                        </div>
+                        <div id="detail-4" class="hidden">
+                            <h4 class="text-2xl font-bold mb-3 text-teal-800 dark:text-teal-300">নবী (সাঃ) এর সুসংবাদ</h4>
+                            <p class="text-stone-700 dark:text-stone-300 leading-relaxed">খন্দক খননের সময় একটি বড় পাথর ভাঙতে না পারলে নবী (সাঃ) নিজে এসে তাতে আঘাত করেন। প্রথম আঘাতে ইয়েমেন, দ্বিতীয় আঘাতে শাম (সিরিয়া) এবং তৃতীয় আঘাতে ইরাকের প্রাসাদ বিজয়ের সুসংবাদ দেন। এই চরম হতাশার মুহূর্তে তাঁর এই ভবিষ্যদ্বাণী ছিল আল্লাহর প্রতি তাঁর অটল আস্থার প্রতীক।</p>
+                        </div>
+                         <div id="detail-5" class="hidden">
+                            <h4 class="text-2xl font-bold mb-3 text-teal-800 dark:text-teal-300">ঐশ্বরিক সাহায্য ও বিজয়</h4>
+                            <p class="text-stone-700 dark:text-stone-300 leading-relaxed">যখন ইহুদিরা চুক্তি ভঙ্গ করে এবং মুসলিমদের সব পার্থিব উপায় শেষ হয়ে যায়, তখন আল্লাহর সাহায্য আসে। আল্লাহ এক প্রচণ্ড শীতল বাতাস এবং ফেরেশতাদের বাহিনী প্রেরণ করে শত্রুদের ছত্রভঙ্গ করে দেন। তারা সবকিছু ফেলে পালিয়ে যেতে বাধ্য হয়। এভাবেই মুমিনরা বিজয় লাভ করে। আল্লাহ বলেন, “সুসংবাদ গ্রহণ কর, বিজয় নিকটবর্তী।”</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="faith" class="content-section hidden">
+                <div class="max-w-4xl mx-auto">
+                    <p class="text-lg mb-8 text-center text-stone-700 dark:text-stone-300">এই বিভাগে চরম প্রতিকূলতার মুখে সাহাবীদের ঈমানের শক্তির দুটি উজ্জ্বল উদাহরণ তুলে ধরা হয়েছে। রিবঈ ইবনে আমের এবং খুবাইব ইবনে আদী (রাঃ)-এর কাহিনীগুলো দেখায় যে একজন মুমিন কীভাবে জাগতিক শক্তির সামনে মাথা নত না করে ঈমানের বলে বলীয়ান থাকে।</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border-l-4 border-amber-500 dark:border-amber-400">
+                            <h3 class="text-2xl font-semibold mb-3 text-amber-700 dark:text-amber-400">রিবঈ (রাঃ) ও পারস্য সম্রাট</h3>
+                            <p class="text-stone-700 dark:text-stone-300 mb-4">পারস্য সেনাপতি রুস্তমের দরবারে রিবঈ ইবনে আমের (রাঃ) একজন সাধারণ সৈনিকের পোশাকে প্রবেশ করেন। তাঁর সরলতা দেখে যখন তাঁকে জিজ্ঞেস করা হয় কেন তারা এসেছেন, তিনি উত্তরে বলেন, "আল্লাহ আমাদের পাঠিয়েছেন বান্দাদেরকে বান্দাদের দাসত্ব থেকে বের করে রবের দাসত্বে নিয়ে আসার জন্য, দুনিয়ার সংকীর্ণতা থেকে দুনিয়া ও আখেরাতের প্রশস্ততায় নিয়ে আসার জন্য এবং ধর্মের অবিচার থেকে ইসলামের ন্যায়বিচারের দিকে নিয়ে আসার জন্য।" তাঁর এই নির্ভীক উত্তর ইসলামের শক্তির পরিচয় দেয়।</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border-l-4 border-amber-500 dark:border-amber-400">
+                            <h3 class="text-2xl font-semibold mb-3 text-amber-700 dark:text-amber-400">খুবাইব (রাঃ) এর শাহাদাত</h3>
+                            <p class="text-stone-700 dark:text-stone-300 mb-4">খুবাইব ইবনে আদী (রাঃ)-কে যখন শহীদ করার জন্য প্রস্তুত করা হয়, তখন তাঁকে জিজ্ঞেস করা হয়েছিল, "তুমি কি চাও যে মুহাম্মদ তোমার জায়গায় থাকুক?" তিনি উত্তরে বলেছিলেন, "আল্লাহর কসম, আমি চাই না যে মুহাম্মদের গায়ে একটি কাঁটা বিঁধুক এবং আমি আমার পরিবারের মধ্যে নিরাপদে থাকি।" মৃত্যুর আগে তিনি দুই রাকাত নামাজ পড়েন এবং দোয়া করেন, "হে আল্লাহ! তাদের একে একে হত্যা কর এবং তাদের কাউকে ছেড়ে দিও না।" তাঁর এই অটল ঈমান শত্রুদেরও বিস্মিত করেছিল।</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="victory" class="content-section hidden">
+                <div class="max-w-4xl mx-auto text-center">
+                    <p class="text-lg mb-8 text-stone-700 dark:text-stone-300">কঠিন পরিস্থিতিতেও মুমিনদের জন্য আল্লাহর বিজয়ের প্রতিশ্রুতি রয়েছে। এই অংশে সেই প্রতিশ্রুতির কথা স্মরণ করিয়ে দেওয়া হয়েছে এবং বিজয়ের জন্য অপরিহার্য গুণাবলী একটি চিত্রের মাধ্যমে তুলে ধরা হয়েছে।</p>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-8 border-t-4 border-teal-600 dark:border-teal-400">
+                         <h3 class="text-2xl font-semibold mb-4 text-teal-700 dark:text-teal-300">অটলতার উপাদান</h3>
+                         <p class="mb-6 text-stone-600 dark:text-stone-400">আল্লাহর প্রতিশ্রুত বিজয় অর্জনের জন্য মুমিনদের কিছু মৌলিক গুণের অধিকারী হতে হয়। এই গুণগুলোই কঠিন সময়ে তাদের শক্তি জোগায় এবং আল্লাহর সাহায্যকে ত্বরান্বিত করে।</p>
+                        <div class="chart-container">
+                            <canvas id="victoryChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                        <blockquote class="text-xl italic text-stone-700 dark:text-stone-300 border-l-4 border-teal-500 dark:border-teal-400 pl-4">
+                            "এবং নিশ্চয়ই আমাদের বাণী আমাদের প্রেরিত বান্দাদের জন্য পূর্বেই নির্ধারিত হয়েছে যে, নিশ্চয়ই তারাই সাহায্যপ্রাপ্ত হবে। এবং নিশ্চয়ই আমাদের সৈন্যরাই বিজয়ী হবে।"
+                            <cite class="block text-right not-italic text-base text-stone-500 dark:text-stone-400 mt-2">- সূরা আস-সাফফাত: ১৭১-১৭৩</cite>
+                        </blockquote>
+                    </div>
+                </div>
+            </section>
+
+            <section id="message" class="content-section hidden">
+                <div class="max-w-4xl mx-auto">
+                     <p class="text-lg mb-8 text-center text-stone-700 dark:text-stone-300">এই চূড়ান্ত অংশে, শেখ খালেদ আল-রাশেদ ঐতিহাসিক শিক্ষাগুলোকে সমসাময়িক মুসলিম বিশ্বের, বিশেষ করে ফালুজার পরিস্থিতির সঙ্গে যুক্ত করেছেন। তিনি উম্মাহর একতা, দোয়া এবং আল্লাহর উপর আস্থার গুরুত্ব তুলে ধরেছেন এবং একটি মর্মস্পর্শী দোয়ার মাধ্যমে আলোচনা শেষ করেছেন।</p>
+                     <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                            <h3 class="text-2xl font-semibold mb-3 text-teal-700 dark:text-teal-300">ফালুজার দৃঢ়তা ও আমাদের করণীয়</h3>
+                            <p class="text-stone-700 dark:text-stone-300 leading-relaxed">ঐতিহাসিক খন্দকের যুদ্ধের মতোই ফালুজার মুসলিমরা চতুর্দিক থেকে অবরুদ্ধ হয়েও ঈমানের বলে বলীয়ান ছিল। তাদের অস্ত্র ছিল "লা ইলাহা ইল্লাল্লাহ"। এই ঘটনা প্রমাণ করে যে, সংখ্যা বা জাগতিক উপকরণ নয়, বরং ঈমান ও আল্লাহর উপর আস্থাই বিজয়ের মূল চাবিকাঠি। আমাদের দায়িত্ব হলো নির্যাতিত ভাইদের জন্য দোয়া করা, তাদের পাশে দাঁড়ানো এবং নিজেদের জীবনে ইসলামকে আঁকড়ে ধরা। মুমিনরা এক দেহের মতো; তাই বিশ্বের যেকোনো প্রান্তে কোনো মুসলিম নির্যাতিত হলে তার dolor অনুভব করা ঈমানের দাবি।</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                            <h3 class="text-2xl font-semibold mb-3 text-teal-700 dark:text-teal-300">উম্মাহর জন্য দোয়া</h3>
+                            <div class="h-64 overflow-y-auto pr-2 border-l-4 border-teal-200 dark:border-gray-600 pl-4">
+                                <p class="text-stone-700 dark:text-stone-300 leading-relaxed">
+                                    হে আল্লাহ! ফালুজার ভূমিকে তাদের উপর আগুনে এবং আকাশকে উল্কা ও ঘূর্ণিঝড়ে পরিণত করুন।
+                                    হে আল্লাহ! ফালুজার জনগণকে দৃঢ় রাখুন। ফিলিস্তিন, চেচনিয়া, কাশ্মীর, আফগানিস্তান এবং সব জায়গায় মুসলিমদের দৃঢ় রাখুন।
+                                    হে আল্লাহ! তারা সংখ্যায় কম, তাদের সংখ্যা বাড়িয়ে দিন। তারা ক্ষুধার্ত, তাদের খাওয়ান। তারা ভীত, তাদের নিরাপত্তা দিন। তারা নির্যাতিত, তাদের জন্য প্রতিশোধ নিন।
+                                    হে আল্লাহ, কিতাব নাযিলকারী, মেঘ পরিচালনাকারী! ক্রুসেডার ও দখলদার ইহুদিদের পরাজিত করুন এবং তাদের কাঁপিয়ে দিন।
+                                    হে আল্লাহ! মুজাহিদীনদের তাদের ঘাড়ের উপর ক্ষমতা দিন।
+                                    হে আল্লাহ! মুসলিমদের দেশে তাদের কোনো পতাকা উত্তোলন করবেন না এবং তাদের কোনো উদ্দেশ্য পূরণ করবেন না।
+                                    হে শক্তিশালী, হে পরাক্রমশালী! আপনার উপরই আমরা ভরসা করেছি এবং আপনার দিকেই আমরা প্রত্যাবর্তন করেছি। আমাদের দেশে আমাদের নিরাপত্তা দিন, আমাদের ইমাম ও শাসকদের সংশোধন করুন এবং আমাদের ঘরগুলোকে অশ্লীলতা থেকে পবিত্র করুন।
+                                </p>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const contentSections = document.querySelectorAll('.content-section');
+        const historyDetailsDiv = document.getElementById('history-details');
+        const allDetailDivs = historyDetailsDiv.querySelectorAll('div[id^="detail-"]');
+        const defaultDetailDiv = document.getElementById('detail-default');
+
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const sunIcon = document.querySelector('.sun');
+        const moonIcon = document.querySelector('.moon');
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tab = button.dataset.tab;
+
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                contentSections.forEach(section => {
+                    if (section.id === tab) {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+            });
+        });
+        
+        function showHistoryDetail(detailId) {
+            allDetailDivs.forEach(div => div.classList.add('hidden'));
+            const targetDiv = document.getElementById(detailId);
+            if (targetDiv) {
+                targetDiv.classList.remove('hidden');
+            } else {
+                defaultDetailDiv.classList.remove('hidden');
+            }
+        }
+
+        let victoryChartInstance = null;
+        const renderChart = () => {
+            const isDarkMode = body.classList.contains('dark');
+            const legendColor = isDarkMode ? '#f3f4f6' : '#374151';
+
+            if (victoryChartInstance) {
+                victoryChartInstance.destroy();
+            }
+            const ctx = document.getElementById('victoryChart').getContext('2d');
+            victoryChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['ঈমান (Faith)', 'সবর (Patience)', 'আল্লাহর উপর ভরসা (Trust)', 'দোয়া (Prayer)'],
+                    datasets: [{
+                        label: 'অটলতার উপাদান',
+                        data: [25, 25, 25, 25],
+                        backgroundColor: [
+                            'rgba(45, 212, 191, 0.7)', // teal
+                            'rgba(251, 191, 36, 0.7)', // amber
+                            'rgba(96, 165, 250, 0.7)', // blue
+                            'rgba(52, 211, 153, 0.7)' // emerald
+                        ],
+                        borderColor: [
+                            '#2dd4bf',
+                            '#fbb_f24',
+                            '#60a5fa',
+                            '#34d399'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: legendColor,
+                                font: {
+                                    family: "'Hind Siliguri', sans-serif",
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            bodyFont: {
+                                family: "'Hind Siliguri', sans-serif",
+                                size: 12
+                            },
+                            titleFont: {
+                                family: "'Hind Siliguri', sans-serif",
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            });
+        };
+        
+        const victoryTabButton = document.querySelector('button[data-tab="victory"]');
+        let chartRenderedFirstTime = false;
+        victoryTabButton.addEventListener('click', () => {
+            if(!chartRenderedFirstTime) {
+                renderChart();
+                chartRenderedFirstTime = true;
+            }
+        });
+        
+        // Theme toggle logic
+        const toggleTheme = (isDark) => {
+             if (isDark) {
+                body.classList.add('dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+                localStorage.setItem('theme', 'light');
+            }
+            if (victoryChartInstance) {
+                renderChart();
+            }
+        };
+
+        themeToggle.addEventListener('change', (e) => {
+            toggleTheme(e.target.checked);
+        });
+
+        // Check for saved theme preference or system preference
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            themeToggle.checked = true;
+            toggleTheme(true);
+        } else {
+            themeToggle.checked = false;
+            toggleTheme(false);
+        }
+
+        // Initial setup for buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.add('px-4', 'py-2', 'rounded-md', 'border-2', 'border-transparent', 'transition-all', 'duration-300', 'font-semibold', 'text-stone-700', 'dark:text-stone-300', 'bg-stone-200', 'dark:bg-gray-700', 'hover:bg-teal-600', 'hover:text-white', 'dark:hover:bg-teal-500', 'focus:outline-none', 'focus:ring-2', 'focus:ring-teal-500', 'focus:ring-offset-2', 'dark:focus:ring-offset-gray-900');
+        });
+        
+        // Initial setup for theme toggle styles
+        const toggleDot = document.querySelector('#theme-toggle + .block + .dot');
+        themeToggle.addEventListener('change', e => {
+            if (e.target.checked) {
+                toggleDot.style.transform = 'translateX(100%)';
+            } else {
+                toggleDot.style.transform = 'translateX(0)';
+            }
+        });
+         if (themeToggle.checked) {
+            toggleDot.style.transform = 'translateX(100%)';
+        }
+
+
+    </script>
+</body>
+</html>

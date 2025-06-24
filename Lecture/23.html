@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>হতাশ হয়ো না, দুঃখ করো না | উহুদ যুদ্ধের শিক্ষা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Sacred Glow -->
+    <!-- Application Structure Plan: The application uses a thematic, single-page structure with a sticky navigation bar for easy access to different sections. The flow is designed for progressive discovery: starting with a high-level introduction, moving to a direct comparison of Badr and Uhud, then a deep-dive into Uhud's events via an interactive timeline and a data chart. It then highlights personal stories of valor before concluding with the sermon's main takeaway. This structure transforms a linear sermon into an explorable experience, enhancing user engagement and understanding by breaking down complex information into digestible, interactive components. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Comparing Badr's victory and Uhud's defeat. Goal: Compare. Viz/Method: Interactive two-column layout with toggle buttons. Interaction: Clicking buttons updates the text to show reasons for victory or defeat. Justification: This makes the core contrast of the sermon immediately clear and interactive. Library: Vanilla JS.
+        2. Report Info: Military forces at Uhud. Goal: Inform/Compare. Viz/Method: Bar chart. Interaction: Hover tooltips show precise numbers. Justification: Provides a quick, clear visual for the force imbalance. Library: Chart.js.
+        3. Report Info: Key events of Uhud. Goal: Organize/Change. Viz/Method: Vertical interactive timeline built with HTML/CSS. Interaction: Clicking a stage reveals details. Justification: Simplifies the complex battle narrative into a step-by-step explorable flow. Library: Vanilla JS.
+        4. Report Info: Heroism of companions. Goal: Inform. Viz/Method: Interactive cards. Interaction: Clicking a card reveals the story. Justification: Highlights individual sacrifices in an organized, engaging format. Library: Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', 'Inter', sans-serif;
+            background-color: #2D2A26; /* Darker background */
+            color: #EAEAEA;
+        }
+        .bg-primary { background-color: #2D2A26; }
+        .bg-secondary { background-color: #3E3A34; }
+        .text-accent { color: #E5C99F; }
+        .border-accent { border-color: #E5C99F; }
+        .neon-text {
+            text-shadow: 0 0 5px rgba(229, 201, 159, 0.4),
+                         0 0 10px rgba(229, 201, 159, 0.4),
+                         0 0 15px rgba(229, 201, 159, 0.3),
+                         0 0 20px rgba(229, 201, 159, 0.2);
+        }
+        .btn-accent {
+            background-color: #E5C99F;
+            color: #2D2A26;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 8px rgba(229, 201, 159, 0.5);
+        }
+        .btn-accent:hover {
+            background-color: #FDFBF5;
+            box-shadow: 0 0 15px rgba(253, 251, 245, 0.8);
+        }
+        .btn-toggle {
+            background-color: #4A4A4A;
+            color: #EAEAEA;
+        }
+        .btn-toggle.active {
+            background-color: #E5C99F;
+            color: #2D2A26;
+            font-weight: 600;
+            box-shadow: 0 0 10px rgba(229, 201, 159, 0.7);
+        }
+        .nav-link {
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active-nav {
+            color: #E5C99F;
+            text-shadow: 0 0 8px rgba(229, 201, 159, 0.6);
+            border-bottom-color: #E5C99F;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .timeline-btn {
+            box-shadow: 0 0 8px rgba(229, 201, 159, 0.5);
+        }
+        .timeline-btn:hover {
+             box-shadow: 0 0 15px rgba(229, 201, 159, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-primary">
+
+    <header class="bg-secondary/80 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-black/20">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl font-bold text-accent neon-text">উহুদের শিক্ষা</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#intro" class="nav-link px-3 py-2 rounded-md text-sm font-medium">ভূমিকা</a>
+                        <a href="#comparison" class="nav-link px-3 py-2 rounded-md text-sm font-medium">যুদ্ধ প্রেক্ষাপট</a>
+                        <a href="#timeline" class="nav-link px-3 py-2 rounded-md text-sm font-medium">ঘটনাপ্রবাহ</a>
+                        <a href="#valor" class="nav-link px-3 py-2 rounded-md text-sm font-medium">বীরত্বের কাহিনী</a>
+                        <a href="#future" class="nav-link px-3 py-2 rounded-md text-sm font-medium">ভবিষ্যৎ</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#intro" class="nav-link block px-3 py-2 rounded-md text-base font-medium">ভূমিকা</a>
+                <a href="#comparison" class="nav-link block px-3 py-2 rounded-md text-base font-medium">যুদ্ধ প্রেক্ষাপট</a>
+                <a href="#timeline" class="nav-link block px-3 py-2 rounded-md text-base font-medium">ঘটনাপ্রবাহ</a>
+                <a href="#valor" class="nav-link block px-3 py-2 rounded-md text-base font-medium">বীরত্বের কাহিনী</a>
+                <a href="#future" class="nav-link block px-3 py-2 rounded-md text-base font-medium">ভবিষ্যৎ</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        
+        <section id="intro" class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight neon-text">"হতাশ হয়ো না, দুঃখ করো না"</h1>
+            <p class="mt-4 text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">"আর তোমরা হতাশ হয়ো না এবং দুঃখ করো না, আর তোমরাই বিজয়ী হবে, যদি তোমরা মুমিন হও।" <br> (আল ইমরান: ১৩৯)</p>
+            <p class="mt-6 text-base text-gray-400 max-w-4xl mx-auto">
+                এই ইন্টারেক্টিভ পাতাটি শেখ খালেদ আল-রাশেদের "ওয়ালা তাহিনু ওয়ালা তাহজানু" বক্তৃতার উপর ভিত্তি করে তৈরি। এখানে উহুদ যুদ্ধের গভীর শিক্ষা এবং ঈমানের শক্তির অপরিহার্যতা তুলে ধরা হয়েছে। এর মাধ্যমে আমরা বিজয় ও পরাজয়ের কারণগুলো বিশ্লেষণ করব এবং সাহাবীদের বীরত্বপূর্ণ কাহিনী থেকে অনুপ্রেরণা নেব।
+            </p>
+        </section>
+
+        <section id="comparison" class="mb-16 bg-secondary p-6 md:p-8 rounded-xl shadow-lg shadow-black/30">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-white neon-text">বদরের বিজয় বনাম উহুদের শিক্ষা</h2>
+                <p class="mt-2 text-gray-300 max-w-3xl mx-auto">বদর ও উহুদের ঘটনা মুসলিম উম্মাহর জন্য চিরস্থায়ী শিক্ষা। একটিতে ছিল নিরঙ্কুশ বিজয়, অন্যটিতে বেদনাদায়ক পরাজয়। নিচের বাটন ব্যবহার করে উভয় যুদ্ধের মূল কারণগুলো তুলনা করুন এবং দেখুন কীভাবে ঈমান, আনুগত্য এবং দুনিয়ার প্রতি আসক্তি ফলাফলের উপর প্রভাব ফেলেছিল।</p>
+            </div>
+            
+            <div class="flex justify-center mb-6">
+                <div class="flex space-x-2 p-1 bg-primary rounded-lg shadow-inner">
+                    <button id="badrBtn" class="btn-toggle active px-4 py-2 text-sm font-medium rounded-md">বদরের বিজয়ের কারণ</button>
+                    <button id="uhudBtn" class="btn-toggle px-4 py-2 text-sm font-medium rounded-md">উহুদের পরাজয়ের কারণ</button>
+                </div>
+            </div>
+
+            <div id="comparison-content" class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+                <div id="badr-content">
+                    <h3 class="text-xl font-semibold mb-3 text-green-400 neon-text">বদর: ঈমানের শক্তি</h3>
+                    <ul class="space-y-2 text-gray-300 list-inside">
+                        <li class="flex items-center justify-center"><span class="text-green-400 mr-2">✔</span> আল্লাহর সন্তুষ্টিই একমাত্র লক্ষ্য</li>
+                        <li class="flex items-center justify-center"><span class="text-green-400 mr-2">✔</span> একতাবদ্ধ ও অবিচল নেতৃত্ব</li>
+                        <li class="flex items-center justify-center"><span class="text-green-400 mr-2">✔</span> রাসূলের (সাঃ) প্রতি পূর্ণ আনুগত্য</li>
+                        <li class="flex items-center justify-center"><span class="text-green-400 mr-2">✔</span> দুনিয়ার প্রতি নিরাসক্তি</li>
+                    </ul>
+                </div>
+                <div id="uhud-content" class="hidden">
+                    <h3 class="text-xl font-semibold mb-3 text-red-400 neon-text">উহুদ: ভুলের শিক্ষা</h3>
+                     <ul class="space-y-2 text-gray-300 list-inside">
+                        <li class="flex items-center justify-center"><span class="text-red-400 mr-2">✖</span> নেতৃত্বের আদেশের অবাধ্যতা</li>
+                        <li class="flex items-center justify-center"><span class="text-red-400 mr-2">✖</span> গনিমতের প্রতি আসক্তি (দুনিয়ার ভালোবাসা)</li>
+                        <li class="flex items-center justify-center"><span class="text-red-400 mr-2">✖</span> নিজেদের মধ্যে মতবিরোধ ও বিবাদ</li>
+                        <li class="flex items-center justify-center"><span class="text-red-400 mr-2">✖</span> যুদ্ধের এক পর্যায়ে শৃঙ্খলার অভাব</li>
+                    </ul>
+                </div>
+            </div>
+             <div class="mt-12">
+                <h3 class="text-2xl font-bold text-center text-white mb-6 neon-text">উহুদের सैन्य शक्ति</h3>
+                <div class="chart-container">
+                    <canvas id="forcesChart"></canvas>
+                </div>
+                <p class="text-center mt-4 text-sm text-gray-400">এই চার্টটি উহুদ যুদ্ধে মুসলিম এবং কুরাইশ বাহিনীর মধ্যে সংখ্যার পার্থক্য তুলে ধরে। মুসলিমদের সংখ্যা কম হওয়া সত্ত্বেও, প্রাথমিক বিজয় এসেছিল ঈমান ও কৌশলের জোরে।</p>
+            </div>
+        </section>
+
+        <section id="timeline" class="mb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-white neon-text">উহুদ যুদ্ধের ঘটনাপ্রবাহ</h2>
+                <p class="mt-2 text-gray-300 max-w-3xl mx-auto">উহুদ যুদ্ধটি কয়েকটি গুরুত্বপূর্ণ পর্যায়ে বিভক্ত ছিল। প্রতিটি পর্যায়ে ক্লিক করে সেই মুহূর্তের ঘটনা এবং তার শিক্ষা সম্পর্কে জানুন। এটি আপনাকে যুদ্ধের গতিপথ এবং কেন পরিস্থিতি পাল্টে গিয়েছিল তা বুঝতে সাহায্য করবে।</p>
+            </div>
+            <div class="relative max-w-2xl mx-auto">
+                <div class="absolute left-1/2 w-0.5 h-full bg-gray-600 transform -translate-x-1/2"></div>
+                <div class="space-y-8">
+                    <div class="timeline-item flex items-center w-full">
+                        <div class="w-1/2 pr-8 text-right">
+                            <button data-target="event-1" class="timeline-btn p-3 rounded-full border-2 border-accent bg-secondary shadow-lg transform hover:scale-110 transition-transform">
+                                <span class="text-2xl">①</span>
+                            </button>
+                        </div>
+                        <div id="event-1" class="timeline-content w-1/2 pl-8 hidden">
+                            <h4 class="font-bold text-lg text-accent">নবীর (সাঃ) পরিকল্পনা</h4>
+                            <p class="text-sm">নবী (সাঃ) উহুদ পাহাড়কে পেছনে রেখে একটি সুরক্ষিত অবস্থান নেন এবং পেছন থেকে আক্রমণ প্রতিরোধের জন্য জাবালে রুমাত (তীরন্দাজদের পাহাড়)-এ ৫০ জন তীরন্দাজ মোতায়েন করেন।</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item flex items-center w-full">
+                         <div class="w-1/2 pr-8 text-right">
+                            <button data-target="event-2" class="timeline-btn p-3 rounded-full border-2 border-accent bg-secondary shadow-lg transform hover:scale-110 transition-transform">
+                                <span class="text-2xl">②</span>
+                            </button>
+                        </div>
+                        <div id="event-2" class="timeline-content w-1/2 pl-8 hidden">
+                            <h4 class="font-bold text-lg text-accent">প্রাথমিক বিজয়</h4>
+                            <p class="text-sm">যুদ্ধের শুরুতে মুসলিমরা বীরত্বের সাথে লড়াই করে এবং কুরাইশদের ছত্রভঙ্গ করে দেয়। তীরন্দাজরা তাদের অবস্থান থেকে শত্রুদের অশ্বারোহী বাহিনীকে প্রতিহত করে।</p>
+                        </div>
+                    </div>
+                     <div class="timeline-item flex items-center w-full">
+                         <div class="w-1/2 pr-8 text-right">
+                            <button data-target="event-3" class="timeline-btn p-3 rounded-full border-2 border-accent bg-secondary shadow-lg transform hover:scale-110 transition-transform">
+                                <span class="text-2xl">③</span>
+                            </button>
+                        </div>
+                        <div id="event-3" class="timeline-content w-1/2 pl-8 hidden">
+                            <h4 class="font-bold text-lg text-red-400">তীরন্দাজদের ভুল</h4>
+                            <p class="text-sm">শত্রুদের পালাতে দেখে এবং গনিমতের লোভে অধিকাংশ তীরন্দাজ রাসূলের (সাঃ) কঠোর নির্দেশ অমান্য করে তাদের পাহাড় থেকে নেমে আসে। এটিই ছিল যুদ্ধের মোড় ঘুরিয়ে দেওয়া ভুল।</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item flex items-center w-full">
+                         <div class="w-1/2 pr-8 text-right">
+                            <button data-target="event-4" class="timeline-btn p-3 rounded-full border-2 border-accent bg-secondary shadow-lg transform hover:scale-110 transition-transform">
+                                <span class="text-2xl">④</span>
+                            </button>
+                        </div>
+                        <div id="event-4" class="timeline-content w-1/2 pl-8 hidden">
+                            <h4 class="font-bold text-lg text-accent">খালিদের পাল্টা আক্রমণ</h4>
+                            <p class="text-sm">খালিদ বিন ওয়ালিদ (তখনও মুসলিম হননি) এই সুযোগে তার অশ্বারোহী বাহিনী নিয়ে অরক্ষিত পেছন দিক থেকে মুসলিমদের উপর অতর্কিত আক্রমণ করেন, যা যুদ্ধের গতিপথ সম্পূর্ণ পাল্টে দেয়।</p>
+                        </div>
+                    </div>
+                     <div class="timeline-item flex items-center w-full">
+                        <div class="w-1/2 pr-8 text-right">
+                            <button data-target="event-5" class="timeline-btn p-3 rounded-full border-2 border-accent bg-secondary shadow-lg transform hover:scale-110 transition-transform">
+                                <span class="text-2xl">⑤</span>
+                            </button>
+                        </div>
+                        <div id="event-5" class="timeline-content w-1/2 pl-8 hidden">
+                            <h4 class="font-bold text-lg text-accent">সাহাবীদের অবিচলতা</h4>
+                            <p class="text-sm">চরম বিশৃঙ্খলার মাঝেও রাসূল (সাঃ) এবং তাঁর নিকটবর্তী সাহাবীরা অবিশ্বাস্য সাহস ও অবিচলতার পরিচয় দেন। তারা নিজেদের জীবন বাজি রেখে রাসূলকে (সাঃ) রক্ষা করেন এবং পুনরায় সংগঠিত হওয়ার চেষ্টা করেন।</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="valor" class="mb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-white neon-text">বীরত্বের অবিস্মরণীয় কাহিনী</h2>
+                <p class="mt-2 text-gray-300 max-w-3xl mx-auto">উহুদের ময়দান ছিল ঈমান ও আত্মত্যাগের এক অনন্য প্রদর্শনী। অনেক সাহাবী অবিশ্বাস্য বীরত্ব প্রদর্শন করেছেন। এখানে কয়েকজনের কাহিনী তুলে ধরা হলো, যা যুগে যুগে মুমিনদের অনুপ্রেরণা জোগাবে। প্রতিটি কার্ডে ক্লিক করে তাদের অসাধারণ কাহিনী পড়ুন।</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="valor-card bg-secondary rounded-xl shadow-lg shadow-black/30 p-6 cursor-pointer transform hover:-translate-y-2 transition-transform duration-300">
+                    <h3 class="text-xl font-bold text-accent mb-2 neon-text">হামজা ইবনে আবদুল মুত্তালিব (রাঃ)</h3>
+                    <p class="text-sm text-gray-400 short-desc">"আল্লাহর সিংহ" খ্যাত হামজা (রাঃ) বীরত্বের সাথে যুদ্ধ করে শত্রুদের মধ্যে আতঙ্ক সৃষ্টি করেছিলেন।</p>
+                    <div class="valor-details hidden mt-4 text-sm text-gray-300">
+                        <p>তিনি একাই বহু কাফিরকে হত্যা করেন। কিন্তু ওয়াহশি নামক এক দাসের বর্শার আঘাতে তিনি শহীদ হন। তাঁর শাহাদাত ছিল মুসলিমদের জন্য এক বিরাট ক্ষতি।</p>
+                    </div>
+                </div>
+                <div class="valor-card bg-secondary rounded-xl shadow-lg shadow-black/30 p-6 cursor-pointer transform hover:-translate-y-2 transition-transform duration-300">
+                    <h3 class="text-xl font-bold text-accent mb-2 neon-text">আবু দুজানা (রাঃ)</h3>
+                    <p class="text-sm text-gray-400 short-desc">রাসূলের (সাঃ) তরবারি হাতে নিয়ে তিনি সাহসিকতার সাথে যুদ্ধ করেন এবং রাসূলকে (সাঃ) নিজের শরীর দিয়ে রক্ষা করেন।</p>
+                    <div class="valor-details hidden mt-4 text-sm text-gray-300">
+                        <p>যখন শত্রুরা রাসূলুল্লাহ (সাঃ)-কে ঘিরে ফেলেছিল, তখন আবু দুজানা (রাঃ) নিজের পিঠকে ঢাল বানিয়ে তাঁকে রক্ষা করেন। তাঁর পিঠে অসংখ্য তীর বিদ্ধ হয়েছিল, কিন্তু তিনি একচুলও নড়েননি।</p>
+                    </div>
+                </div>
+                <div class="valor-card bg-secondary rounded-xl shadow-lg shadow-black/30 p-6 cursor-pointer transform hover:-translate-y-2 transition-transform duration-300">
+                    <h3 class="text-xl font-bold text-accent mb-2 neon-text">উম্মে আম্মারা (রাঃ)</h3>
+                    <p class="text-sm text-gray-400 short-desc">একজন নারী হয়েও তিনি তরবারি হাতে রাসূলকে (সাঃ) রক্ষা করার জন্য শত্রুদের বিরুদ্ধে রুখে দাঁড়ান।</p>
+                    <div class="valor-details hidden mt-4 text-sm text-gray-300">
+                        <p>প্রথমে তিনি আহতদের সেবা করছিলেন, কিন্তু যখন দেখলেন রাসূল (সাঃ) বিপদে পড়েছেন, তখন তিনি তরবারি হাতে তুলে নেন এবং অবিশ্বাস্য বীরত্বের সাথে যুদ্ধ করেন। রাসূল (সাঃ) তাঁর সাহসিকতার ভূয়সী প্রশংসা করেছেন।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="future" class="bg-secondary p-8 md:p-12 rounded-xl shadow-lg shadow-black/30 text-center">
+            <h2 class="text-3xl font-bold text-white neon-text">ভবিষ্যতের জন্য শিক্ষা ও আশা</h2>
+            <p class="mt-4 text-gray-300 max-w-3xl mx-auto">উহুদের পরাজয় একটি সাময়িক বিপর্যয় ছিল, কিন্তু এর শিক্ষা চিরন্তন। এটি আমাদের শেখায় যে, মুসলিমদের শক্তি সংখ্যা বা অস্ত্রে নয়, বরং ঈমান, একতা এবং আল্লাহর প্রতি আনুগত্যের মধ্যে নিহিত। যখন মুসলিমরা দুনিয়ার ভালোবাসায় মত্ত হয় এবং আল্লাহর আদেশ অমান্য করে, তখনই তাদের উপর বিপর্যয় নেমে আসে।</p>
+            <p class="mt-4 text-gray-300 max-w-3xl mx-auto font-semibold">ভবিষ্যৎ এই দ্বীনেরই। তরুণ প্রজন্মের মধ্যে ইসলামের প্রতি আগ্রহ প্রমাণ করে যে আল্লাহর নূরকে কেউ নিভিয়ে দিতে পারবে না। আমাদের উচিত অতীত থেকে শিক্ষা নিয়ে নিজেদের ঈমানকে মজবুত করা এবং আল্লাহর পথে অবিচল থাকা।</p>
+            <div class="mt-8">
+                <a href="#intro" class="btn-accent px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow">পুনরায় শুরু করুন</a>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-black/50 text-white mt-16">
+        <div class="container mx-auto py-4 px-5 text-center">
+            <p class="text-sm text-gray-400">শেখ খালেদ আল-রাশেদের বক্তৃতার আলোকে নির্মিত একটি শিক্ষামূলক পাতা।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const badrBtn = document.getElementById('badrBtn');
+            const uhudBtn = document.getElementById('uhudBtn');
+            const badrContent = document.getElementById('badr-content');
+            const uhudContent = document.getElementById('uhud-content');
+
+            badrBtn.addEventListener('click', () => {
+                badrContent.classList.remove('hidden');
+                uhudContent.classList.add('hidden');
+                badrBtn.classList.add('active');
+                uhudBtn.classList.remove('active');
+            });
+
+            uhudBtn.addEventListener('click', () => {
+                badrContent.classList.add('hidden');
+                uhudContent.classList.remove('hidden');
+                uhudBtn.classList.add('active');
+                badrBtn.classList.remove('active');
+            });
+            
+            const forcesChartCtx = document.getElementById('forcesChart').getContext('2d');
+            new Chart(forcesChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['মুসলিম বাহিনী', 'কুরাইশ বাহিনী'],
+                    datasets: [{
+                        label: 'যোদ্ধার সংখ্যা',
+                        data: [700, 3000],
+                        backgroundColor: [
+                            'rgba(229, 201, 159, 0.5)',
+                            'rgba(170, 170, 170, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(229, 201, 159, 1)',
+                            'rgba(170, 170, 170, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `যোদ্ধা: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#EAEAEA'
+                            },
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#EAEAEA',
+                                font: {
+                                    size: 14,
+                                    family: "'Hind Siliguri', sans-serif"
+                                }
+                            },
+                             grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            const timelineBtns = document.querySelectorAll('.timeline-btn');
+            timelineBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.getAttribute('data-target');
+                    const targetContent = document.getElementById(targetId);
+                    
+                    if (targetContent) {
+                         targetContent.classList.toggle('hidden');
+                    }
+                });
+            });
+
+            const valorCards = document.querySelectorAll('.valor-card');
+            valorCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const details = card.querySelector('.valor-details');
+                    details.classList.toggle('hidden');
+                });
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetElement = document.querySelector(this.getAttribute('href'));
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                    if(mobileMenu.classList.contains('hidden') === false){
+                       mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>

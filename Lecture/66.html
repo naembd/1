@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>যিনি তোমাকে দেখেন যখন তুমি দাঁড়াও</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Serene Sanctuary - A palette of warm off-white (bg-stone-50), deep teal (text-teal-800), gentle gray (border-gray-300), and a subtle gold accent (accent-amber-500) to create a calm, respectful, and focused atmosphere. -->
+    <!-- Application Structure Plan: The application transforms the linear sermon into a thematic, interactive single-page experience. The structure consists of: 1. A Hero section. 2. An introduction to Muraqaba. 3. Interactive cards for Allah's names with modals containing a Gemini-powered reflection generator. 4. Key stories section. 5. A new Gemini-powered "Muraqaba in Daily Life" section providing situational advice. 6. Sections for poetry and dua. This structure breaks down dense content into digestible modules, enhancing comprehension and adding personalized, AI-driven interaction. -->
+    <!-- Visualization & Content Choices: Report is qualitative. Goal: Organize/Inform -> Presentation: Interactive Cards/Modals for names/stories. Interaction: JS-powered click-to-reveal. Justification: Better retention. Added Goal: Personalize/Advise -> Presentation: Buttons triggering Gemini API calls within modals and a new dedicated section. Interaction: User clicks to get AI-generated reflections and situational advice. Justification: Deepens user engagement and makes the concepts personally applicable. No charts used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .bismillah {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+        }
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+        .modal-enter {
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-leave {
+            animation: fadeOut 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.95); }
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-gray-800 smooth-scroll">
+
+    <!-- Header -->
+    <header class="bg-teal-800 text-white shadow-lg sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold">আল্লাহর নজরদারি (মুরাকাবা)</h1>
+            <nav>
+                <ul class="flex space-x-2 md:space-x-4">
+                    <li><a href="#introduction" class="hover:text-amber-300 transition-colors text-sm md:text-base">ভূমিকা</a></li>
+                    <li><a href="#concepts" class="hover:text-amber-300 transition-colors text-sm md:text-base">মূল ধারণা</a></li>
+                    <li><a href="#stories" class="hover:text-amber-300 transition-colors text-sm md:text-base">গল্পসমূহ</a></li>
+                    <li><a href="#gemini-scenarios" class="hover:text-amber-300 transition-colors text-sm md:text-base">অনুশীলন ✨</a></li>
+                    <li><a href="#dua" class="hover:text-amber-300 transition-colors text-sm md:text-base">দু'আ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="min-h-[50vh] bg-teal-900/80 bg-cover bg-center bg-blend-multiply text-white flex flex-col justify-center items-center text-center p-8" style="background-image: url('https://placehold.co/1920x1080/0f766e/ffffff?text=+)');">
+            <div class="bg-black/30 p-8 rounded-xl">
+                <p class="bismillah text-2xl mb-4">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</p>
+                <h2 class="text-4xl md:text-6xl font-extrabold mb-4">যিনি তোমাকে দেখেন যখন তুমি দাঁড়াও</h2>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto text-stone-200">"এবং ভরসা করুন পরাক্রমশালী, পরম দয়ালু আল্লাহর উপর, যিনি আপনাকে দেখেন যখন আপনি দাঁড়ান, এবং সিজদাকারীদের মধ্যে আপনার চলাচলও দেখেন।" <span class="block mt-2 text-sm">(সূরা আশ-শু'আরা: ২১৭-২১৯)</span></p>
+            </div>
+        </section>
+
+        <!-- Introduction Section -->
+        <section id="introduction" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h3 class="text-3xl md:text-4xl font-bold text-teal-800 mb-4">আল্লাহর নজরদারি (মুরাকাবা) কী?</h3>
+                <p class="max-w-4xl mx-auto text-lg text-gray-700 leading-relaxed">
+                    এই অ্যাপটি শাইখ খালিদ আল-রাশেদের একটি গুরুত্বপূর্ণ বক্তৃতার উপর ভিত্তি করে তৈরি। এর মূল বিষয় হলো 'মুরাকাবা'—অর্থাৎ, সর্বাবস্থায় এই অনুভূতি জাগ্রত রাখা যে আল্লাহ্ সুবহানাহু ওয়া তা'আলা আমাদের দেখছেন, শুনছেন এবং আমাদের মনের গোপন কথাও জানেন। এই চেতনা একজন মু'মিনকে প্রকাশ্যে ও গোপনে পাপ থেকে বিরত রাখে এবং তাকে ইহসানের স্তরে উন্নীত করে। এখানে আমরা কুরআনের আয়াত, আল্লাহর সুন্দর নামসমূহ এবং কিছু শিক্ষণীয় গল্পের মাধ্যমে এই গভীর ধারণাটি অন্বেষণ করব।
+                </p>
+            </div>
+        </section>
+
+        <!-- Core Concepts Section -->
+        <section id="concepts" class="py-16 md:py-24 bg-stone-100">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-teal-800 mb-4">মূল ধারণা: ইহসান ও আল্লাহর নামসমূহ</h3>
+                    <p class="max-w-3xl mx-auto text-gray-700">
+                        মুরাকাবার চেতনা অর্জনের চাবিকাঠি হলো 'ইহসান' এবং আল্লাহর গুণবাচক নামগুলোর অর্থ অনুধাবন করা। ইহসান হলো এমনভাবে ইবাদত করা যেন আপনি আল্লাহকে দেখছেন। আল্লাহর নামসমূহ, যেমন আর-রাকীব (পর্যবেক্ষক) বা আল-বাসীর (সর্বদ্রষ্টা), আমাদের তাঁর সার্বক্ষণিক উপস্থিতির কথা স্মরণ করিয়ে দেয়। নিচের কার্ডগুলোতে ক্লিক করে এই নামগুলোর তাৎপর্য সম্পর্কে আরও জানুন।
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="concept-card bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer border-l-4 border-amber-500" data-concept="ihsan">
+                        <h4 class="text-2xl font-bold text-teal-800 mb-2">ইহসান (الإحسان)</h4>
+                        <p class="text-gray-600">ইবাদতের সর্বোচ্চ স্তর। এর অর্থ এবং মুরাকাবার সাথে এর সম্পর্ক জানতে ক্লিক করুন।</p>
+                    </div>
+                    <div class="concept-card bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer border-l-4 border-teal-600" data-concept="ar-raqib">
+                        <h4 class="text-2xl font-bold text-teal-800 mb-2">আর-রাকীব (الرقيب)</h4>
+                        <p class="text-gray-600">সর্বদা পর্যবেক্ষক। তিনি এমন সংরক্ষক যিনি কখনো উদাসীন হন না।</p>
+                    </div>
+                    <div class="concept-card bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer border-l-4 border-teal-600" data-concept="al-hafiz">
+                        <h4 class="text-2xl font-bold text-teal-800 mb-2">আল-হাফীয (الحفيظ)</h4>
+                        <p class="text-gray-600">সংরক্ষক। তিনি তাঁর সৃষ্টিকে রক্ষা করেন এবং তাঁর প্রিয় বান্দাদের পাপ থেকে বাঁচান।</p>
+                    </div>
+                    <div class="concept-card bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer border-l-4 border-teal-600" data-concept="as-sami">
+                        <h4 class="text-2xl font-bold text-teal-800 mb-2">আস-সামী' (السميع)</h4>
+                        <p class="text-gray-600">সর্বশ্রোতা। তিনি গোপন ও প্রকাশ্য সকল শব্দ শোনেন।</p>
+                    </div>
+                    <div class="concept-card bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer border-l-4 border-teal-600" data-concept="al-basir">
+                        <h4 class="text-2xl font-bold text-teal-800 mb-2">আল-বাসীর (البصير)</h4>
+                        <p class="text-gray-600">সর্বদ্রষ্টা। তাঁর দৃষ্টি থেকে কোনো কিছুই গোপন নয়, তা যতই ক্ষুদ্র হোক না কেন।</p>
+                    </div>
+                    <div class="concept-card bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer border-l-4 border-teal-600" data-concept="al-alim">
+                        <h4 class="text-2xl font-bold text-teal-800 mb-2">আল-আলীম (العليم)</h4>
+                        <p class="text-gray-600">সর্বজ্ঞ। তিনি অতীত, বর্তমান, ভবিষ্যৎ এবং অন্তরের গোপন বিষয়াদি সম্পর্কেও জানেন।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Stories Section -->
+        <section id="stories" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-teal-800 mb-4">অনুপ্রেরণামূলক গল্প</h3>
+                     <p class="max-w-3xl mx-auto text-gray-700">
+                        ইতিহাসের পাতা থেকে নেওয়া এই গল্পগুলো আমাদের দেখায় কিভাবে আল্লাহর নজরদারির বাস্তব অনুভূতি মানুষের জীবনকে বদলে দিতে পারে। প্রতিটি গল্পই বিশ্বাস, তাকওয়া এবং আল্লাহর প্রতি গভীর ভালোবাসার এক একটি জীবন্ত উদাহরণ। এই ঘটনাগুলো আমাদের নির্জনে ও প্রকাশ্যে সৎ থাকার জন্য অনুপ্রাণিত করে।
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                     <div class="concept-card bg-stone-50 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer" data-concept="umayr">
+                        <h4 class="text-xl font-bold text-teal-800 mb-2">উমাইর ইবনে ওয়াহাবের ঘটনা</h4>
+                        <p class="text-gray-600">কিভাবে আল্লাহর সর্বজ্ঞতার এক নিদর্শন একজন শত্রুকে ইসলাম গ্রহণে উদ্বুদ্ধ করেছিল।</p>
+                    </div>
+                     <div class="concept-card bg-stone-50 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer" data-concept="milkmaid">
+                        <h4 class="text-xl font-bold text-teal-800 mb-2">দুধ বিক্রেতা বালিকা</h4>
+                        <p class="text-gray-600">"যদি ওমর নাও দেখেন, ওমরের রব তো দেখছেন।" - তাকওয়ার এক অসাধারণ উদাহরণ।</p>
+                    </div>
+                     <div class="concept-card bg-stone-50 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer" data-concept="shepherd">
+                        <h4 class="text-xl font-bold text-teal-800 mb-2">মেষপালকের ঈমান</h4>
+                        <p class="text-gray-600">"মালিককে না হয় বললাম বাঘে খেয়েছে, কিন্তু আল্লাহকে কী বলব?" - এক সাধারণ মেষপালকের অসাধারণ জবাব।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Poetry/Reflection Section -->
+        <section class="py-16 md:py-24 bg-teal-800 text-white">
+            <div class="container mx-auto px-6 text-center">
+                 <h3 class="text-3xl md:text-4xl font-bold mb-8">আত্মার প্রতি আহ্বান</h3>
+                <blockquote class="relative max-w-3xl mx-auto">
+                    <p class="text-xl md:text-2xl italic leading-loose">
+                        "হে আত্মা, যথেষ্ট হয়েছে, পাপ অনেক হয়ে গেছে,<br>
+                        নিশ্চয়ই অহংকার অপরাধের কারণ হয়।<br>
+                        ...<br>
+                        আজ তুমি যা ইচ্ছা তাই করছ,<br>
+                        আগামীকাল তুমি মারা যাবে এবং কলম তুলে নেওয়া হবে।"
+                    </p>
+                     <p class="text-right mt-4 text-stone-300">- শাইখ খালিদ আল-রাশেদ</p>
+                </blockquote>
+            </div>
+        </section>
+        
+        <!-- Muraqaba in Daily Life Section -->
+        <section id="gemini-scenarios" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-teal-800 mb-4">দৈনন্দিন জীবনে মুরাকাবা ✨</h3>
+                    <p class="max-w-3xl mx-auto text-gray-700">
+                        মুরাকাবা শুধু ইবাদতের মধ্যেই সীমাবদ্ধ নয়, বরং এটি জীবনের প্রতিটি ক্ষেত্রে অনুশীলনের বিষয়। নিচের পরিস্থিতিগুলোতে আপনি কীভাবে আল্লাহর উপস্থিতি স্মরণ করতে পারেন, তা জানতে পরামর্শ নিন।
+                    </p>
+                </div>
+                <div class="max-w-4xl mx-auto space-y-4">
+                    <div class="bg-stone-100 p-4 rounded-lg flex flex-col md:flex-row justify-between items-center shadow-sm text-center md:text-left">
+                        <p class="text-gray-800 mb-2 md:mb-0">যখন আমি একা থাকি এবং ইন্টারনেট ব্যবহার করি।</p>
+                        <button class="gemini-scenario-btn bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors w-full md:w-auto" data-scenario="যখন আমি একা থাকি এবং ইন্টারনেট ব্যবহার করি">✨ পরামর্শ নিন</button>
+                    </div>
+                    <div class="bg-stone-100 p-4 rounded-lg flex flex-col md:flex-row justify-between items-center shadow-sm text-center md:text-left">
+                        <p class="text-gray-800 mb-2 md:mb-0">যখন আমি ব্যবসায়িক লেনদেন করি।</p>
+                        <button class="gemini-scenario-btn bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors w-full md:w-auto" data-scenario="যখন আমি ব্যবসায়িক লেনদেন করি">✨ পরামর্শ নিন</button>
+                    </div>
+                    <div class="bg-stone-100 p-4 rounded-lg flex flex-col md:flex-row justify-between items-center shadow-sm text-center md:text-left">
+                        <p class="text-gray-800 mb-2 md:mb-0">যখন আমি অন্যের সম্পর্কে কথা বলতে প্রলুব্ধ হই।</p>
+                        <button class="gemini-scenario-btn bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors w-full md:w-auto" data-scenario="যখন আমি অন্যের সম্পর্কে কথা বলতে প্রলুব্ধ হই (গীবত)">✨ পরামর্শ নিন</button>
+                    </div>
+                </div>
+                <div id="scenario-result" class="max-w-4xl mx-auto mt-8 p-6 bg-teal-50 border-l-4 border-teal-500 rounded-lg shadow-inner hidden">
+                    <div id="scenario-loader" class="hidden text-center">
+                        <div class="spinner border-t-4 border-teal-500 rounded-full w-8 h-8 animate-spin mx-auto"></div>
+                        <p class="mt-2 text-gray-600">একটু অপেক্ষা করুন...</p>
+                    </div>
+                    <div id="scenario-output" class="prose max-w-none"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dua Section -->
+        <section id="dua" class="py-16 md:py-24 bg-stone-100">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                     <h3 class="text-3xl md:text-4xl font-bold text-teal-800 mb-4">সমাপনী দু'আ</h3>
+                     <p class="max-w-3xl mx-auto text-gray-700">
+                        বক্তৃতার শেষে শাইখ উম্মাহর জন্য, বিশেষ করে নির্যাতিত মুসলিমদের জন্য এবং নিজেদের ঈমানকে সুন্দর করার জন্য আল্লাহর কাছে দু'আ করেন। আসুন আমরাও সেই দু'আয় অংশ নেই এবং আল্লাহর কাছে ক্ষমা ও হেদায়েত প্রার্থনা করি।
+                    </p>
+                </div>
+                <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-inner text-center">
+                    <p class="text-lg md:text-xl text-gray-700 leading-relaxed">
+                        "হে আল্লাহ, আমাদের মুসলিম হিসেবে বাঁচিয়ে রাখো, মুসলিম হিসেবে মৃত্যু দাও এবং সৎকর্মশীলদের সাথে মিলিত কর... হে আল্লাহ, আমরা তোমার কাছে গোপনে ও প্রকাশ্যে তোমার ভয় প্রার্থনা করি, সন্তুষ্টি ও ক্রোধের অবস্থায় সত্য কথা বলার তৌফিক চাই এবং দারিদ্র্য ও সচ্ছলতায় মিতাচার কামনা করি।"
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2024। শাইখ খালিদ আল-রাশেদের বক্তৃতার উপর ভিত্তি করে নির্মিত।</p>
+            <p class="text-sm text-gray-400 mt-2">একটি শিক্ষামূলক উপস্থাপনা।</p>
+        </div>
+    </footer>
+
+    <!-- Modal Structure -->
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center p-4 z-50">
+        <div id="modal-content" class="bg-white rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-8 relative modal-enter">
+            <button id="modal-close" class="absolute top-4 right-4 text-gray-500 hover:text-red-600 text-3xl">&times;</button>
+            <h3 id="modal-title" class="text-3xl font-bold text-teal-800 mb-4"></h3>
+            <div id="modal-body" class="prose max-w-none text-gray-700 leading-relaxed"></div>
+            
+            <div id="gemini-reflection-container" class="mt-8 border-t pt-4">
+                <h4 class="text-xl font-semibold text-teal-700 mb-3">আপনার জন্য একটি চিন্তার বিষয়</h4>
+                <p class="text-sm text-gray-600 mb-4">এই নামের আলোকে আপনার দৈনন্দিন জীবন নিয়ে ভাবার জন্য একটি ব্যক্তিগত প্রশ্ন তৈরি করতে নিচের বোতামে ক্লিক করুন।</p>
+                <button id="gemini-reflection-btn" class="bg-amber-500 text-white px-4 py-2 rounded-md hover:bg-amber-600 transition-colors">✨ একটি চিন্তার বিষয় তৈরি করুন</button>
+                <div id="reflection-result" class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg hidden">
+                     <div id="reflection-loader" class="hidden text-center">
+                        <div class="spinner border-t-4 border-amber-500 rounded-full w-8 h-8 animate-spin mx-auto"></div>
+                        <p class="mt-2 text-gray-600">একটু অপেক্ষা করুন...</p>
+                     </div>
+                    <div id="reflection-output" class="text-gray-800"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const conceptData = {
+        'ihsan': {
+            title: 'ইহসান (الإحسان)',
+            content: `<p>ইহসান হলো ইবাদতের সর্বোচ্চ স্তর। রাসূলুল্লাহ (সাঃ) এর ভাষায়, "ইহসান হলো তুমি এমনভাবে আল্লাহর ইবাদত করবে যেন তুমি তাঁকে দেখছ, আর যদি তুমি তাঁকে দেখতে না পাও, তবে (মনে রাখবে) তিনি তোমাকে দেখছেন।"</p><p>এই হাদিসটি মুরাকাবার মূল ভিত্তি। যখন একজন ব্যক্তি এই বিশ্বাস অন্তরে স্থাপন করে যে আল্লাহ্ তাকে সর্বক্ষণ দেখছেন, তখন তার পক্ষে পাপে লিপ্ত হওয়া কঠিন হয়ে যায়। তার প্রতিটি কাজ, কথা এবং চিন্তা আল্লাহর সন্তুষ্টি অর্জনের লক্ষ্যে পরিচালিত হয়। এই অবস্থাই হলো ইহসান, যা বান্দাকে আল্লাহর খুব নিকটবর্তী করে তোলে।</p>`,
+            hasGemini: false
+        },
+        'ar-raqib': {
+            title: 'আর-রাকীব (الرقيب)',
+            englishTitle: 'The Watchful',
+            content: `<p>কুরআনে এই নামটি তিনবার এসেছে। এর অর্থ হলো তিনি এমন সংরক্ষক ও পর্যবেক্ষক যিনি যা কিছু সংরক্ষণ করেন বা পর্যবেক্ষণ করেন, তা থেকে এক মুহূর্তের জন্যও উদাসীন হন না। তিনি সবকিছু দেখছেন এবং শুনছেন।</p><p class="mt-4 font-semibold">উদাহরণ: উমাইর ইবনে ওয়াহাবের ইসলাম গ্রহণ।</p><p>বদরের যুদ্ধের পর মক্কার মুশরিক উমাইর ইবনে ওয়াহাব এবং সাফওয়ান ইবনে উমাইয়া নির্জনে বসে রাসূলুল্লাহ (সাঃ)-কে হত্যা করার ষড়যন্ত্র করে... এই ঘটনাই তার ইসলাম গ্রহণের কারণ হয়। সে উপলব্ধি করেছিল যে, আল্লাহ্ সত্যিই 'আর-রাকীব'—সর্বদা পর্যবেক্ষক।</p>`,
+            hasGemini: true
+        },
+        'al-hafiz': {
+            title: 'আল-হাফীয (الحفيظ)',
+            englishTitle: 'The Preserver',
+            content: `<p>এই নামের অর্থ হলো যিনি তাঁর সৃষ্টিকে রক্ষা করেন, তাঁর জ্ঞান সবকিছুকে পরিবেষ্টন করে আছে, এবং তিনি তাঁর প্রিয় বান্দাদের পাপ ও ধ্বংস থেকে রক্ষা করেন... যে ব্যক্তি আল্লাহর সীমা রক্ষা করে চলে, আল্লাহ্ তাকে দুনিয়া ও আখিরাতে সকল বিপদ থেকে রক্ষা করেন।</p><p class="mt-4 font-semibold">যেসব বিষয় রক্ষা করা আবশ্যক:</p><ul><li><strong>তাওহীদ</strong></li><li><strong>সালাত</strong></li><li><strong>কান, চোখ, অন্তর ও লজ্জাস্থান</strong></li></ul>`,
+            hasGemini: true
+        },
+        'as-sami': {
+            title: 'আস-সামী\' (السميع)',
+            englishTitle: 'The All-Hearing',
+            content: `<p>তিনি বান্দাদের সকল কথা এবং সৃষ্টিকুলের প্রতিটি নড়াচড়া শোনেন। তিনি গোপন ও তার চেয়েও গোপন বিষয় শোনেন।</p><p class="mt-4 font-semibold">উদাহরণ: খাওলা বিনতে সা'লাবার ঘটনা।</p><p>আয়েশা (রাঃ) বলেন, তিনি ঘরের অন্য প্রান্তে থেকেও সেই কথা শুনতে পাননি, কিন্তু আল্লাহ্ সুবহানাহু ওয়া তা'আলা সাত আসমানের উপর থেকে তার ফরিয়াদ শুনেছিলেন এবং সূরা মুজাদালার প্রথম আয়াতগুলো নাযিল করে এর সমাধান দিয়েছিলেন।</p>`,
+            hasGemini: true
+        },
+        'al-basir': {
+            title: 'আল-বাসীর (البصير)',
+            englishTitle: 'The All-Seeing',
+            content: `<p>এর অর্থ হলো তাঁর দৃষ্টি আছে যার দ্বারা তিনি সবকিছু দেখেন। তাঁর দৃষ্টি থেকে ক্ষুদ্রতম কোনো বস্তুও গোপন নয়।</p><p class="mt-4 font-semibold">উদাহরণ: দুধ বিক্রেতা বালিকার তাকওয়া।</p><p>ঈমানদার মেয়েটি যে উত্তর দিয়েছিল তা স্বর্ণাক্ষরে লেখার মতো: "আম্মাজান, যদি ওমর আমাদের না দেখেন, তবে ওমরের রব তো আমাদের দেখছেন।" এই ঘটনাই আল্লাহর 'আল-বাসীর' গুণের এক উজ্জ্বল দৃষ্টান্ত।</p>`,
+            hasGemini: true
+        },
+        'al-alim': {
+            title: 'আল-আলীম (العليم)',
+            englishTitle: 'The All-Knowing',
+            content: `<p>এর অর্থ হলো যিনি জানেন যা কিছু অতীতে ছিল, যা কিছু ভবিষ্যতে হবে এবং যা কিছু বর্তমানে আছে। তিনি সৃষ্টির অন্তরের গোপন বিষয়াদি সম্পর্কেও অবগত।</p><p>আল্লাহ্ তা'আলা বলেন: "...তিনজনের মধ্যে এমন কোনো গোপন পরামর্শ হয় না যেখানে তিনি চতুর্থজন হিসেবে থাকেন না... তিনি তাদের সাথে থাকেন।" (সূরা আল-মুজাদালা: ৭)</p>`,
+            hasGemini: true
+        },
+        'umayr': {
+            title: 'উমাইর ইবনে ওয়াহাবের ঘটনা',
+            content: `<p>বদরের যুদ্ধের পর, মক্কার অন্যতম শত্রু উমাইর ইবনে ওয়াহাব তার বন্ধু সাফওয়ান ইবনে উমাইয়ার সাথে কাবার পাশে বসে রাসূলুল্লাহ (সাঃ)-কে হত্যা করার এক গোপন ষড়যন্ত্র করে... এই কথা শুনে উমাইর হতবাক হয়ে যায়। কারণ এই ষড়যন্ত্রের কথা সে এবং সাফওয়ান ছাড়া আর কেউ জানত না। সে সাথে সাথে বুঝে ফেলে যে, এই খবর মুহাম্মদ (সাঃ)-কে একমাত্র আল্লাহই জানাতে পারেন। সে চিৎকার করে বলে ওঠে, "আমি সাক্ষ্য দিচ্ছি যে, আপনি আল্লাহর রাসূল!" এবং সেখানেই ইসলাম গ্রহণ করে।</p>`,
+            hasGemini: false
+        },
+        'milkmaid': {
+            title: 'দুধ বিক্রেতা বালিকা ও তার তাকওয়া',
+            content: `<p>খলিফা ওমর (রাঃ) রাতের আঁধারে তার প্রজাদের অবস্থা দেখার জন্য ছদ্মবেশে ঘুরছিলেন... তখন সেই তাকওয়াবান বালিকা যে জবাব দিয়েছিল, তা ইসলামের ইতিহাসে অমর হয়ে আছে। সে বলল: "আম্মাজান, এটা ঠিক যে ওমর আমাদের দেখছেন না, কিন্তু ওমরের রব (আল্লাহ্) তো আমাদের দেখছেন!"</p>`,
+            hasGemini: false
+        },
+        'shepherd': {
+            title: 'মেষপালকের অসাধারণ ঈমান',
+            content: `<p>একবার আব্দুল্লাহ ইবনে ওমর (রাঃ) কয়েকজন সঙ্গীসহ এক সফরে যাচ্ছিলেন... এই কথা শুনে রাখালটি আকাশের দিকে তাকিয়ে এক ঐতিহাসিক জবাব দিল: "তাহলে আল্লাহ্ কোথায়? (فأين الله؟)"... রাখালের এই জবাব শুনে ইবনে ওমর (রাঃ) কেঁদে ফেলেন।</p>`,
+            hasGemini: false
+        }
+    };
+
+    let currentConceptId = null;
+
+    async function callGemini(prompt, outputElement, loaderElement) {
+        loaderElement.parentElement.classList.remove('hidden');
+        loaderElement.classList.remove('hidden');
+        outputElement.innerHTML = '';
+
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+        
+        const payload = {
+            contents: [{
+                role: "user",
+                parts: [{ text: prompt }]
+            }]
+        };
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!response.ok) {
+                 throw new Error(`API Error: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            
+            let text = 'দুঃখিত, কোনো উত্তর পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।';
+            if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                text = result.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
+            }
+            outputElement.innerHTML = text;
+
+        } catch (error) {
+            console.error("Gemini API call failed:", error);
+            outputElement.innerHTML = 'দুঃখিত, একটি সমস্যা হয়েছে। অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
+        } finally {
+            loaderElement.classList.add('hidden');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const modalClose = document.getElementById('modal-close');
+        
+        const geminiReflectionContainer = document.getElementById('gemini-reflection-container');
+        const reflectionBtn = document.getElementById('gemini-reflection-btn');
+        const reflectionResult = document.getElementById('reflection-result');
+        const reflectionLoader = document.getElementById('reflection-loader');
+        const reflectionOutput = document.getElementById('reflection-output');
+
+        const scenarioBtns = document.querySelectorAll('.gemini-scenario-btn');
+        const scenarioResultContainer = document.getElementById('scenario-result');
+        const scenarioLoader = document.getElementById('scenario-loader');
+        const scenarioOutput = document.getElementById('scenario-output');
+        
+        const conceptCards = document.querySelectorAll('.concept-card');
+
+        conceptCards.forEach(card => {
+            card.addEventListener('click', () => {
+                currentConceptId = card.dataset.concept;
+                const data = conceptData[currentConceptId];
+                
+                if (data) {
+                    modalTitle.textContent = data.title;
+                    modalBody.innerHTML = data.content;
+
+                    if (data.hasGemini) {
+                        geminiReflectionContainer.classList.remove('hidden');
+                        reflectionResult.classList.add('hidden');
+                        reflectionOutput.innerHTML = '';
+                    } else {
+                        geminiReflectionContainer.classList.add('hidden');
+                    }
+
+                    modal.classList.remove('hidden');
+                    modalContent.classList.remove('modal-leave');
+                    modalContent.classList.add('modal-enter');
+                }
+            });
+        });
+
+        function closeModal() {
+            modalContent.classList.remove('modal-enter');
+            modalContent.classList.add('modal-leave');
+            setTimeout(() => {
+                 modal.classList.add('hidden');
+            }, 300);
+        }
+
+        modalClose.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        reflectionBtn.addEventListener('click', () => {
+            if (currentConceptId) {
+                const data = conceptData[currentConceptId];
+                const prompt = `Based on the Islamic concept of Allah's name '${data.title}' which means '${data.englishTitle}', generate a short, personal reflection prompt for a modern Muslim. The prompt should be a single thought-provoking question in clear, simple Bengali that encourages them to think about how this concept applies to their daily life (at work, with family, when using social media, etc.). Keep the tone gentle and inspiring.`;
+                callGemini(prompt, reflectionOutput, reflectionLoader);
+            }
+        });
+
+        scenarioBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const scenario = btn.dataset.scenario;
+                scenarioResultContainer.classList.remove('hidden');
+                const prompt = `You are a wise and gentle Islamic advisor. A user is facing the following situation: '${scenario}'. Provide 2-3 short, practical, and encouraging bullet points of advice in clear, simple Bengali on how they can practice 'Muraqaba' (the consciousness that Allah is always watching) in this specific situation. The advice should be rooted in Islamic principles, such as remembering Allah's names like Al-Basir (The All-Seeing) and Al-Raqib (The Watchful), but presented in an actionable way. The response should be concise and easy to understand for a general audience. Begin the response with a gentle introductory sentence.`;
+                callGemini(prompt, scenarioOutput, scenarioLoader);
+            });
+        });
+
+    });
+</script>
+
+</body>
+</html>

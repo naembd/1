@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সাইফুল্লাহ: এক বীরের উপাখ্যান</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Desert Sand and Sky -->
+    <!-- Application Structure Plan: The application uses a single-page, vertical chronological timeline structure to narrate the life of Khalid ibn al-Walid. This linear flow is the most intuitive way for users to follow a life story. Key events are presented in distinct, styled sections (cards). A sticky top navigation allows users to jump to specific life stages, while an interactive chart visually emphasizes the challenge in a key battle. This structure was chosen over a dashboard or non-linear layout to prioritize storytelling and a clear, guided user journey through the historical narrative provided in the source report. -->
+    <!-- Visualization & Content Choices: 1. Report Info: Army sizes at Battle of Mu'tah (3k Muslims vs 120k Romans). Goal: Compare forces to highlight the miracle/strategic genius. Viz/Method: Horizontal Bar Chart using Chart.js on a <canvas>. Interaction: Tooltip on hover displays exact numbers. Justification: A bar chart provides an immediate, powerful visual comparison of the vastly different army sizes, which is more impactful than text alone. 2. Report Info: Key quotes (e.g., to Romans, his final words). Goal: Emphasize character and conviction. Viz/Method: Styled blockquotes using HTML/Tailwind CSS. Interaction: None, static display. Justification: Special styling makes the quotes stand out and feel significant, fitting their importance in the narrative. 3. Report Info: Chronological life events. Goal: Organize the narrative logically. Viz/Method: Thematic sections in a vertical flow using HTML/CSS/Tailwind. Interaction: Smooth scrolling via navigation bar clicks. Justification: A chronological flow is the most natural way to present a biography, making it easy for users to follow. Confirming NO SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s, text-shadow 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #C0A062;
+            border-bottom-color: #C0A062;
+            text-shadow: 0 0 8px rgba(192, 160, 98, 0.7);
+        }
+        .neon-title {
+            text-shadow: 0 0 8px rgba(192, 160, 98, 0.5), 0 0 12px rgba(192, 160, 98, 0.3);
+        }
+        .section-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(61, 64, 91, 0.1), 0 0 15px rgba(192, 160, 98, 0.5), 0 0 25px rgba(192, 160, 98, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-[#F8F4E9] text-[#3D405B]">
+
+    <header id="header" class="bg-[#F8F4E9]/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl md:text-2xl font-bold text-[#3D405B]">সাইফুল্লাহ</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div id="nav-links" class="ml-10 flex items-baseline space-x-4">
+                        <a href="#intro" class="nav-link px-3 py-2 rounded-md text-sm font-semibold border-b-2 border-transparent">ভূমিকা</a>
+                        <a href="#conversion" class="nav-link px-3 py-2 rounded-md text-sm font-semibold border-b-2 border-transparent">ইসলাম গ্রহণ</a>
+                        <a href="#mutah" class="nav-link px-3 py-2 rounded-md text-sm font-semibold border-b-2 border-transparent">মু'তার যুদ্ধ</a>
+                        <a href="#ridda" class="nav-link px-3 py-2 rounded-md text-sm font-semibold border-b-2 border-transparent">রিদ্দার যুদ্ধ</a>
+                        <a href="#campaigns" class="nav-link px-3 py-2 rounded-md text-sm font-semibold border-b-2 border-transparent">অভিযান</a>
+                        <a href="#final-days" class="nav-link px-3 py-2 rounded-md text-sm font-semibold border-b-2 border-transparent">শেষ জীবন</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <select id="mobile-nav" class="bg-[#EAE1C9] border border-[#C0A062] text-[#3D405B] text-sm rounded-lg focus:ring-[#C0A062] focus:border-[#C0A062] block w-full p-2.5">
+                        <option value="#intro">ভূমিকা</option>
+                        <option value="#conversion">ইসলাম গ্রহণ</option>
+                        <option value="#mutah">মু'তার যুদ্ধ</option>
+                        <option value="#ridda">রিদ্দার যুদ্ধ</option>
+                        <option value="#campaigns">অভিযান</option>
+                        <option value="#final-days">শেষ জীবন</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        
+        <section id="intro" class="mb-16 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold text-[#C0A062] mb-4 neon-title">একজন বীরের উপাখ্যান</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-700">
+                এই পাতাটি ইসলামের ইতিহাসের অন্যতম শ্রেষ্ঠ সেনাপতি, 'সাইফুল্লাহ' বা 'আল্লাহর তলোয়ার' উপাধিতে ভূষিত হযরত খালিদ বিন ওয়ালিদ (রাঃ)-এর জীবন ও বীরত্বগাথার একটি ইন্টারেক্টিভ উপস্থাপনা। তার অসাধারণ রণকৌশল, অটল বিশ্বাস এবং ইসলামের জন্য আত্মত্যাগের কাহিনী যুগে যুগে প্রেরণার উৎস হয়ে থাকবে।
+            </p>
+        </section>
+
+        <div class="space-y-12">
+
+            <section id="conversion" class="section-card bg-[#EAE1C9]/50 rounded-xl p-6 md:p-8 shadow-md">
+                <h3 class="text-2xl md:text-3xl font-bold text-[#3D405B] mb-4">ইসলাম গ্রহণ: এক নতুন সূচনা</h3>
+                <div class="prose max-w-none text-gray-800">
+                    <p>ইসলামের পূর্বে খালিদ বিন ওয়ালিদ কুরাইশদের অন্যতম সেরা যোদ্ধা হিসেবে পরিচিত ছিলেন, কিন্তু তার আসল মর্যাদা ও সম্মান আসে ইসলাম গ্রহণের পর। প্রখর বিবেক ও বুদ্ধির দ্বারা তিনি উপলব্ধি করেন যে ইসলামই একমাত্র সত্য ধর্ম এবং হযরত মুহাম্মদ (সাঃ) আল্লাহর প্রেরিত রাসূল। এই সত্য উপলব্ধি করার পর তিনি আর দেরি করেননি।</p>
+                    <p>আমর ইবনুল আস এবং উসমান ইবনে তালহা (রাঃ)-এর সাথে তিনি মদীনায় হিজরত করেন এবং রাসূল (সাঃ)-এর হাতে ইসলাম গ্রহণ করেন। তাঁর ইসলাম গ্রহণে রাসূল (সাঃ) অত্যন্ত আনন্দিত হয়ে বলেন, "হে খালিদ, তোমার মতো বুদ্ধিমান ব্যক্তি ইসলামের বাইরে থাকতে পারে না।" খালিদ (রাঃ) ইসলামের পথে বাধা হয়ে দাঁড়ানোর জন্য অতীতের ভুলের জন্য ক্ষমা চাইলে, রাসূল (সাঃ) তাকে সুসংবাদ দেন যে ইসলাম অতীতের সকল পাপ মুছে দেয়। এভাবেই তার জীবনের এক নতুন, গৌরবময় অধ্যায়ের সূচনা হয়।</p>
+                </div>
+            </section>
+
+            <section id="mutah" class="section-card bg-[#EAE1C9]/50 rounded-xl p-6 md:p-8 shadow-md">
+                <h3 class="text-2xl md:text-3xl font-bold text-[#3D405B] mb-4">মু'তার যুদ্ধ এবং 'সাইফুল্লাহ' উপাধি লাভ</h3>
+                 <p class="prose max-w-none text-gray-800 mb-6">ইসলাম গ্রহণের পরেই খালিদ (রাঃ) একজন সাধারণ সৈনিক হিসেবে মুসলিম সেনাবাহিনীতে যোগ দেন। মু'তার যুদ্ধ ছিল তার সামরিক প্রজ্ঞার প্রথম এবং সবচেয়ে বিস্ময়কর প্রদর্শনী। এই বিভাগে আমরা সেই অসম যুদ্ধের একটি চিত্র তুলে ধরছি, যেখানে মাত্র ৩,০০০ মুসলিম সৈন্যের বিপরীতে ছিল রোমানদের ১,২০,০০০ সৈন্যের বিশাল বাহিনী।</p>
+                <div class="chart-container mb-6">
+                    <canvas id="mutahChart"></canvas>
+                </div>
+                <div class="prose max-w-none text-gray-800">
+                    <p>যুদ্ধে রাসূল (সাঃ) কর্তৃক নিযুক্ত তিনজন সেনাপতি - যায়েদ বিন হারেসা, জাফর বিন আবি তালিব এবং আব্দুল্লাহ বিন রাওয়াহা (রাঃ) - পর্যায়ক্রমে শহীদ হন। মুসলিম বাহিনী যখন প্রায় নেতৃত্বহীন এবং পরাজয়ের দ্বারপ্রান্তে, তখন খালিদ (রাঃ) নিজ উদ্যোগে সেনাপতির দায়িত্ব গ্রহণ করেন। তাঁর অবিশ্বাস্য রণকৌশল এবং বুদ্ধিমত্তার দ্বারা তিনি মুসলিম বাহিনীকে শুধু নিশ্চিত ধ্বংসের হাত থেকেই বাঁচাননি, বরং নিরাপদে মদীনায় ফিরিয়ে আনেন। তাঁর এই অসাধারণ বীরত্ব ও নেতৃত্বে মুগ্ধ হয়ে রাসূলুল্লাহ (সাঃ) তাঁকে 'সাইফুল্লাহ' বা 'আল্লাহর তলোয়ার' উপাধি প্রদান করেন।</p>
+                </div>
+            </section>
+            
+            <section id="ridda" class="section-card bg-[#EAE1C9]/50 rounded-xl p-6 md:p-8 shadow-md">
+                <h3 class="text-2xl md:text-3xl font-bold text-[#3D405B] mb-4">রিদ্দার যুদ্ধ ও ইয়ামামার বিজয়</h3>
+                <div class="prose max-w-none text-gray-800">
+                    <p>রাসূল (সাঃ)-এর ওফাতের পর আরবের বিভিন্ন প্রান্তে ধর্মত্যাগের এক ভয়াবহ সংকট দেখা দেয়। অনেক গোত্র যাকাত দিতে অস্বীকার করে এবং ভণ্ড নবীদের আবির্ভাব ঘটে। খলিফা হযরত আবু বকর (রাঃ) এই বিদ্রোহ দমনে অত্যন্ত কঠোর অবস্থান গ্রহণ করেন। এই সংকটময় মুহূর্তে ইসলামের অস্তিত্ব রক্ষার জন্য খালিদ (রাঃ) অগ্রণী ভূমিকা পালন করেন।</p>
+                    <p>সবচেয়ে বড় চ্যালেঞ্জ ছিল ভণ্ড নবী মুসায়লামা কাজ্জাবের বিরুদ্ধে ইয়ামামার যুদ্ধ। প্রায় চল্লিশ হাজার বিদ্রোহীর বিশাল বাহিনীর বিরুদ্ধে খালিদ (রাঃ)-এর নেতৃত্বে মুসলিম বাহিনী এক রক্তক্ষয়ী যুদ্ধে অবতীর্ণ হয়। তাঁর অসামান্য রণকৌশল এবং মুসলিমদের বীরত্বে এই কঠিন যুদ্ধে এক ঐতিহাসিক বিজয় অর্জিত হয়। এই বিজয় আরবে ইসলামী রাষ্ট্রের ভিত্তি সুদৃঢ় করে এবং ধর্মত্যাগীদের চক্রান্ত নস্যাৎ করে দেয়।</p>
+                </div>
+            </section>
+
+            <section id="campaigns" class="section-card bg-[#EAE1C9]/50 rounded-xl p-6 md:p-8 shadow-md">
+                <h3 class="text-2xl md:text-3xl font-bold text-[#3D405B] mb-4">পারস্য ও রোমান সাম্রাজ্যের বিরুদ্ধে অভিযান</h3>
+                <div class="prose max-w-none text-gray-800">
+                     <p>রিদ্দার যুদ্ধের পর খলিফা আবু বকর (রাঃ) তৎকালীন দুই পরাশক্তি - পারস্য ও রোমান সাম্রাজ্যের বিরুদ্ধে অভিযান পরিচালনার সিদ্ধান্ত নেন। এই উভয় রণাঙ্গনেই প্রধান সেনাপতি হিসেবে খালিদ (রাঃ) তার সামরিক দক্ষতার চূড়ান্ত নিদর্শন রাখেন। ইরাক ও সিরিয়ার একের পর এক অঞ্চল তিনি জয় করেন, যা ছিল অকল্পনীয়।</p>
+                    <blockquote class="border-l-4 border-[#C0A062] pl-4 italic text-gray-700 my-4">
+                        "আমি এমন এক জাতিকে নিয়ে এসেছি যারা মৃত্যুকে ততটাই ভালোবাসে যতটা তোমরা জীবনকে ভালোবাসো।"
+                    </blockquote>
+                    <p>রোমানদের উদ্দেশ্যে বলা তার এই বিখ্যাত উক্তিটি মুসলিম সৈন্যদের অটল ঈমান এবং শাহাদাতের প্রতি ভালোবাসার গভীরতা প্রকাশ করে। তাঁর নেতৃত্বে মুসলিম বাহিনী তৎকালীন বিশ্বের সবচেয়ে শক্তিশালী সেনাবাহিনীগুলোকে পরাজিত করে ইসলামের বিজয় পতাকা উত্তোলন করে।</p>
+                </div>
+            </section>
+
+            <section id="final-days" class="section-card bg-[#EAE1C9]/50 rounded-xl p-6 md:p-8 shadow-md">
+                <h3 class="text-2xl md:text-3xl font-bold text-[#3D405B] mb-4">নেতৃত্ব থেকে অপসারণ ও শেষ জীবন</h3>
+                <div class="prose max-w-none text-gray-800">
+                    <p>বিജয়ের সর্বোচ্চ শিখরে থাকাকালীন, খলিফা হযরত উমর (রাঃ) খালিদ (রাঃ)-কে সেনাপতির পদ থেকে সরিয়ে দেন। এই সিদ্ধান্ত অনেকের কাছে আশ্চর্যজনক মনে হলেও এর পেছনে ছিল এক গভীর حکمت। উমর (রাঃ) ব্যাখ্যা করেন, "আমি খালিদের উপর কোনো অভিযোগ বা недовольстваর কারণে তাকে অপসারণ করিনি, বরং আমি চাই মানুষ জানুক যে বিজয় আল্লাহর পক্ষ থেকে আসে, কোনো ব্যক্তির কারণে নয়।" খালিদ (রাঃ) কোনো প্রশ্ন ছাড়াই খলিফার এই আদেশ মেনে নেন এবং আবু উবাইদা (রাঃ)-এর অধীনে একজন সাধারণ সৈনিক হিসেবে জিহাদ চালিয়ে যান, যা ছিল তার আনুগত্য ও নিঃস্বার্থতার এক উজ্জ্বল দৃষ্টান্ত।</p>
+                    <blockquote class="border-l-4 border-[#C0A062] pl-4 italic text-gray-700 my-4 text-lg">
+                        "আমি শাহাদাতের আশায় শতাধিক যুদ্ধক্ষেত্রে ছুটেছি, কিন্তু আজ আমি আমার বিছানায় উটের মতো মারা যাচ্ছি। কাপুরুষদের চোখ যেন কখনও শান্তিতে না ঘুমায়।"
+                    </blockquote>
+                    <p>যিনি শতাধিক যুদ্ধে অংশগ্রহণ করেছেন এবং যার শরীরে আঘাতের কোনো চিহ্ন বাকি ছিল না, সেই মহান বীর শাহাদাতের তীব্র আকাঙ্ক্ষা থাকা সত্ত্বেও বিছানায় মৃত্যুবরণ করেন। তার এই আক্ষেপপূর্ণ উক্তিটি ছিল এক বীরের হৃদয়ের আকুতি, যিনি আল্লাহর পথে শহীদ হতে চেয়েছিলেন।</p>
+                </div>
+            </section>
+             <section id="lesson" class="mt-16 text-center">
+                <h3 class="text-2xl md:text-3xl font-bold text-[#C0A062] mb-4">বক্তৃতার শিক্ষা</h3>
+                <p class="max-w-3xl mx-auto text-lg text-gray-700">
+                    শেখ খালিদ আর-রাশেদের বক্তৃতা থেকে মূল শিক্ষা হলো, যে ইসলাম খালিদ (রাঃ)-এর মতো বীর তৈরি করতে পারে, সে ইসলাম আজও বীর তৈরি করতে সক্ষম। মুসলিম উম্মাহকে তার হারানো গৌরব ফিরে পেতে হলে ঈমান, আত্মত্যাগ এবং আল্লাহর উপর পূর্ণ ভরসা রেখে এগিয়ে আসতে হবে। ব্যক্তির চেয়ে আদর্শ বড়, এবং বিজয় কেবল আল্লাহর পক্ষ থেকেই আসে।
+                </p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-[#EAE1C9] mt-16 py-6">
+        <div class="container mx-auto px-4 text-center text-gray-600">
+            <p>&copy; 2024 - সাইফুল্লাহ: এক বীরের উপাখ্যান। শেখ খালিদ আর-রাশেদের বক্তৃতার উপর ভিত্তি করে নির্মিত।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mutahCtx = document.getElementById('mutahChart').getContext('2d');
+            const mutahChart = new Chart(mutahCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['মুসলিম বাহিনী', 'রোমান বাহিনী'],
+                    datasets: [{
+                        label: 'সৈন্য সংখ্যা',
+                        data: [3000, 120000],
+                        backgroundColor: [
+                            'rgba(192, 160, 98, 0.7)',
+                            'rgba(61, 64, 91, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(192, 160, 98, 1)',
+                            'rgba(61, 64, 91, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        label += new Intl.NumberFormat('bn-BD').format(context.parsed.x);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                             ticks: {
+                                callback: function(value, index, values) {
+                                    if (value >= 1000) {
+                                        return (value / 1000) + ' হাজার';
+                                    }
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.addEventListener('change', function() {
+                window.location.hash = this.value;
+            });
+            
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

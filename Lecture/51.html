@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>পলায়নের দিন - একটি ইন্টারেক্টিভ এক্সপ্লোরেশন</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Neon Depths -->
+    <!-- Application Structure Plan: The application is designed as a guided, thematic journey through the events of the Day of Judgement, rather than a linear sermon. A sticky top navigation bar allows users to jump to key stages: 1. Faith & Preparation, 2. The Beginning of the End, 3. The Field of Gathering, 4. The Judgment, 5. The Final Destination. This structure breaks the dense text into digestible, explorable sections. Interactivity is driven by clickable cards revealing detailed descriptions, a conceptual chart visualizing one of the horrors, and an HTML-based flowchart for the process of intercession. This non-linear, thematic structure was chosen to enhance user engagement and comprehension by allowing them to explore the profound topics at their own pace and focus. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Core themes of the sermon. Goal: Organize. Viz/Presentation Method: Thematic sections with a sticky navigation bar. Interaction: Smooth scrolling to sections. Justification: Provides clear, non-linear access to complex topics.
+        - Report Info: Specific events of the Day (Trumpet, Sun Overhead, etc.). Goal: Inform/Impact. Viz/Presentation Method: Interactive cards with icons, titles, and expandable details. Interaction: Click to expand/collapse content. Justification: Makes dense information scannable and engaging.
+        - Report Info: Levels of sweat on the field of gathering. Goal: Compare/Visualize Data. Viz/Presentation Method: A vertical bar chart using Chart.js. Interaction: Tooltips on hover provide context. Justification: Visually represents a key quantitative description from the text, fulfilling the chart requirement in a meaningful way. Library: Chart.js.
+        - Report Info: The process of seeking intercession. Goal: Show Process/Organize. Viz/Presentation Method: A flowchart-style diagram using HTML/CSS (divs, borders). Interaction: Hovering reveals each prophet's response. Justification: Simplifies a complex narrative sequence into an easy-to-follow visual flow.
+        - Report Info: The fate of the righteous vs. the wicked. Goal: Compare. Viz/Presentation Method: A side-by-side two-column layout. Justification: Provides a direct and stark visual comparison of the outcomes.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #1c1917; /* stone-900 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link.active {
+            color: #f59e0b; /* amber-500 */
+            text-shadow: 0 0 8px #f59e0b, 0 0 10px #f59e0b;
+            transform: scale(1.1);
+        }
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-in-out;
+        }
+        .card-content.open {
+            max-height: 1000px;
+        }
+
+        @keyframes pulse-orange {
+            0%, 100% { box-shadow: 0 0 5px #f97316, 0 0 10px #f97316; }
+            50% { box-shadow: 0 0 15px #f97316, 0 0 25px #f97316; }
+        }
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 5px #22c55e, 0 0 10px #22c55e; }
+            50% { box-shadow: 0 0 15px #22c55e, 0 0 25px #22c55e; }
+        }
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 5px #ef4444, 0 0 10px #ef4444; }
+            50% { box-shadow: 0 0 15px #ef4444, 0 0 25px #ef4444; }
+        }
+
+        .neon-text {
+            color: #f5f5f4; /* stone-100 */
+            text-shadow: 0 0 5px #f59e0b, 0 0 8px #f59e0b;
+        }
+
+        .interactive-card:hover {
+            animation: pulse-orange 2s infinite;
+        }
+        .neon-border-green {
+            animation: pulse-green 2s infinite;
+        }
+        .neon-border-red {
+            animation: pulse-red 2s infinite;
+        }
+    </style>
+</head>
+<body class="text-stone-300">
+
+    <header class="text-center py-8 px-4 bg-stone-950/50 border-b-2 border-stone-800">
+        <h1 class="text-4xl md:text-5xl font-bold neon-text">পলায়নের দিন (يوم الفرار)</h1>
+        <p class="mt-4 max-w-3xl mx-auto text-lg text-stone-400">শেখ খালেদ আল-রাশেদের লেকচারের উপর ভিত্তি করে শেষ দিবসের ভয়াবহতা, হিসাব-নিকাশ এবং চূড়ান্ত পরিণতির একটি ইন্টারেক্টিভ বিশ্লেষণ। এই অ্যাপটি আপনাকে পরকালের বিভিন্ন পর্যায় সম্পর্কে গভীরভাবে চিন্তা করতে এবং প্রস্তুতি নিতে সাহায্য করবে।</p>
+    </header>
+
+    <nav id="navbar" class="sticky top-0 bg-stone-900/80 backdrop-blur-md z-50 shadow-lg shadow-black/20">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center items-center space-x-2 md:space-x-6 py-3 overflow-x-auto">
+                <a href="#faith" class="nav-link text-sm md:text-lg font-semibold text-stone-300 hover:text-amber-500 p-2">ঈমান ও প্রস্তুতি</a>
+                <a href="#the-end" class="nav-link text-sm md:text-lg font-semibold text-stone-300 hover:text-amber-500 p-2">মহাপ্রলয়ের সূচনা</a>
+                <a href="#gathering" class="nav-link text-sm md:text-lg font-semibold text-stone-300 hover:text-amber-500 p-2">হাশরের ময়দান</a>
+                <a href="#judgment" class="nav-link text-sm md:text-lg font-semibold text-stone-300 hover:text-amber-500 p-2">বিচার ও প্রতিদান</a>
+                <a href="#destination" class="nav-link text-sm md:text-lg font-semibold text-stone-300 hover:text-amber-500 p-2">চূড়ান্ত গন্তব্য</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="faith" class="py-12">
+            <h2 class="text-3xl font-bold text-center mb-2 neon-text">ঈমান ও পরকালের প্রস্তুতি</h2>
+            <p class="text-center text-lg text-stone-400 mb-8 max-w-2xl mx-auto">পরকালের প্রতি বিশ্বাস ঈমানের একটি অপরিহার্য স্তম্ভ। এই বিশ্বাসই মানুষের আচরণকে নিয়ন্ত্রণ করে এবং তাকে দুনিয়ার জীবনের ঊর্ধ্বে চিন্তা করতে শেখায়।</p>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="bg-stone-800/50 p-6 rounded-lg shadow-lg border border-stone-700">
+                    <h3 class="text-xl font-semibold mb-3 text-amber-500">ঈমানের গুরুত্ব</h3>
+                    <p class="text-stone-300 leading-relaxed">আল্লাহ ও পরকালের প্রতি ঈমান আনা ঈমানের অন্যতম স্তম্ভ এবং ইসলামের মৌলিক আকিদাগুলোর একটি। যে নারী জানে যে দুনিয়া হলো আখেরাতের খেত এবং সৎকর্মই হলো আখেরাতের পাথেয়, সে দুনিয়ার চাকচিক্যে আখেরাতকে ভুলে যাবে না। যে ব্যক্তি বিচার দিবসে বিশ্বাস করে, সে জমিনের মাপকাঠিতে নয় বরং আসমানের মাপকাঠিতে কাজ করে এবং দুনিয়ার হিসাবের জন্য নয় বরং আখেরাতের হিসাবের জন্য কাজ করে।</p>
+                </div>
+                <div class="bg-stone-800/50 p-6 rounded-lg shadow-lg border border-stone-700">
+                    <h3 class="text-xl font-semibold mb-3 text-amber-500">পুনরুত্থানের প্রমাণ</h3>
+                    <p class="text-stone-300 leading-relaxed">কুরআন পরকালের প্রতি ঈমান, পুনরুত্থান এবং প্রতিদানের উপর জোর দিয়েছে। এর প্রমাণ হিসেবে প্রথম সৃষ্টি, মৃত জমিনকে জীবিত করা এবং আসমান ও জমিনের বিশাল সৃষ্টিকে তুলে ধরা হয়েছে। যিনি প্রথমবার সৃষ্টি করতে সক্ষম, তাঁর জন্য পুনরায় সৃষ্টি করা আরও সহজ। "নিশ্চয়ই নভোমণ্ডল ও ভূমণ্ডলের সৃষ্টি মানুষ সৃষ্টির চেয়ে বড়, কিন্তু অধিকাংশ মানুষ তা জানে না।" (গাফির: ৫৭)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="the-end" class="py-12">
+            <h2 class="text-3xl font-bold text-center mb-8 neon-text">মহাপ্রলয়ের সূচনা</h2>
+            <p class="text-center text-lg text-stone-400 mb-8 max-w-2xl mx-auto">কিয়ামতের দিন শুরু হবে মহাজাগতিক বিপর্যয়ের মাধ্যমে। আকাশ, তারকা, পর্বত, সমুদ্র—সবকিছুই আল্লাহর আদেশে ধ্বংস হয়ে যাবে। নিচের কার্ডগুলোতে ক্লিক করে বিস্তারিত জানুন।</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="interactive-card bg-stone-800/50 rounded-lg shadow-lg cursor-pointer transition-all duration-300 border border-stone-700">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-semibold text-amber-500">শিংগায় ফুৎকার</h3>
+                            <span class="text-4xl">🎺</span>
+                        </div>
+                        <p class="mt-2 text-stone-400">ইসরাফিল (আঃ) এর প্রথম ফুৎকারে আসমান ও জমিনের সবাই বেহুঁশ হয়ে পড়বে...</p>
+                        <div class="card-content">
+                            <p class="mt-4 text-sm text-stone-300 leading-relaxed">আল্লাহর সত্তা ব্যতীত সবকিছু ধ্বংসশীল। আবু হুরায়রা (রাঃ) থেকে বর্ণিত হাদিসে আছে, ইসরাফিলের ফুৎকারে সবাই বেহুঁশ হয়ে মারা যাবে। এমনকি জিবরাঈল, মিকাঈল এবং আরশ বহনকারী ফেরেশতারাও মারা যাবেন। অবশেষে, মৃত্যুর ফেরেশতাও আল্লাহর আদেশে মৃত্যুবরণ করবেন। তখন একমাত্র আল্লাহ, الواحد القهار, বাকি থাকবেন।</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="interactive-card bg-stone-800/50 rounded-lg shadow-lg cursor-pointer transition-all duration-300 border border-stone-700">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-semibold text-amber-500">মহাজাগতিক বিপর্যয়</h3>
+                            <span class="text-4xl">💥</span>
+                        </div>
+                        <p class="mt-2 text-stone-400">সূর্য আলোহীন হবে, নক্ষত্র খসে পড়বে এবং পর্বতমালা চালিত হবে...</p>
+                        <div class="card-content">
+                            <p class="mt-4 text-sm text-stone-300 leading-relaxed">আল্লাহ বলেন, "যখন সূর্য আলোহীন হয়ে যাবে, যখন নক্ষত্র মলিন হয়ে যাবে, যখন পর্বতমালা চালিত হবে, যখন সমুদ্রকে অগ্নিউত্তাল করা হবে... তখন প্রত্যেকে জানতে পারবে সে কী উপস্থিত করেছে।" (তাকভীর: ১-১৪)। এটি সেই ভয়াবহ দিন যখন পৃথিবীর সমস্ত নিয়ম ভেঙে পড়বে।</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="interactive-card bg-stone-800/50 rounded-lg shadow-lg cursor-pointer transition-all duration-300 border border-stone-700">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-semibold text-amber-500">কবর থেকে উত্থান</h3>
+                            <span class="text-4xl">🚶‍➡️</span>
+                        </div>
+                        <p class="mt-2 text-stone-400">দ্বিতীয় ফুৎকারের পর সকলে কবর থেকে দ্রুতবেগে বের হয়ে আসবে...</p>
+                        <div class="card-content">
+                            <p class="mt-4 text-sm text-stone-300 leading-relaxed">দ্বিতীয় ফুৎকারের পর মানুষ কবর থেকে উঠে আসবে, মাথা থেকে মাটি ঝাড়তে ঝাড়তে। তারা দ্রুতবেগে হাশরের ময়দানের দিকে ছুটে চলবে। তাদের দৃষ্টি থাকবে অবনত, অপমান তাদের আচ্ছন্ন করবে। সেদিন তারা দয়াময়ের সামনে বিনয়ের সাথে দাঁড়াবে এবং মৃদু গুঞ্জন ছাড়া কিছুই শোনা যাবে না।</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gathering" class="py-12">
+            <h2 class="text-3xl font-bold text-center mb-8 neon-text">হাশরের ময়দান</h2>
+            <p class="text-center text-lg text-stone-400 mb-8 max-w-2xl mx-auto">সকল মানুষকে এক নতুন, সাদা জমিনে একত্রিত করা হবে। পরিস্থিতি হবে অত্যন্ত ভয়াবহ। সূর্য মাথার খুব কাছে চলে আসবে এবং মানুষ তাদের আমল অনুযায়ী ঘামে ডুবতে থাকবে।</p>
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="bg-stone-800/50 p-6 rounded-lg shadow-lg border border-stone-700">
+                    <h3 class="text-xl font-semibold mb-3 text-amber-500">মানুষের অবস্থা</h3>
+                    <p class="text-stone-300 leading-relaxed">মানুষকে খালি পায়ে, নগ্ন এবং খতনাবিহীন অবস্থায় একত্রিত করা হবে। আয়েশা (রাঃ) যখন এ নিয়ে আশ্চর্য প্রকাশ করলেন, নবী (সাঃ) বললেন, "হে আয়েশা! পরিস্থিতি এতটাই ভয়াবহ হবে যে, কেউ কারও দিকে তাকানোর ফুরসত পাবে না।" কাফেরদেরকে তাদের মুখের উপর ভর দিয়ে হাশরের ময়দানে উপস্থিত করা হবে।</p>
+                    <h3 class="text-xl font-semibold mt-6 mb-3 text-amber-500">জাহান্নামকে আনা হবে</h3>
+                    <p class="text-stone-300 leading-relaxed">সেদিন জাহান্নামকে আনা হবে, যার সত্তর হাজার লাগাম থাকবে এবং প্রত্যেক লাগামের সাথে সত্তর হাজার ফেরেশতা তাকে টেনে আনবে। যখন মানুষ জাহান্নামকে দূর থেকে দেখবে, তখন তারা তার গর্জন ও নিঃশ্বাস শুনতে পাবে।</p>
+                </div>
+                <div class="bg-stone-800/50 p-6 rounded-lg shadow-lg border border-stone-700 flex flex-col justify-center">
+                    <h3 class="text-xl font-semibold mb-4 text-center text-amber-500">হাশরের ময়দানে ঘামের স্তর</h3>
+                    <div class="chart-container">
+                        <canvas id="sweatChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="judgment" class="py-12">
+            <h2 class="text-3xl font-bold text-center mb-8 neon-text">বিচার ও প্রতিদান</h2>
+            <p class="text-center text-lg text-stone-400 mb-8 max-w-2xl mx-auto">দীর্ঘ অপেক্ষার পর বিচার শুরু হবে। প্রথমে শাফায়াতের জন্য নবীদের কাছে যাওয়া হবে, এবং অবশেষে নবী মুহাম্মদ (সাঃ) এর শাফায়াতের মাধ্যমে হিসাব শুরু হবে।</p>
+            <div class="bg-stone-800/50 p-6 rounded-lg shadow-lg border border-stone-700 mb-8">
+                 <h3 class="text-2xl font-bold text-center mb-6 text-amber-500">শাফায়াতের জন্য আকুতি</h3>
+                 <div id="intercession-flow" class="relative">
+                 </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-stone-800/50 p-6 rounded-lg shadow-lg border border-stone-700">
+                    <h3 class="text-xl font-semibold mb-3 text-amber-500">হাউজে কাওসার</h3>
+                    <p class="text-stone-300 leading-relaxed">নবী (সাঃ) এর উম্মত তাঁর হাউজের কাছে যাবে। এর পানি দুধের চেয়েও সাদা এবং ঘ্রাণ কস্তুরীর চেয়েও সুগন্ধি। যে একবার পান করবে, সে আর কখনো তৃষ্ণার্ত হবে না। তবে যারা দ্বীনে নতুন বিষয় উদ্ভাবন করেছে, তাদের বিতাড়িত করা হবে।</p>
+                </div>
+                <div class="bg-stone-800/50 p-6 rounded-lg shadow-lg border border-stone-700">
+                    <h3 class="text-xl font-semibold mb-3 text-amber-500">হিসাব-নিকাশ</h3>
+                    <p class="text-stone-300 leading-relaxed">প্রত্যেককে তার জীবন, যৌবন, সম্পদ এবং জ্ঞান সম্পর্কে জিজ্ঞাসা করা হবে। হিসাব হবে অণু পরিমাণ। সেদিন কান, চোখ এবং চামড়া মানুষের বিরুদ্ধে সাক্ষ্য দেবে। আল্লাহ মুমিনের গুনাহ গোপন করে ক্ষমা করে দেবেন, কিন্তু কাফেরদেরকে সকলের সামনে অপমানিত করা হবে।</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="destination" class="py-12">
+            <h2 class="text-3xl font-bold text-center mb-8 neon-text">চূড়ান্ত গন্তব্য</h2>
+            <p class="text-center text-lg text-stone-400 mb-8 max-w-2xl mx-auto">হিসাবের পর আসবে আমলনামা গ্রহণ এবং পুলসিরাত পার হওয়ার পালা। এর পরেই নির্ধারিত হবে চিরস্থায়ী ঠিকানা—জান্নাত অথবা জাহান্নাম।</p>
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+                 <div class="bg-green-900/20 border border-green-500/30 p-6 rounded-lg shadow-lg neon-border-green">
+                    <h3 class="text-2xl font-bold text-green-400 mb-3" style="text-shadow: 0 0 5px #22c55e;">ডান হাতে আমলনামা</h3>
+                    <p class="text-green-200 leading-relaxed">যাকে তার আমলনামা ডান হাতে দেওয়া হবে, সে খুশিতে বলবে, "নাও, আমার আমলনামা পড়।" তার ঠিকানা হবে এক উঁচু জান্নাত, যেখানে সে সন্তোষজনক জীবনে থাকবে। তারা তৃপ্তির সাথে খাবে ও পান করবে, যা তারা দুনিয়াতে করেছিল তার বিনিময়ে।</p>
+                </div>
+                <div class="bg-red-900/20 border border-red-500/30 p-6 rounded-lg shadow-lg neon-border-red">
+                    <h3 class="text-2xl font-bold text-red-400 mb-3" style="text-shadow: 0 0 5px #ef4444;">বাম হাতে আমলনামা</h3>
+                    <p class="text-red-200 leading-relaxed">আর যাকে তার আমলনামা বাম হাতে দেওয়া হবে, সে আফসোস করে বলবে, "হায়! যদি আমাকে আমার আমলনামা না দেওয়া হতো।" তাকে সত্তর হাত দীর্ঘ শিকলে বেঁধে জাহান্নামে নিক্ষেপ করা হবে।</p>
+                </div>
+            </div>
+            <div class="bg-stone-800/50 p-6 rounded-lg shadow-lg border border-stone-700">
+                <h3 class="text-xl font-semibold mb-3 text-amber-500">পুলসিরাত ও শেষ পরিণতি</h3>
+                <p class="text-stone-300 leading-relaxed">জাহান্নামের উপর একটি সেতু স্থাপন করা হবে, যা চুলের চেয়েও চিকন এবং তরবারির চেয়েও ধারালো। মানুষ তাদের আমল অনুযায়ী তা পার হবে। কেউ চোখের পলকে, কেউ বিদ্যুতের মতো, আর কেউবা হামাগুড়ি দিয়ে পার হবে। অনেকে পা ফসকে জাহান্নামে পতিত হবে। যারা পার হবে, তাদের জন্য অপেক্ষা করছে চিরস্থায়ী জান্নাত, আর যারা পতিত হবে, তাদের ঠিকানা হবে চিরস্থায়ী জাহান্নাম। সেদিন ঘোষণা করা হবে, "হে জান্নাতবাসী, চিরকাল থাকো, কোনো মৃত্যু নেই। হে জাহান্নামবাসী, চিরকাল থাকো, কোনো মৃত্যু নেই।"</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-6 bg-stone-950 text-stone-400 mt-8">
+        <p>এই অ্যাপ্লিকেশনটি শেখ খালেদ আল-রাশেদের "يوم الفرار" লেকচারের উপর ভিত্তি করে তৈরি।</p>
+        <p class="text-sm mt-2">সমস্ত বিষয়বস্তু ইসলাম ওয়েব থেকে সংগৃহীত।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sweatChartCanvas = document.getElementById('sweatChart');
+            if (sweatChartCanvas) {
+                new Chart(sweatChartCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: ['গোড়ালি পর্যন্ত', 'হাঁটু পর্যন্ত', 'কোমর পর্যন্ত', 'মুখ পর্যন্ত (লাগাম)'],
+                        datasets: [{
+                            label: 'ঘামের তীব্রতা',
+                            data: [25, 50, 75, 100],
+                            backgroundColor: [
+                                'rgba(234, 179, 8, 0.7)',
+                                'rgba(249, 115, 22, 0.7)',
+                                'rgba(239, 68, 68, 0.7)',
+                                'rgba(185, 28, 28, 0.7)'
+                            ],
+                            borderColor: [
+                                '#facc15',
+                                '#fb923c',
+                                '#f87171',
+                                '#fca5a5'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                bodyFont: { family: "'Hind Siliguri', sans-serif" },
+                                titleFont: { family: "'Hind Siliguri', sans-serif" },
+                                callbacks: {
+                                    label: function(context) {
+                                        return `মানুষ তাদের আমল অনুযায়ী ঘামে ডুববে।`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: { color: 'rgba(255,255,255,0.1)' },
+                                ticks: {
+                                   color: '#a8a29e',
+                                   font: { family: "'Hind Siliguri', sans-serif" }
+                                }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: {
+                                   color: '#d6d3d1',
+                                   font: { family: "'Hind Siliguri', sans-serif", size: 14 }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const interactiveCards = document.querySelectorAll('.interactive-card');
+            interactiveCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const content = card.querySelector('.card-content');
+                    content.classList.toggle('open');
+                });
+            });
+            
+            const intercessionData = [
+                { name: 'আদম (আঃ)', reason: 'আমার রব আজ এমনভাবে ক্রোধান্বিত হয়েছেন যা আগে কখনো হননি। তিনি আমাকে সেই গাছটির কাছে যেতে নিষেধ করেছিলেন, কিন্তু আমি অমান্য করেছি। নাফসি.. নাফসি.. নাফসি।', target: 'নূহের কাছে যাও' },
+                { name: 'নূহ (আঃ)', reason: 'আমার রব আজ অত্যন্ত ক্রোধান্বিত। আমার একটি দোয়া ছিল যা আমি আমার কওমের বিরুদ্ধে করেছিলাম। নাফসি.. নাফসি.. নাফসি।', target: 'ইবরাহীমের কাছে যাও' },
+                { name: 'ইবরাহীম (আঃ)', reason: 'আমার রব আজ অত্যন্ত ক্রোধান্বিত। আমি তিনটি (আপাত) মিথ্যা বলেছিলাম। নাফসি.. নাফসি.. নাফসি।', target: 'মূসার কাছে যাও' },
+                { name: 'মূসা (আঃ)', reason: 'আমার রব আজ অত্যন্ত ক্রোধান্বিত। আমি এমন এক ব্যক্তিকে হত্যা করেছিলাম যার হত্যার আদেশ আমাকে দেওয়া হয়নি। নাফসি.. নাফসি.. নাফসি।', target: 'ঈসার কাছে যাও' },
+                { name: 'ঈসা (আঃ)', reason: 'আমার রব আজ অত্যন্ত ক্রোধান্বিত। (তিনি কোনো পাপের কথা উল্লেখ করবেন না)। নাফসি.. নাফসি.. নাফসি।', target: 'মুহাম্মদের কাছে যাও' },
+                { name: 'মুহাম্মদ (ﷺ)', reason: 'আমি এর জন্য... আমি এর জন্য। (তিনি আরশের সামনে সিজদায় পড়ে যাবেন এবং আল্লাহর প্রশংসা করবেন)।', target: 'শাফায়াত গৃহীত হবে' }
+            ];
+
+            const flowContainer = document.getElementById('intercession-flow');
+            if(flowContainer){
+                let html = '';
+                intercessionData.forEach((item, index) => {
+                    html += `
+                        <div class="relative mb-4 prophet-node">
+                            <div class="flex items-center">
+                                <div class="z-10 bg-amber-500/10 border-2 border-amber-500 text-amber-400 rounded-full w-12 h-12 flex items-center justify-center font-bold flex-shrink-0">${index + 1}</div>
+                                <div class="ml-4 p-4 bg-stone-900/50 rounded-lg shadow-md border border-stone-700 flex-1">
+                                    <h4 class="font-semibold text-lg text-amber-400">${item.name}</h4>
+                                    <p class="text-sm text-stone-400 reason hidden">${item.reason}</p>
+                                </div>
+                            </div>
+                            <div class="pl-6 mt-1">
+                                <p class="text-amber-600 font-medium target hidden">➔ ${item.target}</p>
+                            </div>
+                            ${index < intercessionData.length - 1 ? '<div class="absolute top-12 left-6 h-full border-l-2 border-dashed border-amber-600/50"></div>' : ''}
+                        </div>
+                    `;
+                });
+                flowContainer.innerHTML = html;
+                
+                document.querySelectorAll('.prophet-node').forEach(node => {
+                    const reason = node.querySelector('.reason');
+                    const target = node.querySelector('.target');
+                    node.addEventListener('mouseover', () => {
+                        reason.classList.remove('hidden');
+                        target.classList.remove('hidden');
+                    });
+                    node.addEventListener('mouseout', () => {
+                        reason.classList.add('hidden');
+                        target.classList.add('hidden');
+                    });
+                });
+            }
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const navbar = document.getElementById('navbar');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: `-${navbar.offsetHeight}px 0px 0px 0px`,
+                threshold: 0.4 
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+        });
+    </script>
+
+</body>
+</html>

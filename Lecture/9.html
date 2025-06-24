@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমাদের পাপ: একটি ইন্টারেক্টিভ বিশ্লেষণ (নিয়ন সংস্করণ)</title>
+    <!-- Chosen Palette: Cyberpunk Neon -->
+    <!-- Application Structure Plan: The SPA is designed as a thematic, single-page narrative scroll. It moves from identifying the core problem (sins) to comparing past/present consequences, diagnosing flawed modern perspectives, presenting a clear path to rectification, and finally emphasizing individual responsibility. This structure transforms a linear sermon into an engaging, explorable journey. Key interactions include clickable info cards to reveal deeper insights and a dynamic conceptual chart to visualize the impact of individual actions, making the abstract concepts tangible and memorable for the user. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Core problem of sins. Goal: Inform. Viz: Interactive cards with Unicode icons (HTML/CSS). Interaction: Click to reveal text. Justification: Breaks down complex ideas into digestible chunks.
+        - Report Info: Punishment of past nations vs. the current Ummah. Goal: Compare. Viz: Two-column responsive layout (HTML/CSS). Interaction: Static visual comparison. Justification: Creates a powerful, immediate visual contrast that text alone cannot achieve.
+        - Report Info: The root cause of calamities. Goal: Organize/Relate. Viz: A conceptual flow diagram built with HTML/CSS. Interaction: Static visual. Justification: Simplifies the cause-and-effect relationship, highlighting the spiritual root over superficial material causes.
+        - Report Info: Individual responsibility. Goal: Engage/Inform. Viz: Dynamic Doughnut Chart (Chart.js/Canvas). Interaction: Buttons to add 'good deeds' or 'sins', which dynamically updates the chart. Justification: Makes the abstract concept of collective strength/weakness tangible and shows the user their personal impact in real-time.
+        - Report Info: Path to salvation. Goal: Guide. Viz: Numbered, interactive accordion sections (HTML/CSS/JS). Interaction: Click to expand. Justification: Presents the solution in clear, actionable steps. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #0d0c1d;
+            color: #e0e0e0;
+        }
+        .font-arabic {
+            font-family: 'Noto Naskh Arabic', serif;
+        }
+        .neon-text-cyan {
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.7), 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+        .neon-text-magenta {
+            text-shadow: 0 0 5px rgba(255, 0, 255, 0.7), 0 0 10px rgba(255, 0, 255, 0.5), 0 0 20px rgba(255, 0, 255, 0.3);
+        }
+        .neon-border {
+            border: 1px solid;
+            box-shadow: 0 0 5px, 0 0 10px inset;
+        }
+        .card {
+            background-color: rgba(26, 25, 49, 0.7);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+        .nav-link {
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .nav-link:hover {
+            color: #00FFFF;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#0d0c1d]">
+
+    <header class="bg-black/30 backdrop-blur-sm sticky top-0 z-50 border-b border-cyan-500/20">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-cyan-400 neon-text-cyan">আমাদের পাপ</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#diagnosis" class="nav-link font-semibold text-gray-300">সমস্যার উৎস</a>
+                <a href="#comparison" class="nav-link font-semibold text-gray-300">অতীত ও বর্তমান</a>
+                <a href="#solution" class="nav-link font-semibold text-gray-300">সমাধানের পথ</a>
+                <a href="#responsibility" class="nav-link font-semibold text-gray-300">ব্যক্তিগত দায়বদ্ধতা</a>
+            </div>
+             <button id="mobile-menu-button" class="md:hidden text-2xl text-cyan-400">☰</button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-black/50 p-4">
+            <a href="#diagnosis" class="block py-2 text-center nav-link font-semibold text-gray-300">সমস্যার উৎস</a>
+            <a href="#comparison" class="block py-2 text-center nav-link font-semibold text-gray-300">অতীত ও বর্তমান</a>
+            <a href="#solution" class="block py-2 text-center nav-link font-semibold text-gray-300">সমাধানের পথ</a>
+            <a href="#responsibility" class="block py-2 text-center nav-link font-semibold text-gray-300">ব্যক্তিগত দায়বদ্ধতা</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section class="text-center mb-20">
+            <h2 class="text-4xl md:text-6xl font-bold text-gray-100 leading-tight font-arabic">ذنوبنا تفجرنا</h2>
+            <h3 class="text-3xl md:text-5xl font-bold text-fuchsia-500 mt-2 mb-4 neon-text-magenta">আমাদের পাপই আমাদের ধ্বংসের কারণ</h3>
+            <p class="max-w-3xl mx-auto text-lg text-gray-300">
+                শেখ খালিদ আল-রাশেদের এই খুতবাটি মুসলিম উম্মাহর বর্তমান দুর্বলতা ও সংকটের মূল কারণগুলো তুলে ধরে। এটি শুধু একটি বক্তৃতা নয়, বরং একটি গভীর আত্মаналиষণ এবং মুক্তির পথের দিকনির্দেশনা। এই ইন্টারেক্টিভ উপস্থাপনার মাধ্যমে খুতবার মূল বার্তাগুলো অন্বেষণ করুন।
+            </p>
+        </section>
+
+        <section id="diagnosis" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-2 text-cyan-400 neon-text-cyan">সমস্যার মূল উৎস: পাপ</h3>
+            <p class="text-center max-w-2xl mx-auto mb-10 text-gray-300">খুতবার প্রধান বার্তা হলো, আমাদের সমাজে व्याप्त সকল অস্থিরতা, দুর্বলতা এবং বিভেদের মূল কারণ বস্তুগত নয়, বরং আধ্যাত্মিক। এটি হলো আল্লাহ্‌র অবাধ্যতা এবং পাপে লিপ্ত হওয়া। নিচের কার্ডগুলোতে ক্লিক করে পাপের কিছু পরিণতি সম্পর্কে জানুন।</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card p-6 rounded-lg cursor-pointer info-card">
+                    <h4 class="font-bold text-xl mb-2 text-cyan-300">🛡️ নিরাপত্তা হ্রাস</h4>
+                    <p class="text-sm text-gray-400">পাপ সমাজে ভয় ও নিরাপত্তাহীনতা বাড়ায়।</p>
+                    <div class="hidden details text-sm mt-4 text-gray-200 bg-black/50 p-3 rounded">
+                        "إننا في هذه المملكة نعيش -ولله الحمد- في أمن ورخاء، ولكن هذا الأمن والرخاء لن يدوم أبداً حتى نقوم بطاعة الله عز وجل।" - এই নিরাপত্তা ও সমৃদ্ধি কখনোই টিকবে না যতক্ষণ না আমরা আল্লাহর আনুগত্য করি।
+                    </div>
+                </div>
+                <div class="card p-6 rounded-lg cursor-pointer info-card">
+                    <h4 class="font-bold text-xl mb-2 text-cyan-300">📉 অর্থনৈতিক সংকট</h4>
+                    <p class="text-sm text-gray-400">রিজিকের বরকত কমে যায় এবং আর্থিক সংকট দেখা দেয়।</p>
+                    <div class="hidden details text-sm mt-4 text-gray-200 bg-black/50 p-3 rounded">
+                        "إنما أصاب الناس من ضر وضيق مالي... فبسبب معاصيهم وإهمالهم لأوامر الله عز وجل।" - মানুষের উপর যে আর্থিক সংকট আসে... তার কারণ তাদের পাপ এবং আল্লাহর নির্দেশ উপেক্ষা করা।
+                    </div>
+                </div>
+                <div class="card p-6 rounded-lg cursor-pointer info-card">
+                    <h4 class="font-bold text-xl mb-2 text-cyan-300">💔 সামাজিক বিভেদ</h4>
+                    <p class="text-sm text-gray-400">মানুষের মধ্যে বিদ্বেষ ও বিভেদ তৈরি হয়।</p>
+                    <div class="hidden details text-sm mt-4 text-gray-200 bg-black/50 p-3 rounded">
+                        "إن المعاصي لتوجب نفور الناس بعضهم عن بعض... وكأنه على ملة أخرى غير ملة الإسلام।" - পাপ মানুষের মধ্যে একে অপরের প্রতি বিদ্বেষ সৃষ্টি করে... যেন এক মুসলিম অন্য মুসলিমকে ভিন্ন ধর্মের অনুসারী মনে করে।
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparison" class="mb-20 bg-black/50 p-8 rounded-lg neon-border border-fuchsia-500/50">
+            <h3 class="text-3xl font-bold text-center mb-6 text-fuchsia-400 neon-text-magenta">শাস্তির ধরণ: অতীত ও বর্তমান</h3>
+            <p class="text-center max-w-3xl mx-auto mb-10 text-gray-300">আল্লাহ এই উম্মাহকে পূর্ববর্তী জাতিদের মতো সম্পূর্ণরূপে ধ্বংস করে দেননি। বরং এই উম্মাহর পাপের শাস্তি হিসেবে তাদের নিজেদের মধ্যে বিভেদ এবং সংঘাত সৃষ্টি করেছেন। এটি একটি বড় পরীক্ষা।</p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-[#1a1931]/70 p-6 rounded-lg text-center border border-gray-700">
+                    <h4 class="text-2xl font-bold mb-4 text-cyan-400">🌪️ পূর্ববর্তী জাতিসমূহ</h4>
+                    <p class="text-gray-300">তাদের অবাধ্যতার কারণে আল্লাহ তাদের повністю ধ্বংস করে দিয়েছিলেন।</p>
+                    <ul class="text-left mt-4 space-y-2 text-gray-300">
+                        <li><span class="font-bold text-cyan-400">আদ জাতি:</span> प्रचंड বায়ু দ্বারা ধ্বংস।</li>
+                        <li><span class="font-bold text-cyan-400">সামুদ জাতি:</span> বিকট শব্দ দ্বারা ধ্বংস।</li>
+                        <li><span class="font-bold text-cyan-400">লুত (আঃ) এর জাতি:</span> জনপদ উল্টে দিয়ে ও পাথর বৃষ্টি দ্বারা ধ্বংস।</li>
+                    </ul>
+                </div>
+                <div class="bg-[#1a1931]/70 p-6 rounded-lg text-center border border-gray-700">
+                     <h4 class="text-2xl font-bold mb-4 text-fuchsia-400">⚔️ বর্তমান উম্মাহ</h4>
+                    <p class="text-gray-300">আমাদের পাপের কারণে আমরা একে অপরের বিরুদ্ধে লড়ছি।</p>
+                    <p class="font-arabic text-lg mt-4 text-gray-200">"أَوْ يَلْبِسَكُمْ شِيَعًا وَيُذِيقَ بَعْضَكُمْ بَأْسَ بَعْضٍ"</p>
+                    <p class="mt-2 text-gray-300">"অথবা তিনি তোমাদেরকে দলে-উপদলে বিভক্ত করে তোমাদের একদলকে অন্য দলের শাস্তির স্বাদ গ্রহণ করাবেন।" (সূরা আল-আন'আম: ৬৫)</p>
+                     <p class="mt-2 text-sm text-fuchsia-400/80">(রাসূল (সাঃ) এই শাস্তিটিকে "أهون وأيسر" বা তুলনামূলক সহজ বলেছিলেন)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="mb-20">
+            <h3 class="text-3xl font-bold text-center mb-2 text-cyan-400 neon-text-cyan">সংশোধন ও মুক্তির পথ</h3>
+            <p class="text-center max-w-2xl mx-auto mb-10 text-gray-300">হতাশ হওয়ার কোনো কারণ নেই। খুতবায় এই সংকট থেকে উত্তরণের জন্য সুস্পষ্ট পথের দিশা দেওয়া হয়েছে। এই পথগুলো অনুসরণ করার মাধ্যমেই উম্মাহ তার হারানো গৌরব ফিরে পেতে পারে।</p>
+            <div class="space-y-4 max-w-3xl mx-auto">
+                <div class="accordion-item border border-cyan-500/30 rounded-lg">
+                    <button class="accordion-header w-full text-left p-4 font-bold text-lg text-cyan-300 bg-black/30 rounded-t-lg flex justify-between items-center">
+                        ১. আল্লাহর দিকে প্রত্যাবর্তন (তওবা)
+                        <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content p-4 bg-[#1a1931]/70 rounded-b-lg">
+                        <p>সর্বপ্রথম কাজ হলো আন্তরিকভাবে আল্লাহর কাছে ক্ষমা চাওয়া এবং সকল পাপ থেকে ফিরে আসা। আল্লাহ বলেন, "...তোমরা আল্লাহর কাছে তওবা কর, যাতে তোমরা সফলকাম হতে পার।"</p>
+                    </div>
+                </div>
+                <div class="accordion-item border border-cyan-500/30 rounded-lg">
+                    <button class="accordion-header w-full text-left p-4 font-bold text-lg text-cyan-300 bg-black/30 rounded-t-lg flex justify-between items-center">
+                        ২. কুরআন ও সুন্নাহকে আঁকড়ে ধরা
+                         <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content p-4 bg-[#1a1931]/70 rounded-b-lg">
+                         <p>জীবনের সকল ক্ষেত্রে কুরআন ও সুন্নাহর নির্দেশনা মেনে চলাই হলো মুক্তির একমাত্র পথ। এটিই আমাদের সকল সমস্যার সমাধান দেয়।</p>
+                    </div>
+                </div>
+                <div class="accordion-item border border-cyan-500/30 rounded-lg">
+                    <button class="accordion-header w-full text-left p-4 font-bold text-lg text-cyan-300 bg-black/30 rounded-t-lg flex justify-between items-center">
+                        ৩. সৎ কাজের আদেশ ও অসৎ কাজে নিষেধ
+                         <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content p-4 bg-[#1a1931]/70 rounded-b-lg">
+                         <p>সমাজের সংস্কারের জন্য একে অপরকে ভালো কাজের দিকে ডাকা এবং মন্দ কাজ থেকে বিরত রাখা অপরিহার্য। এটি উম্মাহকে আল্লাহর আজাব থেকে রক্ষা করে। আল্লাহ বলেন, "আর তোমাদের মধ্যে এমন একটি দল থাকা উচিত, যারা কল্যাণের দিকে আহ্বান করবে, সৎকাজের নির্দেশ দেবে এবং অসৎকাজে নিষেধ করবে; আর তারাই সফলকাম।" (সূরা আল-ইমরান: ১০৪)</p>
+                    </div>
+                </div>
+                 <div class="accordion-item border border-cyan-500/30 rounded-lg">
+                    <button class="accordion-header w-full text-left p-4 font-bold text-lg text-cyan-300 bg-black/30 rounded-t-lg flex justify-between items-center">
+                        ৪. ঐক্যবদ্ধ থাকা
+                         <span class="transform transition-transform duration-300">▼</span>
+                    </button>
+                    <div class="accordion-content p-4 bg-[#1a1931]/70 rounded-b-lg">
+                         <p>বিভেদ ও দলাদলি উম্মাহকে দুর্বল করে। আল্লাহর রজ্জুকে ঐক্যবদ্ধভাবে আঁকড়ে ধরার মাধ্যমেই শক্তি অর্জিত হয়।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="responsibility" class="mb-20 text-center">
+            <h3 class="text-3xl font-bold mb-2 text-cyan-400 neon-text-cyan">ব্যক্তিগত দায়বদ্ধতা: উম্মাহর শক্তিতে আপনার প্রভাব</h3>
+            <p class="max-w-2xl mx-auto mb-8 text-gray-300">উম্মাহর শক্তি বা দুর্বলতা আমাদের সম্মিলিত কর্মের ফল। প্রতিটি ভালো কাজ উম্মাহকে শক্তিশালী করে এবং প্রতিটি পাপ তাকে দুর্বল করে। নিচের চার্টটি দেখুন এবং বোতামগুলোতে ক্লিক করে এর প্রভাব লক্ষ্য করুন।</p>
+            
+            <div class="chart-container">
+                <canvas id="responsibilityChart"></canvas>
+            </div>
+            
+            <div class="mt-8 flex justify-center gap-4">
+                <button id="addGoodDeed" class="text-fuchsia-400 font-bold py-2 px-6 rounded-lg transition-all duration-300 border border-fuchsia-500 hover:bg-fuchsia-500/20 hover:shadow-[0_0_15px_rgba(255,0,255,0.5)]">একটি সৎ কাজ যোগ করুন</button>
+                <button id="addSin" class="text-gray-400 font-bold py-2 px-6 rounded-lg transition-all duration-300 border border-gray-600 hover:bg-gray-600/20">একটি পাপ যোগ করুন</button>
+            </div>
+            <div id="strengthMessage" class="mt-4 text-xl font-bold text-cyan-400 neon-text-cyan"></div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-black/50 text-gray-400 text-center p-6 border-t border-fuchsia-500/20">
+        <p>এই অ্যাপ্লিকেশনটি শেখ খালিদ আল-রাশেদের "ذنوبنا تفجرنا" খুতবার উপর ভিত্তি করে তৈরি।</p>
+        <p class="text-sm mt-2 opacity-70">উদ্দেশ্য হলো শিক্ষামূলক এবং চিন্তার উদ্রেক করা।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const infoCards = document.querySelectorAll('.info-card');
+            infoCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const details = card.querySelector('.details');
+                    details.classList.toggle('hidden');
+                });
+            });
+
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('span');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        document.querySelectorAll('.accordion-content').forEach(item => item.style.maxHeight = null);
+                        document.querySelectorAll('.accordion-header span').forEach(item => item.style.transform = 'rotate(0deg)');
+                        
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+            
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            const ctx = document.getElementById('responsibilityChart').getContext('2d');
+            let chartData = {
+                goodDeeds: 50,
+                sins: 50
+            };
+
+            const responsibilityChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['উম্মাহর শক্তি (সৎ কাজ)', 'উম্মাহর দুর্বলতা (পাপ)'],
+                    datasets: [{
+                        data: [chartData.goodDeeds, chartData.sins],
+                        backgroundColor: [
+                            '#D946EF', // Fuchsia 500
+                            '#4B5563'  // Gray 600
+                        ],
+                        borderColor: [
+                            '#0d0c1d' // Dark background color
+                        ],
+                        borderWidth: 5,
+                        hoverOffset: 4,
+                        hoverBorderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#e0e0e0',
+                                font: {
+                                    family: "'Hind Siliguri', sans-serif",
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            titleFont: {
+                                family: "'Hind Siliguri', sans-serif"
+                            },
+                             bodyFont: {
+                                family: "'Hind Siliguri', sans-serif"
+                            },
+                            backgroundColor: 'rgba(0,0,0,0.7)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                        }
+                    }
+                }
+            });
+            
+            const strengthMessage = document.getElementById('strengthMessage');
+
+            function updateChart() {
+                const total = chartData.goodDeeds + chartData.sins;
+                const strengthPercentage = total > 0 ? ((chartData.goodDeeds / total) * 100).toFixed(1) : 0;
+                
+                responsibilityChart.data.datasets[0].data = [chartData.goodDeeds, chartData.sins];
+                responsibilityChart.update();
+                
+                strengthMessage.textContent = `বর্তমান শক্তি: ${strengthPercentage}%`;
+            }
+
+            document.getElementById('addGoodDeed').addEventListener('click', () => {
+                chartData.goodDeeds += 5;
+                updateChart();
+            });
+
+            document.getElementById('addSin').addEventListener('click', () => {
+                if (chartData.sins > 0) { // Prevent sins from going negative relative to good deeds
+                     chartData.sins += 5;
+                     updateChart();
+                }
+            });
+
+            updateChart();
+        });
+    </script>
+</body>
+</html>

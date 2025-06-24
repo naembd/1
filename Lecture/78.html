@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>হত্যাকারী ও নিহত: একটি ইন্টারেক্টিভ পর্যালোচনা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Neon on Dark (Purple/Rose on Stone) -->
+    <!-- Application Structure Plan: The application uses a thematic, single-page structure with a top navigation bar for easy access to different sections. This non-linear design allows users to explore the sermon's content based on their interest—be it the shocking statistics, the emotional case studies, or the religious rulings. The structure is designed for exploration and comprehension, starting with the core dilemma (blessing vs. curse), presenting hard data (charts), explaining causes, sharing impactful stories (tabs), providing religious context (fatwas), and ending with actionable advice. This is more engaging than a linear text-based format. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Accident Statistics (1417-1420 H) -> Goal: Show the alarming trend -> Viz: Bar Chart -> Interaction: Hover tooltips for exact figures -> Justification: Visually more impactful and easier for comparison than a simple list. -> Library: Chart.js (Canvas).
+        2. Report Info: Multiple narrative stories -> Goal: Present stories without cluttering the UI -> Viz: Tabbed Interface -> Interaction: Click on a tab to view the story -> Justification: Manages screen real estate and allows users to focus on one narrative at a time. -> Method: Vanilla JS.
+        3. Report Info: Causes of accidents -> Goal: Clearly list distinct reasons -> Viz: Grid of cards with icons -> Justification: Breaks down information into easily scannable, visually distinct blocks. -> Method: HTML/Tailwind CSS.
+        4. Report Info: Scholarly Rulings -> Goal: Highlight authoritative opinions -> Viz: Styled blockquotes -> Justification: Standard way to present quotes, giving them visual emphasis. -> Method: HTML/Tailwind CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .tab-button.active {
+            color: #c084fc; /* purple-400 */
+            border-color: #c084fc;
+            box-shadow: 0 0 8px #c084fc;
+            font-weight: 700;
+        }
+        
+        .neon-text-purple {
+             color: #f0abfc; /* fuchsia-300 */
+             text-shadow:
+                0 0 5px #f0abfc,
+                0 0 10px #f0abfc,
+                0 0 20px #a855f7,
+                0 0 30px #a855f7,
+                0 0 40px #a855f7;
+        }
+
+        .neon-text-header {
+            color: #f3e8ff; /* Light purple */
+            text-shadow:
+                0 0 6px rgba(255, 255, 255, 0.7),
+                0 0 15px rgba(192, 132, 252, 0.5);
+        }
+
+         .neon-border {
+            border: 1px solid #fff;
+            box-shadow:
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 15px #a855f7,
+                0 0 20px #a855f7;
+        }
+        
+        .cause-card {
+            border: 1px solid #44403c; /* stone-700 */
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .cause-card:hover {
+            border-color: #c084fc;
+            box-shadow: 0 0 15px #a855f7;
+        }
+    </style>
+</head>
+<body class="bg-stone-900 text-stone-200">
+
+    <!-- Navigation -->
+    <nav class="bg-stone-900/80 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-purple-500/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-2xl neon-text-purple">আলোর পথে</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#introduction" class="text-stone-300 hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium">ভূমিকা</a>
+                        <a href="#stats" class="text-stone-300 hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium">পরিসংখ্যান</a>
+                        <a href="#causes" class="text-stone-300 hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium">কারণসমূহ</a>
+                        <a href="#stories" class="text-stone-300 hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium">শিক্ষণীয় ঘটনা</a>
+                        <a href="#rulings" class="text-stone-300 hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium">ইসলামী দৃষ্টিকোণ</a>
+                        <a href="#conclusion" class="text-stone-300 hover:text-purple-400 px-3 py-2 rounded-md text-sm font-medium">উপদেশ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Introduction Section -->
+        <section id="introduction" class="text-center mb-20">
+            <h1 class="text-5xl md:text-6xl font-bold mb-4 neon-text-header">হত্যাকারী ও নিহত</h1>
+            <h2 class="text-2xl md:text-3xl font-semibold text-purple-400 mb-6">শেখ খালিদ আল-রাশেদের একটি চিন্তাশীল পর্যালোচনা</h2>
+            <p class="max-w-4xl mx-auto text-lg text-stone-300">
+                আল্লাহর অগণিত নিয়ামতের মধ্যে গাড়ি অন্যতম, যা আমাদের জীবনকে সহজ করেছে। কিন্তু এই নিয়ামতের অপব্যবহার একে অভিশাপে পরিণত করতে পারে। এই অ্যাপ্লিকেশনটি শেখ খালিদ আল-রাশেদের বক্তৃতার আলোকে গাড়ির সঠিক ব্যবহার, দুর্ঘটনার ভয়াবহতা এবং এ থেকে উত্তরণের ইসলামী নির্দেশনা তুলে ধরেছে।
+            </p>
+        </section>
+
+        <!-- Stats Section -->
+        <section id="stats" class="py-16 bg-stone-900/50 rounded-2xl neon-border">
+            <div class="text-center mb-12 px-4">
+                <h2 class="text-3xl font-bold text-purple-300">এক ভয়াবহ বাস্তবতা: পরিসংখ্যান</h2>
+                <p class="mt-4 text-lg text-stone-300 max-w-3xl mx-auto">
+                    বক্তৃতায় উল্লিখিত সৌদি আরবের কয়েক বছরের সড়ক দুর্ঘটনার পরিসংখ্যানগুলো আমাদের চোখের সামনে এক করুণ চিত্র তুলে ধরে। সময়ের সাথে সাথে দুর্ঘটনা ও মৃত্যুর সংখ্যা কীভাবে বেড়েছে, তা নিচের চার্টে দেখুন। এই সংখ্যাগুলো শুধু নিছক তথ্য নয়, বরং হাজারো ভাঙা স্বপ্ন আর অসমাপ্ত গল্পের প্রতিচ্ছবি।
+                </p>
+            </div>
+            <div class="chart-container px-4">
+                <canvas id="accidentsChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Causes Section -->
+        <section id="causes" class="py-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-purple-300">কেন এই দুর্ঘটনাগুলো ঘটছে?</h2>
+                <p class="mt-4 text-lg text-stone-300 max-w-3xl mx-auto">
+                    শেখ খালিদ আল-রাশেদ গাড়ি দুর্ঘটনার পেছনে কিছু মূল কারণ চিহ্নিত করেছেন। এগুলো শুধু চালকের ভুল নয়, বরং আমাদের সামাজিক ও ব্যক্তিগত অসচেতনতারও প্রতিফলন।
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-stone-800 p-6 rounded-2xl text-center cause-card">
+                    <div class="text-5xl mb-4">⚡️</div>
+                    <h3 class="text-xl font-semibold mb-2 text-purple-300">অতিরিক্ত গতি</h3>
+                    <p class="text-stone-400">গতির নেশায় জীবনকে বাজি রাখা, যা নিজের এবং অন্যের মৃত্যুর কারণ হয়ে দাঁড়ায়।</p>
+                </div>
+                <div class="bg-stone-800 p-6 rounded-2xl text-center cause-card">
+                    <div class="text-5xl mb-4">🚦</div>
+                    <h3 class="text-xl font-semibold mb-2 text-purple-300">আইন অমান্য করা</h3>
+                    <p class="text-stone-400">ট্রাফিক সিগন্যাল ও নিয়মকানুনকে উপেক্ষা করা, যা মারাত্মক বিপদ ডেকে আনে।</p>
+                </div>
+                <div class="bg-stone-800 p-6 rounded-2xl text-center cause-card">
+                    <div class="text-5xl mb-4">👦</div>
+                    <h3 class="text-xl font-semibold mb-2 text-purple-300">অপ্রাপ্তবয়স্ক চালক</h3>
+                    <p class="text-stone-400">দায়িত্বজ্ঞানহীন কম বয়সীদের হাতে গাড়ি তুলে দেওয়া, যারা এর মূল্য ও পরিণাম বোঝে না।</p>
+                </div>
+                <div class="bg-stone-800 p-6 rounded-2xl text-center cause-card">
+                    <div class="text-5xl mb-4">🏎️</div>
+                    <h3 class="text-xl font-semibold mb-2 text-purple-300">বেপরোয়া চালনা</h3>
+                    <p class="text-stone-400">রাস্তায় বিপজ্জনক প্রতিযোগিতা (তাফহিত) যা কেবল অহংকার প্রকাশ করে এবং ধ্বংস ডেকে আনে।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stories Section -->
+        <section id="stories" class="py-16 bg-stone-900/50 rounded-2xl neon-border">
+            <div class="text-center mb-12 px-4">
+                <h2 class="text-3xl font-bold text-purple-300">রাস্তা থেকে নেওয়া শিক্ষণীয় ঘটনা</h2>
+                <p class="mt-4 text-lg text-stone-300 max-w-3xl mx-auto">
+                    বাস্তব ঘটনাগুলো অনেক সময় হাজারো উপদেশের চেয়ে বেশি শক্তিশালী হয়। বক্তৃতায় বর্ণিত কিছু হৃদয়স্পর্শী ঘটনা এখানে তুলে ধরা হলো, যা আমাদের চিন্তার খোরাক জোগাবে।
+                </p>
+            </div>
+            <div class="max-w-4xl mx-auto px-4">
+                <div class="border-b border-stone-700">
+                    <nav class="-mb-px flex space-x-2 sm:space-x-4" aria-label="Tabs">
+                        <button class="tab-button active text-stone-300 border-b-2 border-transparent py-2 px-1 sm:px-4 text-center text-sm sm:text-base" data-tab="story1">ঈদের আগের দুর্ঘটনা</button>
+                        <button class="tab-button text-stone-300 border-b-2 border-transparent py-2 px-1 sm:px-4 text-center text-sm sm:text-base" data-tab="story2">উপদেশের পরিণাম</button>
+                        <button class="tab-button text-stone-300 border-b-2 border-transparent py-2 px-1 sm:px-4 text-center text-sm sm:text-base" data-tab="story3">আল্লাহর জিম্মায়</button>
+                    </nav>
+                </div>
+                <div class="mt-8">
+                    <div id="story1" class="tab-content">
+                        <h3 class="text-2xl font-semibold mb-3 text-purple-300">ঈদের নতুন কাপড় আর কাফনের কাপড়</h3>
+                        <p class="text-stone-300 leading-relaxed">
+                            এক যুবক তার বন্ধুর সাথে ঈদের নতুন পোশাক বানানোর জন্য বেপরোয়া গতিতে গাড়ি চালাচ্ছিল। তারা দর্জিকে অগ্রিম টাকা দিয়ে ঈদের আগেই কাপড় তৈরি করার জন্য বলে আসে। কিন্তু ভাগ্যের কী নির্মম পরিহাস, বাড়ি ফেরার পথে সেই যুবক গাড়ি দুর্ঘটনায় মারা যায়। সে ঈদের নতুন পোশাক পরার স্বপ্ন দেখলেও তার ভাগ্যে জোটে সাদা কাফনের কাপড়। এই মর্মান্তিক ঘটনা তার বন্ধুকে আল্লাহর পথে ফিরে আসতে সাহায্য করে এবং সে অনুধাবন করতে পারে যে, জীবন কতটা ক্ষণস্থায়ী এবং মৃত্যু যেকোনো মুহূর্তে আসতে পারে।
+                        </p>
+                    </div>
+                    <div id="story2" class="tab-content hidden">
+                        <h3 class="text-2xl font-semibold mb-3 text-purple-300">হেদায়েতের কারণ বোনের মৃত্যু</h3>
+                        <p class="text-stone-300 leading-relaxed">
+                            এক যুবক তার তিন বোনকে নিয়ে গাড়ি চালিয়ে যাচ্ছিল এবং উচ্চস্বরে গান শুনছিল। তার এক ধার্মিক বোন তাকে গান বন্ধ করতে অনুরোধ করে, কিন্তু সে তার কথায় কান না দিয়ে উল্টো তাকে নিয়ে ঠাট্টা করে। কিছুক্ষণ পরেই তাদের গাড়ি এক মারাত্মক দুর্ঘটনার শিকার হয়। আশ্চর্যজনকভাবে, গাড়ির সবাই সামান্য আহত হলেও শুধুমাত্র সেই ধার্মিক বোনটি মারা যায়। এই ঘটনা সেই যুবকের জীবনে গভীর প্রভাব ফেলে এবং সে তার ভুল বুঝতে পেরে আল্লাহর কাছে তওবা করে সঠিক পথে ফিরে আসে। তার বোনের মৃত্যুই তার হেদায়েতের কারণ হয়ে দাঁড়ায়।
+                        </p>
+                    </div>
+                    <div id="story3" class="tab-content hidden">
+                        <h3 class="text-2xl font-semibold mb-3 text-purple-300">ফজরের নামাজ যেভাবে জীবন বাঁচাল</h3>
+                        <p class="text-stone-300 leading-relaxed">
+                           এক ব্যক্তি বর্ণনা করেন যে, তিনি এবং তার এক বন্ধু গাড়ি চালিয়ে যাচ্ছিলেন। হঠাৎ গাড়ির টায়ার ফেটে গেলে তারা নিশ্চিত মৃত্যুর হাত থেকে অলৌকিকভাবে বেঁচে যান। তিনি বলেন, এর কারণ ছিল যে তিনি ফজরের নামাজ জামায়াতে আদায় করেছিলেন এবং আল্লাহর নিরাপত্তায় ছিলেন। কারণ হাদিসে আছে, যে ব্যক্তি ফজরের নামাজ জামায়াতে আদায় করে, সে সন্ধ্যা পর্যন্ত আল্লাহর জিম্মায় (নিরাপত্তায়) থাকে। এই ঘটনা প্রমাণ করে যে, আল্লাহর আনুগত্য ও ইবাদত আমাদের কেবল পরকালেই নয়, এই দুনিয়াতেও বিপদ থেকে রক্ষা করে।
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rulings Section -->
+        <section id="rulings" class="py-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-purple-300">ইসলামী দৃষ্টিকোণ ও উলামাদের অভিমত</h2>
+                <p class="mt-4 text-lg text-stone-300 max-w-3xl mx-auto">
+                    বেপরোয়া চালনা ও ট্রাফিক আইন অমান্য করার বিষয়ে ইসলাম কী বলে? প্রখ্যাত আলেমগণ এ বিষয়ে গুরুত্বপূর্ণ নির্দেশনা দিয়েছেন।
+                </p>
+            </div>
+            <div class="space-y-8 max-w-4xl mx-auto">
+                <blockquote class="bg-stone-800 border-l-4 border-purple-500 p-6 rounded-r-lg shadow-lg shadow-purple-500/10">
+                    <p class="text-lg italic text-stone-300">"বেপরোয়া চালনা (তাফহিত) এবং এর মাধ্যমে সম্পদ (গাড়ি) নষ্ট করা হারাম। কারণ আল্লাহ তায়ালা সম্পদ অপচয় করতে নিষেধ করেছেন। যারা এটি দেখে আনন্দ পায় এবং উৎসাহিত করে, তারাও এই পাপে সহযোগী হিসেবে গণ্য হবে।"</p>
+                    <footer class="mt-4 text-right font-semibold text-purple-400">- শেখ ইবনে উসাইমীন (রহিমাহুল্লাহ)</footer>
+                </blockquote>
+                <blockquote class="bg-stone-800 border-l-4 border-purple-500 p-6 rounded-r-lg shadow-lg shadow-purple-500/10">
+                    <p class="text-lg italic text-stone-300">"কোনো মুসলমানের জন্য রাষ্ট্রের ট্রাফিক আইন ভঙ্গ করা জায়েজ নয়, কারণ এতে নিজের এবং অন্যের জীবনের জন্য মারাত্মক ঝুঁকি রয়েছে। রাষ্ট্র এই নিয়মগুলো সকলের মঙ্গলের জন্যই তৈরি করেছে।"</p>
+                    <footer class="mt-4 text-right font-semibold text-purple-400">- শেখ ইবনে বাজ (রহিমাহুল্লাহ)</footer>
+                </blockquote>
+            </div>
+        </section>
+
+        <!-- Conclusion Section -->
+        <section id="conclusion" class="py-16 bg-stone-900/50 rounded-2xl neon-border">
+            <div class="text-center mb-12 px-4">
+                <h2 class="text-3xl font-bold text-purple-300">আমাদের করণীয়: উপদেশ ও শেষ কথা</h2>
+                <p class="mt-4 text-lg text-stone-300 max-w-3xl mx-auto">
+                    দুর্ঘটনা এড়াতে এবং আল্লাহর নিয়ামতের সঠিক শুকরিয়া আদায় করতে আমাদের কিছু বিষয় মেনে চলা অপরিহার্য। জীবন একটাই, তাই এর সুরক্ষায় আমাদেরই সচেতন হতে হবে।
+                </p>
+            </div>
+            <div class="max-w-2xl mx-auto px-4">
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="text-purple-400 font-bold text-2xl mr-3 mt-1 neon-text-purple">✓</span>
+                        <span class="text-lg text-stone-300">সর্বদা আল্লাহর কাছে এই নিয়ামতের জন্য শুকরিয়া আদায় করা এবং এটিকে তাঁর অবাধ্যতায় ব্যবহার না করা।</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-purple-400 font-bold text-2xl mr-3 mt-1 neon-text-purple">✓</span>
+                        <span class="text-lg text-stone-300">সকল ট্রাফিক আইন, যেমন গতিসীমা ও সিগন্যাল, কঠোরভাবে মেনে চলা।</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-purple-400 font-bold text-2xl mr-3 mt-1 neon-text-purple">✓</span>
+                        <span class="text-lg text-stone-300">গাড়িতে বসার সাথে সাথে সিটবেল্ট বাঁধা এবং অন্যকেও উৎসাহিত করা।</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-purple-400 font-bold text-2xl mr-3 mt-1 neon-text-purple">✓</span>
+                        <span class="text-lg text-stone-300">পাঁচ ওয়াক্ত নামাজ, বিশেষ করে ফজরের নামাজ জামায়াতে আদায় করার চেষ্টা করা, যা আল্লাহর পক্ষ থেকে নিরাপত্তা এনে দেয়।</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-purple-400 font-bold text-2xl mr-3 mt-1 neon-text-purple">✓</span>
+                        <span class="text-lg text-stone-300">অন্যের ভুলের কারণে নিজে عبرة (শিক্ষা) গ্রহণ করা, যাতে নিজেকে অন্যের জন্য عبرة হতে না হয়।</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-stone-900 mt-16 border-t border-stone-800">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-stone-400">"হে আল্লাহ, আমাদেরকে আপনার নিয়ামতের শুকরিয়া আদায় করার তৌফিক দিন এবং আমাদেরকে হেদায়েতপ্রাপ্তদের অন্তর্ভুক্ত করুন।"</p>
+            <p class="mt-4 text-sm text-stone-500">&copy; ২০২৩ | শেখ খালিদ আল-রাশেদের বক্তৃতার আলোকে নির্মিত</p>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Chart.js implementation with Neon theme
+            const ctx = document.getElementById('accidentsChart').getContext('2d');
+            const accidentsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['১৪১৭ হিজরি', '১৪১৮ হিজরি', '১৪১৯ হিজরি', '১৪২০ হিজরি'],
+                    datasets: [{
+                        label: 'দুর্ঘটনার সংখ্যা',
+                        data: [135763, 153727, 264326, 267772],
+                        backgroundColor: 'rgba(192, 132, 252, 0.5)', // purple-400 with opacity
+                        borderColor: 'rgba(216, 180, 254, 1)', // purple-300
+                        borderWidth: 2,
+                        shadowOffsetX: 0,
+                        shadowOffsetY: 0,
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(192, 132, 252, 0.5)'
+
+                    }, {
+                        label: 'মৃত্যুর সংখ্যা',
+                        data: [3131, 3474, 4290, 4848],
+                        backgroundColor: 'rgba(251, 113, 133, 0.5)', // rose-400 with opacity
+                        borderColor: 'rgba(253, 164, 175, 1)', // rose-300
+                        borderWidth: 2,
+                        shadowOffsetX: 0,
+                        shadowOffsetY: 0,
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(251, 113, 133, 0.5)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'সড়ক দুর্ঘটনা ও মৃত্যুর সংখ্যাবৃদ্ধি',
+                            font: { size: 18, family: 'Hind Siliguri' },
+                            color: '#e7e5e4' // stone-200
+                        },
+                        legend: {
+                            labels: {
+                                color: '#e7e5e4' // stone-200
+                            }
+                        },
+                        tooltip: {
+                            titleFont: { family: 'Hind Siliguri' },
+                            bodyFont: { family: 'Hind Siliguri' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'সংখ্যা',
+                                font: { size: 14, family: 'Hind Siliguri' },
+                                color: '#d6d3d1' // stone-300
+                            },
+                            ticks: {
+                                color: '#a8a29e', // stone-400
+                                font: { family: 'Hind Siliguri' }
+                            },
+                            grid: {
+                                color: 'rgba(168, 162, 158, 0.2)' // stone-400 with opacity
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#a8a29e', // stone-400
+                                font: { family: 'Hind Siliguri' }
+                            },
+                             grid: {
+                                color: 'rgba(168, 162, 158, 0.2)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Tab functionality for stories
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.add('hidden'));
+
+                    button.classList.add('active');
+                    document.getElementById(tabId).classList.remove('hidden');
+                });
+            });
+
+            // Smooth scroll for nav links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

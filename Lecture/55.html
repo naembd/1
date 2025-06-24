@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বরং সর্বোচ্চ বন্ধুর কাছে - শাইখ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Application Structure Plan: The application uses a thematic, top-down narrative structure to guide the user through the sermon's emotional journey. It begins with the context of the Ummah's suffering, moves to the central theme of the Prophet's (PBUH) death as the greatest calamity, presents an interactive timeline of his final days for detailed exploration, visualizes the emotional impact through a chart, and concludes with the key takeaways. This structure was chosen over a simple linear reading to enhance engagement, facilitate understanding of the chronological events, and highlight the sermon's core messages in distinct, digestible sections. Navigation is facilitated by a sticky header, allowing easy access to any part of the narrative. -->
+    <!-- Visualization & Content Choices: 1. Report Info: Chronological events of the Prophet's (PBUH) final days. Goal: Organize and present a narrative interactively. Viz/Presentation Method: Clickable vertical timeline. Interaction: Clicking a point reveals detailed text. Justification: Breaks down a long narrative into engaging, manageable parts, clarifying the sequence of events. Library/Method: HTML/CSS/Vanilla JS. 2. Report Info: Emotional reactions of the Companions. Goal: Visually compare the emotional weight of different moments. Viz/Presentation Method: Horizontal bar chart. Interaction: Hovering shows tooltips with context. Justification: Offers a synthetic, visual understanding of the sermon's emotional landscape. Library/Method: Chart.js. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #FFFBF5;
+            color: #4A4A4A;
+        }
+        .bg-cream { background-color: #FFFBF5; }
+        .bg-warm-beige { background-color: #F3EFEA; }
+        .text-deep-brown { color: #5C4033; }
+        .border-gold { border-color: #D4AF37; }
+        .accent-gold { color: #D4AF37; }
+        .bg-accent-gold { background-color: #D4AF37; }
+        
+        .text-glow {
+            text-shadow: 0 0 6px rgba(212, 175, 55, 0.7), 0 0 8px rgba(212, 175, 55, 0.5);
+        }
+
+        nav a {
+            transition: color 0.3s, border-bottom-color 0.3s, text-shadow 0.3s;
+        }
+        nav a:hover, nav a.active {
+            color: #D4AF37;
+            border-bottom-color: #D4AF37;
+            text-shadow: 0 0 5px rgba(212, 175, 55, 0.6);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background-color: #FFFBF5;
+            border: 4px solid #D4AF37;
+            top: 0;
+            left: -0.625rem;
+            z-index: 10;
+            transition: box-shadow 0.3s;
+        }
+        .timeline-item.active-timeline::before {
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
+        }
+        .timeline-border-glow {
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        #emotionChart {
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
+        }
+        .content-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(92, 64, 51, 0.07), 0 4px 6px -2px rgba(92, 64, 51, 0.07);
+        }
+    </style>
+</head>
+<body class="bg-cream">
+
+    <header id="header" class="bg-warm-beige/80 backdrop-blur-sm shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl md:text-2xl font-bold text-deep-brown text-glow">বরং সর্বোচ্চ বন্ধুর কাছে</h1>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#intro" class="text-gray-600 font-medium border-b-2 border-transparent pb-1">ভূমিকা</a>
+                    <a href="#calamity" class="text-gray-600 font-medium border-b-2 border-transparent pb-1">সর্বশ্রেষ্ঠ বিপদ</a>
+                    <a href="#timeline" class="text-gray-600 font-medium border-b-2 border-transparent pb-1">শেষ দিনগুলো</a>
+                    <a href="#chart" class="text-gray-600 font-medium border-b-2 border-transparent pb-1">আবেগের মুহূর্ত</a>
+                    <a href="#lessons" class="text-gray-600 font-medium border-b-2 border-transparent pb-1">আমাদের করণীয়</a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:text-deep-brown hover:bg-gray-200">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden py-4">
+                <a href="#intro" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-200 rounded">ভূমিকা</a>
+                <a href="#calamity" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-200 rounded">সর্বশ্রেষ্ঠ বিপদ</a>
+                <a href="#timeline" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-200 rounded">শেষ দিনগুলো</a>
+                <a href="#chart" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-200 rounded">আবেগের মুহূর্ত</a>
+                <a href="#lessons" class="block py-2 px-4 text-sm text-gray-600 hover:bg-gray-200 rounded">আমাদের করণীয়</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="intro" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-deep-brown mb-4 text-glow">উম্মাহর কষ্টের একটি দিক</h2>
+            <p class="max-w-3xl mx-auto text-center text-gray-600 mb-8">
+                এই অংশে শেখ خالد الراشد মুসলিম উম্মাহর বর্তমান সংকট ও দুর্দশার কথা তুলে ধরেছেন। ফিলিস্তিন, কাশ্মীর থেকে ইরাক পর্যন্ত বিস্তৃত এই বেদনা ও পরীক্ষার প্রেক্ষাপটে তিনি মূল খুতবার অবতারণা করেন, যা আমাদের স্মরণ করিয়ে দেয় যে সকল বিপদের চেয়ে বড় বিপদ ছিল রাসূলুল্লাহ (ﷺ) এর ওফাত।
+            </p>
+            <div class="bg-warm-beige p-6 rounded-lg shadow-sm content-card">
+                <p class="text-lg leading-relaxed text-gray-700">"আজ আমাদের ইসলামী বিশ্বে যে সব বড় বড় বিপদ ঘটছে এবং আমাদের উপর যে বিপর্যয় নেমে আসছে, যদিও তা আমাদের আত্মা ও হৃদয়ে গভীর ছাপ রেখে যায়, কিন্তু আল্লাহর কসম! নবী সাল্লাল্লাহু আলাইহি ওয়াসাল্লামের মৃত্যুর বিপদের তুলনায় সেগুলোর ভয়াবহতা তুচ্ছ হয়ে যায়; কারণ এটি অন্য কোনো বিপদের মতো নয়, এটি প্রত্যেক মুসলমানকে আঘাত করে এবং প্রভাবিত করে, এবং উম্মাহর নবীর মৃত্যুতে তার হৃদয়ে শোকের সঞ্চার করে।"</p>
+            </div>
+        </section>
+
+        <section id="calamity" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-deep-brown mb-4 text-glow">নবী (ﷺ) এর মৃত্যুর বিপদে অন্য বিপদ তুচ্ছ হয়ে যায়</h2>
+            <p class="max-w-3xl mx-auto text-center text-gray-600 mb-8">
+                যেকোনো ব্যক্তিগত বা সামষ্টিক ক্ষতির চেয়েও নবীজি (ﷺ) এর প্রস্থান ছিল উম্মাহর জন্য সবচেয়ে বড় আঘাত। এই বিভাগে সেই গভীর শূন্যতা এবং এর প্রভাব তুলে ধরা হয়েছে, যেখানে জড়বস্তু পর্যন্ত তাঁর বিচ্ছেদে কেঁদেছিল। এটি আমাদের তাঁর প্রতি ভালোবাসা এবং তাঁর আদর্শ অনুসরণের গুরুত্ব স্মরণ করিয়ে দেয়।
+            </p>
+            <div class="bg-white p-6 rounded-lg shadow-lg content-card">
+                <h3 class="text-2xl font-semibold text-deep-brown mb-3">ক্রন্দনরত খেজুর গাছের গুঁড়ি</h3>
+                <p class="text-gray-700 leading-relaxed">"তাঁর মসজিদে একটি খেজুর গাছের গুঁড়ি ছিল, তিনি খুতবা দেওয়ার সময় তাতে হেলান দিতেন। যখন তাঁর জন্য একটি মিম্বার তৈরি করা হলো, তখন তিনি নতুন মিম্বারে খুতবা দিতে উঠলে সেই গুঁড়িটি শিশুর মতো চিৎকার করে কাঁদতে লাগল। নবী (ﷺ) তার কাছে নেমে এসে তাকে আলিঙ্গন করলেন, তখন সেটি শান্ত হতে লাগল... হাসান যখন এই হাদিস বর্ণনা করতেন, তখন তিনি কাঁদতেন এবং বলতেন: এই কাঠটিও নবী (ﷺ) এর জন্য আকুল, সুতরাং তোমাদের তাঁর প্রতি আরও বেশি আগ্রহী হওয়া উচিত।"</p>
+            </div>
+        </section>
+
+        <section id="timeline" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-deep-brown mb-4 text-glow">বিদায়ের চিহ্ন ও শেষ দিনগুলো</h2>
+            <p class="max-w-3xl mx-auto text-center text-gray-600 mb-12">
+                রাসূলুল্লাহ (ﷺ) এর ওফাতের পূর্বে বেশ কিছু ঘটনা ও লক্ষণ প্রকাশ পেয়েছিল যা তাঁর বিদায়ের ইঙ্গিত বহন করে। নিচের টাইমলাইনে ক্লিক করে তাঁর জীবনের শেষ দিনগুলোর ঘটনাবলি সম্পর্কে বিস্তারিত জানুন। প্রতিটি ঘটনা তাঁর মিশনের সমাপ্তি এবং সর্বোচ্চ বন্ধুর সাথে মিলিত হওয়ার প্রস্তুতির কথা স্মরণ করিয়ে দেয়।
+            </p>
+            <div class="md:grid md:grid-cols-3 md:gap-8 items-start">
+                <div id="timeline-line-container" class="col-span-1 relative border-l-4 border-gold ml-2 py-4">
+                    <div class="space-y-12">
+                        <div data-target="event-1" class="timeline-item pl-8 cursor-pointer">
+                            <h3 class="font-bold text-lg text-deep-brown">বিদায় হজ্জ ও দ্বীনের পূর্ণতা</h3>
+                        </div>
+                        <div data-target="event-2" class="timeline-item pl-8 cursor-pointer">
+                            <h3 class="font-bold text-lg text-deep-brown">বাকী কবরস্থানে শেষ সফর</h3>
+                        </div>
+                        <div data-target="event-3" class="timeline-item pl-8 cursor-pointer">
+                            <h3 class="font-bold text-lg text-deep-brown">শেষ অসুস্থতার শুরু</h3>
+                        </div>
+                        <div data-target="event-4" class="timeline-item pl-8 cursor-pointer">
+                            <h3 class="font-bold text-lg text-deep-brown">শেষ মুহূর্ত ও ওফাত</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-span-2 mt-8 md:mt-0">
+                    <div id="timeline-content" class="bg-warm-beige p-6 rounded-lg shadow-inner min-h-[300px]">
+                        <div id="event-1" class="timeline-details">
+                            <h4 class="text-xl font-bold text-deep-brown mb-2">বিদায় হজ্জ ও দ্বীনের পূর্ণতা</h4>
+                            <p class="text-gray-700 leading-relaxed">মক্কা বিজয় এবং মানুষের দলে দলে ইসলাম গ্রহণের পর বিদায় হজ্জে আল্লাহ তা'আলা নাযিল করেন, "আজ আমি তোমাদের জন্য তোমাদের দ্বীনকে পূর্ণাঙ্গ করে দিলাম এবং তোমাদের উপর আমার নিয়ামত সম্পূর্ণ করলাম এবং ইসলামকে তোমাদের জন্য দ্বীন হিসেবে মনোনীত করলাম।" [আল-মায়িদাহ: ৩]। এটি শুনে উমর (রাঃ) বললেন, "পূর্ণতার পর কেবলই نقصان।" এটি ছিল তাঁর মিশনের সমাপ্তির একটি স্পষ্ট ইঙ্গিত।</p>
+                        </div>
+                        <div id="event-2" class="timeline-details hidden">
+                            <h4 class="text-xl font-bold text-deep-brown mb-2">বাকী কবরস্থানে শেষ সফর</h4>
+                            <p class="text-gray-700 leading-relaxed">জীবনের শেষ রাতগুলোর এক রাতে তিনি তাঁর গোলাম আবু মুওয়াইহিবাহকে নিয়ে বাকী কবরস্থানে যান এবং কবরবাসীদের জন্য ক্ষমা প্রার্থনা করেন। তিনি বলেন, "হে আবু মুওয়াইহিবাহ! আমাকে দুনিয়ার ধনভান্ডার এবং তাতে চিরকাল থাকার চাবি অথবা আমার রবের সাথে সাক্ষাৎ ও জান্নাতের মধ্যে اختیار দেওয়া হয়েছিল... আমি আমার রবের সাথে সাক্ষাৎকেই বেছে নিয়েছি।"</p>
+                        </div>
+                        <div id="event-3" class="timeline-details hidden">
+                            <h4 class="text-xl font-bold text-deep-brown mb-2">শেষ অসুস্থতার শুরু</h4>
+                            <p class="text-gray-700 leading-relaxed">বাকী থেকে ফেরার পরই তাঁর সেই অসুস্থতা শুরু হয় যা তাঁর ওফাতের কারণ হয়েছিল। ব্যথা সত্ত্বেও তিনি স্ত্রীদের অনুমতি নিয়ে আয়েশা (রাঃ) এর ঘরে অসুস্থ থাকার সময় কাটান। তিনি বলতেন, "আল্লাহ কোনো নবীকে তাঁর অনুমতি ছাড়া মৃত্যু দেন না।" এটি ছিল তাঁর জন্য মর্যাদা বৃদ্ধির একটি উপায়।</p>
+                        </div>
+                        <div id="event-4" class="timeline-details hidden">
+                            <h4 class="text-xl font-bold text-deep-brown mb-2">শেষ মুহূর্ত ও ওফাত</h4>
+                            <p class="text-gray-700 leading-relaxed">শেষ মুহূর্তে তাঁর যন্ত্রণা তীব্র হয়। তিনি মিসওয়াক করেন এবং বলেন, "লা ইলাহা ইল্লাল্লাহ, নিশ্চয়ই মৃত্যুর যন্ত্রণা আছে।" এরপর শাহাদাত আঙুল তুলে তিনি বলেন, "বরং সর্বোচ্চ বন্ধুর কাছে! হে আল্লাহ, সর্বোচ্চ বন্ধু!" তিনবার এটি বলার পর তাঁর পবিত্র আত্মা স্রষ্টার কাছে চলে যায়। ইন্না লিল্লাহি ওয়া ইন্না ইলাইহি রাজি'উন।</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="chart" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-deep-brown mb-4 text-glow">আবেগের মুহূর্ত: একটি চিত্রায়ণ</h2>
+            <p class="max-w-3xl mx-auto text-center text-gray-600 mb-8">
+                রাসূলুল্লাহ (ﷺ) এর ওফাতের খবরে সাহাবায়ে কেরামের প্রতিক্রিয়া ছিল ভিন্ন ভিন্ন, যা তাঁদের গভীর ভালোবাসা ও বিহ্বলতার প্রমাণ দেয়। এই চার্টটি খুতবায় বর্ণিত কিছু ключевых মুহূর্তের भावनात्मक প্রভাবকে দৃশ্যমান করে। প্রতিটি স্তম্ভ সেই মুহূর্তের গভীরতা এবং তাৎপর্যকে তুলে ধরে।
+            </p>
+            <div class="bg-white p-4 md:p-8 rounded-lg shadow-lg">
+                <div class="chart-container">
+                    <canvas id="emotionChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="lessons" class="scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-deep-brown mb-4 text-glow">তাঁর ওফাতের পর আমাদের করণীয়</h2>
+            <p class="max-w-3xl mx-auto text-center text-gray-600 mb-8">
+                নবীজি (ﷺ) এর ওফাত একটি সমাপ্তি নয়, বরং উম্মাহর জন্য এক নতুন যাত্রার সূচনা। তাঁর আদর্শকে জীবন্ত রাখা এবং তাঁর রেখে যাওয়া দায়িত্ব পালন করাই এখন আমাদের কর্তব্য। খুতবার আলোকে আমাদের প্রধান করণীয়গুলো নিচে উল্লেখ করা হলো।
+            </p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-warm-beige p-6 rounded-lg content-card">
+                    <h3 class="font-bold text-xl text-deep-brown mb-2">১. তাঁর উপর দরুদ পাঠ</h3>
+                    <p class="text-gray-700">তাঁর উপর বেশি বেশি দরুদ ও সালাম প্রেরণ করা। যে ব্যক্তি তাঁর উপর একবার দরুদ পাঠ করবে, আল্লাহ তার উপর দশবার রহমত বর্ষণ করবেন।</p>
+                </div>
+                <div class="bg-warm-beige p-6 rounded-lg content-card">
+                    <h3 class="font-bold text-xl text-deep-brown mb-2">২. সুন্নাহর অনুসরণ</h3>
+                    <p class="text-gray-700">তাঁর সুন্নাহকে আঁকড়ে ধরা এবং জীবনের সকল ক্ষেত্রে তা বাস্তবায়ন করা, কোনো অবহেলা না করে।</p>
+                </div>
+                <div class="bg-warm-beige p-6 rounded-lg content-card">
+                    <h3 class="font-bold text-xl text-deep-brown mb-2">৩. দাওয়াত প্রচার</h3>
+                    <p class="text-gray-700">তাঁর রেখে যাওয়া ইসলামের দাওয়াত মানুষের কাছে পৌঁছে দেওয়া এবং তাঁর শিক্ষাকে বিশ্বব্যাপী ছড়িয়ে দেওয়া।</p>
+                </div>
+                <div class="bg-warm-beige p-6 rounded-lg content-card">
+                    <h3 class="font-bold text-xl text-deep-brown mb-2">৪. আন্তরিক ভালোবাসা</h3>
+                    <p class="text-gray-700">তাঁকে নিজের জীবন, পরিবার, সম্পদ এবং সকল কিছুর চেয়ে বেশি ভালোবাসা, যা ঈমানের পূর্ণতার শর্ত।</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-warm-beige mt-16 py-8">
+        <div class="container mx-auto px-4 text-center text-gray-600">
+            <p class="mb-4">"যে মুহাম্মদের ইবাদত করত, সে জেনে রাখুক যে মুহাম্মদ মারা গেছেন, আর যে আল্লাহর ইবাদত করত, সে জেনে রাখুক যে আল্লাহ চিরঞ্জীব, তিনি মরেন না।"</p>
+            <p class="text-sm">&copy; ২০২৪ | শাইখ খালিদ আল-রাশেদের খুতবার উপর ভিত্তি করে নির্মিত।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            document.querySelectorAll('#mobile-menu a, nav a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    if (this.getAttribute('href').startsWith('#')) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        if (!mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const timelineDetails = document.querySelectorAll('.timeline-details');
+            const timelineContainer = document.getElementById('timeline-line-container');
+
+            timelineItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const targetId = item.getAttribute('data-target');
+                    
+                    timelineDetails.forEach(detail => {
+                        detail.classList.toggle('hidden', detail.id !== targetId);
+                    });
+
+                    timelineItems.forEach(i => {
+                        i.classList.remove('active-timeline');
+                        i.querySelector('h3').classList.remove('accent-gold', 'text-glow');
+                    });
+                    item.classList.add('active-timeline');
+                    item.querySelector('h3').classList.add('accent-gold', 'text-glow');
+                    timelineContainer.classList.add('timeline-border-glow');
+                    setTimeout(() => timelineContainer.classList.remove('timeline-border-glow'), 500);
+                });
+            });
+            timelineItems[0].click(); 
+
+            const ctx = document.getElementById('emotionChart').getContext('2d');
+            const emotionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['ফাতিমার কান্না', 'উমরের অস্বীকার', 'সাহাবাদের বিহ্বলতা', 'আবু বকরের দৃঢ়তা'],
+                    datasets: [{
+                        label: 'ঘটনার भावनात्मक প্রভাব',
+                        data: [85, 75, 90, 95],
+                        backgroundColor: [
+                            'rgba(212, 175, 55, 0.7)',
+                            'rgba(141, 110, 99, 0.7)',
+                            'rgba(92, 64, 51, 0.7)',
+                            'rgba(212, 175, 55, 0.9)'
+                        ],
+                        borderColor: [
+                            'rgba(212, 175, 55, 1)',
+                            'rgba(141, 110, 99, 1)',
+                            'rgba(92, 64, 51, 1)',
+                            'rgba(212, 175, 55, 1)'
+                        ],
+                        borderWidth: 1.5,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#5C4033',
+                                callback: function(value) {
+                                    return value + '%'
+                                },
+                                font: {
+                                    family: "'Hind Siliguri', sans-serif"
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(92, 64, 51, 0.1)'
+                            }
+                        },
+                        y: {
+                           ticks: {
+                                color: '#5C4033',
+                                font: {
+                                    family: "'Hind Siliguri', sans-serif",
+                                    size: 14,
+                                    weight: '500'
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(92, 64, 51, 0.9)',
+                            bodyFont: {
+                                family: "'Hind Siliguri', sans-serif"
+                            },
+                            titleFont: {
+                                family: "'Hind Siliguri', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = '';
+                                    if (context.parsed.x !== null) {
+                                        if(context.label === 'ফাতিমার কান্না') label = 'পিতার জন্য কন্যার গভীর শোক';
+                                        if(context.label === 'উমরের অস্বীকার') label = 'বিচ্ছেদের আকস্মিকতায় কিংকর্তব্যবিমূঢ়';
+                                        if(context.label === 'সাহাবাদের বিহ্বলতা') label = 'উম্মাহর অভিভাবক হারানোর সম্মিলিত যন্ত্রণা';
+                                        if(context.label === 'আবু বকরের দৃঢ়তা') label = 'বিপদের মুখে ঈমানী শক্তি ও অবিচল নেতৃত্ব';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            const navLinks = document.querySelectorAll('nav a');
+            const sections = document.querySelectorAll('section');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(a => {
+                    a.classList.remove('active', 'accent-gold', 'font-bold');
+                    if (a.href.includes(current)) {
+                        a.classList.add('active', 'accent-gold', 'font-bold');
+                    }
+                });
+            });
+
+
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>উমর ইবনে আবদুল আজিজ (রহঃ) এর জীবন</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Ummah (with Neon Glow) -->
+    <!-- Application Structure Plan: A thematic single-page application with a sticky navigation bar to explore the life of Umar ibn Abd al-Aziz. The structure is designed to be non-linear, allowing users to jump to sections of interest: Introduction, His Rule, Justice & Piety, and Final Days. This thematic approach makes the dense biographical text more digestible and engaging. Interactive cards highlight key stories, and a conceptual chart visualizes his core principles, enhancing user understanding and retention. A subtle neon glow effect is added for modern aesthetics. -->
+    <!-- Visualization & Content Choices: Report Info: The text describes the character and key life events of Umar ibn Abd al-Aziz. Goal: To inform and inspire by showcasing his virtues. Viz/Presentation Method: Key stories are presented in styled cards with a hover glow. A conceptual Donut chart is used to represent his core guiding principles (Piety, Justice, Responsibility) with a drop-shadow glow. Interaction: The chart has tooltips, and the navigation provides smooth scrolling. Justification: Since there is no quantitative data, a conceptual chart provides a modern, infographic-style visualization of abstract themes, made more engaging with a tasteful glow effect. Library/Method: Chart.js for the donut chart, Tailwind/HTML/CSS for cards and glow effects. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #111827; /* Dark background for neon effect */
+            color: #e5e7eb;
+        }
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #34d399; /* Bright green for neon text */
+            border-bottom: 3px solid #10b981;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 5px #10b981, 0 0 10px #10b981;
+        }
+        .card {
+            background-color: #1f2937;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid #10b981;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.6), 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s, color 0.3s, text-shadow 0.3s;
+            color: #d1d5db;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: #10b981;
+            color: white;
+            text-shadow: 0 0 8px white;
+        }
+        .header-title {
+             text-shadow: 0 0 12px rgba(52, 211, 153, 0.7);
+        }
+        .chart-container {
+             filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.5));
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+
+    <header class="bg-gray-900 text-white text-center py-16 px-4">
+        <h1 class="text-4xl md:text-6xl font-bold text-emerald-400 header-title">খলিফা উমর ইবনে আবদুল আজিজ (রহঃ)</h1>
+        <p class="mt-4 max-w-3xl mx-auto text-lg md:text-xl text-gray-300">
+            "আমি তোমাদের আনুগত্য করব যতক্ষণ আমি তোমাদের মাঝে আল্লাহর আনুগত্য করি। যদি আমি আল্লাহর অবাধ্যতা করি, তবে তোমাদের উপর আমার কোনো আনুগত্য নেই।"
+        </p>
+    </header>
+
+    <nav class="bg-gray-800 sticky top-0 z-50 shadow-md shadow-emerald-500/10">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center items-center space-x-2 md:space-x-8 py-3 overflow-x-auto">
+                <a href="#introduction" class="nav-link text-sm md:text-base whitespace-nowrap">ভূমিকা</a>
+                <a href="#caliphate" class="nav-link text-sm md:text-base whitespace-nowrap">শাসক উমর</a>
+                <a href="#piety" class="nav-link text-sm md:text-base whitespace-nowrap">ন্যায়বিচার ও আল্লাহভীতি</a>
+                <a href="#asceticism" class="nav-link text-sm md:text-base whitespace-nowrap">তাকওয়া ও দুনিয়াত্যাগ</a>
+                <a href="#legacy" class="nav-link text-sm md:text-base whitespace-nowrap">শেষ জীবন ও শিক্ষা</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="introduction" class="py-12 md:py-16">
+            <h2 class="section-title text-center">ভূমিকা: এক আদর্শের নাম</h2>
+            <p class="text-lg text-center max-w-4xl mx-auto text-gray-300">
+                উমর ইবনে আবদুল আজিজ (রহঃ) ইসলামী সভ্যতার সেইসব আলোকবর্তিকাদের একজন, যাদের মতো শাসকের অধীনে মুসলিমরা একদিন ছিল বলে গর্ববোধ করে। তিনি ছিলেন ন্যায়পরায়ণতা, আল্লাহভীতি এবং দুনিয়াত্যাগের এক মূর্ত প্রতীক। তাঁর সংক্ষিপ্ত খিলাফতকাল (মাত্র ৩০ মাস) ছিল ইসলামী ইতিহাসের এক স্বর্ণযুগ, যা আজও শাসকদের জন্য এক অনুসরণীয় দৃষ্টান্ত। এই ইন্টারেক্টিভ উপস্থাপনার মাধ্যমে আমরা তাঁর জীবনের বিভিন্ন দিক তুলে ধরার চেষ্টা করেছি, যা থেকে আমরা সকলেই শিক্ষা গ্রহণ করতে পারি।
+            </p>
+        </section>
+
+        <section id="caliphate" class="py-12 md:py-16 bg-gray-800 rounded-lg shadow-inner">
+            <h2 class="section-title text-center">শাসক উমর: খিলাফতের দায়িত্ব গ্রহণ</h2>
+            <p class="text-lg text-center max-w-4xl mx-auto text-gray-400 mb-12">
+                তাঁর খিলাফত শুরু হয়েছিল এক অভূতপূর্ব ঘটনার মধ্য দিয়ে। তিনি ক্ষমতা চাননি, বরং তা তাঁর উপর অর্পিত হয়েছিল। শাসক হিসেবে তাঁর প্রথম পদক্ষেপগুলোই ভবিষ্যৎ স্বর্ণযুগের ইঙ্গিত দিয়েছিল।
+            </p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card">
+                    <h3 class="text-2xl font-bold text-emerald-400 mb-3">জনগণের রায়</h3>
+                    <p class="text-gray-300">খলিফা হিসেবে নাম ঘোষণার পর তিনি মিম্বরে দাঁড়িয়ে বলেন, "আমার অনিচ্ছা সত্ত্বেও আমাকে এই দায়িত্ব দেওয়া হয়েছে। আমি তোমাদের থেকে আমার বাই'আত ফিরিয়ে নিচ্ছি, তোমরা নিজেদের জন্য একজন শাসক নির্বাচন করে নাও।" জনগণ কান্নাজড়িত কণ্ঠে একযোগে চিৎকার করে বলেছিল: "আমরা আপনাকেই নির্বাচন করেছি, হে উমর, এবং আমরা আপনার প্রতি সন্তুষ্ট।"</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-2xl font-bold text-emerald-400 mb-3">রাজকীয় বিলাসিতা বর্জন</h3>
+                    <p class="text-gray-300">খিলাফতের পর তাঁকে রাজকীয় বাহনে প্রাসাদে নিয়ে যাওয়ার প্রস্তাব দেওয়া হলে তিনি তা প্রত্যাখ্যান করে বলেন, "আমি তো মুসলিমদের মধ্যে একজন সাধারণ মানুষ। তারা যেমন সকালে বের হয়, আমিও তেমনি বের হব।" তিনি খিলাফতের প্রাসাদ ত্যাগ করে নিজের সাদাসিধে ঘরে ফিরে যান।</p>
+                </div>
+                <div class="card md:col-span-2">
+                    <h3 class="text-2xl font-bold text-emerald-400 mb-3">স্ত্রীকে দেওয়া শর্ত</h3>
+                    <p class="text-gray-300">ঘরে ফিরে তিনি তাঁর স্ত্রী ফাতিমাকে বলেন, "আমি আমার নিজেকে আল্লাহর কাছে বিক্রি করে দিয়েছি। তোমার এই অলঙ্কারগুলো বাইতুল মালে ফিরিয়ে দাও। আল্লাহর কসম! আমি এবং এই অলঙ্কারগুলো এক ঘরে একসাথে থাকতে পারব না।" তাঁর মহীয়সী স্ত্রী সাথে সাথে রাজি হয়ে যান এবং সব অলঙ্কার ফিরিয়ে দেন।</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="piety" class="py-12 md:py-16">
+            <h2 class="section-title text-center">ন্যায়বিচার ও আল্লাহভীতি</h2>
+             <p class="text-lg text-center max-w-4xl mx-auto text-gray-400 mb-12">
+                উমরের শাসনের ভিত্তি ছিল দুটি: প্রশ্নাতীত ন্যায়বিচার এবং গভীর আল্লাহভীতি। তিনি বিশ্বাস করতেন, শাসকের ভয়ের কারণেই প্রজারা নির্ভয়ে থাকতে পারে। এই ভয় জাগতিক কোনো শক্তির নয়, বরং মহান আল্লাহর।
+            </p>
+            <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card">
+                    <h3 class="text-2xl font-bold text-emerald-400 mb-3">দায়িত্বের ভারে পরিবর্তন</h3>
+                    <p class="text-gray-300">মুহাম্মদ ইবনে কা'ব (রহঃ) তাঁর খলিফা হওয়ার পরের অবস্থা বর্ণনা করে বলেন, "আল্লাহর কসম! আমি আপনাকে দেখেছি যখন আপনি কুরাইশের সবচেয়ে সুন্দর যুবক ছিলেন... কিন্তু আজ আপনার চেহারা ফ্যাকাশে, শরীর শীর্ণ।" উমর (রহঃ) কাঁদতে কাঁদতে বলেন, "যদি তুমি আমাকে দাফনের তিন রাত পর দেখতে... তাহলে তুমি আমার অবস্থা দেখে আরও বেশি আশ্চর্য হতে!"</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-2xl font-bold text-emerald-400 mb-3">রাতের কান্না</h3>
+                     <p class="text-gray-300">তাঁর স্ত্রী ফাতেমা (রহঃ) বলেন, এক রাতে তিনি উম্মাহর কথা চিন্তা করে এত কেঁদেছিলেন যে মনে হচ্ছিল তাঁর আত্মা বেরিয়ে যাবে। সকালে তিনি বলেন, "আমি দেশের প্রত্যন্ত অঞ্চলের প্রবাসী, দরিদ্র এবং এতিমদের কথা স্মরণ করলাম। আমি বুঝতে পারলাম যে আল্লাহ তাদের সম্পর্কে আমাকে জিজ্ঞাসা করবেন... তাই আমার ভয় আরও বেড়ে যায়।"</p>
+                </div>
+                <div class="p-6 bg-gray-800 rounded-lg shadow-lg lg:col-span-2">
+                    <h3 class="text-2xl font-bold text-emerald-400 mb-4 text-center">খলিফার চিন্তার কেন্দ্রবিন্দু</h3>
+                    <div class="chart-container relative h-64 md:h-80 mx-auto">
+                        <canvas id="pietyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="asceticism" class="py-12 md:py-16 bg-gray-800 rounded-lg shadow-inner">
+            <h2 class="section-title text-center">তাকওয়া ও দুনিয়াত্যাগ</h2>
+            <p class="text-lg text-center max-w-4xl mx-auto text-gray-400 mb-12">
+                খিলাফতের বিশাল ক্ষমতা ও সম্পদ তাঁর পায়ের নিচে থাকলেও তিনি ছিলেন দুনিয়াত্যাগী এক সাধক। তাঁর জীবনের প্রতিটি ক্ষেত্রে পরকালের ভয় ও আল্লাহর সন্তুষ্টি অর্জনের চেষ্টা ছিল সুস্পষ্ট।
+            </p>
+            <div class="max-w-4xl mx-auto">
+                 <div class="card">
+                    <h3 class="text-2xl font-bold text-emerald-400 mb-3">একটি আপেলের ঘটনা</h3>
+                    <p class="text-gray-300">একবার তিনি মুসলিমদের জন্য আসা আপেল ভাগ করছিলেন। তাঁর একটি ছোট ছেলে একটি আপেল তুলে নিলে তিনি তার মুখ থেকে তা কেড়ে নেন। শিশুটি কাঁদতে কাঁদতে মায়ের কাছে গেলে তিনি বাজার থেকে আপেল কিনে আনেন। রাতে উমর (রহঃ) ঘরে আপেলের গন্ধ পেয়ে ঘটনাটি জানতে পারেন এবং কেঁদে বলেন, "আল্লাহর কসম! আমি যখন আমার ছেলের মুখ থেকে আপেলটি কেড়ে নিয়েছিলাম, তখন মনে হয়েছিল যেন আমি আমার হৃদয় থেকে তা ছিঁড়ে নিয়েছি। কিন্তু আমি মুসলিমদের সম্পদ থেকে একটি আপেলের জন্য নিজেকে ধ্বংস করতে অপছন্দ করেছি।"</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="legacy" class="py-12 md:py-16">
+            <h2 class="section-title text-center">শেষ জীবন ও শিক্ষা</h2>
+            <p class="text-lg text-center max-w-4xl mx-auto text-gray-400 mb-12">
+                মাত্র ৪০ বছর বয়সে তাঁর জীবনাবসান হয়। তাঁর শেষ মুহূর্তগুলোও ছিল ভবিষ্যৎ প্রজন্মের জন্য শিক্ষণীয়। তিনি এমন এক উত্তরাধিকার রেখে গেছেন, যা কখনো ম্লান হবে না।
+            </p>
+            <div class="grid md:grid-cols-2 gap-8">
+                 <div class="card">
+                    <h3 class="text-2xl font-bold text-emerald-400 mb-3">সন্তানদের জন্য উপদেশ</h3>
+                    <p class="text-gray-300">মৃত্যুশয্যায় তিনি তাঁর সন্তানদের ডেকে বলেন, "হে আমার সন্তানেরা! তোমাদের পিতা দুটি পথের মধ্যে ছিলেন: হয়তো তিনি তোমাদের ধনী করে জাহান্নামে প্রবেশ করবেন, অথবা তোমাদের দরিদ্র রেখে জান্নাতে প্রবেশ করবেন। তিনি তোমাদের দরিদ্র রাখা এবং জান্নাতে প্রবেশ করাকে বেছে নিয়েছেন। আমার অভিভাবক হলেন আল্লাহ, যিনি সৎকর্মশীলদের অভিভাবকত্ব করেন।"</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-2xl font-bold text-emerald-400 mb-3">শত্রুর স্বীকৃতি</h3>
+                     <p class="text-gray-300">তাঁর মৃত্যুর পর রোমের রাজা বলেন, "আমি সেই সন্ন্যাসীর প্রতি আশ্চর্য হই না যে আশ্রমে বসে দুনিয়াত্যাগ করে। কিন্তু আমি উমরের প্রতি আশ্চর্য হই, যার কাছে দুনিয়া এসে তার পায়ের নিচে নত হয়েছিল, কিন্তু তিনি তা পায়ে ঠেলে দিয়েছিলেন।"</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-gray-800 text-white text-center py-6 border-t border-gray-700">
+        <p class="text-gray-400">&copy; ২০২৫। শেখ খালিদ আল-রাশেদের বক্তৃতার আলোকে নির্মিত।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('pietyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['আল্লাহভীতি', 'উম্মাহর দায়িত্ব', 'পরকালের চিন্তা'],
+                    datasets: [{
+                        label: 'চিন্তার কেন্দ্রবিন্দু',
+                        data: [33.3, 33.3, 33.3],
+                        backgroundColor: [
+                            '#059669',
+                            '#10b981',
+                            '#34d399'
+                        ],
+                        borderColor: '#1f2937',
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#d1d5db',
+                                font: {
+                                    size: 14,
+                                    family: "'Hind Siliguri', sans-serif"
+                                }
+                            }
+                        },
+                        tooltip: {
+                             titleFont: {
+                                family: "'Hind Siliguri', sans-serif"
+                             },
+                             bodyFont: {
+                                family: "'Hind Siliguri', sans-serif"
+                             }
+                        }
+                    }
+                }
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

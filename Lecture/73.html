@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>শেখ খালিদ আল-রাশেদের সংবাদ বুলেটিন - ইন্টারেক্টিভ রিপোর্ট (নিয়ন থিম)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cyber Neon -->
+    <!-- Application Structure Plan: The application is designed as a single-page dashboard. The core structure uses a fixed sidebar for navigation and a main content area that dynamically displays information based on the user's selection. This thematic, non-linear structure was chosen over mirroring the sermon's linear flow to allow users to freely explore the specific topics (like Palestine, Economy, Social Issues) that interest them most. This approach makes the dense statistical and qualitative data more digestible and engaging, encouraging exploration of the report's key contrasts. -->
+    <!-- Visualization & Content Choices: The report's data is presented using a mix of dynamic "Key Figure" cards for high-impact stats, and Chart.js visualizations for comparisons and proportions. For instance, a Donut chart shows prayer habits (Goal: Organize), Bar charts compare spending habits and poverty rates (Goal: Compare), and prominent cards highlight the human cost in Palestine (Goal: Inform). Text blocks provide essential context from the sermon. This multi-faceted approach, avoiding SVG/Mermaid as required, aims to make the sermon's critical messages clear and impactful through interactive data storytelling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            color: #58a6ff;
+            border: 1px solid transparent;
+        }
+        .nav-link:hover {
+            border-color: #58a6ff;
+            box-shadow: 0 0 5px rgba(88, 166, 255, 0.5);
+        }
+        .nav-link.active {
+            background-color: rgba(88, 166, 255, 0.1);
+            color: #58a6ff;
+            transform: translateX(4px);
+            border-color: #58a6ff;
+            box-shadow: 0 0 8px rgba(88, 166, 255, 0.7);
+        }
+        .kpi-card, .content-box {
+            background-color: #161b22;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid #30363d;
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.1);
+            text-align: center;
+        }
+        h2, h3 {
+            color: #58a6ff;
+            text-shadow: 0 0 5px rgba(88, 166, 255, 0.5);
+        }
+        .kpi-card p.text-4xl, .kpi-card p.text-3xl {
+            color: #a371f7;
+            text-shadow: 0 0 8px rgba(163, 113, 247, 0.7);
+        }
+        .main-nav {
+            background-color: #161b22;
+            border-right: 1px solid #30363d;
+        }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <nav class="w-full md:w-64 main-nav shadow-lg p-4 md:p-6 flex-shrink-0">
+        <h1 class="text-xl font-bold text-center mb-6 text-[#58a6ff]" style="text-shadow: 0 0 4px #58a6ff;">বিষয়সূচি</h1>
+        <ul class="space-y-3">
+            <li><a href="#intro" class="nav-link active block py-2 px-4 rounded-lg font-semibold" onclick="showSection('intro')">ভূমিকা ও আল-আকসা</a></li>
+            <li><a href="#palestine" class="nav-link block py-2 px-4 rounded-lg font-semibold" onclick="showSection('palestine')">ফিলিস্তিনের ট্র্যাজেডি</a></li>
+            <li><a href="#social" class="nav-link block py-2 px-4 rounded-lg font-semibold" onclick="showSection('social')">সামাজিক চিত্র</a></li>
+            <li><a href="#economy" class="nav-link block py-2 px-4 rounded-lg font-semibold" onclick="showSection('economy')">অর্থনৈতিক সংকট</a></li>
+            <li><a href="#women" class="nav-link block py-2 px-4 rounded-lg font-semibold" onclick="showSection('women')">নারী বিষয়ক</a></li>
+            <li><a href="#entertainment" class="nav-link block py-2 px-4 rounded-lg font-semibold" onclick="showSection('entertainment')">বিনোদন জগৎ</a></li>
+            <li><a href="#conclusion" class="nav-link block py-2 px-4 rounded-lg font-semibold" onclick="showSection('conclusion')">উপসংহার ও আহ্বান</a></li>
+        </ul>
+    </nav>
+
+    <main class="flex-1 p-4 md:p-8 lg:p-12 overflow-y-auto">
+        <div id="intro" class="content-section">
+            <h2 class="text-3xl font-bold mb-4">ভূমিকা ও আল-আকসা মসজিদ</h2>
+            <p class="mb-6 text-lg leading-relaxed text-gray-400">এই ইন্টারেক্টিভ রিপোর্টটি শেখ খালিদ আল-রাশেদের "সংবাদ বুলেটিন" বক্তৃতার মূল বিষয়বস্তু তুলে ধরে। এখানে মুসলিম বিশ্বের বিভিন্ন সংকট, বিশেষ করে আল-আকসা মসজিদের উপর ষড়যন্ত্র এবং মুসলিমদের সামগ্রিক পরিস্থিতি তুলে ধরা হয়েছে। রিপোর্টের উদ্দেশ্য হলো তথ্যগুলোকে সহজে অন্বেষণযোগ্য করে তোলা, যাতে আমরা বর্তমান বাস্তবতা উপলব্ধি করতে পারি।</p>
+            <div class="content-box">
+                <h3 class="text-2xl font-semibold mb-3">আল-আকসা মসজিদ পোড়ানোর ষড়যন্ত্র</h3>
+                <p class="mb-4 text-gray-400">বক্তৃতায় উল্লেখ করা হয়েছে, প্রায় ৩৫ বছর আগে ইসরায়েলি কর্তৃপক্ষের সহযোগিতায় আল-আকসা মসজিদ পুড়িয়ে দেওয়া হয়েছিল। আগুন লাগার সাথে সাথে পানি সরবরাহ বন্ধ করে দেওয়া হয় এবং আগুন নেভাতে বাধা দেওয়া হয়। যদিও মুসলমানরা জীবন বাজি রেখে আগুন নিভিয়েছিল, মসজিদের মিম্বর এবং ছাদের বড় একটি অংশ পুড়ে যায়।</p>
+                <p class="text-gray-400">ইসরায়েল প্রথমে বৈদ্যুতিক শর্ট সার্কিটের দাবি করলেও পরে একজন অস্ট্রেলীয় যুবককে দায়ী করে এবং কিছুদিন পর তাকে 'পাগল' আখ্যা দিয়ে মুক্তি দেয়। এটি ছিল আল-আকসা ও ফিলিস্তিনের জনগণের উপর আক্রমণের একটি ধারাবাহিক ষড়যন্ত্রের অংশ।</p>
+            </div>
+        </div>
+
+        <div id="palestine" class="content-section hidden">
+            <h2 class="text-3xl font-bold mb-4">ফিলিস্তিনের ট্র্যাজেডি</h2>
+             <p class="mb-6 text-lg leading-relaxed text-gray-400">এই বিভাগে ফিলিস্তিনের মর্মান্তিক পরিস্থিতি পরিসংখ্যানের মাধ্যমে তুলে ধরা হয়েছে। এখানে এক বছরের হতাহতের সংখ্যা, অবকাঠামোগত ক্ষতি এবং দখলদারিত্বের ভয়াবহ চিত্র দেখানো হয়েছে, যা আমাদের অনুভূতিকে নাড়া দেয় এবং বাস্তবতার মুখোমুখি করে।</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="kpi-card">
+                    <h4 class="text-gray-400 font-semibold text-lg">মোট নিহত</h4>
+                    <p class="text-4xl font-bold">১,১ల৫ জন</p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="text-gray-400 font-semibold text-lg">শিশু নিহত</h4>
+                    <p class="text-4xl font-bold">২৬৮ জন</p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="text-gray-400 font-semibold text-lg">মোট আহত</h4>
+                    <p class="text-4xl font-bold">২৯,০০০ জন</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="content-box">
+                    <h3 class="text-xl font-semibold mb-4 text-center">অবকাঠামোগত ক্ষতি</h3>
+                     <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-center"><span class="text-[#58a6ff] mr-2 text-2xl">✓</span> ১৪০টি স্কুলে গোলাবর্ষণ</li>
+                        <li class="flex items-center"><span class="text-[#58a6ff] mr-2 text-2xl">✓</span> ৫৮০টি বাড়িঘর সম্পূর্ণ ধ্বংস</li>
+                        <li class="flex items-center"><span class="text-[#58a6ff] mr-2 text-2xl">✓</span> ৯টি স্কুল সামরিক ব্যারাকে পরিণত</li>
+                    </ul>
+                </div>
+                 <div class="content-box">
+                    <h3 class="text-xl font-semibold mb-4 text-center">মানবাধিকার লঙ্ঘন</h3>
+                     <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-center"><span class="text-[#a371f7] mr-2 text-2xl">⚠</span> ২,১০০ জন স্থায়ীভাবে প্রতিবন্ধী</li>
+                        <li class="flex items-center"><span class="text-[#a371f7] mr-2 text-2xl">⚠</span> ৪৫০ জন দৃষ্টিশক্তি হারিয়েছেন</li>
+                        <li class="flex items-center"><span class="text-[#a371f7] mr-2 text-2xl">⚠</span> হাজার হাজার ফিলিস্তিনি কারাগারে বন্দী</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div id="social" class="content-section hidden">
+            <h2 class="text-3xl font-bold mb-4">সামাজিক চিত্র</h2>
+            <p class="mb-6 text-lg leading-relaxed text-gray-400">এই অংশে মুসলিম বিশ্বের কয়েকটি দেশের সামাজিক ও নৈতিক অবক্ষয়ের চিত্র তুলে ধরা হয়েছে। সৌদি আরবে তরুণদের নামাজের প্রতি উদাসীনতা থেকে শুরু করে মিশর ও কুয়েতের পরিস্থিতি পর্যন্ত বিভিন্ন তথ্য এখানে রয়েছে, যা আমাদের আত্মজিজ্ঞাসার সুযোগ করে দেয়।</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="content-box">
+                    <h3 class="text-xl font-semibold mb-4 text-center">সৌদি যুবকদের ফজরের নামাজ (জরিপ)</h3>
+                    <div class="chart-container"><canvas id="saudiPrayerChart"></canvas></div>
+                </div>
+                <div class="content-box">
+                    <h3 class="text-xl font-semibold mb-4 text-center">মিশরে বার্ষিক ব্যয়</h3>
+                    <div class="chart-container"><canvas id="egyptSpendingChart"></canvas></div>
+                </div>
+                <div class="content-box lg:col-span-2">
+                     <h3 class="text-xl font-semibold mb-4 text-center">অন্যান্য দেশের চিত্র</h3>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="kpi-card">
+                           <h4 class="text-gray-400 font-semibold text-lg">কুয়েত</h4>
+                           <p class="text-2xl mt-2 text-gray-300">৩৭টির বেশি অননুমোদিত গির্জা এবং ৩০০টি স্থানে মূর্তিপূজা।</p>
+                       </div>
+                       <div class="kpi-card">
+                           <h4 class="text-gray-400 font-semibold text-lg">জর্ডান</h4>
+                           <p class="text-2xl mt-2 text-gray-300">আম্মানে ৬০০টি মদের বার।</p>
+                       </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="economy" class="content-section hidden">
+            <h2 class="text-3xl font-bold mb-4">অর্থনৈতিক সংকট ও বৈষম্য</h2>
+            <p class="mb-6 text-lg leading-relaxed text-gray-400">এই বিভাগে মুসলিম বিশ্বের অর্থনৈতিক বাস্তবতা তুলে ধরা হয়েছে। একদিকে চরম দারিদ্র্য, অন্যদিকে বিপুল সম্পদ বিদেশে সঞ্চিত—এই বৈপরীত্যটি এখানে ডেটার মাধ্যমে স্পষ্ট করা হয়েছে। সুদ, অপ্রয়োজনীয় ব্যয় এবং সম্পদের সঠিক ব্যবহার না করার পরিণতি এখানে দৃশ্যমান।</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="content-box">
+                    <h3 class="text-xl font-semibold mb-4 text-center">মুসলিম বিশ্বে দারিদ্র্যের হার</h3>
+                    <div class="chart-container"><canvas id="povertyChart"></canvas></div>
+                     <p class="text-center mt-4 text-gray-400">ইসলামী বিশ্বের ৩৭% (৫০৪ মিলিয়ন) মানুষ দারিদ্র্যসীমার নিচে।</p>
+                </div>
+                <div class="content-box">
+                    <h3 class="text-xl font-semibold mb-4 text-center">বিদেশে সঞ্চিত আরব তহবিল</h3>
+                    <div class="chart-container"><canvas id="arabFundsChart"></canvas></div>
+                    <p class="text-center mt-4 text-gray-400">মোট সঞ্চিত তহবিলের যাকাত (৫৬ বিলিয়ন ডলার) দারিদ্র্য দূর করতে পারত।</p>
+                </div>
+                 <div class="content-box lg:col-span-2">
+                     <h3 class="text-xl font-semibold mb-4 text-center">বিলাসিতা ও অপচয়</h3>
+                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="kpi-card">
+                           <h4 class="text-gray-400 font-semibold text-lg">ইরাক</h4>
+                           <p class="text-xl mt-2 text-gray-300">সাদামের শাসনামলে ২৪ বিলিয়ন ডলারের মদ ও বিলাসবহুল সামগ্রী আমদানি।</p>
+                       </div>
+                       <div class="kpi-card">
+                           <h4 class="text-gray-400 font-semibold text-lg">বিনোদন প্রকল্প</h4>
+                           <p class="text-xl mt-2 text-gray-300">আগামী কয়েক বছরে ১০ বিলিয়ন ডলারের বিনোদন প্রকল্প (১৫৯টি বিলাসবহুল হোটেল সহ)।</p>
+                       </div>
+                        <div class="kpi-card">
+                           <h4 class="text-gray-400 font-semibold text-lg">উপসাগরীয় পর্যটন</h4>
+                           <p class="text-xl mt-2 text-gray-300">বার্ষিক ২৭ বিলিয়ন ডলার ব্যয়, যা ইউরোপীয়দের দ্বিগুণ।</p>
+                       </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="women" class="content-section hidden">
+            <h2 class="text-3xl font-bold mb-4">নারী বিষয়ক খবর</h2>
+            <p class="mb-6 text-lg leading-relaxed text-gray-400">এখানে মুসলিম সমাজে নারীদের ঘিরে থাকা কিছু বাস্তবতা তুলে ধরা হয়েছে। একদিকে যেমন বিলাসিতা ও অপচয়ের চিত্র রয়েছে, তেমনই অন্যদিকে রয়েছে শোষণ ও নিপীড়নের মর্মান্তিক খবর। এই বৈপরীত্য আমাদের সমাজের গভীরে থাকা সমস্যাগুলো নিয়ে ভাবতে বাধ্য করে।</p>
+             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="kpi-card">
+                    <h4 class="text-gray-400 font-semibold text-lg">বিয়ের পোশাক (UAE)</h4>
+                    <p class="text-3xl font-bold mt-2">$৫০,০০০</p>
+                    <p class="text-sm text-gray-500">এক রাতের জন্য</p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="text-gray-400 font-semibold text-lg">প্রসাধনী ব্যয় (উপসাগর)</h4>
+                    <p class="text-3xl font-bold mt-2">$৩০০ মিলিয়ন</p>
+                     <p class="text-sm text-gray-500">এক গ্রীষ্মে</p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="text-gray-400 font-semibold text-lg">পারফিউম বিক্রি (সৌদি)</h4>
+                    <p class="text-3xl font-bold mt-2">১ বিলিয়ন রিয়াল</p>
+                    <p class="text-sm text-gray-500">বার্ষিক</p>
+                </div>
+            </div>
+             <div class="mt-8 bg-red-900/50 border-l-4 border-red-500 text-red-300 p-4 rounded-lg" role="alert">
+              <h3 class="font-bold text-xl text-red-400" style="text-shadow: 0 0 5px red;">একটি মর্মান্তিক বাস্তবতা</h3>
+              <p class="mt-2">সংযুক্ত আরব আমিরাতের কারাগারে ৬,০০০ এবং পাকিস্তানের কারাগারে ১০,০০০ আজারবাইজানি নারী বন্দী, যাদের অনেককে কাজের লোভ দেখিয়ে এনে পতিতাবৃত্তিতে বাধ্য করা হয়েছে।</p>
+            </div>
+        </div>
+
+        <div id="entertainment" class="content-section hidden">
+            <h2 class="text-3xl font-bold mb-4">বিনোদন জগৎ: শিল্পী ও নর্তকীদের আয়</h2>
+            <p class="mb-6 text-lg leading-relaxed text-gray-400">এই বিভাগে আরব বিশ্বের বিনোদন শিল্পের পেছনে ব্যয়ের একটি চিত্র তুলে ধরা হয়েছে। বক্তৃতায় উল্লেখিত গায়ক-গায়িকা ও নর্তক-নর্তকীদের আকাশচুম্বী আয়ের পরিসংখ্যান এখানে দেখানো হয়েছে, যা মুসলিম বিশ্বের অগ্রাধিকার এবং মূল্যবোধ নিয়ে প্রশ্ন তোলে।</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="kpi-card">
+                    <h4 class="font-semibold text-lg text-gray-400">বিনতে ঘুলি</h4>
+                    <p class="text-3xl font-bold mt-2">$১০০,০০০</p>
+                    <p class="text-sm text-gray-500">প্রতি কনসার্ট</p>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="font-semibold text-lg text-gray-400">ইবনে শাকের / আল-সাহার</h4>
+                    <p class="text-3xl font-bold mt-2">$৬০,০০০</p>
+                    <p class="text-sm text-gray-500">প্রতি রাত</p>
+                </div>
+                 <div class="kpi-card">
+                    <h4 class="font-semibold text-lg text-gray-400">আসলা</h4>
+                    <p class="text-3xl font-bold mt-2">$৩০,০০০</p>
+                    <p class="text-sm text-gray-500">প্রতি কনসার্ট</p>
+                </div>
+                 <div class="kpi-card">
+                    <h4 class="font-semibold text-lg text-gray-400">ইবনে দিয়াব</h4>
+                    <p class="text-3xl font-bold mt-2">$৩০,০০০</p>
+                    <p class="text-sm text-gray-500">একটি কনসার্টের জন্য</p>
+                </div>
+                <div class="kpi-card col-span-1 sm:col-span-2 lg:col-span-3">
+                    <h4 class="font-semibold text-lg text-center text-gray-400">নৃত্যশিল্প</h4>
+                    <div class="flex flex-col md:flex-row justify-around items-center mt-4">
+                        <div class="text-center my-2">
+                             <p class="text-3xl font-bold">$৩৬,০০০</p>
+                             <p class="text-sm text-gray-500">একজন নর্তকীর গড় মাসিক আয়</p>
+                        </div>
+                        <div class="text-center my-2">
+                            <p class="text-3xl font-bold">২৫,০০০ পাউন্ড</p>
+                            <p class="text-sm text-gray-500">৩০ মিনিটের নাচের জন্য বিনতে আবদুকে পারিশ্রমিক</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="conclusion" class="content-section hidden">
+            <h2 class="text-3xl font-bold mb-4">উপসংহার ও আমাদের করণীয়</h2>
+            <p class="mb-6 text-lg leading-relaxed text-gray-400">বক্তৃতার এই শেষ অংশে, শেখ খালিদ আল-রাশেদ মুসলিমদের বর্তমান দুর্দশার কারণ হিসেবে নিজেদের গাফিলতি, অনৈক্য এবং ইসলাম থেকে দূরে সরে যাওয়াকে দায়ী করেছেন। তিনি টেলিভিশনের মতো বিষয়গুলোকে দায়ী করে বলেন, এগুলো আমাদের লজ্জা ও মূল্যবোধকে নষ্ট করেছে।</p>
+            <div class="content-box mb-6">
+                <h3 class="text-2xl font-semibold mb-3">ধ্বংসের কারণ</h3>
+                <ul class="list-disc list-inside space-y-2 text-gray-300">
+                    <li>খেলাধুলা এবং উদাসীনতার কারণে আল্লাহর পথ থেকে বিচ্যুতি।</li>
+                    <li>ইসলামী ঐক্যের পরিবর্তে আরব জাতীয়তাবাদ ও উপজাতীয়তাবাদের অনুসরণ।</li>
+                    <li>আল্লাহর শত্রুদের (ইহুদী ও খ্রিস্টান) সাথে বন্ধুত্ব করা।</li>
+                    <li>টেলিভিশন ও অন্যান্য মাধ্যমে সময় নষ্ট করে লজ্জা ও ধর্মীয় অনুভূতি হারানো।</li>
+                </ul>
+            </div>
+             <div class="content-box border-teal-500/50 border-l-4">
+                <h3 class="text-2xl font-semibold mb-3 text-teal-400" style="text-shadow: 0 0 5px teal;">উত্তরণের পথ ও অঙ্গীকার</h3>
+                <p class="mb-4 text-gray-400">তিনি বলেন, আমাদের সম্মান ফিরে আসবে না যতক্ষণ না আমরা ইসলামের পতাকাতলে একত্রিত হব। আল্লাহর দ্বীনের প্রতিষ্ঠা আমাদের মাধ্যমেই হোক বা অন্য কারো মাধ্যমে, তা আসবেই। তিনি আশাবাদ ব্যক্ত করে বলেন, তরুণ প্রজন্ম আবার আল্লাহর দিকে ফিরে আসছে।</p>
+                <blockquote class="border-r-4 border-teal-400 pr-4 italic text-gray-400">"আমরা আশাবাদী, আমরা সুসংবাদপ্রাপ্ত... সম্মানের সূর্য অবশ্যই উদিত হবে, এবং ভোর হবে... এবং সকাল হাসবে এই বলে: 'লা ইলাহা ইল্লাল্লাহু আল্লাহু আকবার ওয়া লিল্লাহিল হামদ'।"</blockquote>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const reportData = {
+            saudiPrayer: {
+                labels: ['সবসময় পড়ে', 'মাঝে মাঝে পড়ে', 'খুব কমই পড়ে', 'একদমই পড়ে না'],
+                data: [35, 33, 16, 14],
+            },
+            egyptSpending: {
+                labels: ['ধূমপান', 'হজ'],
+                data: [4, 3],
+            },
+            poverty: {
+                labels: ['সুদান', 'মরক্কো', 'ইন্দোনেশিয়া'],
+                data: [90, 19, 52], 
+            },
+            arabFunds: {
+                labels: ['মার্কিন যুক্তরাষ্ট্র', 'ইউরোপ'],
+                data: [975, 650],
+            }
+        };
+
+        const chartColors = {
+            primary: 'rgba(88, 166, 255, 0.7)',
+            secondary: 'rgba(163, 113, 247, 0.7)',
+            tertiary: 'rgba(247, 113, 163, 0.7)',
+            quaternary: 'rgba(113, 247, 163, 0.7)',
+            primaryBorder: 'rgba(88, 166, 255, 1)',
+            secondaryBorder: 'rgba(163, 113, 247, 1)',
+        };
+        const textMutedColor = '#8b949e';
+
+        let charts = {};
+        
+        const chartDefaultOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    position: 'bottom',
+                    labels: {
+                        color: textMutedColor,
+                        font: {
+                           family: "'Hind Siliguri', sans-serif"
+                        }
+                    } 
+                },
+                tooltip: { 
+                    titleFont: {
+                        family: "'Hind Siliguri', sans-serif"
+                    },
+                    bodyFont: {
+                        family: "'Hind Siliguri', sans-serif"
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: textMutedColor, font: { family: "'Hind Siliguri', sans-serif" } },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                y: {
+                    ticks: { color: textMutedColor, font: { family: "'Hind Siliguri', sans-serif" } },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                }
+            }
+        };
+
+
+        function createSaudiPrayerChart() {
+            const ctx = document.getElementById('saudiPrayerChart').getContext('2d');
+            charts.saudiPrayer = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: reportData.saudiPrayer.labels,
+                    datasets: [{
+                        label: 'ফজরের নামাজ আদায় (%)',
+                        data: reportData.saudiPrayer.data,
+                        backgroundColor: [chartColors.primary, chartColors.secondary, chartColors.tertiary, chartColors.quaternary],
+                        borderColor: '#0d1117',
+                        borderWidth: 4
+                    }]
+                },
+                options: { ...chartDefaultOptions, scales: {} }
+            });
+        }
+        
+        function createEgyptSpendingChart() {
+            const ctx = document.getElementById('egyptSpendingChart').getContext('2d');
+            charts.egyptSpending = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: reportData.egyptSpending.labels,
+                    datasets: [{
+                        label: 'বার্ষিক ব্যয় (বিলিয়ন ডলারে)',
+                        data: reportData.egyptSpending.data,
+                        backgroundColor: [chartColors.secondary, chartColors.primary],
+                        borderColor: [chartColors.secondaryBorder, chartColors.primaryBorder],
+                        borderWidth: 1
+                    }]
+                },
+                options: { ...chartDefaultOptions, indexAxis: 'y', plugins: { legend: { display: false } } }
+            });
+        }
+        
+        function createPovertyChart() {
+            const ctx = document.getElementById('povertyChart').getContext('2d');
+            charts.poverty = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: reportData.poverty.labels,
+                    datasets: [{
+                        label: 'দারিদ্র্যের হার (%)',
+                        data: reportData.poverty.data,
+                        backgroundColor: [chartColors.primary, chartColors.secondary, chartColors.tertiary]
+                    }]
+                },
+                options: { ...chartDefaultOptions, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100, ticks: { color: textMutedColor }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }, x: { ticks: { color: textMutedColor }, grid: { color: 'rgba(255, 255, 255, 0.1)' } } } }
+            });
+        }
+        
+        function createArabFundsChart() {
+            const ctx = document.getElementById('arabFundsChart').getContext('2d');
+            charts.arabFunds = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: reportData.arabFunds.labels,
+                    datasets: [{
+                        label: 'সঞ্চিত তহবিল (বিলিয়ন ডলারে)',
+                        data: reportData.arabFunds.data,
+                        backgroundColor: [chartColors.primary, chartColors.secondary],
+                        borderColor: '#0d1117',
+                        borderWidth: 4
+                    }]
+                },
+                options: { ...chartDefaultOptions, scales: {} }
+            });
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`.nav-link[href="#${sectionId}"]`).classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('intro');
+            createSaudiPrayerChart();
+            createEgyptSpendingChart();
+            createPovertyChart();
+            createArabFundsChart();
+        });
+    </script>
+
+</body>
+</html>

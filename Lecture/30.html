@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>একনিষ্ঠ তওবা - শেখ খালিদ আল-রাশেদ (নিয়ন সংস্করণ)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cyber Neon (Deep Black, Electric Blue, Hot Pink) -->
+    <!-- Application Structure Plan: A single-page, vertical-scrolling application with a fixed sidebar for thematic navigation. The core content is presented in interactive, collapsible story cards to make the narrative-heavy report digestible. A conceptual diagram built with HTML/CSS clarifies the steps of repentance, and a Chart.js bar chart visually summarizes the consequences of sincere vs. insincere actions, transforming qualitative insights into an easily understood graphic. This story-driven, chunked approach was chosen to create a reflective and engaging user experience suitable for a sermon, rather than a dense, linear text document. -->
+    <!-- Visualization & Content Choices: 1. Sermon Intro -> Goal: Inform -> Method: Introductory text block -> Interaction: None. Justification: Sets the stage. 2. Steps of Repentance -> Goal: Organize -> Method: HTML/CSS flexbox diagram -> Interaction: None. Justification: Visually breaks down the core process of repentance without using images/SVG. 3. Five Stories -> Goal: Inform/Engage -> Method: Collapsible HTML cards (accordion) -> Interaction: Click to expand/collapse. Justification: Chunks content to prevent user from being overwhelmed. 4. Consequences -> Goal: Compare/Summarize -> Method: Chart.js horizontal bar chart -> Interaction: Hover tooltips. Justification: Provides a quick visual summary of the key takeaways from all stories. 5. Allah's Mercy -> Goal: Inform/Inspire -> Method: Emphasized text block. -> Interaction: None. Justification: Concludes on a hopeful note. Library: Chart.js for the chart. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+        .main-title {
+            color: #58a6ff;
+            text-shadow: 0 0 8px rgba(88, 166, 255, 0.6);
+        }
+        .nav-link {
+            color: #8b949e;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #f778ba;
+            background-color: rgba(247, 120, 186, 0.1);
+            border-left: 4px solid #f778ba;
+            text-shadow: 0 0 8px #f778ba;
+        }
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.1);
+        }
+        .card-header {
+            background-color: #0d1117;
+            cursor: pointer;
+            border-bottom: 1px solid #30363d;
+        }
+        .card-header .main-title { font-size: 1.25rem; }
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            background-color: #161b22;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+        @media (max-width: 768px) {
+            .chart-container { height: 300px; }
+        }
+        html { scroll-behavior: smooth; }
+        .neon-border {
+            border: 1px solid;
+            box-shadow: 0 0 5px, 0 0 10px inset;
+        }
+        .neon-blue { border-color: #58a6ff; box-shadow: 0 0 8px #58a6ff, 0 0 12px #58a6ff inset; color: #58a6ff }
+        .neon-green { border-color: #39d353; box-shadow: 0 0 8px #39d353, 0 0 12px #39d353 inset; color: #39d353 }
+        .neon-pink { border-color: #f778ba; box-shadow: 0 0 8px #f778ba, 0 0 12px #f778ba inset; color: #f778ba }
+
+    </style>
+</head>
+<body class="antialiased">
+    <div class="flex flex-col md:flex-row">
+        <nav id="sidebar" class="w-full md:w-64 bg-black/50 backdrop-blur-lg border-r border-gray-800 shadow-lg md:fixed md:h-full top-0 p-4 md:py-8 z-20">
+            <h2 class="text-2xl font-bold main-title mb-6 text-center">বিষয়বস্তু</h2>
+            <ul class="space-y-2">
+                <li><a href="#introduction" class="nav-link block px-4 py-2 rounded-lg font-semibold">ভূমিকা</a></li>
+                <li><a href="#process" class="nav-link block px-4 py-2 rounded-lg font-semibold">তওবার প্রক্রিয়া</a></li>
+                <li><a href="#stories" class="nav-link block px-4 py-2 rounded-lg font-semibold">শিক্ষণীয় গল্প</a></li>
+                <li><a href="#lessons" class="nav-link block px-4 py-2 rounded-lg font-semibold">মূল শিক্ষা</a></li>
+                <li><a href="#forgiveness" class="nav-link block px-4 py-2 rounded-lg font-semibold">ক্ষমার প্রতিশ্রুতি</a></li>
+            </ul>
+        </nav>
+
+        <main class="w-full md:ml-64 p-6 md:p-12">
+            <header class="text-center mb-16">
+                <h1 class="text-4xl md:text-5xl font-bold main-title">একনিষ্ঠ তওবা</h1>
+                <p class="text-lg text-gray-400 mt-2">শেখ খালিদ আল-রাশেদ</p>
+            </header>
+
+            <section id="introduction" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold main-title mb-4 border-b-2 border-sky-500/50 pb-2">জীবনের সূচনা তওবা দিয়ে</h2>
+                <div class="bg-[#161b22] p-6 rounded-xl shadow-lg border border-gray-800 space-y-4 text-lg leading-relaxed">
+                    <p>মানুষ অত্যন্ত ভুলপ্রবণ এবং প্রতিনিয়ত পাপ, বিচ্যুতি ও ত্রুটির শিকার হয়। কিন্তু পরম করুণাময় আল্লাহ তাঁর অসীম রহমতের অংশ হিসেবে তওবার দরজা সর্বদা খোলা রেখেছেন। তিনি মানুষকে তাঁর দিকে ফিরে আসার জন্য আহ্বান করেন। এই বিভাগে আমরা তওবার গুরুত্ব এবং আল্লাহর ক্ষমার বিশালতা সম্পর্কে জানব। একটি আন্তরিক ও একনিষ্ঠ তওবাই পারে মানুষের জীবনকে নতুন করে আলোকিত করতে এবং তাকে আল্লাহর নৈকট্য লাভে সাহায্য করতে।</p>
+                    <blockquote class="border-r-4 border-sky-400 bg-black/20 p-4 rounded-r-lg">
+                        <p class="font-medium text-sky-300">“হে আমার বান্দাগণ, যারা নিজেদের উপর বাড়াবাড়ি করেছ, তোমরা আল্লাহর রহমত থেকে নিরাশ হয়ো না। নিশ্চয় আল্লাহ সমস্ত পাপ ক্ষমা করে দেন। তিনিই তো ক্ষমাশীল, পরম দয়ালু।”</p>
+                        <cite class="block text-right mt-2 text-sm text-gray-500">- সূরা যুমার: ৫৩</cite>
+                    </blockquote>
+                </div>
+            </section>
+            
+            <section id="process" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold main-title mb-6 border-b-2 border-sky-500/50 pb-2">একনিষ্ঠ তওবার প্রক্রিয়া</h2>
+                <div class="bg-[#161b22] p-6 rounded-xl shadow-lg border border-gray-800">
+                   <p class="text-lg mb-6 leading-relaxed">একটি তওবা তখনই আল্লাহর কাছে গৃহীত হয় যখন তা আন্তরিক ও শর্ত পূরণ করে করা হয়। এটি শুধু মুখে ক্ষমা চাওয়া নয়, বরং হৃদয়ের গভীর থেকে আসা একটি পরিবর্তন। নিচে একটি একনিষ্ঠ তওবার মূল ধাপগুলো তুলে ধরা হলো, যা আমাদের আল্লাহর দিকে সঠিকভাবে ফিরে আসতে সাহায্য করবে।</p>
+                    <div class="flex flex-col md:flex-row justify-center items-center gap-4 text-center">
+                        <div class="p-4 rounded-lg w-full md:w-1/4 neon-border neon-blue">
+                            <h3 class="font-bold text-xl">১. অনুশোচনা</h3>
+                            <p class="text-sm">পাপের জন্য লজ্জিত ও অনুতপ্ত হওয়া।</p>
+                        </div>
+                        <div class="text-2xl font-light hidden md:block">&rarr;</div>
+                        <div class="p-4 rounded-lg w-full md:w-1/4 neon-border neon-green">
+                            <h3 class="font-bold text-xl">২. পাপ ত্যাগ</h3>
+                            <p class="text-sm">অবিলম্বে সেই পাপকাজ পুরোপুরি ছেড়ে দেওয়া।</p>
+                        </div>
+                         <div class="text-2xl font-light hidden md:block">&rarr;</div>
+                        <div class="p-4 rounded-lg w-full md:w-1/4 neon-border neon-pink">
+                            <h3 class="font-bold text-xl">৩. দৃঢ় সংকল্প</h3>
+                            <p class="text-sm">ভবিষ্যতে আর কখনো সেই পাপে লিপ্ত না হওয়ার প্রতিজ্ঞা করা।</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="stories" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold main-title mb-6 border-b-2 border-sky-500/50 pb-2">শিক্ষণীয় গল্প: সত্য ও মিথ্যার পার্থক্য</h2>
+                <p class="text-lg mb-6 leading-relaxed">এই অংশে, বক্তৃতা থেকে নেওয়া কিছু শক্তিশালী গল্প তুলে ধরা হয়েছে। প্রতিটি গল্পেই রয়েছে মূল্যবান শিক্ষা, যা আমাদের একনিষ্ঠ এবং মিথ্যা তওবার মধ্যে পার্থক্য করতে শেখায়। গল্পগুলো পড়ার জন্য শিরোনামে ক্লিক করুন।</p>
+                <div class="space-y-4" id="accordion">
+                    <div class="card rounded-xl overflow-hidden">
+                        <h3 class="card-header p-4 text-xl font-semibold flex justify-between items-center">
+                            <span class="main-title">১. মিথ্যা তওবার করুণ পরিণতি</span>
+                            <span class="transform transition-transform duration-300 text-sky-400">&#9662;</span>
+                        </h3>
+                        <div class="card-content">
+                            <div class="p-6 text-base leading-loose">
+                                <p>মনসুর ইবনে আম্মারের এক বন্ধু ছিল যে পাপাচারে লিপ্ত ছিল, কিন্তু পরে সে তওবা করে ইবাদতে মশগুল হয়। অসুস্থ অবস্থায় মৃত্যুর আগে সে স্বীকার করে যে তার তওবা ছিল লোকদেখানো ও মিথ্যা। সে গোপনে আল্লাহর নাফরমানি করত। মৃত্যুর সময় তার মুখ দিয়ে কালিমা বের হয়নি। এই গল্পটি আমাদের শেখায় যে, আল্লাহর সাথে প্রতারণা করা যায় না এবং লোকদেখানো ইবাদতের কোনো মূল্য নেই।</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card rounded-xl overflow-hidden">
+                        <h3 class="card-header p-4 text-xl font-semibold flex justify-between items-center">
+                            <span class="main-title">২. সাহাবীদের আন্তরিক তওবা</span>
+                            <span class="transform transition-transform duration-300 text-sky-400">&#9662;</span>
+                        </h3>
+                        <div class="card-content">
+                            <div class="p-6 text-base leading-loose">
+                                <p>তাবুকের যুদ্ধে পিছিয়ে পড়া তিনজন সাহাবীর ঘটনা, বিশেষ করে কা'ব ইবনে মালেক (রা.)-এর কাহিনী। তিনি সত্য কথা বলার কারণে কঠিন সামাজিক বয়কটের শিকার হন। পঞ্চাশ দিনব্যাপী এই কঠিন পরীক্ষার পর আল্লাহ তাঁদের আন্তরিক তওবা কবুল করেন এবং কুরআনে আয়াত নাযিল করেন। রাসূল (সা.) তাঁকে তাঁর জীবনের শ্রেষ্ঠ দিনের সুসংবাদ দেন। এটি প্রমাণ করে, সততা ও ধৈর্যের সাথে তওবা করলে আল্লাহ অবশ্যই তা কবুল করেন।</p>
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="card rounded-xl overflow-hidden">
+                        <h3 class="card-header p-4 text-xl font-semibold flex justify-between items-center">
+                            <span class="main-title">৩. আল্লাহর জন্য কিছু ছেড়ে দেওয়ার প্রতিদান</span>
+                             <span class="transform transition-transform duration-300 text-sky-400">&#9662;</span>
+                        </h3>
+                        <div class="card-content">
+                            <div class="p-6 text-base leading-loose">
+                                <p>এক সুন্দর কণ্ঠের অধিকারী যুবক গানের প্রতি আসক্ত ছিল। এক সৎ যুবকের উপদেশে সে গান ছেড়ে দিয়ে আল্লাহর পথে ফিরে আসে এবং কুরআন চর্চা শুরু করে। আল্লাহ তাকে তার চেয়েও উত্তম প্রতিদান দেন; সে একজন বিখ্যাত ক্বারী ও ইমামে পরিণত হয়। যে ব্যক্তি শুধুমাত্র আল্লাহর সন্তুষ্টির জন্য কোনো পাপ কাজ ছেড়ে দেয়, আল্লাহ তাকে তার চেয়েও উত্তম কিছু দান করেন।</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card rounded-xl overflow-hidden">
+                        <h3 class="card-header p-4 text-xl font-semibold flex justify-between items-center">
+                             <span class="main-title">৪. "আমি আকর্ষণীয়া নই, আমি জালিম"</span>
+                             <span class="transform transition-transform duration-300 text-sky-400">&#9662;</span>
+                        </h3>
+                        <div class="card-content">
+                            <div class="p-6 text-base leading-loose">
+                                <p>ফাতিনা নামের এক আধুনিকমনা মেয়ে তার ধার্মিক বান্ধবী আলিয়াকে নিয়ে উপহাস করত। অনেক বছর পর ফাতিনা ক্যান্সারে আক্রান্ত হয়ে মৃত্যুশয্যায় তার সেই বান্ধবী ডাক্তার আলিয়ার দেখা পায়। তখন সে নিজের ভুল বুঝতে পারে এবং অনুতপ্ত হয়ে বলে, "আমাকে ফাতিনা (আকর্ষণীয়া) নয়, যালিমাহ (জালিম) বলে ডাকো।" সে আন্তরিকভাবে আল্লাহর কাছে ক্ষমা চায়। এই গল্পটি শেখায় যে, মৃত্যু আসার আগেই তওবা করা উচিত।</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card rounded-xl overflow-hidden">
+                        <h3 class="card-header p-4 text-xl font-semibold flex justify-between items-center">
+                            <span class="main-title">৫. এক পথভ্রষ্ট যুবকের প্রত্যাবর্তন</span>
+                             <span class="transform transition-transform duration-300 text-sky-400">&#9662;</span>
+                        </h3>
+                        <div class="card-content">
+                            <div class="p-6 text-base leading-loose">
+                                <p>এক যুবক মাদক, মদ ও নানাবিধ পাপে নিমজ্জিত ছিল। বন্ধুদের সাথে বিদেশে পাপাচারে লিপ্ত থাকাকালীন তার এক বন্ধুর আকস্মিক মৃত্যু এবং নিজের জীবনের শূন্যতা তাকে ভাবিয়ে তোলে। একদিন মায়ের দেওয়া একটি ইসলামিক বক্তৃতা শুনে সে কান্নায় ভেঙে পড়ে এবং আন্তরিকভাবে তওবা করে। আল্লাহ তার জীবন পরিবর্তন করে দেন; সে চাকরি পায় এবং একটি মসজিদের মুয়াজ্জিন হয়। এটি আল্লাহর রহমতের এক উজ্জ্বল দৃষ্টান্ত।</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="lessons" class="mb-16 scroll-mt-20">
+                <h2 class="text-3xl font-bold main-title mb-6 border-b-2 border-sky-500/50 pb-2">তওবার ফলাফল: একটি তুলনামূলক চিত্র</h2>
+                 <p class="text-lg mb-6 leading-relaxed">গল্পগুলো থেকে আমরা দেখতে পাই যে, একনিষ্ঠ এবং মিথ্যা তওবার ফলাফল সম্পূর্ণ বিপরীত। একনিষ্ঠ তওবা মানুষকে আল্লাহর নৈকট্য, মানসিক শান্তি এবং উত্তম জীবন দান করে, যেখানে মিথ্যা তওবা ধ্বংস ও হতাশার দিকে ঠেলে দেয়। নিচের চার্টটি এই পার্থক্যকে স্পষ্টভাবে তুলে ধরে।</p>
+                <div class="bg-[#161b22] p-6 rounded-xl shadow-lg border border-gray-800">
+                    <div class="chart-container">
+                        <canvas id="repentanceChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="forgiveness" class="scroll-mt-20">
+                <h2 class="text-3xl font-bold main-title mb-4 border-b-2 border-sky-500/50 pb-2">আল্লাহর ক্ষমার প্রতিশ্রুতি</h2>
+                 <div class="bg-gradient-to-tr from-pink-500/10 to-sky-500/10 p-8 rounded-xl shadow-lg border border-gray-800 space-y-4 text-lg leading-relaxed neon-border neon-pink">
+                    <p>পাপ যত বড়ই হোক না কেন, আল্লাহর রহমত তার চেয়েও বিশাল। তিনি তওবাকারীদের ভালোবাসেন এবং তাদের সকল পাপ ক্ষমা করে দেন। হতাশ না হয়ে তাঁর দিকে ফিরে আসাই হলো বুদ্ধিমানের কাজ। কারণ, তাঁর ক্ষমার দরজা সবসময়, সকলের জন্য খোলা।</p>
+                     <blockquote class="border-r-4 border-pink-400 bg-black/20 p-4 rounded-r-lg">
+                        <p class="font-medium text-pink-300">“আমি অবশ্যই তার প্রতি ক্ষমাশীল, যে তওবা করে, ঈমান আনে ও সৎকর্ম করে, অতঃপর সৎপথে অবিচল থাকে।”</p>
+                        <cite class="block text-right mt-2 text-sm text-gray-500">- সূরা ত্বহা: ৮২</cite>
+                    </blockquote>
+                    <p class="text-center font-semibold pt-4 text-xl main-title">আসুন, আমরা আন্তরিকভাবে তওবা করি এবং আল্লাহর অসীম রহমতের ছায়াতলে আশ্রয় নিই।</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const accordionItems = document.querySelectorAll('.card-header');
+
+            accordionItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const icon = this.querySelector('span:last-child');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        document.querySelectorAll('.card-content').forEach(el => el.style.maxHeight = null);
+                        document.querySelectorAll('.card-header span:last-child').forEach(el => el.style.transform = 'rotate(0deg)');
+
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            const repentanceChartCtx = document.getElementById('repentanceChart').getContext('2d');
+            const repentanceChart = new Chart(repentanceChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['আল্লাহর ক্ষমা', 'মানসিক শান্তি', 'উত্তম প্রতিদান', 'ধ্বংস ও লাঞ্ছনা', 'আল্লাহর ক্রোধ', 'অনুশোচনা'],
+                    datasets: [{
+                        label: 'একনিষ্ঠ তওবার ফল',
+                        data: [90, 85, 80, 0, 0, 0],
+                        backgroundColor: 'rgba(57, 211, 83, 0.5)',
+                        borderColor: '#39d353',
+                        borderWidth: 2,
+                        barThickness: 20
+                    }, {
+                        label: 'মিথ্যা তওবার ফল',
+                        data: [0, 0, 0, 95, 90, 85],
+                        backgroundColor: 'rgba(247, 120, 186, 0.5)',
+                        borderColor: '#f778ba',
+                        borderWidth: 2,
+                        barThickness: 20
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'তওবার ফলাফল',
+                            font: { size: 18, family: 'Hind Siliguri' },
+                            color: '#58a6ff'
+                        },
+                        legend: {
+                            labels: {
+                                color: '#c9d1d9',
+                                font: { family: 'Hind Siliguri' }
+                            }
+                        },
+                        tooltip: {
+                            bodyFont: { family: 'Hind Siliguri' },
+                            titleFont: { family: 'Hind Siliguri' }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            grid: { color: 'rgba(139, 148, 158, 0.2)' },
+                            ticks: {
+                                color: '#8b949e',
+                                callback: function(value) { return value + '%' }
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            grid: { color: 'rgba(139, 148, 158, 0.2)' },
+                            ticks: {
+                                color: '#c9d1d9',
+                                font: {
+                                    size: 14,
+                                    family: 'Hind Siliguri'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

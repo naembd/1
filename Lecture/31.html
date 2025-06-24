@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কবরের পরীক্ষা - শায়খ খালিদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: The application is structured into four thematic sections to guide the user through the sermon's narrative logically. It starts with a comparison of worldly vs. grave exams to set the context. The core of the app is an interactive section detailing the journey of a believer versus a non-believer, using a toggle mechanism for easy comparison and focused reading. This is followed by a clear presentation of the three questions of the grave and concludes with a call to action. Two Gemini API features have been added: 1) A personalized action plan generator to help users apply the sermon's teachings. 2) A dua generator for personal supplication. This thematic, interactive structure was chosen over a linear text dump to make the profound and lengthy content more digestible, engaging, and memorable for the user, facilitating understanding rather than just reading. -->
+    <!-- Visualization & Content Choices: The source report is a sermon, which is entirely qualitative. Goal: Compare -> Method: Two-column layout with Unicode icons to contrast Worldly Exam vs. Grave Exam. Goal: Inform/Explore -> Method: Interactive tabbed/button-based content display for the "Journey of the Soul" (Believer vs. Non-believer). Goal: Highlight -> Method: Visually distinct cards for the "Three Questions". Goal: Personalize/Action -> Method: Gemini API-powered input form to generate a personalized action plan. Goal: Inspire -> Method: Gemini API-powered button to generate a personal dua. Justification: These choices turn a passive reading experience into an active, personalized exploration, improving comprehension and retention of the core messages. Library/Method: Vanilla JS for interactions, Tailwind CSS for layout. No charts are used as there is no quantitative data. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .tab-button.active {
+            background-color: #8D6E63;
+            color: #F5F5F5;
+        }
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #8D6E63;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF8] text-[#3E2723]">
+
+    <header class="bg-[#D7CCC8] py-8 text-center shadow-md">
+        <h1 class="text-3xl md:text-5xl font-bold text-[#4E342E]">কবরের পরীক্ষা</h1>
+        <p class="mt-2 text-lg text-[#5D4037]">শায়খ খালিদ আল-রাশেদ এর বয়ানের আলোকে</p>
+    </header>
+
+    <nav class="sticky top-0 bg-[#FDFBF8] z-10 shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-center items-center space-x-4 sm:space-x-8 py-3 overflow-x-auto">
+                <a href="#comparison" class="text-[#5D4037] hover:text-[#8D6E63] font-semibold transition duration-300 whitespace-nowrap">দুটি পরীক্ষা</a>
+                <a href="#journey" class="text-[#5D4037] hover:text-[#8D6E63] font-semibold transition duration-300 whitespace-nowrap">শেষ যাত্রা</a>
+                <a href="#questions" class="text-[#5D4037] hover:text-[#8D6E63] font-semibold transition duration-300 whitespace-nowrap">তিনটি প্রশ্ন</a>
+                <a href="#preparation" class="text-[#5D4037] hover:text-[#8D6E63] font-semibold transition duration-300 whitespace-nowrap">প্রস্তুতি</a>
+                <a href="#gemini-plan" class="text-[#5D4037] hover:text-[#8D6E63] font-semibold transition duration-300 whitespace-nowrap">পরিকল্পনা</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <section id="comparison" class="my-12 scroll-mt-20">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-[#4E342E]">দুনিয়া বনাম পরকাল: দুটি পরীক্ষার তুলনা</h2>
+                <p class="mt-2 max-w-3xl mx-auto text-[#5D4037]">আমরা দুনিয়ার পরীক্ষার জন্য কতই না প্রস্তুতি গ্রহণ করি, কিন্তু আসল পরীক্ষার জন্য আমাদের প্রস্তুতি কতটুকু? এই অংশে দুটি পরীক্ষার মধ্যে একটি সংক্ষিপ্ত তুলনা তুলে ধরা হলো, যা আমাদের চিন্তার খোরাক জোগাবে।</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg border border-[#D7CCC8]">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-[#8D6E63]">দুনিয়ার পরীক্ষা</h3>
+                    <ul class="space-y-3 text-[#5D4037]">
+                        <li class="flex items-start"><span class="mr-3 text-xl">🏫</span><div><strong>পরীক্ষার স্থান:</strong> শীতাতপ নিয়ন্ত্রিত, আলোকিত কক্ষ।</div></li>
+                        <li class="flex items-start"><span class="mr-3 text-xl">❓</span><div><strong>প্রশ্ন:</strong> অজানা এবং কঠিন হতে পারে।</div></li>
+                        <li class="flex items-start"><span class="mr-3 text-xl">⏱️</span><div><strong>সুযোগ:</strong> একাধিকবার সুযোগ (ফেল করলে আবার পরীক্ষা)।</div></li>
+                        <li class="flex items-start"><span class="mr-3 text-xl">🤝</span><div><strong>সাহায্যকারী:</strong> শিক্ষক ও পরিদর্শকগণ সাহায্যের জন্য উপস্থিত থাকেন।</div></li>
+                        <li class="flex items-start"><span class="mr-3 text-xl">🏆</span><div><strong>ফলাফল:</strong> একটি সার্টিফিকেট, চাকরি এবং সামান্য কিছু অর্থ।</div></li>
+                    </ul>
+                </div>
+                <div class="bg-[#EFEBE9] p-6 rounded-lg shadow-lg border border-[#D7CCC8]">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-[#4E342E]">কবরের পরীক্ষা</h3>
+                    <ul class="space-y-3 text-[#3E2723]">
+                        <li class="flex items-start"><span class="mr-3 text-xl">🪦</span><div><strong>পরীক্ষার স্থান:</strong> অন্ধকার, সংকীর্ণ ও নিঃসঙ্গ কবর।</div></li>
+                        <li class="flex items-start"><span class="mr-3 text-xl">⁉️</span><div><strong>প্রশ্ন:</strong> সকলের কাছেই জানা (রব, দ্বীন, নবী)।</div></li>
+                        <li class="flex items-start"><span class="mr-3 text-xl">⏳</span><div><strong>সুযোগ:</strong> মাত্র একবার, দ্বিতীয় কোনো সুযোগ নেই।</div></li>
+                        <li class="flex items-start"><span class="mr-3 text-xl">👤</span><div><strong>সাহায্যকারী:</strong> কেউ থাকবে না, শুধুমাত্র নিজের আমল।</div></li>
+                        <li class="flex items-start"><span class="mr-3 text-xl">⚖️</span><div><strong>ফলাফল:</strong> চিরস্থায়ী জান্নাত অথবা চিরস্থায়ী জাহান্নাম।</div></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="journey" class="my-20 scroll-mt-20">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-[#4E342E]">শেষ যাত্রা: মুমিন ও কাফেরের পরিণতি</h2>
+                 <p class="mt-2 max-w-3xl mx-auto text-[#5D4037]">মৃত্যুর পর থেকে কবরের প্রশ্নোত্তর পর্যন্ত মানুষের যাত্রা দুই ধরনের হয়। একজন বিশ্বাসী বান্দার যাত্রা হয় শান্তিময়, আর অবিশ্বাসীর যাত্রা হয় অত্যন্ত কঠিন ও যন্ত্রণাদায়ক। নিচের বাটনগুলোতে ক্লিক করে তাদের যাত্রাপথের ভিন্নতা সম্পর্কে জানুন।</p>
+            </div>
+            <div class="flex justify-center mb-8 gap-4">
+                <button id="believerBtn" class="tab-button active px-6 py-2 rounded-md font-semibold bg-[#A1887F] text-white transition duration-300">মুমিনের যাত্রা</button>
+                <button id="disbelieverBtn" class="tab-button px-6 py-2 rounded-md font-semibold bg-white text-[#8D6E63] transition duration-300">কাফেরের যাত্রা</button>
+            </div>
+            <div id="believerContent" class="space-y-4">
+                <div class="bg-white p-6 rounded-lg shadow-md border border-[#D7CCC8]">
+                    <h4 class="font-bold text-xl text-[#8D6E63]">১. মৃত্যুর সময়</h4><p class="mt-2 text-[#5D4037]">সাদা চেহারার রহমতের ফেরেশতারা জান্নাতের কাফন ও সুগন্ধি নিয়ে আসেন। মৃত্যুর ফেরেশতা এসে বলেন, "হে পবিত্র আত্মা! তোমার রবের সন্তুষ্টির দিকে বেরিয়ে এসো।" আত্মা সহজে বেরিয়ে আসে।</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-[#D7CCC8]">
+                    <h4 class="font-bold text-xl text-[#8D6E63]">২. ঊর্ধ্বলোকে যাত্রা</h4><p class="mt-2 text-[#5D4037]">আত্মা থেকে কস্তুরীর সুগন্ধ বের হয়। ফেরেশতারা একে নিয়ে আকাশের দিকে যান। প্রতিটি আসমানের দরজা খুলে দেওয়া হয় এবং সেখানকার ফেরেশতারা তাকে সম্মান জানায়।</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-[#D7CCC8]">
+                    <h4 class="font-bold text-xl text-[#8D6E63]">৩. কবরে প্রত্যাবর্তন ও প্রশ্নোত্তর</h4><p class="mt-2 text-[#5D4037]">আত্মাকে তার দেহে ফিরিয়ে দেওয়া হয়। দুজন ফেরেশতা এসে প্রশ্ন করেন এবং সে নির্ভুলভাবে উত্তর দেয়: "আমার রব আল্লাহ, আমার দ্বীন ইসলাম, এবং আমাদের নবী মুহাম্মদ (সাঃ)।"</p></div>
+                <div class="bg-white p-6 rounded-lg shadow-md border border-[#D7CCC8]">
+                    <h4 class="font-bold text-xl text-[#8D6E63]">৪. কবরের পুরস্কার</h4><p class="mt-2 text-[#5D4037]">সঠিক উত্তর দেওয়ার পর তার জন্য জান্নাতের বিছানা বিছিয়ে দেওয়া হয়, জান্নাতের পোশাক পরানো হয় এবং কবর দৃষ্টিসীমা পর্যন্ত প্রশস্ত করে দেওয়া হয়। তার সৎ আমল সুন্দর মানুষের রূপে এসে সুসংবাদ দেয়।</p></div>
+            </div>
+            <div id="disbelieverContent" class="hidden space-y-4">
+                <div class="bg-[#EFEBE9] p-6 rounded-lg shadow-md border border-[#BCAAA4]">
+                    <h4 class="font-bold text-xl text-[#4E342E]">১. মৃত্যুর সময়</h4><p class="mt-2 text-[#3E2723]">কালো চেহারার আযাবের ফেরেশতারা আগুনের কাফন নিয়ে আসে। মৃত্যুর ফেরেশতা বলেন, "হে খবিস আত্মা! আল্লাহর ক্রোধের দিকে বেরিয়ে এসো।" আত্মাকে প্রচণ্ড কষ্টে বের করা হয়।</p></div>
+                <div class="bg-[#EFEBE9] p-6 rounded-lg shadow-md border border-[#BCAAA4]">
+                    <h4 class="font-bold text-xl text-[#4E342E]">২. ঊর্ধ্বলোকে যাত্রা</h4><p class="mt-2 text-[#3E2723]">আত্মা থেকে পচা লাশের দুর্গন্ধ বের হয়। ফেরেশতারা তাকে নিয়ে গেলে আসমানের দরজা বন্ধ করে দেওয়া হয় এবং তাকে ফিরিয়ে দেওয়া হয়।</p></div>
+                <div class="bg-[#EFEBE9] p-6 rounded-lg shadow-md border border-[#BCAAA4]">
+                    <h4 class="font-bold text-xl text-[#4E342E]">৩. কবরে প্রত্যাবর্তন ও প্রশ্নোত্তর</h4><p class="mt-2 text-[#3E2723]">আত্মাকে তার দেহে ফিরিয়ে দেওয়া হয়। দুজন ফেরেশতা প্রশ্ন করলে সে ভয়ে বলতে থাকে, "হায়! হায়! আমি জানি না।"</p></div>
+                <div class="bg-[#EFEBE9] p-6 rounded-lg shadow-md border border-[#BCAAA4]">
+                    <h4 class="font-bold text-xl text-[#4E342E]">৪. কবরের শাস্তি</h4><p class="mt-2 text-[#3E2723]">ভুল উত্তরের জন্য তার কবর এমনভাবে সংকুচিত হয় যে এক পাশের হাড় অন্য পাশে ঢুকে যায়। তার জন্য আগুনের বিছানা বিছানো হয় এবং তার পাপ কাজগুলো কুৎসিত রূপে এসে দুঃসংবাদ দেয়।</p></div>
+            </div>
+        </section>
+
+        <section id="questions" class="my-20 scroll-mt-20">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-[#4E342E]">কবরের তিনটি প্রশ্ন</h2>
+                <p class="mt-2 max-w-3xl mx-auto text-[#5D4037]">এই সেই তিনটি প্রশ্ন যার উত্তর দেওয়ার জন্য আমাদের সারা জীবন প্রস্তুতি নিতে হবে। এই প্রশ্নগুলোর উত্তর মুখস্থ করে নয়, বরং জীবনের প্রতিটি ক্ষেত্রে বাস্তবায়নের মাধ্যমেই দেওয়া সম্ভব।</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-[#D7CCC8] transform hover:scale-105 transition-transform duration-300"><p class="text-5xl mb-4">১</p><h3 class="text-2xl font-bold text-[#8D6E63]">তোমার রব কে?</h3><p class="mt-2 text-[#5D4037]">من ربك؟</p></div>
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-[#D7CCC8] transform hover:scale-105 transition-transform duration-300"><p class="text-5xl mb-4">২</p><h3 class="text-2xl font-bold text-[#8D6E63]">তোমার দ্বীন কী?</h3><p class="mt-2 text-[#5D4037]">ما دينك؟</p></div>
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-[#D7CCC8] transform hover:scale-105 transition-transform duration-300"><p class="text-5xl mb-4">৩</p><h3 class="text-2xl font-bold text-[#8D6E63]">তোমাদের মাঝে প্রেরিত নবী কে?</h3><p class="mt-2 text-[#5D4037]">من نبيك؟</p></div>
+            </div>
+        </section>
+
+        <section id="preparation" class="my-12 scroll-mt-20">
+            <div class="bg-[#D7CCC8] p-8 rounded-lg shadow-lg text-center">
+                <h2 class="text-3xl font-bold text-[#4E342E]">প্রস্তুতির আহ্বান</h2>
+                <p class="mt-4 max-w-4xl mx-auto text-[#3E2723]">মৃত্যু আসার পূর্বেই আমাদের এই কঠিন পরীক্ষার জন্য প্রস্তুত হতে হবে। দুনিয়ার জীবন একটি সুযোগ, যা কাজে লাগিয়ে তওবা, সৎ আমল এবং আল্লাহর আনুগত্যের মাধ্যমে আমরা এই পরীক্ষায় সফল হতে পারি। আল্লাহ ও তাঁর রাসূলের ডাকে সাড়া দিন, এর আগে যে দিনটি আসবে, সেদিন ফিরে যাওয়ার কোনো পথ থাকবে না।</p>
+                <blockquote class="mt-6 italic text-lg text-[#5D4037] border-l-4 border-[#8D6E63] pl-4">"হে মুহাম্মদ! যত ইচ্ছা বেঁচে থাক, নিশ্চয়ই তুমি মৃত। যাকে ইচ্ছা ভালোবাসো, নিশ্চয়ই তুমি তার থেকে বিচ্ছিন্ন হবে। যা ইচ্ছা আমল কর, নিশ্চয়ই তুমি তার প্রতিদান পাবে।"</blockquote>
+            </div>
+        </section>
+        
+        <section id="gemini-plan" class="my-20 scroll-mt-20">
+            <div class="bg-white p-8 rounded-lg shadow-lg border border-[#D7CCC8]">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-bold text-[#4E342E]">✨ আপনার ব্যক্তিগত প্রস্তুতি পরিকল্পনা</h2>
+                    <p class="mt-2 max-w-3xl mx-auto text-[#5D4037]">কবরের পরীক্ষার জন্য প্রস্তুতি নিতে চান? কোন বিষয়ে উন্নতি করতে চান তা লিখুন, আমরা আপনাকে ইসলামিক দৃষ্টিকোণ থেকে কিছু বাস্তবসম্মত পরামর্শ দেব।</p>
+                </div>
+                <div class="max-w-xl mx-auto">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <input type="text" id="userInput" class="flex-grow p-3 border border-[#BCAAA4] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8D6E63]" placeholder="যেমন: নামাজে মনোযোগী হতে চাই">
+                        <button id="generatePlanBtn" class="bg-[#8D6E63] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#795548] transition duration-300">পরিকল্পনা তৈরি করুন</button>
+                    </div>
+                    <div id="planResult" class="mt-6 p-6 bg-[#F5F5F5] rounded-md hidden"></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="text-center my-12">
+             <button id="generateDuaBtn" class="bg-transparent border-2 border-[#8D6E63] text-[#8D6E63] px-8 py-3 rounded-full font-bold hover:bg-[#8D6E63] hover:text-white transition duration-300 text-lg">✨ একটি বিশেষ দোয়া চান?</button>
+        </div>
+    </main>
+
+    <footer class="bg-[#A1887F] text-white text-center py-6">
+        <p>"হে আল্লাহ! আমাদের কবরকে জান্নাতের বাগান বানান এবং জাহান্নামের গর্ত বানাবেন না।"</p>
+        <p class="text-sm mt-2 opacity-80">এই অ্যাপ্লিকেশনটি শায়খ খালিদ আল-রাশেদের বয়ানের উপর ভিত্তি করে তৈরি।</p>
+    </footer>
+
+    <!-- Modal for Gemini Response -->
+    <div id="geminiModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden opacity-0">
+        <div class="bg-[#FDFBF8] rounded-lg shadow-2xl max-w-lg w-full p-8 relative">
+            <button id="closeModalBtn" class="absolute top-4 right-4 text-2xl font-bold text-[#5D4037] hover:text-black">&times;</button>
+            <div id="modalContent">
+                <!-- Loader and content will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        const believerBtn = document.getElementById('believerBtn');
+        const disbelieverBtn = document.getElementById('disbelieverBtn');
+        const believerContent = document.getElementById('believerContent');
+        const disbelieverContent = document.getElementById('disbelieverContent');
+
+        believerBtn.addEventListener('click', () => {
+            believerContent.classList.remove('hidden');
+            disbelieverContent.classList.add('hidden');
+            believerBtn.classList.add('active');
+            disbelieverBtn.classList.remove('active');
+        });
+
+        disbelieverBtn.addEventListener('click', () => {
+            disbelieverContent.classList.remove('hidden');
+            believerContent.classList.add('hidden');
+            disbelieverBtn.classList.add('active');
+            believerBtn.classList.remove('active');
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Gemini API functionality
+        const generatePlanBtn = document.getElementById('generatePlanBtn');
+        const userInput = document.getElementById('userInput');
+        const planResult = document.getElementById('planResult');
+        
+        const generateDuaBtn = document.getElementById('generateDuaBtn');
+        const geminiModal = document.getElementById('geminiModal');
+        const modalContent = document.getElementById('modalContent');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        const showLoader = (container) => {
+            container.innerHTML = '<div class="flex justify-center items-center"><div class="loader"></div></div>';
+            container.classList.remove('hidden');
+        };
+        
+        const hideLoader = (container) => {
+             container.innerHTML = '';
+             container.classList.add('hidden');
+        }
+
+        const callGemini = async (prompt) => {
+            const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{
+                    role: "user",
+                    parts: [{ text: prompt }]
+                }]
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    return "দুঃখিত, কোনো উত্তর পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।";
+                }
+            } catch (error) {
+                console.error("Gemini API call failed:", error);
+                return "একটি সমস্যা হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।";
+            }
+        };
+
+        generatePlanBtn.addEventListener('click', async () => {
+            const topic = userInput.value.trim();
+            if (!topic) {
+                planResult.innerHTML = '<p class="text-red-600">অনুগ্রহ করে একটি বিষয় লিখুন।</p>';
+                planResult.classList.remove('hidden');
+                return;
+            }
+
+            showLoader(planResult);
+            const prompt = `Based on Islamic teachings about preparing for the afterlife, as discussed in sermons like Sheikh Khalid Al-Rashed's "Test of the Grave", provide three practical and encouraging tips in Bengali for a person who wants to improve on this topic: "${topic}". The response should be in simple Bengali, formatted as a numbered list with bold headings for each tip.`;
+            const resultText = await callGemini(prompt);
+            planResult.innerHTML = resultText.replace(/\n/g, '<br>');
+        });
+
+        const showModal = () => {
+            geminiModal.classList.remove('hidden');
+            setTimeout(() => geminiModal.classList.remove('opacity-0'), 10);
+        };
+        
+        const hideModal = () => {
+            geminiModal.classList.add('opacity-0');
+            setTimeout(() => geminiModal.classList.add('hidden'), 300);
+        };
+
+        generateDuaBtn.addEventListener('click', async () => {
+            showModal();
+            showLoader(modalContent);
+            const prompt = `Generate a short, personal, and heartfelt dua (supplication) in Bengali. The dua should be for someone reflecting on the test of the grave, asking Allah for steadfastness during questioning, an easy death, forgiveness of sins, and entry into Jannah. The tone should be humble and sincere.`;
+            const resultText = await callGemini(prompt);
+            modalContent.innerHTML = `<h3 class="text-2xl font-bold text-[#4E342E] text-center mb-4">আপনার জন্য একটি দোয়া</h3><p class="text-center text-lg text-[#5D4037]">${resultText.replace(/\n/g, '<br>')}</p>`;
+        });
+        
+        closeModalBtn.addEventListener('click', hideModal);
+        geminiModal.addEventListener('click', (e) => {
+            if (e.target === geminiModal) {
+                hideModal();
+            }
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>হে সালাত ত্যাগকারী - শেখ খালেদ আল-রাশেদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Neon Glow -->
+    <!-- Application Structure Plan: The application is designed as a single-page, thematic, scrolling experience to make the sermon's powerful message more engaging. It starts with a hero section, followed by interactive sections for key themes: 'The Cure' (interactive card revealing prayer as the solution), 'State of the Ummah' (visual depiction of the three groups of people regarding prayer), 'The Fajr Crisis' (a impactful donut chart), 'Real Stories' (tabbed content for easy digestion), 'Fruits of Prayer' (icon-based list), and a concluding call to action. This non-linear, thematic structure with a top navigation bar allows users to explore topics of interest easily, enhancing understanding and reflection, which is more effective for a sermon than a simple text layout. -->
+    <!-- Visualization & Content Choices: Report Info: Sermon on abandoning prayer. -> Goal: Inform, Warn, Inspire. -> Viz/Presentation: 1. Three Groups: HTML/CSS cards to compare the different attitudes towards prayer. Interaction: Hover effect. Justification: Clear, side-by-side comparison. 2. Fajr Attendance Stat: Chart.js Donut Chart to visualize the shocking statistic (20 vs 780 students). Interaction: Tooltip. Justification: A visual chart is more impactful for data than text. 3. Real Stories: Tabbed interface (HTML/JS) to present anecdotes without cluttering the page. Interaction: Click to switch stories. Justification: Better UX than a long list. 4. Fruits of Prayer: Styled HTML list with Unicode icons. Justification: Visually appealing and easy to scan. Library/Method: TailwindCSS, Chart.js, Vanilla JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background-color: #111827; /* gray-900 */
+        }
+        .neon-text {
+            color: #f0fdf4; /* green-50 */
+            text-shadow:
+                0 0 5px rgba(52, 211, 153, 0.7), /* emerald-400 */
+                0 0 10px rgba(52, 211, 153, 0.5),
+                0 0 20px rgba(52, 211, 153, 0.3);
+        }
+        .neon-border {
+            border: 1px solid;
+            box-shadow: 0 0 10px;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 320px;
+            width: 100%;
+            max-width: 320px;
+        }
+        .nav-link {
+            transition: color 0.3s, text-shadow 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #34d399; /* emerald-400 */
+            border-bottom-color: #34d399;
+            text-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
+        }
+    </style>
+</head>
+<body class="text-gray-300">
+
+    <header class="bg-gray-900/70 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-700/50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-lg font-bold text-emerald-400" style="text-shadow: 0 0 6px rgba(52, 211, 153, 0.7);">সালাতের গুরুত্ব</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#intro" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-300 border-b-2 border-transparent">ভূমিকা</a>
+                        <a href="#state" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-300 border-b-2 border-transparent">মানুষের অবস্থা</a>
+                        <a href="#crisis" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-300 border-b-2 border-transparent">বাস্তবতা</a>
+                        <a href="#stories" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-300 border-b-2 border-transparent">কাহিনী ও শিক্ষা</a>
+                        <a href="#fruits" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-300 border-b-2 border-transparent">সালাতের ফল</a>
+                        <a href="#conclusion" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-300 border-b-2 border-transparent">উপসংহার</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="intro" class="text-center pt-12 pb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-4 neon-text">হে সালাত ত্যাগকারী</h2>
+            <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">
+                শেখ খালিদ আল-রাশেদের এই মর্মস্পর্শী বক্তৃতাটি সালাতের গুরুত্ব এবং তা ত্যাগের ভয়াবহ পরিণতি সম্পর্কে একটি শক্তিশালী অনুস্মারক। সালাত ইসলামের অন্যতম স্তম্ভ, যা মুসলমানের জীবনকে রক্ষা করে এবং তাকে আল্লাহর নৈকট্য দান করে।
+            </p>
+        </section>
+
+        <section id="cure" class="mb-16">
+            <div class="bg-gray-800/50 rounded-xl p-8 md:p-12 border border-gray-700">
+                <h3 class="text-2xl md:text-3xl font-bold text-center mb-6 text-white">রোগ ও সমস্যার চিকিৎসা কী?</h3>
+                <p class="text-center text-gray-400 mb-8">বক্তৃতার শুরুতে শেখ এমন এক যুবকের কথা বলেন যিনি দুশ্চিন্তা, ব্যর্থতা এবং শারীরিক কষ্টে ভুগছিলেন। বহু চিকিৎসার পরেও কোনো সমাধান মেলেনি।</p>
+                <div id="cure-card" class="bg-gray-800 rounded-lg p-6 text-center transition-all duration-500 cursor-pointer border border-amber-500/30">
+                    <div id="problem">
+                        <p class="text-lg font-semibold text-amber-300">"আমার দুশ্চিন্তা অনেক, সমস্যা অনেক, ব্যথা আমার ঘুম কেড়ে নিয়েছে, আমি ঠিকমতো খেতে, পান করতে বা ঘুমাতে পারি না।"</p>
+                        <button onclick="revealCure()" class="mt-6 bg-emerald-600 text-white font-bold py-2 px-6 rounded-full hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-600/20 hover:shadow-emerald-500/40">এর চিকিৎসা কী?</button>
+                    </div>
+                    <div id="solution" class="hidden">
+                        <p class="text-2xl font-bold text-emerald-400 neon-text">"দিনে ও রাতে পাঁচ ওয়াক্ত সালাত"</p>
+                        <p class="mt-4 text-gray-300">"আল্লাহর শপথ, আমাদের সমস্যার সমাধান হবে না, আমাদের দুশ্চিন্তা দূর হবে না এবং আমাদের অবস্থার পরিবর্তন হবে না, যতক্ষণ না আমরা সালাতে অবিচল থাকি।"</p>
+                        <p class="mt-2 text-sm text-gray-500">(পুনরায় দেখতে এখানে ক্লিক করুন)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="state" class="mb-16 pt-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-white neon-text">সালাতের ক্ষেত্রে মানুষের অবস্থা</h3>
+                <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">শেখ খালিদ আল-রাশেদ তার বক্তৃতায় সালাতের প্রতি মুসলমানদের মনোভাবকে তিনটি প্রধান ভাগে ভাগ করেছেন। আসুন আমরা দেখি আমরা কোন দলের অন্তর্ভুক্ত।</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-800/50 rounded-xl p-6 hover:-translate-y-1 transition-all duration-300 neon-border border-red-500/60 text-red-500/60 hover:shadow-red-500/30">
+                    <h4 class="font-bold text-xl text-red-400 mb-3">প্রথম দল: সম্পূর্ণরূপে ত্যাগকারী</h4>
+                    <p class="text-gray-400">যারা দিনে বা রাতে কোনো সময়ই সালাত আদায় করে না। তাদের নাম মুসলিমদের মতো হলেও, তারা আল্লাহর আদেশ থেকে সম্পূর্ণ বিমুখ। তাদের জীবন আল্লাহর স্মরণ থেকে খালি।</p>
+                </div>
+                <div class="bg-gray-800/50 rounded-xl p-6 hover:-translate-y-1 transition-all duration-300 neon-border border-yellow-500/60 text-yellow-500/60 hover:shadow-yellow-500/30">
+                    <h4 class="font-bold text-xl text-yellow-400 mb-3">দ্বিতীয় দল: উদাসীন ও অনিয়মিত</h4>
+                    <p class="text-gray-400">তারা সালাত দেরিতে আদায় করে, ঘুমিয়ে থাকে, অলসতা করে, অথবা শুধু সুবিধামতো সময়ে পড়ে। তারা সালাতের নির্দিষ্ট সময়ের গুরুত্ব ভুলে গেছে এবং দুনিয়াবী কাজে মত্ত থাকে।</p>
+                </div>
+                <div class="bg-gray-800/50 rounded-xl p-6 hover:-translate-y-1 transition-all duration-300 neon-border border-green-500/60 text-green-500/60 hover:shadow-green-500/30">
+                    <h4 class="font-bold text-xl text-green-400 mb-3">তৃতীয় দল: অবিচল ও সংরক্ষণকারী</h4>
+                    <p class="text-gray-400">তারা সংখ্যায় খুবই নগণ্য। তারা বিছানা ও প্রবৃত্তির উপর বিজয়ী হয়ে আল্লাহর ডাকে সাড়া দেয়, বিশেষ করে ফজরের সালাতে। তারাই প্রকৃত সফলকাম।</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="crisis" class="mb-16 pt-16 bg-gray-900 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16 border-y border-gray-800">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-white neon-text">এক ভয়াবহ বাস্তবতা: ফজর সালাত</h3>
+                <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">উম্মাহর বর্তমান অবস্থার একটি ভয়াবহ চিত্র ফুটে ওঠে ফজরের সালাতের সময়। শেখ একটি উচ্চ বিদ্যালয়ের উদাহরণ দেন, যা আমাদের জন্য একটি বড় সতর্কবার্তা।</p>
+            </div>
+            <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                <div class="w-full md:w-1/2">
+                    <div class="chart-container">
+                        <canvas id="fajrChart"></canvas>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2">
+                     <h4 class="text-2xl font-bold mb-4 text-white">৮০০ ছাত্রের মধ্যে...</h4>
+                    <p class="text-gray-400 mb-4">একটি বিদ্যালয়ে ৮০০ জন ছাত্রের মধ্যে যখন জিজ্ঞাসা করা হয়েছিল কারা ফজরের সালাত জামায়াতে পড়েছে, তার ফলাফল ছিল হতাশাজনক।</p>
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 rounded-full mr-3" style="background-color: #34d399; box-shadow: 0 0 10px #34d399;"></div>
+                            <span class="font-semibold text-gray-200">মাত্র ২০ জন</span>
+                            <span class="text-gray-400 ml-2">সালাত আদায় করেছে।</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 rounded-full mr-3" style="background-color: #f87171; box-shadow: 0 0 10px #f87171;"></div>
+                            <span class="font-semibold text-gray-200">৭৮০ জনই</span>
+                            <span class="text-gray-400 ml-2">সালাত আদায় করেনি।</span>
+                        </div>
+                    </div>
+                    <p class="mt-6 text-lg italic text-gray-300">"বাস্তবতা কীভাবে পরিবর্তিত হবে বা অবস্থার উন্নতি হবে, যখন আমাদের উম্মাহ সালাত নষ্ট করে দিয়েছে!"</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="stories" class="mb-16 pt-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-white neon-text">কাহিনী ও শিক্ষা</h3>
+                <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">শেখ তার বক্তৃতায় কিছু বাস্তব ঘটনা তুলে ধরেছেন যা সালাত ত্যাগকারী এবং সালাত আদায়কারীদের পরিণতি স্পষ্টভাবে দেখায়।</p>
+            </div>
+            <div>
+                <div class="mb-4 flex flex-wrap justify-center border-b border-gray-700">
+                    <button class="tab-button active" onclick="openTab(event, 'story1')">তিন যুবকের ঘটনা</button>
+                    <button class="tab-button" onclick="openTab(event, 'story2')">সালাত ত্যাগকারী মৃত ব্যক্তি</button>
+                    <button class="tab-button" onclick="openTab(event, 'story3')">সালাত আদায়কারী মৃত ব্যক্তি</button>
+                </div>
+
+                <div id="story1" class="tab-content p-6 bg-gray-800/50 rounded-lg border border-gray-700">
+                    <h4 class="font-bold text-xl mb-3 text-emerald-400">চাকরির সন্ধানে তিন যুবক</h4>
+                    <p class="text-gray-400 leading-relaxed">শেখ তিনজন যুবকের সাথে দেখা করেন যারা চাকরির সন্ধানে যাচ্ছিল কিন্তু তাদের শিক্ষাগত যোগ্যতা ছিল নগণ্য। যখন তাদের সালাত সম্পর্কে জিজ্ঞাসা করা হয়, একজন বলে সে মোটেও সালাত পড়ে না, দ্বিতীয়জন শুধু জুম'আ পড়ে, আর তৃতীয়জন দিনে দুই ওয়াক্ত পড়ে। এটি সমাজের যুবকদের আধ্যাত্মিক অবস্থার একটি হতাশাজনক চিত্র তুলে ধরে। এর মূল শিক্ষা হলো, রিযিকের মালিক আল্লাহ এবং তাঁর আনুগত্য, বিশেষ করে সালাত, ছাড়া প্রকৃত সফলতা বা বরকত লাভ করা অসম্ভব।</p>
+                </div>
+
+                <div id="story2" class="tab-content p-6 bg-gray-800/50 rounded-lg border border-gray-700" style="display:none">
+                    <h4 class="font-bold text-xl mb-3 text-red-400">এক ভয়ংকর পরিণতি</h4>
+                    <p class="text-gray-400 leading-relaxed">এক যুবক মারা যাওয়ার পর যখন তাকে গোসল দেওয়া হচ্ছিল, তখন তার ফর্সা ত্বক তীব্র কালো হয়ে যায়। গোসলদানকারীরা ভয় পেয়ে যান। তার বাবা, যিনি বাইরে ধূমপান করছিলেন, স্বীকার করেন যে তার ছেলে সালাত পড়ত না। এটি সালাত ত্যাগের ভয়াবহ পরিণতির একটি বাস্তব উদাহরণ, যেখানে আল্লাহর অসন্তুষ্টি মৃত্যুর সময়ই প্রকাশ পেয়েছিল।</p>
+                </div>
+
+                <div id="story3" class="tab-content p-6 bg-gray-800/50 rounded-lg border border-gray-700" style="display:none">
+                    <h4 class="font-bold text-xl mb-3 text-green-400">এক সুন্দর সমাপ্তি</h4>
+                    <p class="text-gray-400 leading-relaxed">এর বিপরীতে, এক নেককার যুবক মারা যাওয়ার পর তার শরীর থেকে কস্তুরীর সুগন্ধ বের হতে থাকে, যদিও কোনো সুগন্ধি লাগানো হয়নি। কবরে নামানোর সময় অলৌকিকভাবে তাকে কবরে স্থাপন করা হয় এবং তার মুখে ছিল হাসি। এটি প্রমাণ করে যে, যারা আল্লাহর জন্য জীবনযাপন করে এবং সালাতে অবিচল থাকে, আল্লাহ তাদের জন্য দুনিয়া ও আখিরাতে সম্মানিত সমাপ্তি নির্ধারণ করেন।</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="fruits" class="mb-16 pt-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-white neon-text">মুত্তাকীদের জন্য সালাতের ফল</h3>
+                <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">যারা নিয়মিত ও নিষ্ঠার সাথে সালাত আদায় করে, তাদের জীবনে সালাত অসাধারণ ইতিবাচক ফল নিয়ে আসে।</p>
+            </div>
+            <div class="max-w-3xl mx-auto bg-gray-800/50 p-8 rounded-xl border border-gray-700">
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="text-emerald-400 text-2xl mr-4" style="text-shadow: 0 0 5px #34d399;">✓</span>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-200">আল্লাহভীতি ও তাকওয়া</h4>
+                            <p class="text-gray-400">সালাত তাদের রবের আযাব থেকে ভীত করে এবং তাদের অন্তরে আল্লাহভীতি সৃষ্টি করে।</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-emerald-400 text-2xl mr-4" style="text-shadow: 0 0 5px #34d399;">✓</span>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-200">আমানত ও অঙ্গীকার রক্ষা</h4>
+                            <p class="text-gray-400">তারা আমানত রক্ষা করে এবং তাদের দেওয়া প্রতিশ্রুতি পালন করে।</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-emerald-400 text-2xl mr-4" style="text-shadow: 0 0 5px #34d399;">✓</span>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-200">লজ্জাস্থানের হেফাজত</h4>
+                            <p class="text-gray-400">সালাত তাদের অশ্লীলতা থেকে বাঁচিয়ে রাখে এবং তারা তাদের লজ্জাস্থান সংরক্ষণ করে।</p>
+                        </div>
+                    </li>
+                     <li class="flex items-start">
+                        <span class="text-emerald-400 text-2xl mr-4" style="text-shadow: 0 0 5px #34d399;">✓</span>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-200">জান্নাতে সম্মান</h4>
+                            <p class="text-gray-400">আল্লাহ প্রতিশ্রুতি দিয়েছেন যে, যারা সালাতে স্থায়ী থাকবে "তারাই জান্নাতে সম্মানিত হবে।" (সূরা মা'আরিজ: ৩৫)</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="conclusion" class="pt-16 text-center">
+            <h3 class="text-3xl md:text-4xl font-bold text-white neon-text">শেষ কথা ও আহ্বান</h3>
+            <p class="mt-4 text-lg text-gray-400 max-w-3xl mx-auto">
+                "এই কথার পর কি আমরা তোমাকে মুসল্লিদের সাথে প্রথম কাতারে প্রতিযোগিতা করতে দেখব, নাকি তুমি পিছিয়ে পড়াদের সাথে পিছিয়েই থাকবে? সতর্ককারী তো সতর্ক করে দিয়েছে।"
+            </p>
+            <div class="mt-8 bg-gray-800 border-t-4 border-emerald-500 rounded-b text-emerald-100 px-4 py-6 shadow-lg shadow-emerald-500/10" role="alert">
+              <div class="flex items-center">
+                <div class="py-1">
+                    <span class="text-3xl text-emerald-400 mr-4">☝</span>
+                </div>
+                <div class="text-left">
+                  <p class="font-bold text-emerald-300">اللهم اجعلنا من الذين هم على صلاتهم دائمون، ومن الذين هم على صلاتهم يحافظون، ومن الذين هم في صلاتهم خاشعون.</p>
+                  <p class="text-sm mt-2 text-emerald-200">হে আল্লাহ, আমাদেরকে তাদের অন্তর্ভুক্ত করুন যারা তাদের সালাতের উপর স্থায়ী থাকে, যারা তাদের সালাত সংরক্ষণ করে এবং যারা তাদের সালাতে বিনয়ী থাকে।</p>
+                </div>
+              </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-gray-500 mt-16 border-t border-gray-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm">
+            <p>শেখ খালিদ আল-রাশেদের বক্তৃতার উপর ভিত্তি করে নির্মিত।</p>
+            <p>এই ইন্টারেক্টিভ সারসংক্ষেপটি শিক্ষামূলক উদ্দেশ্যে তৈরি।</p>
+        </div>
+    </footer>
+
+<script>
+    function revealCure() {
+        const problemDiv = document.getElementById('problem');
+        const solutionDiv = document.getElementById('solution');
+        const card = document.getElementById('cure-card');
+        
+        problemDiv.classList.add('hidden');
+        solutionDiv.classList.remove('hidden');
+        card.classList.remove('border-amber-500/30');
+        card.classList.add('border-emerald-500/50');
+        
+        card.onclick = function() {
+            problemDiv.classList.remove('hidden');
+            solutionDiv.classList.add('hidden');
+            card.classList.remove('border-emerald-500/50');
+            card.classList.add('border-amber-500/30');
+            card.onclick = null;
+        };
+    }
+
+    const fajrChartCtx = document.getElementById('fajrChart').getContext('2d');
+    const fajrChart = new Chart(fajrChartCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['ফজর সালাত আদায়কারী', 'আদায় করে না'],
+            datasets: [{
+                label: 'ছাত্র সংখ্যা',
+                data: [20, 780],
+                backgroundColor: [
+                    'rgba(52, 211, 153, 0.8)', // emerald-400
+                    'rgba(248, 113, 113, 0.8)'  // red-400
+                ],
+                borderColor: '#111827', // gray-900
+                borderWidth: 4,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(31, 41, 55, 0.8)', // gray-800
+                    titleColor: '#e5e7eb', // gray-200
+                    bodyColor: '#d1d5db', // gray-300
+                    bodyFont: {
+                        family: "'Noto Sans Bengali', sans-serif"
+                    },
+                    titleFont: {
+                         family: "'Noto Sans Bengali', sans-serif"
+                    }
+                }
+            }
+        }
+    });
+
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const id = entry.target.getAttribute('id');
+          const navLink = document.querySelector(`.nav-link[href="#${id}"]`);
+          if (navLink) {
+            if (entry.isIntersecting) {
+              document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+              navLink.classList.add('active');
+            }
+          }
+        });
+      }, { rootMargin: "-30% 0px -60% 0px", threshold: 0.1 });
+
+      document.querySelectorAll('section[id]').forEach((section) => {
+        observer.observe(section);
+      });
+      
+      document.querySelector('.tab-button').click();
+    });
+
+    const style = document.createElement('style');
+    style.textContent = `
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            color: #9ca3af; /* gray-400 */
+            transition: all 0.3s;
+        }
+        .tab-button:hover {
+            background-color: #1f293720; /* gray-800/20 */
+            color: #d1d5db; /* gray-300 */
+        }
+        .tab-button.active {
+            color: #34d399; /* emerald-400 */
+            border-bottom-color: #34d399; /* emerald-400 */
+        }
+    `;
+    document.head.append(style);
+
+</script>
+
+</body>
+</html>

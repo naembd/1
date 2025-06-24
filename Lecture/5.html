@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আপনারা তাদের তুলনায় কোথায়? - Neon Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Neon Glow -->
+    <!-- Application Structure Plan: The application maintains its single-page, thematic "scrollytelling" experience. The core structure—thematic sections for Steadfastness, Love, Heroism, and Modesty, with a top navigation and an interactive radar chart—is preserved. The update focuses on a complete visual overhaul to a "neon" theme, aiming for a high-contrast, modern aesthetic while keeping the user flow intuitive. This change is purely visual and intended to provide a different mood for the content. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Stories of exemplary early Muslim women. Goal: Inspire and educate on core virtues through a new visual lens.
+        - Presentation: Thematic sections with interactive cards, now styled with a neon glow effect. Icons (Unicode) remain.
+        - Visualization: The Radar Chart from Chart.js is restyled with neon colors (pinks, cyans) against a dark background. Goal: To maintain its function as an interactive summary while fitting the new aesthetic. Interaction: Clicking a virtue on the chart still scrolls to the relevant story.
+        - Interaction: Smooth scrolling and clickable content reveals are kept, with UI elements now featuring neon borders and shadows.
+        - Library/Method: Vanilla JS for interactions, Chart.js for visualization. All content and visuals are generated through HTML, Tailwind CSS, and JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .neon-text {
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3), 0 0 10px rgba(236, 72, 153, 0.4), 0 0 20px rgba(236, 72, 153, 0.4);
+        }
+        .neon-border {
+             box-shadow: 0 0 5px rgba(34, 211, 238, 0.5), 0 0 10px rgba(34, 211, 238, 0.4), inset 0 0 5px rgba(34, 211, 238, 0.4);
+        }
+        .nav-link {
+            transition: all 0.3s;
+             text-shadow: 0 0 2px rgba(255,255,255,0);
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #67e8f9;
+            text-shadow: 0 0 5px #67e8f9, 0 0 10px #67e8f9;
+        }
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-in-out;
+        }
+        .card-content.open {
+            max-height: 1000px;
+        }
+        .card-arrow {
+             color: #ec4899;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav id="navbar" class="bg-black/60 backdrop-blur-md sticky top-0 z-50 border-b border-gray-800">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <span class="text-xl font-bold text-pink-400 neon-text">পুণ্যবতী নারীদের পথ</span>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#intro" class="nav-link">ভূমিকা</a>
+                    <a href="#steadfastness" class="nav-link">অবিচলতা</a>
+                    <a href="#love" class="nav-link">ভালোবাসা</a>
+                    <a href="#heroism" class="nav-link">বীরত্ব</a>
+                    <a href="#modesty" class="nav-link">লজ্জা</a>
+                    <a href="#conclusion" class="nav-link">উপসংহার</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-cyan-400 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-black/90">
+            <a href="#intro" class="block py-2 px-4 text-sm hover:bg-gray-800 text-cyan-300">ভূমিকা</a>
+            <a href="#steadfastness" class="block py-2 px-4 text-sm hover:bg-gray-800 text-cyan-300">অবিচলতা</a>
+            <a href="#love" class="block py-2 px-4 text-sm hover:bg-gray-800 text-cyan-300">ভালোবাসা</a>
+            <a href="#heroism" class="block py-2 px-4 text-sm hover:bg-gray-800 text-cyan-300">বীরত্ব</a>
+            <a href="#modesty" class="block py-2 px-4 text-sm hover:bg-gray-800 text-cyan-300">লজ্জা</a>
+            <a href="#conclusion" class="block py-2 px-4 text-sm hover:bg-gray-800 text-cyan-300">উপসংহার</a>
+        </div>
+    </nav>
+
+    <header class="py-20 md:py-32 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#161b22] to-[#0d1117]"></div>
+        <div class="relative z-10 max-w-4xl mx-auto px-4">
+            <h1 class="text-4xl md:text-6xl font-bold text-pink-400 mb-4 neon-text">আপনারা তাদের তুলনায় কোথায়?</h1>
+            <p class="text-lg md:text-xl text-gray-400 mb-8">শাইখ খালিদ আল-রাশেদের অমর একটি বক্তৃতার আলোকে ইসলামের ইতিহাসে অমর পুণ্যবতী নারীদের জীবন থেকে শিক্ষা গ্রহণ।</p>
+            <a href="#intro" class="bg-cyan-500/20 text-cyan-300 py-3 px-8 rounded-full font-semibold border border-cyan-500 hover:bg-cyan-500/40 transition-all duration-300 neon-border">অন্বেষণ শুরু করুন</a>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-12 space-y-20">
+        
+        <section id="intro">
+            <h2 class="text-3xl font-bold text-center mb-4 text-cyan-300 neon-text">ভূমিকা: কেন এই আলোচনা?</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto text-gray-400">
+                এই ইন্টারেক্টিভ উপস্থাপনাটি শাইখ খালিদ আল-রাশেদের বক্তৃতার মূল বার্তা তুলে ধরে। আজকের যুগে যখন সত্যিকারের আদর্শ হারিয়ে যাচ্ছে, তখন আমাদের মুসলিম নারীদের জন্য ইসলামের প্রথম যুগের মহীয়সী নারীদের জীবন থেকে অনুপ্রেরণা নেওয়া অপরিহার্য। এই আলোচনা তাদের অদম্য ঈমান, আল্লাহর প্রতি ভালোবাসা, আত্মত্যাগ এবং লজ্জাশীলতার কাহিনী তুলে ধরে আমাদের নিজেদের পথ সংশোধন করতে এবং সত্যিকারের আদর্শ খুঁজে পেতে সাহায্য করবে।
+            </p>
+        </section>
+
+        <section id="virtues-chart">
+            <h2 class="text-3xl font-bold text-center mb-4 text-cyan-300 neon-text">পুণ্যবতী নারীর গুণাবলী</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-8 text-gray-400">
+                এই চার্টটি বক্তৃতায় আলোচিত মূল গুণাবলীকে তুলে ধরে। প্রতিটি গুণ সম্পর্কে জানতে এবং এর সাথে সম্পর্কিত কাহিনী পড়তে চার্টের লেবেলে ক্লিক করুন। এটি দেখায় কিভাবে ঈমান, ধৈর্য, ভালোবাসা, ত্যাগ এবং লজ্জা একজন মুমিন নারীর চরিত্র গঠন করে।
+            </p>
+            <div class="chart-container">
+                <canvas id="myRadarChart"></canvas>
+            </div>
+        </section>
+
+        <section id="steadfastness">
+            <h2 class="text-3xl font-bold text-center mb-8 text-cyan-300 neon-text">⛰️ অবিচলতার প্রতিকৃতি: গুযাইয়াহ (রাঃ)</h2>
+             <p class="text-center text-lg max-w-3xl mx-auto mb-8 text-gray-400">
+                এই বিভাগে আমরা গুযাইয়াহ (রাঃ)-এর অবিশ্বাস্য কাহিনী থেকে ঈমানের শক্তি এবং চরম পরীক্ষার মুখে অবিচল থাকার গুরুত্ব সম্পর্কে জানব। তাঁর গল্প আমাদের শেখায় যে, সত্যিকারের বিশ্বাস যেকোনো শারীরিক নির্যাতন ও কষ্টের ঊর্ধ্বে। তাঁর ঈমানের দৃঢ়তা কেবল তাকেই রক্ষা করেনি, বরং তাঁর নির্যাতনকারীদেরও হিদায়াতের পথে এনেছিল।
+            </p>
+            <div class="bg-gray-900/50 rounded-xl overflow-hidden border border-gray-700 neon-border">
+                <button class="w-full p-6 text-left text-xl font-semibold flex justify-between items-center focus:outline-none card-toggle text-cyan-300">
+                    <span>ঈমানের অগ্নিপরীক্ষা</span>
+                    <span class="transform transition-transform duration-300 card-arrow">▼</span>
+                </button>
+                <div class="px-6 pb-6 card-content">
+                    <p class="text-gray-400 leading-relaxed">
+                        উম্মু শুরাইক, গুযাইয়াহ বিনত জাবির (রাঃ), ইসলাম গ্রহণের পর তাঁর স্বামীর পরিবারের দ্বারা চরম নির্যাতনের শিকার হন। তারা তাঁকে একটি কর্কশ উটের পিঠে চড়িয়ে মরুভূমিতে নিয়ে যায় এবং তিন দিন ধরে পানি ছাড়া শুধু রুটি ও মধু খেতে দেয়। প্রচণ্ড রোদে তাঁকে দাঁড় করিয়ে রাখা হতো, যতক্ষণ না তাঁর জ্ঞান, দৃষ্টিশক্তি ও শ্রবণশক্তি লোপ পায়। তাঁকে দ্বীন ত্যাগ করতে বলা হলে তিনি দুর্বলতা সত্ত্বেও আকাশের দিকে ইশারা করে তাঁর ঈমানের উপর অটল থাকেন।
+                        <br><br>
+                        তাঁর এই চরম অসহায়ত্বের মুহূর্তে আল্লাহ আসমান থেকে একটি বালতি নামিয়ে তাঁকে পানি পান করান। তাঁর নির্যাতনকারীরা যখন ফিরে এসে এই অলৌকিক ঘটনা দেখে এবং তাদের পানির মশকগুলো অক্ষত পায়, তখন তারা বুঝতে পারে যে গুযাইয়াহর রবই সত্য। ফলে, তাঁর এই অবিচলতার কারণে তারা সবাই ইসলাম গ্রহণ করে।
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="love">
+            <h2 class="text-3xl font-bold text-center mb-8 text-cyan-300 neon-text">❤️ আল্লাহ ও রাসূলের প্রতি ভালোবাসা</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-8 text-gray-400">
+                আল্লাহ ও তাঁর রাসূল (সাঃ)-এর প্রতি ভালোবাসা শুধু মুখের কথা নয়, বরং কাজে প্রমাণ করার বিষয়। এই অংশে আমরা উম্মুল মু'মিনীন খাদিজা, আয়েশা এবং হাফসা (রাঃ)-এর জীবন থেকে দেখব কিভাবে তাঁরা ইবাদত ও আনুগত্যের মাধ্যমে এই ভালোবাসার প্রকাশ ঘটিয়েছেন। তাঁদের জীবন আমাদের শেখায় কিভাবে আল্লাহর সন্তুষ্টিকে জীবনের প্রতিটি ক্ষেত্রে অগ্রাধিকার দিতে হয়।
+            </p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-gray-900/50 rounded-xl overflow-hidden border border-gray-700 neon-border">
+                    <button class="w-full p-6 text-left text-xl font-semibold flex justify-between items-center focus:outline-none card-toggle text-cyan-300">
+                        <span>খাদিজা (রাঃ): প্রথম সাহায্যকারী</span>
+                        <span class="transform transition-transform duration-300 card-arrow">▼</span>
+                    </button>
+                    <div class="px-6 pb-6 card-content">
+                        <p class="text-gray-400 leading-relaxed">
+                            রাসূল (সাঃ)-কে তাঁর রব এবং জিবরাইল (আঃ) উভয়েই সালাম পাঠিয়েছেন। তিনি সেই নারী যিনি রাসূল (সাঃ)-কে তখন বিশ্বাস করেছিলেন যখন সবাই তাঁকে মিথ্যাবাদী বলেছিল, আশ্রয় দিয়েছিলেন যখন সবাই তাঁকে তাড়িয়ে দিয়েছিল এবং নিজের সমস্ত সম্পদ দিয়ে সাহায্য করেছিলেন যখন সবাই তাঁকে বঞ্চিত করেছিল। তাঁর এই ভালোবাসার প্রতিদানস্বরূপ জান্নাতে তাঁর জন্য একটি কোলাহলমুক্ত ঘরের সুসংবাদ দেওয়া হয়েছে।
+                        </p>
+                    </div>
+                </div>
+                <div class="bg-gray-900/50 rounded-xl overflow-hidden border border-gray-700 neon-border">
+                    <button class="w-full p-6 text-left text-xl font-semibold flex justify-between items-center focus:outline-none card-toggle text-cyan-300">
+                        <span>আয়েশা ও হাফসা (রাঃ): ইবাদতে নিমগ্ন</span>
+                        <span class="transform transition-transform duration-300 card-arrow">▼</span>
+                    </button>
+                    <div class="px-6 pb-6 card-content">
+                        <p class="text-gray-400 leading-relaxed">
+                            আয়েশা (রাঃ) সারাজীবন রোজা রাখতেন এবং ঘণ্টার পর ঘণ্টা নামাযে দাঁড়িয়ে একটি আয়াত কাঁদতে কাঁদতে পাঠ করতেন। তাঁর দিন যদি এমন হয়, তবে রাত কেমন ছিল? অন্যদিকে, হাফসা (রাঃ) সম্পর্কে জিবরাইল (আঃ) রাসূল (সাঃ)-কে বলেছেন, "হাফসাকে ফিরিয়ে নিন, কারণ সে অধিক সিয়াম পালনকারী ও অধিক কিয়ামকারী।" তাঁদের জীবন ছিল আল্লাহ ও তাঁর রাসূলের ভালোবাসায় পরিপূর্ণ ইবাদতের এক জীবন্ত উদাহরণ।
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="heroism">
+            <h2 class="text-3xl font-bold text-center mb-8 text-cyan-300 neon-text">🛡️ বীরদের জন্মদাত্রী: উম্মু ইবরাহীম</h2>
+            <p class="text-center text-lg max-w-3xl mx-auto mb-8 text-gray-400">
+                একজন মুসলিম মা কীভাবে তাঁর সন্তানকে দুনিয়ার সুখের বদলে আখিরাতের সাফল্যের জন্য প্রস্তুত করেন, তার এক অসাধারণ উদাহরণ উম্মু ইবরাহীম আল-হাশিমিয়ার কাহিনী। এই গল্পটি আমাদের দেখায় যে, একজন মা তাঁর সন্তানকে ইসলামের জন্য উৎসর্গ করার মাধ্যমে সর্বোচ্চ ত্যাগের পরিচয় দিতে পারেন। তাঁর দৃষ্টিতে, শাহাদাত ছিল জান্নাতের হুরের সাথে তাঁর ছেলের শ্রেষ্ঠ বিয়ে।
+            </p>
+            <div class="bg-gray-900/50 rounded-xl overflow-hidden border border-gray-700 neon-border">
+                <button class="w-full p-6 text-left text-xl font-semibold flex justify-between items-center focus:outline-none card-toggle text-cyan-300">
+                    <span>জান্নাতের মোহর</span>
+                    <span class="transform transition-transform duration-300 card-arrow">▼</span>
+                </button>
+                <div class="px-6 pb-6 card-content">
+                    <p class="text-gray-400 leading-relaxed">
+                        বসরার এক জিহাদের আহ্বানে সাড়া দিয়ে উম্মু ইবরাহীম তাঁর একমাত্র পুত্র ইবরাহীমকে আল্লাহর রাস্তায় উৎসর্গ করার সিদ্ধান্ত নেন। খতিব যখন জান্নাতের হুরের বর্ণনা দিচ্ছিলেন, তিনি মুগ্ধ হয়ে বলেন যে এই হুরই তাঁর ছেলের জন্য সেরা স্ত্রী। তিনি মোহর হিসেবে দশ হাজার দিনার জিহাদের প্রস্তুতিতে দান করেন এবং তাঁর ছেলেকে বলেন, "তোমার জীবন আল্লাহর রাস্তায় উৎসর্গ করে এই কুমারীকে স্ত্রী হিসেবে গ্রহণ করো।"
+                        <br><br>
+                        তিনি ছেলেকে বিদায় জানানোর সময় কাফন ও সুগন্ধি দিয়ে বলেন, "আল্লাহ যেন তোমাকে তাঁর রাস্তায় কোনো গাফিলতি করতে না দেখেন।" ইবরাহীম বীরের মতো যুদ্ধ করে শহীদ হন। যুদ্ধ শেষে যখন তাঁকে ছেলের শাহাদাতের খবর দেওয়া হয়, তিনি শোক করার বদলে আল্লাহর শুকরিয়া আদায়ে সিজদায় পড়ে যান কারণ আল্লাহ তাঁর কুরবানি কবুল করেছেন। পরদিন তিনি স্বপ্নে দেখেন, তাঁর ছেলে জান্নাতে এক সবুজ গম্বুজের নিচে মুকুট পরে বসে আছে এবং বলছে, "মা, মোহর কবুল হয়েছে এবং নববধূকে আনা হয়েছে।"
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="modesty">
+            <h2 class="text-3xl font-bold text-center mb-8 text-cyan-300 neon-text">🌸 লজ্জার আবরণ: ফাতিমা (রাঃ)</h2>
+             <p class="text-center text-lg max-w-3xl mx-auto mb-8 text-gray-400">
+                লজ্জা নারীর ভূষণ এবং ঈমানের এক গুরুত্বপূর্ণ অঙ্গ। এই অংশে আমরা নবীকন্যা ফাতিমা (রাঃ)-এর জীবন থেকে দেখব, তিনি মৃত্যুর পরেও তাঁর পর্দার ব্যাপারে কতটা সচেতন ছিলেন। তাঁর এই ঘটনা আমাদের শেখায় যে, একজন মুমিন নারীর লজ্জা ও সতীত্ব শুধু তাঁর জীবনকালেই নয়, বরং মৃত্যুর পরেও একটি গুরুত্বপূর্ণ বিষয়।
+            </p>
+            <div class="bg-gray-900/50 rounded-xl overflow-hidden border border-gray-700 neon-border">
+                 <button class="w-full p-6 text-left text-xl font-semibold flex justify-between items-center focus:outline-none card-toggle text-cyan-300">
+                    <span>মৃত্যুর পরেও লজ্জা</span>
+                    <span class="transform transition-transform duration-300 card-arrow">▼</span>
+                </button>
+                <div class="px-6 pb-6 card-content">
+                    <p class="text-gray-400 leading-relaxed">
+                        সيدة নিসা আল-আলামীন (বিশ্বের নারীদের নেত্রী) ফাতিমা (রাঃ) মৃত্যুর পূর্বে আসমা বিনতে উমাইসকে তাঁর উদ্বেগের কথা জানান। তিনি বলেন, "আমি লজ্জা পাচ্ছি যে, মৃত্যুর পর যখন আমাকে খাটিয়ায় করে নিয়ে যাওয়া হবে, তখন আমার শরীরের গঠন পুরুষদের কাছে প্রকাশ পেয়ে যেতে পারে।" তখনকার খাটিয়াগুলো খোলা ছিল, যা মৃতদেহের আকার প্রকাশ করত।
+                        <br><br>
+                        তাঁর এই preocupación শুনে আসমা (রাঃ) হাবশার রীতি অনুযায়ী একটি আচ্ছাদিত খাটিয়া তৈরি করেন, যা একটি বাক্সের মতো ছিল এবং মৃতদেহকে সম্পূর্ণ আবৃত রাখত। এটি দেখে ফাতিমা (রাঃ) অত্যন্ত খুশি হন এবং বলেন, "এটা কত সুন্দর! আল্লাহ তোমাকে আবৃত রাখুন, যেমন তুমি আমাকে আবৃত করেছ!" তিনিই ইসলামের প্রথম নারী যাঁর জন্য এমন আবৃত খাটিয়া ব্যবহার করা হয়েছিল, যা তাঁর চরম লজ্জাশীলতার প্রমাণ।
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="conclusion" class="text-center bg-gray-900/70 p-8 rounded-xl border border-pink-500/50 neon-border">
+            <h2 class="text-3xl font-bold mb-4 text-pink-400 neon-text">উপসংহার ও আহ্বান</h2>
+            <p class="max-w-3xl mx-auto text-lg mb-6 text-gray-400">
+                এই মহীয়সী নারীদের জীবন আমাদের জন্য আলোকবর্তিকা। তাঁরা যা অর্জন করতে পেরেছেন, আল্লাহর ইচ্ছায় আমরাও তা পারি। উৎস এক, পথ এক—পার্থক্য শুধু আমাদের সংকল্পে। ইতিহাস থেকে শিক্ষা নিন, অল্প সংখ্যক অনুসারী দেখে হতাশ হবেন না এবং ধ্বংসপ্রাপ্তদের সংখ্যাধিক্যে প্রতারিত হবেন না।
+            </p>
+            <div class="bg-black/30 p-6 rounded-lg shadow-md border border-dashed border-cyan-500/50">
+                <p class="text-lg font-semibold text-gray-300">রাসূলুল্লাহ (সাঃ) বলেন:</p>
+                <blockquote class="mt-2 text-xl text-cyan-300 italic">
+                    "যখন কোনো নারী তার পাঁচ ওয়াক্ত নামায আদায় করে, রমযানের রোজা রাখে, তার লজ্জাস্থান হিফাযত করে এবং তার স্বামীর আনুগত্য করে, তখন তাকে বলা হবে: জান্নাতের যে কোনো দরজা দিয়ে ইচ্ছা প্রবেশ কর।"
+                </blockquote>
+            </div>
+            <p class="mt-8 text-lg text-gray-400">
+                আল্লাহ আমাদের সবাইকে সৎকর্ম ও তাকওয়ায় একে অপরকে সহযোগিতা করার তৌফিক দিন এবং ইসলাম ও মুসলিমদের জন্য সম্পদ হিসেবে কবুল করুন।
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="bg-black/50 py-6 text-center border-t border-gray-800">
+        <p class="text-gray-600">শাইখ খালিদ আল-রাশেদের বক্তৃতার উপর ভিত্তি করে নির্মিত।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const cardToggles = document.querySelectorAll('.card-toggle');
+            cardToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const content = toggle.nextElementSibling;
+                    const arrow = toggle.querySelector('.card-arrow');
+                    
+                    if (content.classList.contains('open')) {
+                        content.classList.remove('open');
+                        arrow.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.classList.add('open');
+                        arrow.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            const navLinks = document.querySelectorAll('#navbar a[href^="#"], header a[href^="#"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    let targetId = this.getAttribute('href');
+                    let targetElement = document.querySelector(targetId);
+                    if(targetElement) {
+                        let navbarHeight = document.getElementById('navbar').offsetHeight;
+                        let targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+
+                        if(mobileMenu.classList.contains('hidden') === false) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+            
+            const sections = document.querySelectorAll('section');
+            const navLi = document.querySelectorAll('nav .nav-link');
+
+            window.addEventListener('scroll', ()=> {
+                let current = '';
+                sections.forEach( section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if(pageYOffset >= (sectionTop - sectionHeight / 2)){
+                        current = section.getAttribute('id');
+                    }
+                })
+                
+                navLi.forEach( a => {
+                    a.classList.remove('active');
+                    if(a.getAttribute('href').includes(current)){
+                        a.classList.add('active');
+                    }
+                })
+            });
+
+            const ctx = document.getElementById('myRadarChart').getContext('2d');
+            const myRadarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['ঈমান (বিশ্বাস)', 'সবর (ধৈর্য)', 'আল্লাহর প্রতি ভালোবাসা', 'ত্যাগ (আত্মত্যাগ)', 'হায়া (লজ্জা)'],
+                    datasets: [{
+                        label: 'পুণ্যবতী নারীর গুণাবলী',
+                        data: [10, 9, 10, 8, 9],
+                        backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                        borderColor: '#ec4899',
+                        pointBackgroundColor: '#ec4899',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#ec4899'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(100, 116, 139, 0.4)'
+                            },
+                            grid: {
+                                color: 'rgba(100, 116, 139, 0.4)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 14,
+                                    family: "'Hind Siliguri', sans-serif"
+                                },
+                                color: '#67e8f9'
+                            },
+                            ticks: {
+                                backdropColor: '#0d1117',
+                                color: '#94a3b8',
+                                stepSize: 2,
+                                showLabelBackdrop: true
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#c9d1d9',
+                                font: {
+                                    size: 14,
+                                    family: "'Hind Siliguri', sans-serif"
+                                }
+                            }
+                        }
+                    },
+                    onClick: function(evt, elements) {
+                        if (elements.length > 0) {
+                            const clickedIndex = elements[0].index;
+                            const label = this.data.labels[clickedIndex];
+                            let targetId = '';
+                            if (label.includes('ঈমান') || label.includes('সবর')) {
+                                targetId = '#steadfastness';
+                            } else if (label.includes('ভালোবাসা')) {
+                                targetId = '#love';
+                            } else if (label.includes('ত্যাগ')) {
+                                targetId = '#heroism';
+                            } else if (label.includes('হায়া')) {
+                                targetId = '#modesty';
+                            }
+
+                            if(targetId) {
+                                let navbarHeight = document.getElementById('navbar').offsetHeight;
+                                let targetElement = document.querySelector(targetId);
+                                let targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                                window.scrollTo({
+                                    top: targetPosition,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>

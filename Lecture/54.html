@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echoes of Fallujah | প্রতিধ্বনির শহর</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Noto+Sans+Bengali:wght@400;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for typography and animations */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Dark Gray */
+            color: #F3F4F6; /* Light Gray */
+        }
+        .font-arabic {
+            font-family: 'Noto Naskh Arabic', serif;
+        }
+        .font-bengali {
+            font-family: 'Noto Sans Bengali', sans-serif;
+        }
+        .hero-section {
+            background-image: linear-gradient(rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 1)), url('https://placehold.co/1920x1080/1a202c/ffffff?text=Fallujah+Silhouette');
+            background-size: cover;
+            background-position: center;
+        }
+        /* Neon text effect */
+        .neon-text {
+            color: #f3f4f6; /* White */
+            text-shadow: 
+                0 0 7px rgba(103, 232, 249, 0.9),
+                0 0 10px rgba(103, 232, 249, 0.7),
+                0 0 21px rgba(103, 232, 249, 0.5),
+                0 0 42px rgba(6, 182, 212, 0.5);
+        }
+        .neon-heading {
+            color: #67e8f9; /* Lighter Cyan */
+            text-shadow: 0 0 8px rgba(34, 211, 238, 0.8);
+        }
+        
+        .theme-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+            border: 1px solid #374151; /* Gray-700 */
+        }
+        /* Neon effect on card hover */
+        .theme-card:hover {
+            transform: translateY(-10px);
+            border-color: #67e8f9;
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.5), 0 0 8px rgba(103, 232, 249, 0.4);
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transition: transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+
+    <!-- Hero Section -->
+    <header class="hero-section h-screen flex flex-col items-center justify-center text-center p-6">
+        <h1 class="text-4xl md:text-7xl font-bold tracking-wider font-bengali neon-text">ফালুজার প্রতিধ্বনি</h1>
+        <p class="text-lg md:text-2xl text-gray-300 mt-4 font-arabic">رجال الفلوجة</p>
+        <p class="mt-8 max-w-2xl text-gray-400 text-md md:text-lg">
+            "যত শত্রুই হোক আর যতই অহংকার করুক, আল্লাহ তাঁর বান্দাদের সাহায্যকারী, তাঁর সেনাবাহিনীকে সম্মানিত করেন এবং তাঁর শত্রুদের অপমানিত করেন।"
+        </p>
+        <div class="mt-12 animate-bounce">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-20 px-6 md:px-12 lg:px-24">
+        
+        <!-- Introduction -->
+        <section class="max-w-4xl mx-auto text-center mb-20 fade-in">
+            <h2 class="text-3xl md:text-4xl font-bold text-white font-bengali">ভাষণের মূল বিষয়বস্তু</h2>
+            <p class="mt-4 text-gray-400">শেখ খালিদ আল-রাশেদের ভাষণের মূল বার্তাগুলো এখানে তুলে ধরা হলো, যা ফালুজার মানুষের সাহস, বিশ্বাস এবং সংগ্রামের কথা বলে। প্রতিটি কার্ডে ক্লিক করে বিস্তারিত জানুন।</p>
+        </section>
+
+        <!-- Interactive Theme Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            
+            <!-- Card 1: The Stand of Fallujah -->
+            <div class="theme-card bg-gray-800 rounded-lg p-6 cursor-pointer fade-in" onclick="openModal('modal1')">
+                <h3 class="text-xl font-bold font-bengali neon-heading">ফালুজার প্রতিরোধ</h3>
+                <p class="font-arabic text-lg mt-2 text-gray-300">الصمود الأسطوري</p>
+                <p class="mt-4 text-gray-400">শহরের মানুষের বীরত্বপূর্ণ প্রতিরোধের গল্প, যারা সীমিত সামর্থ্য নিয়েও বিশ্বের সবচেয়ে শক্তিশালী সেনাবাহিনীর বিরুদ্ধে রুখে দাঁড়িয়েছিল।</p>
+            </div>
+
+            <!-- Card 2: A Crusader War -->
+            <div class="theme-card bg-gray-800 rounded-lg p-6 cursor-pointer fade-in" onclick="openModal('modal2')">
+                <h3 class="text-xl font-bold font-bengali neon-heading">একটি ধর্মযুদ্ধ</h3>
+                <p class="font-arabic text-lg mt-2 text-gray-300">حرب صليبية</p>
+                <p class="mt-4 text-gray-400">এই যুদ্ধকে গণতন্ত্র বা মানবাধিকারের জন্য নয়, বরং ইসলামের বিরুদ্ধে একটি "ক্রুসেডার যুদ্ধ" হিসেবে আখ্যায়িত করা হয়েছে।</p>
+            </div>
+
+            <!-- Card 3: The Sniper's Story -->
+            <div class="theme-card bg-gray-800 rounded-lg p-6 cursor-pointer fade-in" onclick="openModal('modal3')">
+                <h3 class="text-xl font-bold font-bengali neon-heading">স্নাইপারের গল্প</h3>
+                <p class="font-arabic text-lg mt-2 text-gray-300">قناص الفلوجة</p>
+                <p class="mt-4 text-gray-400">একজন একা স্নাইপারের অবিশ্বাস্য কাহিনী, যিনি একটি সম্পূর্ণ মেরিন সেনাদলকে দিনভর আটকে রেখেছিলেন, যা ঈমানের শক্তির প্রতীক।</p>
+            </div>
+
+            <!-- Card 4: The Power of Faith -->
+            <div class="theme-card bg-gray-800 rounded-lg p-6 cursor-pointer fade-in" onclick="openModal('modal4')">
+                <h3 class="text-xl font-bold font-bengali neon-heading">ঈমানের শক্তি</h3>
+                <p class="font-arabic text-lg mt-2 text-gray-300">قوة الإيمان</p>
+                <p class="mt-4 text-gray-400">বিজয় সংখ্যা বা অস্ত্রের উপর নির্ভর করে না, বরং আল্লাহর প্রতি গভীর বিশ্বাস এবং অটল ঈমানের উপর নির্ভর করে—এই বার্তাটিই মূল চালিকাশক্তি।</p>
+            </div>
+
+            <!-- Card 5: Media's Role -->
+            <div class="theme-card bg-gray-800 rounded-lg p-6 cursor-pointer fade-in" onclick="openModal('modal5')">
+                <h3 class="text-xl font-bold font-bengali neon-heading">গণমাধ্যমের ভূমিকা</h3>
+                <p class="font-arabic text-lg mt-2 text-gray-300">خيانة الإعلام</p>
+                <p class="mt-4 text-gray-400">আরব গণমাধ্যমের বিশ্বাসঘাতকতা এবং সত্যকে বিকৃত করে শত্রুদের পক্ষাবলম্বনের তীব্র সমালোচনা করা হয়েছে।</p>
+            </div>
+            
+            <!-- Card 6: A Call to the Ummah -->
+            <div class="theme-card bg-gray-800 rounded-lg p-6 cursor-pointer fade-in" onclick="openModal('modal6')">
+                <h3 class="text-xl font-bold font-bengali neon-heading">উম্মাহর প্রতি আহ্বান</h3>
+                <p class="font-arabic text-lg mt-2 text-gray-300">دعاء للأمة</p>
+                <p class="mt-4 text-gray-400">ভাষণের শেষে মুসলিম উম্মাহর ঐক্য, জাগরণ এবং আল্লাহর কাছে সাহায্য ও বিজয়ের জন্য আন্তরিক প্রার্থনা করা হয়েছে।</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Parallax Section for Sniper Story -->
+    <section class="min-h-[70vh] bg-fixed bg-cover bg-center flex items-center justify-center text-center p-6 fade-in" style="background-image: linear-gradient(rgba(17, 24, 39, 0.7), rgba(17, 24, 39, 0.7)), url('https://placehold.co/1200x800/2d3748/ffffff?text=Ruined+Building');">
+        <div class="max-w-3xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-white font-arabic neon-text">وَمَا رَمَيْتَ إِذْ رَمَيْتَ وَلَكِنَّ اللَّهَ رَمَى</h2>
+            <p class="mt-4 text-xl md:text-2xl text-gray-200 font-bengali">"আর তুমি যখন নিক্ষেপ করেছিলে, তখন তুমি নিক্ষেপ করোনি, বরং আল্লাহই নিক্ষেপ করেছিলেন।"</p>
+            <p class="mt-6 text-gray-300">(সূরা আল-আনফাল: ১৭)</p>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-center py-10 px-6">
+        <p class="text-gray-400">This page is an artistic interpretation of the sermon "Men of Fallujah" by Sheikh Khalid Al-Rashed.</p>
+        <p class="text-gray-500 mt-2">Created for educational and reflective purposes.</p>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Modal 1: The Stand of Fallujah -->
+    <div id="modal1" class="modal-overlay fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50">
+        <div class="modal-content bg-gray-800 rounded-lg max-w-2xl w-full p-8 relative transform scale-95">
+            <h3 class="text-2xl font-bold font-bengali neon-heading">ফালুজার প্রতিরোধ</h3>
+            <p class="font-arabic text-xl mt-2 text-gray-300">"يا لهم من أغبياء حين ظنوا أن الفلوجة كالنجف وكربلاء، لقد انطلقت المقاومة... أقوى مما كانت عليه من قبل"</p>
+            <p class="mt-4 text-gray-400 font-bengali">তারা কতই না বোকা ছিল যখন ভেবেছিল ফালুজা নজফ বা কারবালার মতো হবে। প্রতিরোধ আন্দোলন আগের চেয়েও শক্তিশালী হয়ে উঠেছে। ফালুজা ধৈর্য এবং সাহসিকতার এক অনন্য উদাহরণ স্থাপন করেছে।</p>
+            <button onclick="closeModal('modal1')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Modal 2: A Crusader War -->
+    <div id="modal2" class="modal-overlay fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50">
+        <div class="modal-content bg-gray-800 rounded-lg max-w-2xl w-full p-8 relative transform scale-95">
+            <h3 class="text-2xl font-bold font-bengali neon-heading">একটি ধর্মযুদ্ধ</h3>
+            <p class="font-arabic text-xl mt-2 text-gray-300">"سمحوا بذلك ليقولوا لنا: إنها حرب صليبية ولكنكم لا تفهمون!"</p>
+            <p class="mt-4 text-gray-400 font-bengali">তারা আমাদের এটা বলার জন্যই (ছবিগুলো) প্রচারের অনুমতি দিয়েছে: 'এটা একটা ক্রুসেড, কিন্তু তোমরা বুঝতে পারছ না!' ভাষণে জোর দেওয়া হয় যে এই আগ্রাসনের মূল উদ্দেশ্য ছিল ধর্মীয়, রাজনৈতিক নয়।</p>
+            <button onclick="closeModal('modal2')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Modal 3: The Sniper's Story -->
+    <div id="modal3" class="modal-overlay fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50">
+        <div class="modal-content bg-gray-800 rounded-lg max-w-2xl w-full p-8 relative transform scale-95">
+            <h3 class="text-2xl font-bold font-bengali neon-heading">স্নাইপারের গল্প</h3>
+            <p class="font-arabic text-xl mt-2 text-gray-300">"قناص واحد أبقى كتيبة كاملة دون حراك وليوم كامل"</p>
+            <p class="mt-4 text-gray-400 font-bengali">একজন স্নাইপার একটি সম্পূর্ণ সেনাদলকে পুরো একদিন ধরে অচল করে রেখেছিল। এই ঘটনাটি তুলে ধরে যে, সংখ্যা নয়, বরং আল্লাহর ওপর বিশ্বাস এবং অটল মনোবলই বিজয়ের মূল চাবিকাঠি। এটি ফালুজার প্রতিরোধের অন্যতম স্মরণীয় অধ্যায়।</p>
+            <button onclick="closeModal('modal3')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Add other modals similarly -->
+    <div id="modal4" class="modal-overlay hidden">...</div>
+    <div id="modal5" class="modal-overlay hidden">...</div>
+    <div id="modal6" class="modal-overlay hidden">...</div>
+
+
+    <script>
+        // JavaScript for modal functionality and animations
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if(modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                // Trigger animation
+                setTimeout(() => {
+                    modal.querySelector('.modal-content').classList.add('scale-100');
+                    modal.querySelector('.modal-content').classList.remove('scale-95');
+                }, 50);
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if(modal) {
+                modal.querySelector('.modal-content').classList.remove('scale-100');
+                modal.querySelector('.modal-content').classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }, 300);
+            }
+        }
+        
+        // Close modal on escape key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay').forEach(modal => {
+                    if (!modal.classList.contains('hidden')) {
+                        closeModal(modal.id);
+                    }
+                });
+            }
+        });
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(event) {
+                if (event.target === this) {
+                    closeModal(this.id);
+                }
+            });
+        });
+        
+        // Copy modal content for modals 4, 5, 6
+        document.getElementById('modal4').innerHTML = document.getElementById('modal1').innerHTML.replace(/modal1/g, 'modal4').replace('ফালুজার প্রতিরোধ', 'ঈমানের শক্তি').replace(/<h3 class=".*?">/, '<h3 class="text-2xl font-bold font-bengali neon-heading">ঈমানের শক্তি</h3>').replace(/<p class="font-arabic.*?<\/p>/, '<p class="font-arabic text-xl mt-2 text-gray-300">"كَمْ مِنْ فِئَةٍ قَلِيلَةٍ غَلَبَتْ فِئَةً كَثِيرَةً بِإِذْنِ اللَّهِ"</p>').replace(/<p class="mt-4.*?<\/p>/, '<p class="mt-4 text-gray-400 font-bengali">"কত ছোট দল আল্লাহর হুকুমে বড় দলকে পরাজিত করেছে।" বিজয় আসে আল্লাহর পক্ষ থেকে, সংখ্যার শক্তিতে নয়। এই বিশ্বাসই ছিল মুজাহিদদের সবচেয়ে বড় অস্ত্র।</p>');
+        document.getElementById('modal5').innerHTML = document.getElementById('modal1').innerHTML.replace(/modal1/g, 'modal5').replace('ফালুজার প্রতিরোধ', 'গণমাধ্যমের ভূমিকা').replace(/<h3 class=".*?">/, '<h3 class="text-2xl font-bold font-bengali neon-heading">গণমাধ্যমের ভূমিকা</h3>').replace(/<p class="font-arabic.*?<\/p>/, '<p class="font-arabic text-xl mt-2 text-gray-300">"إن الإعلام العربي إعلام خائن جبان، وأنه لا يستطيع أن يقول الحق"</p>').replace(/<p class="mt-4.*?<\/p>/, '<p class="mt-4 text-gray-400 font-bengali">আরব গণমাধ্যমকে বিশ্বাসঘাতক ও কাপুরুষ হিসেবে চিহ্নিত করা হয়েছে, যারা সত্যকে ধামাচাপা দিয়ে মুসলিমদের মনোবল ভাঙার চেষ্টা করেছে এবং শত্রুদের এজেন্ডা বাস্তবায়নে সহায়তা করেছে।</p>');
+        document.getElementById('modal6').innerHTML = document.getElementById('modal1').innerHTML.replace(/modal1/g, 'modal6').replace('ফালুজার প্রতিরোধ', 'উম্মাহর প্রতি আহ্বান').replace(/<h3 class=".*?">/, '<h3 class="text-2xl font-bold font-bengali neon-heading">উম্মাহর প্রতি আহ্বান</h3>').replace(/<p class="font-arabic.*?<\/p>/, '<p class="font-arabic text-xl mt-2 text-gray-300">"اللهم انصر المسلمين في كل مكان، اللهم أيدهم في الفلوجة وفي كل مكان"</p>').replace(/<p class="mt-4.*?<\/p>/, '<p class="mt-4 text-gray-400 font-bengali">হে আল্লাহ, সকল স্থানে মুসলিমদের সাহায্য করুন। হে আল্লাহ, ফালুজায় এবং প্রত্যেক স্থানে তাদের সমর্থন করুন। ভাষণের সমাপ্তি ঘটে বিশ্বজুড়ে নির্যাতিত মুসলিমদের জন্য একটি আবেগঘন দোয়া দিয়ে।</p>');
+
+
+        // Intersection Observer for fade-in animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ঈমানের ইমারত: একটি মজবুত ভিত্তি</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+                max-height: 400px;
+            }
+        }
+        .flow-arrow {
+            position: relative;
+            width: 100%;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flow-arrow::after {
+            content: '▼';
+            font-size: 2rem;
+            color: #90CDF4;
+            animation: bounce 2s infinite;
+        }
+        .flow-arrow.up::after {
+            content: '▲';
+            color: #68D391;
+        }
+         @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <header class="bg-[#004AAD] text-white p-6 text-center shadow-lg">
+        <h1 class="text-4xl font-bold">ঈমানের ইমারত: একটি মজবুত ভিত্তি</h1>
+        <p class="mt-2 text-lg text-blue-200">শায়খ খালিদ আল-রাশেদের 'আল-বুনইয়ান আল-মারসুস' থেকে অনুপ্রাণিত</p>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-[#004AAD] mb-4">নির্মাণ বনাম ধ্বংস</h2>
+                <p class="mb-4">ঈমান এবং সৎকর্ম করা একটি ইমারত নির্মাণের মতো, যার জন্য প্রয়োজন কঠোর পরিশ্রম ও অধ্যাবসায়। প্রতিটি ভালো কাজ এই ইমারতকে শক্তিশালী করে।</p>
+                <p>বিপরীতে, গুনাহ ও পাপাচার হলো ধ্বংসের উপকরণের মতো, যা মুহূর্তের মধ্যে সেই কষ্টের গড়া ইমারতকে ধুলোয় মিশিয়ে দিতে পারে। নির্মাণ করা কঠিন, কিন্তু ধ্বংস করা সহজ।</p>
+            </div>
+
+            <div class="flex justify-around items-center text-center">
+                <div class="p-4">
+                    <span class="text-6xl">🏢</span>
+                    <p class="mt-2 font-semibold text-green-600">নির্মাণ (সৎকর্ম)</p>
+                </div>
+                <div class="p-4">
+                     <span class="text-6xl">💥</span>
+                    <p class="mt-2 font-semibold text-red-600">ধ্বংস (পাপ)</p>
+                </div>
+            </div>
+        </div>
+
+        <section class="mt-12">
+            <h2 class="text-3xl font-bold text-center text-[#004AAD] mb-8">ঈমানের মূল ভিত্তি ও শক্তি</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold mb-3">ঈমানের উপাদান</h3>
+                    <p>ঈমান কেবল একটি ধারণা নয়, এটি একটি পরিপূর্ণ ব্যবস্থা যা তিনটি মূল স্তম্ভের উপর দাঁড়িয়ে আছে। এই স্তম্ভগুলো যত শক্তিশালী হবে, ঈমানের ইমারত তত মজবুত হবে।</p>
+                     <div class="chart-container mt-4">
+                        <canvas id="imanComponentsChart"></canvas>
+                    </div>
+                    <button id="learnMoreImanComponentsBtn" class="mt-4 bg-[#0079FF] text-white px-4 py-2 rounded-md shadow hover:bg-blue-600 transition-colors">✨ আরও জানুন</button>
+                    <div id="imanComponentsLLMOutput" class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md text-gray-700 hidden"></div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-xl font-bold mb-3">শক্তি ও দুর্বলতার পার্থক্য</h3>
+                    <p>কেন একজন ব্যক্তি ফজরের আযানে জেগে ওঠে আর অন্যজন গভীর ঘুমে আচ্ছন্ন থাকে? পার্থক্যটি হলো তাদের অন্তরে থাকা ঈমানের পরিমাণে। শক্তিশালী ঈমান ব্যক্তিকে আল্লাহর আহ্বানে সাড়া দিতে বাধ্য করে, ঠিক যেমন মজবুত ভিত্তি একটি ইমারতকে স্থির রাখে। দুর্বল ঈমান ব্যক্তিকে অলস ও উদাসীন করে তোলে, যা ইমারতের পতনের কারণ হয়।</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-12 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-3xl font-bold text-center text-[#004AAD] mb-2">ঈমানের দুর্বলতার লক্ষণ</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8">যখন দুনিয়ার ক্ষতি আখিরাতের ক্ষতির চেয়ে বেশি চিন্তার কারণ হয়, তখন বুঝতে হবে ঈমানের ভিত্তিতে ফাটল ধরেছে। একজন মুমিনের প্রধান চিন্তা হওয়া উচিত তার পরকালের জীবন।</p>
+            <div class="chart-container">
+                <canvas id="concernsChart"></canvas>
+            </div>
+            <button id="learnMoreWeakImanBtn" class="mt-4 bg-[#0079FF] text-white px-4 py-2 rounded-md shadow hover:bg-blue-600 transition-colors block mx-auto">✨ আরও জানুন</button>
+            <div id="weakImanLLMOutput" class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md text-gray-700 hidden"></div>
+        </section>
+
+        <section class="mt-12">
+             <h2 class="text-3xl font-bold text-center text-[#004AAD] mb-8">ঈমানের উত্থান ও পতন</h2>
+             <p class="text-center max-w-2xl mx-auto mb-8">ঈমান স্থির থাকে না। এটি প্রতিনিয়ত বাড়ে এবং কমে। প্রতিটি সৎকর্ম ঈমানের ইমারতকে এক ধাপ উপরে নিয়ে যায়, আর প্রতিটি পাপ একে এক ধাপ নিচে নামিয়ে দেয়।</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow">
+                    <h3 class="font-bold text-lg mb-2">ঈমান বৃদ্ধি পায়</h3>
+                     <div class="flow-arrow up"></div>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>সালাত ও কুরআন তিলাওয়াত</li>
+                        <li>আল্লাহর যিকির ও তাসবীহ</li>
+                        <li>সৎ কাজের আদেশ ও অসৎ কাজে নিষেধ</li>
+                        <li>দান-সদকা ও মানুষের সেবা</li>
+                    </ul>
+                </div>
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow">
+                    <h3 class="font-bold text-lg mb-2">ঈমান হ্রাস পায়</h3>
+                     <div class="flow-arrow"></div>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>হারাম গান শোনা বা দেখা</li>
+                        <li>মিথ্যা বলা ও গীবত করা</li>
+                        <li>অপ্রয়োজনীয় কথায় সময় নষ্ট করা</li>
+                        <li>সালাতে অলসতা করা</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section class="mt-12 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-3xl font-bold text-center text-[#004AAD] mb-2">সতর্কতা: অসৎ সঙ্গের ভয়াবহ পরিণতি</h2>
+            <p class="text-center max-w-3xl mx-auto mb-8">কখনো কখনো ইমারতের সবচেয়ে বড় শত্রু বাহির থেকে আসে। অসৎ সঙ্গ একজন মানুষকে সরল পথ থেকে বিচ্যুত করে ধ্বংসের দিকে ঠেলে দিতে পারে, যেমনটি ঘটেছিল সেই যুবকের সাথে।</p>
+            <div class="w-full max-w-2xl mx-auto mt-4">
+                 <ol class="relative border-l border-gray-200">                  
+                    <li class="mb-10 ml-4">
+                        <div class="absolute w-3 h-3 bg-gray-400 rounded-full mt-1.5 -left-1.5 border border-white"></div>
+                        <h3 class="text-lg font-semibold text-gray-900">হেদায়েতের পথে যাত্রা</h3>
+                        <p class="mb-4 text-base font-normal text-gray-500">একজন যুবক পাপের পথ ছেড়ে আল্লাহর পথে আসে, সালাত ও কুরআনকে আঁকড়ে ধরে।</p>
+                    </li>
+                    <li class="mb-10 ml-4">
+                        <div class="absolute w-3 h-3 bg-gray-400 rounded-full mt-1.5 -left-1.5 border border-white"></div>
+                        <h3 class="text-lg font-semibold text-gray-900">অসৎ বন্ধুদের আহ্বান</h3>
+                        <p class="text-base font-normal text-gray-500">তার পুরনো বন্ধুরা তাকে 'ভালো'র কথা বলে ভ্রমণের জন্য প্ররোচিত করে।</p>
+                    </li>
+                     <li class="mb-10 ml-4">
+                        <div class="absolute w-3 h-3 bg-red-500 rounded-full mt-1.5 -left-1.5 border border-white"></div>
+                        <h3 class="text-lg font-semibold text-red-700">ষড়যন্ত্র ও পাপের ফাঁদ</h3>
+                        <p class="text-base font-normal text-gray-500">বন্ধুরা তাকে মদ, নারী ও গানের মাধ্যমে পাপের জগতে ফিরিয়ে আনার পরিকল্পনা করে।</p>
+                    </li>
+                    <li class="ml-4">
+                        <div class="absolute w-3 h-3 bg-black rounded-full mt-1.5 -left-1.5 border border-white"></div>
+                        <h3 class="text-lg font-semibold text-black">ঈমানের পতন ও ভয়াবহ মৃত্যু</h3>
+                        <p class="text-base font-normal text-gray-500">যুবকটি সেই ফাঁদে পা দেয়, পাপ করে এবং সেই রাতেই মাতাল অবস্থায় মৃত্যুবরণ করে। তার কষ্টের গড়া ইমারত মুহূর্তেই ভেঙে চুরমার হয়ে যায়।</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+        
+         <section class="mt-12">
+            <h2 class="text-3xl font-bold text-center text-[#004AAD] mb-8">চূড়ান্ত নকশা: আখিরাতের স্মরণ</h2>
+             <p class="text-center max-w-2xl mx-auto mb-8">ঈমানের ইমারতকে টিকিয়ে রাখার সবচেয়ে শক্তিশালী নকশা হলো পরকালের কথা স্মরণ করা। পূর্বসূরীরা প্রতিনিয়ত আখিরাতকে স্মরণ করতেন, যা তাদের দুনিয়ার প্রলোভন থেকে রক্ষা করত।</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div class="bg-green-500 text-white rounded-lg shadow-xl p-8">
+                    <h3 class="text-5xl font-bold">জান্নাত</h3>
+                    <p class="mt-2 text-xl">একটি দল যাবে চিরস্থায়ী শান্তিতে।</p>
+                </div>
+                <div class="bg-red-500 text-white rounded-lg shadow-xl p-8">
+                    <h3 class="text-5xl font-bold">জাহান্নাম</h3>
+                    <p class="mt-2 text-xl">আরেকটি দল যাবে কঠিন শাস্তিতে।</p>
+                </div>
+                 <div class="bg-[#0079FF] text-white rounded-lg shadow-xl p-8 flex flex-col justify-center">
+                    <h3 class="text-5xl font-bold">?</h3>
+                    <p class="mt-2 text-xl">আপনার গন্তব্য কোথায়?</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="mt-12 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-3xl font-bold text-center text-[#004AAD] mb-8">কিভাবে আপনার ইমারত রক্ষা করবেন?</h2>
+            <div class="max-w-2xl mx-auto">
+                 <ul class="space-y-4 text-lg">
+                    <li class="flex items-start p-4 rounded-lg hover:bg-gray-50">
+                        <span class="text-3xl mr-4">🤲</span>
+                        <div>
+                            <h4 class="font-bold">অবিচল আনুগত্য</h4>
+                            <p class="text-gray-600">নিয়মিত পাঁচ ওয়াক্ত সালাত আদায় করুন। এটি ঈমানের প্রধান স্তম্ভ।</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start p-4 rounded-lg hover:bg-gray-50">
+                        <span class="text-3xl mr-4">🛡️</span>
+                        <div>
+                            <h4 class="font-bold">হারাম থেকে বিরত থাকা</h4>
+                            <p class="text-gray-600">নির্মাণের পাশাপাশি ধ্বংসের পথও বন্ধ করতে হবে। পাপ কাজ ত্যাগ করুন।</p>
+                        </div>
+                    </li>
+                     <li class="flex items-start p-4 rounded-lg hover:bg-gray-50">
+                        <span class="text-3xl mr-4">🤝</span>
+                        <div>
+                            <h4 class="font-bold">সৎ সঙ্গ গ্রহণ</h4>
+                            <p class="text-gray-600">এমন বন্ধুদের সাথে চলুন যারা আপনাকে আল্লাহর কথা স্মরণ করিয়ে দেয়।</p>
+                        </div>
+                    </li>
+                     <li class="flex items-start p-4 rounded-lg bg-blue-50 border border-blue-200">
+                        <span class="text-3xl mr-4">💪</span>
+                        <div>
+                            <h4 class="font-bold text-[#004AAD]">৪০ দিনের চ্যালেঞ্জ</h4>
+                            <p class="text-gray-600">চেষ্টা করুন একটানা চল্লিশ দিন জামায়াতে সালাত আদায় করার। ইনশাআল্লাহ, আপনি ঈমানের মাধুর্য অনুভব করবেন এবং আর পেছনে ফিরে তাকাতে চাইবেন না।</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="mt-12 bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-3xl font-bold text-center text-[#004AAD] mb-8">✨ ব্যক্তিগত পরামর্শ</h2>
+            <p class="text-center max-w-2xl mx-auto mb-4">আপনার জীবনের কোনো চ্যালেঞ্জ সম্পর্কে লিখুন এবং ইসলামিক শিক্ষার আলোকে একটি পরামর্শ পান।</p>
+            <div class="max-w-xl mx-auto">
+                <textarea id="personalAdviceInput" rows="4" class="w-full p-3 border border-gray-300 rounded-md focus:ring-[#0079FF] focus:border-[#0079FF]"></textarea>
+                <button id="getPersonalAdviceBtn" class="mt-3 bg-[#0079FF] text-white px-5 py-2 rounded-md shadow hover:bg-blue-600 transition-colors w-full">পরামর্শ নিন ✨</button>
+                <div id="personalAdviceLLMOutput" class="mt-4 p-3 bg-green-50 border border-green-200 rounded-md text-gray-700 hidden"></div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="text-center p-6 mt-8 bg-[#004AAD] text-white">
+        <p>&copy; 2025 | ঈমানের শক্তিকে পুনরুজ্জীবিত করুন।</p>
+    </footer>
+
+    <script>
+        const wrapLabel = (label) => {
+            const maxLength = 16;
+            if (label.length <= maxLength) return label;
+            const words = label.split(' ');
+            let currentLine = '';
+            const lines = [];
+            words.forEach(word => {
+                if ((currentLine + ' ' + word).trim().length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            });
+            if (currentLine) lines.push(currentLine.trim());
+            return lines;
+        };
+        
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+              return label.join(' ');
+            } else {
+              return label;
+            }
+        };
+
+        async function callGeminiAPI(prompt, outputElementId) {
+            const outputElement = document.getElementById(outputElementId);
+            outputElement.classList.remove('hidden');
+            outputElement.innerHTML = '<div class="text-center py-2">লোড হচ্ছে...</div>';
+            outputElement.style.border = '1px solid #ddd'; // Add temporary border for loading
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4"; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    outputElement.innerHTML = `<p>${text}</p>`;
+                    outputElement.style.border = ''; // Remove temporary border
+                } else {
+                    outputElement.innerHTML = '<p class="text-red-500">দুঃখিত, কোনো উত্তর পাওয়া যায়নি।</p>';
+                    outputElement.style.border = '1px solid red'; // Indicate error
+                }
+            } catch (error) {
+                console.error('Error calling Gemini API:', error);
+                outputElement.innerHTML = '<p class="text-red-500">API কল করতে সমস্যা হয়েছে।</p>';
+                outputElement.style.border = '1px solid red'; // Indicate error
+            }
+        }
+        
+        const imanComponentsCtx = document.getElementById('imanComponentsChart').getContext('2d');
+        new Chart(imanComponentsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['অন্তরের বিশ্বাস', 'মুখের স্বীকৃতি', 'কাজের প্রতিফলন'],
+                datasets: [{
+                    label: 'ঈমানের উপাদান',
+                    data: [33.3, 33.3, 33.3],
+                    backgroundColor: ['#004AAD', '#0079FF', '#B3D9FF'],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                         callbacks: { title: tooltipTitleCallback }
+                    }
+                }
+            }
+        });
+        
+        const concernsCtx = document.getElementById('concernsChart').getContext('2d');
+        new Chart(concernsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['শক্তিশালী ঈমানদার', 'দুর্বল ঈমানদার'],
+                datasets: [{
+                    label: 'দুনিয়াবী ক্ষতির চিন্তা',
+                    data: [30, 85],
+                    backgroundColor: '#B3D9FF',
+                    borderColor: '#0079FF',
+                    borderWidth: 1
+                }, {
+                    label: 'আখিরাতের ক্ষতির চিন্তা',
+                    data: [90, 40],
+                    backgroundColor: '#0079FF',
+                    borderColor: '#004AAD',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                         max: 100,
+                        ticks: {
+                            callback: function(value) { return value + '%' }
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'একজন মুমিনের চিন্তার তুলনা',
+                        font: { size: 16 }
+                    },
+                    tooltip: {
+                         callbacks: { title: tooltipTitleCallback }
+                    }
+                }
+            }
+        });
+
+        document.getElementById('learnMoreImanComponentsBtn').addEventListener('click', () => {
+            const prompt = "ইসলামে ঈমানের মূল উপাদানগুলো সম্পর্কে বিস্তারিত ব্যাখ্যা দাও। অন্তরের বিশ্বাস, মুখের স্বীকৃতি এবং কাজের প্রতিফলনের গুরুত্ব তুলে ধরো। (বাংলায় উত্তর দেবে, শুধুমাত্র ধর্মীয় দৃষ্টিকোণ থেকে, উপদেশমূলক সুর বজায় রেখে)";
+            callGeminiAPI(prompt, 'imanComponentsLLMOutput');
+        });
+
+        document.getElementById('learnMoreWeakImanBtn').addEventListener('click', () => {
+            const prompt = "ইসলামিক দৃষ্টিকোণ থেকে ঈমানের দুর্বলতার প্রধান লক্ষণগুলো কী কী? কেন দুনিয়ার চিন্তাকে আখিরাতের চিন্তার চেয়ে বেশি প্রাধান্য দেওয়া ঈমানের দুর্বলতার লক্ষণ? (বাংলায় উত্তর দেবে, শুধুমাত্র ধর্মীয় দৃষ্টিকোণ থেকে, উপদেশমূলক সুর বজায় রেখে)";
+            callGeminiAPI(prompt, 'weakImanLLMOutput');
+        });
+
+        document.getElementById('getPersonalAdviceBtn').addEventListener('click', () => {
+            const userInput = document.getElementById('personalAdviceInput').value;
+            if (userInput.trim() === '') {
+                alert('অনুগ্রহ করে আপনার সমস্যা লিখুন।');
+                return;
+            }
+            const prompt = `আমার একটি সমস্যা আছে: ${userInput}। ইসলামিক শিক্ষার আলোকে এই বিষয়ে আমাকে একটি সংক্ষিপ্ত এবং অনুপ্রেরণামূলক পরামর্শ দাও। (বাংলায় উত্তর দেবে, শুধুমাত্র ধর্মীয় দৃষ্টিকোণ থেকে, উপদেশমূলক সুর বজায় রেখে)`;
+            callGeminiAPI(prompt, 'personalAdviceLLMOutput');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইয়াজুজ ও মাজুজ: কিয়ামতের মহা আলামত</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Neon Gold on Dark -->
+    <!-- Application Structure Plan: The SPA is designed as a thematic, single-page narrative to guide users through the sermon's content logically. It starts with an introduction (পরিচয়), moves to scriptural evidence (কুরআনে উল্লেখ), details their emergence (আবির্ভাবের পদ্ধতি), presents the core story as an interactive timeline (ঘটনাপ্রবাহ), and concludes with the sermon's key takeaway (শিক্ষা ও প্রস্তুতি). This structure was chosen over a linear text dump to make the complex eschatological sequence digestible and engaging, facilitating understanding and retention for a Bengali-speaking audience. A sticky navigation bar ensures easy movement between these thematic sections. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Who are Yajuj & Majuj? -> Goal: Inform -> Viz/Method: Titled cards (HTML/CSS) -> Interaction: None, clear information display -> Justification: Breaks down key attributes into easily scannable points.
+        2. Report Info: Quranic mentions -> Goal: Organize -> Viz/Method: Accordion (HTML/CSS/JS) -> Interaction: Click to expand/collapse -> Justification: Prevents overwhelming users with long text; allows focused reading on one Surah at a time.
+        3. Report Info: The daily digging of the wall -> Goal: Illustrate a Process -> Viz/Method: Interactive block (HTML/CSS/JS) -> Interaction: Button click reveals the outcome -> Justification: Makes the abstract concept of their continuous effort and the divine will tangible and memorable.
+        4. Report Info: Sequence of events after their emergence -> Goal: Show Change/Sequence -> Viz/Method: Vertical Timeline (HTML/CSS/JS) -> Interaction: Scroll-based highlighting -> Justification: The most intuitive way to present a chronological narrative, guiding the user through the story step-by-step.
+        5. Report Info: The sermon's concluding message -> Goal: Motivate/Conclude -> Viz/Method: Styled quote & call-to-action blocks -> Interaction: None, emphasis through design -> Justification: Highlights the core purpose of the sermon, prompting reflection.
+        Library/Method: All visuals and interactions are built with Tailwind CSS and Vanilla JS, adhering to the NO SVG/Mermaid constraint.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #120c06;
+            color: #EAE0D5;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+            color: #C6AD8F;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #FFD700;
+            border-bottom-color: #FFD700;
+            text-shadow: 0 0 5px #FFD700, 0 0 10px #FFD700;
+        }
+        .content-card {
+            background-color: rgba(40, 30, 20, 0.5);
+            border-left: 4px solid #FFD700;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+        }
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #120c06;
+            border: 4px solid #FFD700;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        .timeline-item.active::before {
+            background-color: #FFD700;
+            box-shadow: 0 0 12px #FFD700, 0 0 24px #FFD700;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+            background-color: #1a140f;
+        }
+        .accordion-button {
+             background-color: rgba(40, 30, 20, 0.5);
+        }
+        .neon-text-main {
+            color: #FFD700;
+            text-shadow: 0 0 7px #FFD700, 0 0 10px #FFD700, 0 0 21px #FFD700, 0 0 42px #FFC300, 0 0 82px #FFC300;
+        }
+        .neon-text-sub {
+            color: #FFD700;
+            text-shadow: 0 0 5px #FFD700, 0 0 8px #FFD700;
+        }
+        .neon-text-card-header {
+             color: #FFD700;
+             text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+        }
+        header, #navbar {
+            background-color: rgba(18, 12, 6, 0.8);
+            backdrop-blur-md;
+        }
+        section.bg-section {
+            background-color: rgba(26, 20, 15, 0.7);
+        }
+        footer {
+            background-color: #1a140f;
+        }
+        p, .text-gray-600, .text-gray-700, .text-gray-800, blockquote {
+             color: #DCDCDC;
+        }
+        #inshallah-btn {
+            background-color: #FFD700;
+            color: #120c06;
+            box-shadow: 0 0 15px #FFD700;
+            transition: all 0.3s ease;
+        }
+        #inshallah-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #FFD700, 0 0 40px #FFD700;
+        }
+        .timeline-line {
+            background: linear-gradient(to bottom, #FFD700, rgba(255, 215, 0, 0));
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="text-center py-12 px-4 shadow-lg shadow-amber-500/10">
+        <h1 class="text-4xl md:text-5xl font-bold neon-text-main">ইয়াজুজ ও মাজুজ</h1>
+        <p class="mt-4 text-xl">কিয়ামতের মহা আলামত: শেখ খালিদ আল-রাশেদের বক্তৃতার আলোকে একটি ইন্টারেক্টিভ বিবরণ</p>
+    </header>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="sticky top-0 shadow-md shadow-amber-500/10 z-50">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="flex justify-center items-center h-16 space-x-4 sm:space-x-8">
+                <a href="#identity" class="nav-link font-medium px-2 py-1">পরিচয়</a>
+                <a href="#quran" class="nav-link font-medium px-2 py-1">কুরআনে উল্লেখ</a>
+                <a href="#emergence" class="nav-link font-medium px-2 py-1">আবির্ভাব</a>
+                <a href="#timeline" class="nav-link font-medium px-2 py-1">ঘটনাপ্রবাহ</a>
+                <a href="#lesson" class="nav-link font-medium px-2 py-1">শিক্ষা</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto p-4 md:p-8">
+
+        <!-- Section 1: Identity -->
+        <section id="identity" class="py-16">
+            <h2 class="text-3xl font-bold text-center mb-12 neon-text-sub">পরিচয়</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="content-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-3 neon-text-card-header">কারা এই ইয়াজুজ ও মাজুজ?</h3>
+                    <p class="leading-relaxed">ইয়াজুজ ও মাজুজ মানুষেরই দুটি জাতি, যারা বর্তমানে যুলকারনাইন নির্মিত এক বিশাল প্রাচীরের আড়ালে বসবাস করছে। তারা পৃথিবীতে বিপর্যয় সৃষ্টিকারী এক জাতি হিসেবে পরিচিত।</p>
+                </div>
+                <div class="content-card rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-3 neon-text-card-header">তাদের উৎস</h3>
+                    <p class="leading-relaxed">তারা হযরত আদম (আঃ) এর বংশধর। হাদিস অনুসারে, তারা হযরত নূহ (আঃ) এর পুত্র ইয়াফেসের বংশ থেকে এসেছে। তারা সংখ্যায় এত অধিক হবে যে, তাদের মধ্য থেকে কেউ মারা যাওয়ার আগে তার বংশে এক হাজার বা তারও বেশি সন্তান রেখে যাবে।</p>
+                </div>
+                <div class="content-card rounded-lg p-6 md:col-span-2">
+                    <h3 class="text-xl font-semibold mb-3 neon-text-card-header">তাদের প্রকৃতি ও ক্ষমতা</h3>
+                    <p class="leading-relaxed">তারা অপ্রতিরোধ্য শক্তির অধিকারী এবং তাদের সংখ্যা অগণিত। তাদের আবির্ভাবের পর তাদের ক্ষতি এবং বিপর্যয় এতটাই মারাত্মক হবে যে, মানুষ তাদের প্রতিরোধ করতে পারবে না। মানুষজন ভয়ে পাহাড়-পর্বত ও নিজেদের ঘরে আশ্রয় নিতে বাধ্য হবে।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Quranic Mention -->
+        <section id="quran" class="py-16 bg-section rounded-xl shadow-lg shadow-amber-500/10">
+            <h2 class="text-3xl font-bold text-center mb-12 neon-text-sub">কুরআনে উল্লেখ</h2>
+            <div class="max-w-3xl mx-auto space-y-4">
+                <div class="border border-amber-500/20 rounded-lg">
+                    <button class="accordion-button w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-[#FFD700]">
+                        <span>সূরা আল-কাহাফ (আয়াত ৯৩-৯৯)</span>
+                        <span class="accordion-icon text-2xl transform transition-transform duration-300 ">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-5 border-t border-amber-500/20">
+                            <p class="leading-relaxed">এই সূরাতে যুলকারনাইনের কাহিনীতে তাদের উল্লেখ রয়েছে। এক জাতি যুলকারনাইনের কাছে ইয়াজুজ ও মাজুজের অত্যাচার থেকে বাঁচতে একটি প্রাচীর নির্মাণের অনুরোধ করে। যুলকারনাইন লোহা ও গলিত তামা দিয়ে এক সুদৃঢ় প্রাচীর নির্মাণ করে দেন, যা ভেদ করা তাদের পক্ষে অসম্ভব। তবে তিনি বলেন, যখন আল্লাহর প্রতিশ্রুতি (কিয়ামত) আসবে, তখন এই প্রাচীর ভেঙে চুরমার হয়ে যাবে।</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="border border-amber-500/20 rounded-lg">
+                    <button class="accordion-button w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-[#FFD700]">
+                        <span>সূরা আল-আম্বিয়া (আয়াত ৯৬)</span>
+                        <span class="accordion-icon text-2xl transform transition-transform duration-300">+</span>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-5 border-t border-amber-500/20">
+                           <p class="leading-relaxed">এই আয়াতে কিয়ামতের একটি নিদর্শন হিসেবে তাদের আবির্ভাবের কথা বলা হয়েছে। আল্লাহ বলেন, "অবশেষে যখন ইয়াজুজ ও মাজুজকে মুক্ত করা হবে এবং তারা প্রত্যেক উচ্চভূমি থেকে দ্রুত ছুটে আসবে।" এটি তাদের দ্রুত বিস্তার এবং পৃথিবীতে ছড়িয়ে পড়ার ইঙ্গিত দেয়।</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Emergence -->
+        <section id="emergence" class="py-16">
+            <h2 class="text-3xl font-bold text-center mb-12 neon-text-sub">আবির্ভাবের পদ্ধতি</h2>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="content-card p-6 rounded-lg">
+                     <h3 class="text-xl font-semibold mb-3 neon-text-card-header">দৈনিক প্রচেষ্টা ও ঐশী ইচ্ছা</h3>
+                     <p class="leading-relaxed mb-4">হাদিস অনুযায়ী, ইয়াজুজ ও মাজুজ প্রতিদিন প্রাচীরটি খনন করে। যখন তারা প্রায় সফল হয়ে যায় এবং সূর্যের আলো দেখতে পায়, তখন তাদের নেতা বলে, "ফিরে যাও, আগামীকাল খনন করবে।" কিন্তু আল্লাহ প্রাচীরটিকে আগের চেয়েও শক্তিশালী করে দেন।</p>
+                     <div id="wall-story" class="text-center mt-6">
+                        <p id="wall-status" class="text-lg font-medium p-4 bg-amber-900/50 border-l-4 border-amber-400 rounded-r-lg">প্রাচীরটি এখনও অটুট...</p>
+                        <button id="inshallah-btn" class="mt-4 font-bold py-2 px-6 rounded-lg">ঐশী ইচ্ছার প্রকাশ দেখুন</button>
+                     </div>
+                </div>
+                <div class="bg-section p-6 rounded-lg shadow-md shadow-amber-500/10">
+                     <h3 class="text-xl font-semibold mb-3 neon-text-card-header">কখন তাদের সময় আসবে?</h3>
+                    <blockquote class="border-r-4 border-amber-400 pr-4 italic leading-relaxed">
+                        রাসূলুল্লাহ (সাঃ) বলেছেন: "আরবের জন্য ধ্বংস, এক আসন্ন অনিষ্টের কারণে... যখন খباثت (অশ্লীলতা ও পাপাচার) বেড়ে যাবে, তখন ধ্বংস আসবে, যদিও আমাদের মাঝে সৎ লোক উপস্থিত থাকে।"
+                    </blockquote>
+                    <p class="mt-4">যখন পৃথিবীতে অন্যায় ও পাপাচার ব্যাপকভাবে বেড়ে যাবে এবং সৎ কাজের আদেশ ও অসৎ কাজে নিষেধকারী কমে যাবে, তখন আল্লাহ তাদের আবির্ভাবের অনুমতি দেবেন। অবশেষে একদিন তাদের নেতা বলবে, "ফিরে যাও, ইনশাআল্লাহ (আল্লাহ চাইলে) আগামীকাল আমরা এটি ভাঙব।" এই 'ইনশাআল্লাহ' বলার কারণেই পরের দিন তারা প্রাচীরটি ভাঙতে সফল হবে।</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 4: Timeline -->
+        <section id="timeline" class="py-16">
+            <h2 class="text-3xl font-bold text-center mb-12 neon-text-sub">ঘটনাপ্রবাহ</h2>
+            <div class="relative max-w-2xl mx-auto">
+                <div class="timeline-line absolute left-4 top-0 h-full w-0.5"></div>
+                <div class="space-y-16">
+                    <div class="timeline-item pl-12 relative">
+                        <h3 class="text-xl font-semibold mb-2 neon-text-card-header">১. প্রাচীর ভঙ্গ ও বিস্তার</h3>
+                        <p>আল্লাহর ইচ্ছায় প্রাচীর ভেঙে তারা ধনুকের তীরের মতো দ্রুত বেগে বেরিয়ে আসবে এবং পৃথিবীর প্রতিটি উচ্চভূমি থেকে ছড়িয়ে পড়বে।</p>
+                    </div>
+                    <div class="timeline-item pl-12 relative">
+                        <h3 class="text-xl font-semibold mb-2 neon-text-card-header">২. পৃথিবীতে ধ্বংসযজ্ঞ</h3>
+                        <p>তারা পৃথিবীর সবকিছু ধ্বংস করতে শুরু করবে। মানুষ, পশু, উদ্ভিদ কিছুই তাদের হাত থেকে রক্ষা পাবে না। তারা তাবরিয়া হ্রদের (Sea of Galilee) সমস্ত পানি পান করে ফেলবে।</p>
+                    </div>
+                    <div class="timeline-item pl-12 relative">
+                        <h3 class="text-xl font-semibold mb-2 neon-text-card-header">৩. ঈসা (আঃ) এর আশ্রয় গ্রহণ</h3>
+                        <p>মানুষজন ভয়ে পালিয়ে যাবে। হযরত ঈসা (আঃ) এবং তাঁর সঙ্গে থাকা মুমিনরা আল্লাহর আদেশে তুর পাহাড়ে আশ্রয় নেবেন, কারণ তাদের সাথে যুদ্ধ করার ক্ষমতা কারও থাকবে না।</p>
+                    </div>
+                    <div class="timeline-item pl-12 relative">
+                        <h3 class="text-xl font-semibold mb-2 neon-text-card-header">৪. আল্লাহর কাছে দোয়া</h3>
+                        <p>তুর পাহাড়ে অবরুদ্ধ অবস্থায় ঈসা (আঃ) ও তাঁর সঙ্গীরা আল্লাহর কাছে দোয়া করবেন।</p>
+                    </div>
+                    <div class="timeline-item pl-12 relative">
+                        <h3 class="text-xl font-semibold mb-2 neon-text-card-header">৫. ঐশী গজবে ধ্বংস</h3>
+                        <p>আল্লাহ তাদের দোয়ায় সাড়া দেবেন এবং ইয়াজুজ ও মাজুজের ঘাড়ে 'নাগাফ' নামক এক প্রকার কীট বা পোকা প্রেরণ করবেন। এর ফলে তারা সবাই একসাথে একজন ব্যক্তির মৃত্যুর মতো মারা যাবে।</p>
+                    </div>
+                    <div class="timeline-item pl-12 relative">
+                        <h3 class="text-xl font-semibold mb-2 neon-text-card-header">৬. পৃথিবী পরিষ্কার ও শান্তি</h3>
+                        <p>তাদের মৃতদেহের দুর্গন্ধে পৃথিবী ভরে যাবে। ঈসা (আঃ) এর দোয়ায় আল্লাহ বিশাল পাখি পাঠাবেন যারা মৃতদেহগুলো অন্যত্র ফেলে দেবে এবং বৃষ্টি দ্বারা পৃথিবীকে ধুয়ে পরিষ্কার করে দেবেন। এরপর পৃথিবীতে শান্তি ও বরকত ফিরে আসবে।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Lesson -->
+        <section id="lesson" class="py-16 bg-section rounded-xl shadow-lg shadow-amber-500/10">
+            <h2 class="text-3xl font-bold text-center mb-12 neon-text-sub">শিক্ষা ও প্রস্তুতি</h2>
+            <div class="max-w-3xl mx-auto text-center">
+                <div class="border-t-4 border-b-4 border-amber-400/50 p-8 rounded-lg" style="background: radial-gradient(ellipse at center, rgba(255, 195, 0, 0.1) 0%, rgba(18, 12, 6, 0) 70%);">
+                     <h3 class="text-2xl font-bold mb-4 neon-text-sub">"আমরা কিয়ামতের জন্য কী প্রস্তুতি নিয়েছি?"</h3>
+                     <p class="text-lg leading-relaxed mb-6">এই বক্তৃতার মূল উদ্দেশ্য হলো আমাদেরকে কিয়ামত ও পরকালের কথা স্মরণ করিয়ে দেওয়া। ইয়াজুজ ও মাজুজের ফিতনা এক মহা পরীক্ষা। প্রশ্ন হলো, আমরা কি নামাজ, রোজা, সততা ও আল্লাহভীতির মাধ্যমে সেই দিনের জন্য প্রস্তুত হচ্ছি, নাকি দুনিয়ার মোহে গাফেল হয়ে আছি?</p>
+                     <p class="font-semibold text-xl neon-text-card-header">"আর সেই দিনকে ভয় কর, যেদিন তোমরা আল্লাহর দিকে ফিরে আসবে।"</p>
+                     <p>(সূরা আল-বাকারাহ: ২৮১)</p>
+                </div>
+
+                <div class="mt-12">
+                     <h3 class="text-2xl font-bold mb-4 neon-text-sub">আমাদের করণীয়</h3>
+                     <p class="text-lg leading-relaxed">
+                        আল্লাহর কাছে তওবা করা, নিজেদের আমল সংশোধন করা, এবং ঈমানের উপর অটল থাকাই হলো সবচেয়ে বড় প্রস্তুতি। হে আল্লাহ, আমাদের গুনাহ মাফ করুন, আমাদের ঈমানকে দৃঢ় করুন এবং সকল প্রকার ফিতনা থেকে রক্ষা করুন। আমীন।
+                     </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 mt-12">
+        <p>শেখ খালিদ আল-রাশেদের বক্তৃতার উপর ভিত্তি করে তৈরি।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const accordionButtons = document.querySelectorAll('.accordion-button');
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    const icon = button.querySelector('.accordion-icon');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.textContent = '+';
+                    } else {
+                        accordionButtons.forEach(otherButton => {
+                            otherButton.nextElementSibling.style.maxHeight = null;
+                            otherButton.querySelector('.accordion-icon').textContent = '+';
+                        });
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        icon.textContent = '-';
+                    }
+                });
+            });
+
+            const inshallahBtn = document.getElementById('inshallah-btn');
+            const wallStatus = document.getElementById('wall-status');
+            inshallahBtn.addEventListener('click', () => {
+                wallStatus.textContent = "অবশেষে নেতা 'ইনশাআল্লাহ' বললেন... এবং প্রাচীর ভেঙে গেল!";
+                wallStatus.classList.remove('bg-amber-900/50', 'border-amber-400');
+                wallStatus.classList.add('bg-emerald-900/50', 'border-emerald-400', 'font-bold');
+                wallStatus.style.textShadow = '0 0 8px #34D399';
+                inshallahBtn.disabled = true;
+                inshallahBtn.textContent = 'প্রাচীর ভেঙে গেছে';
+                inshallahBtn.classList.add('cursor-not-allowed', 'opacity-50');
+            });
+            
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.4 };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+            sections.forEach(section => { observer.observe(section); });
+            
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const timelineObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    } else {
+                        entry.target.classList.remove('active');
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            timelineItems.forEach(item => { timelineObserver.observe(item); });
+        });
+    </script>
+</body>
+</html>

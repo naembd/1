@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ক্ষমা করবেন رمضان | শেখ খালিদ আল-রাশেদ</title>
+    
+    <!-- Chosen Palette: Tranquil Desert with Neon Accents (ক্রিম, ডার্ক স্লেট ব্লু, সেজ গ্রিন, টেরাকোটা) -->
+    <!-- Application Structure Plan: একটি বিষয়ভিত্তিক, ব্যবহারকারী-কেন্দ্রিক ইন্টারফেস তৈরি করা হয়েছে যা ব্যবহারকারীকে আত্ম-প্রতিফলনের দিকে পরিচালিত করে। মূল পাতা থেকে শুরু করে, রমজানের মর্যাদা, পূর্বসূরীদের ইবাদতের উদাহরণ, বর্তমান বাস্তবতা এবং শেষ আহ্বানের মতো বিভিন্ন বিভাগে সহজে নেভিগেট করা যায়। এই কাঠামোটি রিপোর্টের দীর্ঘ পাঠ্যকে হজমযোগ্য এবং ইন্টারেক্টিভ খণ্ডে বিভক্ত করে, যা ব্যবহারকারীর বোঝাপড়া এবং ব্যস্ততা বাড়ায়। এটি রৈখিক পড়ার পরিবর্তে একটি অন্বেষণমূলক অভিজ্ঞতা প্রদান করে। -->
+    <!-- Visualization & Content Choices: 
+        - রমজানের মর্যাদা: Goal: Inform. Method: আইকনসহ কার্ড গ্রিড। Interaction: হোভার ইফেক্টে নিয়ন গ্লো। Justification: তথ্যকে আকর্ষণীয় ও সহজে পাঠযোগ্য করে তোলে।
+        - পূর্বসূরীদের ইবাদত: Goal: Compare/Inspire. Method: ইন্টারেক্টিভ ট্যাব। Interaction: ট্যাবে ক্লিক করে পুরুষ ও নারী সাহাবীদের ইবাদতের বিবরণ দেখা যায়। সক্রিয় ট্যাবে নিয়ন ইফেক্ট। Justification: দীর্ঘ তালিকা ভেঙ্গে ব্যবহারকারীকে নির্দিষ্ট তথ্যে মনোযোগ দিতে সাহায্য করে।
+        - আমাদের বাস্তবতা: Goal: Critique/Contrast. Method: Chart.js দিয়ে হরাইজন্টাল বার চার্ট। Interaction: অ্যানিমেটেড লোড এবং টুলটিপ। বারগুলোতে সূক্ষ্ম গ্লো। Justification: আধুনিক সময়ের ভুলগুলো একটি শক্তিশালী ভিজ্যুয়াল রূপে তুলে ধরে।
+        - রোজাদারদের প্রকারভেদ: Goal: Organize/Self-reflect. Method: অ্যাকর্ডিয়ন। Interaction: ক্লিক করে বিভিন্ন প্রকার রোজার বিবরণ দেখা যায়। Justification: ব্যবহারকারীকে সক্রিয়ভাবে অংশগ্রহণে উৎসাহিত করে।
+        Library/Method: Tailwind CSS, Vanilla JS, Chart.js (Canvas).
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+        }
+        .nav-link {
+            transition: color 0.3s, text-shadow 0.3s;
+            text-shadow: 0 0 5px rgba(224, 122, 95, 0);
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #F39C12;
+            text-shadow: 0 0 8px rgba(243, 156, 18, 0.7);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .neon-text {
+            color: #ffffff;
+            text-shadow:
+                0 0 2px #fff,
+                0 0 5px #F39C12,
+                0 0 10px #F39C12;
+        }
+        .card-neon-glow {
+            background-color: rgba(23, 23, 38, 0.8);
+            border: 1px solid rgba(243, 156, 18, 0.2);
+            transition: box-shadow 0.3s, transform 0.3s;
+            box-shadow: 0 0 5px rgba(243, 156, 18, 0);
+        }
+        .card-neon-glow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.5), 0 0 30px rgba(243, 156, 18, 0.3);
+        }
+        .tab-button.active {
+            color: #F39C12;
+            border-color: #F39C12;
+            box-shadow: 0 2px 15px -5px rgba(243, 156, 18, 0.7);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header id="header" class="bg-opacity-80 bg-[#10101d] backdrop-blur-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-white">ক্ষমা করবেন رمضان</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#virtues" class="nav-link font-semibold pb-1">মর্যাদা</a>
+                <a href="#ancestors" class="nav-link font-semibold pb-1">পূর্বসূরীগণ</a>
+                <a href="#reality" class="nav-link font-semibold pb-1">আমাদের বাস্তবতা</a>
+                <a href="#reflection" class="nav-link font-semibold pb-1">আত্মসমালোচনা</a>
+                <a href="#final-call" class="nav-link font-semibold pb-1">শেষ আহ্বান</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-[#10101d]">
+            <a href="#virtues" class="block text-center py-2 px-4 text-sm text-white hover:bg-[#F39C12]">মর্যাদা</a>
+            <a href="#ancestors" class="block text-center py-2 px-4 text-sm text-white hover:bg-[#F39C12]">পূর্বসূরীগণ</a>
+            <a href="#reality" class="block text-center py-2 px-4 text-sm text-white hover:bg-[#F39C12]">আমাদের বাস্তবতা</a>
+            <a href="#reflection" class="block text-center py-2 px-4 text-sm text-white hover:bg-[#F39C12]">আত্মসমালোচনা</a>
+            <a href="#final-call" class="block text-center py-2 px-4 text-sm text-white hover:bg-[#F39C12]">শেষ আহ্বান</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-16">
+        <!-- Hero Section -->
+        <section class="text-center mb-16 md:mb-24">
+            <h2 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4 neon-text">ক্ষমা করবেন رمضان</h2>
+            <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-400">
+                "আশ্চর্য তার জন্য যে তোমাকে চিনেছে, তারপর অন্য কাউকে ভালোবেসেছে! আর আশ্চর্য তার জন্য যে তোমার আহ্বান শুনেছে, তারপর তোমার থেকে দেরি করেছে!"
+            </p>
+        </section>
+
+        <!-- Virtues of Ramadan -->
+        <section id="virtues" class="mb-16 md:mb-24 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-white">রমজান মাসের মর্যাদা</h3>
+                <p class="mt-2 text-gray-400">এই মাসটি আল্লাহর এক বিশেষ অনুগ্রহ, যা অগণিত কল্যাণ ও বরকতে পূর্ণ।</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card-neon-glow p-6 rounded-lg">
+                    <div class="flex items-center">
+                        <span class="text-4xl mr-4">🌙</span>
+                        <div>
+                            <h4 class="font-bold text-xl text-white">কুরআন নাযিলের মাস</h4>
+                            <p class="text-gray-400 mt-1">এই মাসে মানবজাতির হিদায়াতের জন্য কুরআন নাযিল হয়েছে।</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-neon-glow p-6 rounded-lg">
+                    <div class="flex items-center">
+                        <span class="text-4xl mr-4">🚪</span>
+                        <div>
+                            <h4 class="font-bold text-xl text-white">জান্নাতের দরজা উন্মুক্ত</h4>
+                            <p class="text-gray-400 mt-1">রহমতের দরজা খুলে দেওয়া হয় এবং জাহান্নামের দরজা বন্ধ করা হয়।</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-neon-glow p-6 rounded-lg">
+                    <div class="flex items-center">
+                        <span class="text-4xl mr-4">⛓️</span>
+                        <div>
+                            <h4 class="font-bold text-xl text-white">শয়তান শৃঙ্খলাবদ্ধ</h4>
+                            <p class="text-gray-400 mt-1">অবাধ্য শয়তানদের বেঁধে রাখা হয়, যা ইবাদতে সাহায্য করে।</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-neon-glow p-6 rounded-lg">
+                    <div class="flex items-center">
+                        <span class="text-4xl mr-4">💎</span>
+                        <div>
+                            <h4 class="font-bold text-xl text-white">লাইলাতুল কদর</h4>
+                            <p class="text-gray-400 mt-1">এমন এক রাত যা হাজার মাসের চেয়েও উত্তম ও বরকতময়।</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-neon-glow p-6 rounded-lg">
+                    <div class="flex items-center">
+                        <span class="text-4xl mr-4">🤲</span>
+                        <div>
+                            <h4 class="font-bold text-xl text-white">দোয়া কবুলের মাস</h4>
+                            <p class="text-gray-400 mt-1">এই মাসে দোয়া ও তওবা কবুল হওয়ার বিশেষ সুযোগ রয়েছে।</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="card-neon-glow p-6 rounded-lg">
+                    <div class="flex items-center">
+                        <span class="text-4xl mr-4">🔥</span>
+                        <div>
+                            <h4 class="font-bold text-xl text-white">জাহান্নাম থেকে মুক্তি</h4>
+                            <p class="text-gray-400 mt-1">আল্লাহ এই মাসে বহু মানুষকে জাহান্নাম থেকে মুক্তি দেন।</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ancestors' Worship -->
+        <section id="ancestors" class="mb-16 md:mb-24 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-white">পূর্বসূরীদের ইবাদত</h3>
+                <p class="mt-2 text-gray-400">সালাফ আস-সালেহীন রমজানকে কীভাবে মূল্যায়ন করতেন, তার কিছু খণ্ডচিত্র।</p>
+            </div>
+            <div>
+                <div class="flex justify-center border-b border-gray-700 mb-6">
+                    <button data-tab="men" class="tab-button active px-6 py-2 font-semibold text-lg border-b-2 transition">পুরুষগণ</button>
+                    <button data-tab="women" class="tab-button px-6 py-2 font-semibold text-lg text-gray-500 border-b-2 border-transparent transition">নারীগণ</button>
+                </div>
+                <div id="men" class="tab-content grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+                <div id="women" class="tab-content hidden grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Reality -->
+        <section id="reality" class="mb-16 md:mb-24 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-white">আমাদের বাস্তবতা: সময় অপচয়ের চিত্র</h3>
+                <p class="mt-2 text-gray-400">আজ আমরা কীভাবে রমজানের মূল্যবান সময় নষ্ট করছি তার একটি প্রতীকী চিত্র।</p>
+            </div>
+            <div class="bg-opacity-80 bg-[#10101d] p-4 sm:p-8 rounded-lg" style="box-shadow: 0 0 20px rgba(243, 156, 18, 0.1);">
+                <div class="chart-container">
+                    <canvas id="realityChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Self Reflection / Types of Fasters -->
+        <section id="reflection" class="mb-16 md:mb-24 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-white">আত্মসমালোচনা: আমি কোন প্রকারের রোজাদার?</h3>
+                <p class="mt-2 text-gray-400">রোজা শুধু উপবাস নয়, এর বিভিন্ন স্তর রয়েছে। আসুন, আমরা নিজেদের অবস্থান খুঁজে নিই।</p>
+            </div>
+            <div id="accordion-container" class="max-w-4xl mx-auto space-y-3">
+            </div>
+        </section>
+
+        <!-- Final Call -->
+        <section id="final-call" class="text-center scroll-mt-20">
+            <h3 class="text-3xl md:text-4xl font-bold neon-text">শেষ আহ্বান</h3>
+            <div class="max-w-3xl mx-auto mt-8 space-y-6 text-lg text-gray-300">
+                <p>হে গাফলতির মেঘ, অন্তর থেকে সরে যাও! হে তাকওয়া ও ঈমানের সূর্য, উদিত হও এবং আলোকিত হও! ...হে রোজাদারদের অন্তর, বিনয়ী হও এবং মিনতি কর!</p>
+                <blockquote class="border-r-4 border-[#F39C12] bg-[#10101d] p-4 italic">
+                    "হে আমাদের রব, আমরা আমাদের নিজেদের উপর জুলুম করেছি, আর যদি আপনি আমাদের ক্ষমা না করেন এবং আমাদের উপর রহম না করেন, তবে আমরা অবশ্যই ক্ষতিগ্রস্তদের অন্তর্ভুক্ত হব।"
+                </blockquote>
+                <p class="font-semibold text-white">হে আল্লাহ, আমাদেরকে রমজান পর্যন্ত পৌঁছান এবং ঈমান ও সওয়াবের আশায় এর রোজা ও কিয়াম করার তৌফিক দান করুন।</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-8 mt-16 border-t border-gray-800">
+        <p class="text-gray-500">শেখ খালিদ আল-রাশেদের "ক্ষমা করবেন رمضان" খুতবার উপর ভিত্তি করে নির্মিত।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Tab Switching for Ancestors Section
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.classList.add('text-gray-500', 'border-transparent');
+                        btn.classList.remove('text-[#F39C12]', 'border-[#F39C12]');
+                    });
+                    button.classList.add('active', 'text-[#F39C12]', 'border-[#F39C12]');
+                    
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.getElementById(button.dataset.tab).classList.remove('hidden');
+                });
+            });
+
+            // Data for Ancestors
+            const ancestorsData = {
+                men: [
+                    { name: 'উসমান (রাঃ)', quote: 'দিনের বেলায় তার অংশ ছিল ক্ষুধা ও রোজা, আর রাতের বেলায় সিজদা ও কিয়াম।', icon: '👤' },
+                    { name: 'আবু তালহা (রাঃ)', quote: 'নবী (সা) এর ইন্তেকালের পর ঈদুল আযহা বা ফিতর ছাড়া কখনো ইফতার করতে দেখা যায়নি।', icon: '🛡️' },
+                    { name: 'আব্দুল্লাহ ইবনে উমর (রাঃ)', quote: 'সফরে রোজা রাখতেন না কিন্তু বাড়িতে থাকলে প্রায়ই ইফতার করতেন না।', icon: '📖' },
+                    { name: 'আবুদ্দারদা (রাঃ)', quote: 'ইবাদতের জন্য ব্যবসা ছেড়ে দিয়েছিলেন। রাত জেগে ইবাদত করতেন এবং দিনে রোজা রাখতেন।', icon: '⚖️' },
+                    { name: 'মাসরুক ইবনে আব্দুর রহমান', quote: 'জান্নাতের সুসংবাদ পেয়েও নিজেকে পঞ্চাশ হাজার বছরের দিনের জন্য প্রস্তুত করতেন।', icon: '⏳' },
+                     { name: 'আলা ইবনে যিয়াদ', quote: 'এত রোজা রাখতেন যে শরীর সবুজ হয়ে যেত এবং এত নামাজ পড়তেন যে পড়ে যেতেন।', icon: '🌱' }
+                ],
+                women: [
+                    { name: 'আয়েশা (রাঃ)', quote: 'সারা বছর রোজা রাখতেন, শুধুমাত্র ঈদের দিন ছাড়া।', icon: '🧕' },
+                    { name: 'হাফসা (রাঃ)', quote: 'জিবরীল (আঃ) তাকে "সাওয়ামাহ-কাওয়ামাহ" (অত্যধিক রোজাদার ও ইবাদতকারী) বলেছেন।', icon: '📜' },
+                    { name: 'রহমাহ আল-আবিদাহ', quote: 'এত ইবাদত করতেন যে শরীর কালো হয়ে গিয়েছিল এবং দৃষ্টিশক্তি হারিয়ে ফেলেছিলেন।', icon: '💧' }
+                ]
+            };
+            const menContainer = document.getElementById('men');
+            const womenContainer = document.getElementById('women');
+            
+            const createCard = (person) => `
+                <div class="card-neon-glow p-6 rounded-lg">
+                    <div class="flex items-center mb-3">
+                        <span class="text-3xl mr-3">${person.icon}</span>
+                        <h5 class="font-bold text-lg text-white">${person.name}</h5>
+                    </div>
+                    <p class="text-gray-400 text-sm">"${person.quote}"</p>
+                </div>
+            `;
+            ancestorsData.men.forEach(person => {
+                menContainer.innerHTML += createCard(person);
+            });
+            ancestorsData.women.forEach(person => {
+                womenContainer.innerHTML += createCard(person);
+            });
+            
+            // Reality Chart
+            const ctx = document.getElementById('realityChart').getContext('2d');
+            const realityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['টিভি ও মুভি', 'খেলাধুলা', 'অহেতুক আড্ডা', 'শপিং ও বাজার', 'অফিসে অবহেলা', 'রাতে ঘুরে বেড়ানো'],
+                    datasets: [{
+                        label: 'সময় অপচয়ের খাত (প্রতীকী)',
+                        data: [85, 75, 80, 90, 60, 70],
+                        backgroundColor: 'rgba(243, 156, 18, 0.4)',
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                        barThickness: 25,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(10, 10, 20, 0.8)',
+                            titleColor: '#F39C12',
+                            bodyColor: '#e0e0e0',
+                            bodyFont: { family: 'Hind Siliguri' },
+                            titleFont: { family: 'Hind Siliguri' }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { 
+                                color: '#a0a0a0',
+                                font: { family: 'Hind Siliguri' },
+                                callback: value => value + '%' 
+                            }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: {
+                                color: '#e0e0e0',
+                                font: { family: 'Hind Siliguri', size: 14 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Accordion for Fasters' types
+            const accordionData = [
+                { title: 'অভ্যাসগত রোজা', content: 'যে ব্যক্তি শুধু খাদ্য ও পানীয় থেকে বিরত থাকে, তার রোজা একটি অভ্যাস মাত্র।' },
+                { title: 'ইবাদতের রোজা', content: 'যে ব্যক্তি সুদ ও হারাম থেকে বেঁচে থাকে এবং হালাল দিয়ে ইফতার করে, তার রোজা অভ্যাস ও ইবাদত উভয়ই।' },
+                { title: 'সন্তুষ্টির রোজা', content: 'যে ব্যক্তি পাপ থেকে বিরত থাকে এবং রহমানের আনুগত্য দিয়ে ইফতার করে।' },
+                { title: 'তাকওয়ার রোজা', content: 'যে ব্যক্তি অশ্লীলতা থেকে রোজা রাখে এবং তওবা দিয়ে ইফতার করে, সে তাকওয়ার রোজাদার।' },
+                { title: 'সঠিক পথের রোজা', content: 'যে ব্যক্তি গীবত, পরনিন্দা থেকে রোজা রাখে এবং কুরআন তিলাওয়াত দিয়ে ইফতার করে।' },
+                { title: 'মুজাহিদ রোজা', content: 'যে ব্যক্তি নিজের মন্দ কাজ থেকে রোজা রাখে এবং তার আশা সংক্ষিপ্ত করে ইফতার করে।' }
+            ];
+            const accordionContainer = document.getElementById('accordion-container');
+            accordionData.forEach((item) => {
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'border border-gray-700 rounded-lg overflow-hidden bg-[#10101d]';
+                accordionItem.innerHTML = `
+                    <button class="accordion-toggle w-full flex justify-between items-center text-left p-4 hover:bg-gray-800 transition">
+                        <span class="font-semibold text-lg text-white">${item.title}</span>
+                        <svg class="w-5 h-5 transform transition-transform text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content hidden p-4 pt-0">
+                        <p class="text-gray-400">${item.content}</p>
+                    </div>
+                `;
+                accordionContainer.appendChild(accordionItem);
+            });
+
+            document.querySelectorAll('.accordion-toggle').forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    const icon = button.querySelector('svg');
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+
+        });
+    </script>
+
+</body>
+</html>

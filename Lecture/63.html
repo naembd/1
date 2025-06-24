@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বিবাহ এবং সামাজিক অবক্ষয়: একটি ইন্টারেক্টিভ বিশ্লেষণ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cyber Neon -->
+    <!-- Application Structure Plan: The application is designed as a single-page, scrolling narrative. It starts with the emotional impact of the problem (the crisis), moves to an interactive exploration of its root causes, presents marriage as the divine solution, uses a data visualization to contrast historical ideals with modern reality, and concludes with a call to action. This thematic flow, rather than mirroring the sermon's exact structure, is chosen to guide the user logically from problem to solution, making the complex social issue more understandable and engaging. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: Abandoned infants statistics. -> Goal: Elicit emotional connection. -> Presentation: Stark headline and summary text. -> Interaction: None, for solemnity. -> Justification: Immediately establishes the problem's gravity.
+        2. Report Info: Causes of Zina (media, marriage barriers, high mahr). -> Goal: Organize and clarify complex causes. -> Viz/Presentation: Tabbed interface. -> Interaction: User clicks tabs to reveal detailed text for each cause. -> Justification: Breaks down dense information into digestible, user-controlled segments. -> Method: Vanilla JS toggling Tailwind classes.
+        3. Report Info: Prophet's (PBUH) Mahr vs. modern demands. -> Goal: Compare and highlight disparity. -> Viz/Presentation: Horizontal Bar Chart. -> Interaction: Hover to see tooltips with values. -> Justification: A visual chart makes the immense difference in cost instantly clear and impactful. -> Library: Chart.js (Canvas).
+        4. Report Info: Story of Sa'id ibn al-Musayyib. -> Goal: Provide a positive case study. -> Presentation: Styled blockquote. -> Justification: Sets the narrative apart as an inspiring example. -> Method: HTML/Tailwind styling.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #0d0c0f;
+            color: #d1d5db;
+        }
+        .neon-text {
+            color: #f0fdfa;
+            text-shadow:
+                0 0 5px rgba(13, 226, 185, 0.8),
+                0 0 10px rgba(13, 226, 185, 0.8),
+                0 0 20px rgba(13, 226, 185, 0.6),
+                0 0 40px rgba(13, 226, 185, 0.4);
+        }
+        .neon-accent-text {
+             color: #a5f3fc;
+        }
+        .card {
+            background-color: rgba(23, 23, 29, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+                max-height: 400px;
+            }
+        }
+        .tab-button.active {
+            background-color: #0e7490;
+            color: #ffffff;
+            border-color: #0e7490;
+            box-shadow: 0 0 10px #0e7490, 0 0 20px #0e7490;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            background-color: transparent;
+            border: 1px solid #0891b2;
+            color: #0891b2;
+        }
+         .tab-button:hover {
+            background-color: #0e7490;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <header class="text-center my-8 md:my-12">
+            <h1 class="text-3xl md:text-5xl font-bold neon-text mb-2">যাতে শিশুকে আবর্জনার স্তূপে পাওয়া না যায়</h1>
+            <p class="text-lg md:text-xl text-gray-400">শাইখ খালিদ আল-রাশিদের একটি ভাষণের আলোকে সামাজিক অবক্ষয়ের কারণ ও সমাধান</p>
+        </header>
+
+        <main>
+            <section id="crisis" class="card rounded-lg p-6 md:p-8 mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-4 neon-accent-text">সমাজের সংকট: একটি করুণ বাস্তবতা</h2>
+                <p class="text-base md:text-lg text-center max-w-3xl mx-auto leading-relaxed text-gray-300">
+                    আমাদের সমাজে বর্ণবাদ, অজ্ঞতা এবং বংশমর্যাদা নিয়ে গর্ব করার কারণে বিবাহের মতো একটি পবিত্র বন্ধন কঠিন হয়ে পড়েছে। ফলস্বরূপ, মোহরানার পরিমাণ আকাশচুম্বী হয়েছে এবং যুবকদের জন্য হালাল উপায়ে জীবনসঙ্গী বেছে নেওয়া প্রায় অসম্ভব হয়ে দাঁড়িয়েছে। এই কঠিন পরিস্থিতি যুবসমাজকে যিনা (ব্যভিচার)-এর মতো ভয়াবহ অপরাধের দিকে ঠেলে দিচ্ছে, যার করুণ পরিণতি হলো নিষ্পাপ শিশুদের আবর্জনার স্তূপে, রাস্তায় এবং মসজিদের দরজায় ফেলে যাওয়া। এই অ্যাপ্লিকেশনটি এই গুরুতর সামাজিক সমস্যার কারণগুলো তুলে ধরে এবং কুরআন ও সুন্নাহর আলোকে এর সমাধান অনুসন্ধানের চেষ্টা করে।
+                </p>
+            </section>
+
+            <section id="causes" class="mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-6 neon-accent-text">অবক্ষয়ের মূল কারণগুলো কী?</h2>
+                <p class="text-center text-gray-400 mb-8 max-w-2xl mx-auto">
+                    ভাষণটিতে যিনা বা ব্যভিচারের মতো অপরাধ বৃদ্ধির পেছনে একাধিক কারণ চিহ্নিত করা হয়েছে। নিচের বোতামগুলোতে ক্লিক করে প্রতিটি কারণ সম্পর্কে বিস্তারিত জানুন।
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                    <button class="tab-button active text-sm md:text-base font-semibold py-2 px-4 rounded-full" onclick="showTab('media')">১. মিডিয়া ও বেহায়াপনা</button>
+                    <button class="tab-button text-sm md:text-base font-semibold py-2 px-4 rounded-full" onclick="showTab('barriers')">২. বিবাহে প্রতিবন্ধকতা</button>
+                    <button class="tab-button text-sm md:text-base font-semibold py-2 px-4 rounded-full" onclick="showTab('mahr')">৩. আকাশচুম্বী মোহরানা</button>
+                </div>
+
+                <div id="media" class="tab-content card rounded-lg p-6 md:p-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 neon-accent-text">১. মিডিয়া, বেপর্দা এবং নগ্নতার প্রভাব</h3>
+                    <p class="text-base md:text-lg leading-relaxed text-gray-300">
+                        সর্বত্র যৌন প্রবৃত্তিকে উস্কে দেওয়া অশ্লীলতা ছড়িয়ে পড়ার অন্যতম প্রধান কারণ। ঘরে ঘরে টিভি চ্যানেল, ম্যাগাজিন এবং অশ্লীল গানের মাধ্যমে যৌন উস্কানিমূলক বিষয়বস্তু পরিবেশন করা হচ্ছে। একটি সমীক্ষায় দেখা গেছে যে, ৫০০টি সিনেমার মধ্যে ৭০% বিষয়বস্তুই যৌন উস্কানিমূলক এবং অপরাধ ও অনৈতিকতার দিকে আহ্বান জানায়। এর পাশাপাশি, রাস্তায় নারীদের বেপর্দা ও দৃষ্টিকটু পোশাক যুবকদের ফিতনার দিকে ঠেলে দিচ্ছে। এই ধরনের পরিবেশ যুবসমাজকে হারাম পথে পরিচালিত হতে প্ররোচিত করে।
+                    </p>
+                </div>
+
+                <div id="barriers" class="tab-content hidden card rounded-lg p-6 md:p-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 neon-accent-text">২. বিবাহে সামাজিক প্রতিবন্ধকতা</h3>
+                    <p class="text-base md:text-lg leading-relaxed mb-4 text-gray-300">
+                        সমাজ বিবাহের পথে বিভিন্ন অযৌক্তিক প্রতিবন্ধকতা তৈরি করেছে, যা যুবকদের জন্য হালাল সম্পর্ক স্থাপন করা কঠিন করে তুলেছে।
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 text-base md:text-lg text-gray-300">
+                        <li><strong>বংশ নিয়ে জাহেলী গোঁড়ামি:</strong> "এই বংশের ছেলে বা মেয়েকে বিয়ে করানো যাবে না" - এই ধরনের মানসিকতা الإسلام-এর নীতির পরিপন্থী। ইসলামে মর্যাদার মাপকাঠি হলো তাকওয়া, বংশ নয়। আল্লাহ বলেন, "নিশ্চয়ই তোমাদের মধ্যে আল্লাহর কাছে সেই সর্বাধিক সম্মানিত যে সর্বাধিক মুত্তাকি।" (সূরা আল-হুজুরাত: ১৩)</li>
+                        <li><strong>শিক্ষাজীবন শেষ করার অজুহাত:</strong> "আগে পড়াশোনা শেষ করুক" - এই অজুহাতে অনেক বাবা-মা তাদের সন্তানদের বিয়েতে বিলম্ব করান। অথচ, বিবাহ শিক্ষাজীবনের পথে কোনো বাধা নয়। অতীতের মায়েরাা প্রাতিষ্ঠানিক শিক্ষায় শিক্ষিত না হয়েও আদর্শ প্রজন্ম তৈরি করেছেন।</li>
+                    </ul>
+                </div>
+
+                <div id="mahr" class="tab-content hidden card rounded-lg p-6 md:p-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 neon-accent-text">৩. আকাশচুম্বী মোহরানা</h3>
+                    <p class="text-base md:text-lg leading-relaxed text-gray-300">
+                        বিবাহের পথে সবচেয়ে বড় বাধাগুলোর মধ্যে একটি হলো মোহরানার উচ্চহার। হাজার হাজার, এমনকি লক্ষ লক্ষ টাকা মোহরানা ধার্য করা হয়, যার কোনো ইসলামী ভিত্তি নেই। একজন সাধারণ যুবকের পক্ষে এত বিপুল পরিমাণ অর্থ জোগাড় করা প্রায় অসম্ভব। একদিকে সমাজে ফিতনা ছড়িয়ে পড়ছে, অন্যদিকে বিবাহের মতো হালাল পথকে কঠিন করে তোলা হচ্ছে। রাসূলুল্লাহ (সাঃ) বলেছেন: "সবচেয়ে বরকতময়ী স্ত্রী সে-ই, যার মোহরানা সবচেয়ে কম।" অথচ আমরা এর বিপরীতটাই করছি, যা যুবসমাজকে হারামের দিকে ঠেলে দিচ্ছে।
+                    </p>
+                </div>
+            </section>
+            
+            <section id="solution" class="mb-12 card rounded-lg p-6 md:p-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-4 neon-accent-text">ঐশী সমাধান: বিবাহের প্রজ্ঞা</h2>
+                <p class="text-base md:text-lg text-center max-w-3xl mx-auto leading-relaxed text-gray-300">
+                    আল্লাহ তা'আলা যিনাকে হারাম করে এর বিপরীতে বিবাহকে হালাল ও সহজ করেছেন। বিবাহ শুধুমাত্র একটি জৈবিক প্রয়োজন মেটানোর মাধ্যম নয়, বরং এটি নবীদের সুন্নত এবং ঈমানদারদের পথ। এর মাধ্যমে সম্মান রক্ষা হয়, বংশের ধারাবাহিকতা বজায় থাকে এবং সমাজ অশ্লীলতা থেকে মুক্ত থাকে। আল্লাহ বলেন, "আর তোমরা তোমাদের মধ্যকার অবিবাহিত নারী-পুরুষদের এবং তোমাদের সৎকর্মশীল দাস-দাসীদের বিবাহ দাও। যদি তারা অভাবগ্রস্ত হয়, তবে আল্লাহ নিজ অনুগ্রহে তাদেরকে অভাবমুক্ত করে দেবেন।" (সূরা আন-নূর: ৩২)
+                </p>
+            </section>
+
+            <section id="comparison" class="mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-2 neon-accent-text">আদর্শ বনাম বাস্তবতা: মোহরানার ব্যবধান</h2>
+                 <p class="text-center text-gray-400 mb-8 max-w-2xl mx-auto">
+                    ইসলাম যেখানে সহজ ও অনাড়ম্বর বিবাহের কথা বলে, সেখানে আমাদের সমাজ এটিকে একটি ব্যয়বহুল প্রথায় পরিণত করেছে। নিচের চার্টটি দেখুন, যা রাসূল (সাঃ)-এর সময়ের মোহরানার সাথে বর্তমানের আকাশচুম্বী দাবির একটি চিত্র তুলে ধরে।
+                </p>
+                <div class="card rounded-lg p-6 md:p-8">
+                    <div class="chart-container">
+                        <canvas id="mahrChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="ideal-example" class="mb-12">
+                 <div class="card rounded-lg p-6 md:p-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-4 text-center neon-accent-text">একটি অনুসরণীয় দৃষ্টান্ত: সাঈদ ইবনুল মুসায়্যিবের ঘটনা</h3>
+                    <blockquote class="border-r-4 border-cyan-400 pr-4 italic text-gray-300" style="box-shadow: -5px 0 15px -5px rgba(0, 255, 255, 0.3);">
+                        <p class="mb-4">তাবেঈদের মধ্যে অন্যতম শ্রেষ্ঠ আলেম সাঈদ ইবনুল মুসায়্যিব (রহঃ) তাঁর সময়ের খলিফা এবং আমীরদের প্রস্তাব ফিরিয়ে দিয়েছিলেন। কিন্তু তিনি তাঁর মেয়েকে বিয়ে দিয়েছিলেন তাঁরই একজন দরিদ্র কিন্তু অত্যন্ত ধার্মিক ছাত্রের সাথে, মাত্র দুই দিরহাম মোহরানায়। তিনি চেয়েছিলেন তাঁর মেয়ের জন্য একজন দ্বীনদার ও চরিত্রবান সঙ্গী, কোনো সম্পদ বা বংশমর্যাদা নয়। তিনি নিজে ছাত্রের বাড়িতে গিয়ে মেয়েকে পৌঁছে দিয়ে এসেছিলেন এবং বলেছিলেন, "আমার ভয় হলো, তুমি অবিবাহিত অবস্থায় রাত কাটাবে আর এর জন্য আল্লাহ আমাকে জিজ্ঞাসা করবেন।"</p>
+                        <footer class="text-right not-italic text-gray-500">- ইসলামের ইতিহাস থেকে</footer>
+                    </blockquote>
+                </div>
+            </section>
+
+            <section id="call-to-action" class="text-center bg-gradient-to-r from-cyan-900 to-teal-900 text-white rounded-lg p-8 md:p-12 shadow-lg" style="box-shadow: 0 0 30px rgba(13, 226, 185, 0.4);">
+                <h2 class="text-2xl md:text-3xl font-bold mb-4 neon-text">আমাদের করণীয়: সহজ করুন, কঠিন করবেন না</h2>
+                <p class="text-base md:text-lg max-w-3xl mx-auto leading-relaxed text-gray-200">
+                    আল্লাহকে ভয় করুন, হে আল্লাহর বান্দারা! আসুন, আমরা বিবাহকে সহজ করি এবং যুবসমাজের জন্য হালালের পথ উন্মুক্ত করে দেই। মোহরানা কমানো, বংশীয় গোঁড়ামি ত্যাগ করা এবং অপ্রয়োজনীয় আনুষ্ঠানিকতা পরিহার করার মাধ্যমে আমরা আমাদের সমাজকে ফিতনা ও অশ্লীলতা থেকে রক্ষা করতে পারি। আল্লাহ আমাদের সকলকে সঠিক বুঝ দান করুন এবং আমাদের সমাজকে পবিত্র রাখুন।
+                </p>
+            </section>
+
+        </main>
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-800">
+            <p class="text-gray-500">&copy; 2024 - শাইখ খালিদ আল-রাশিদের ভাষণের উপর ভিত্তি করে তৈরি। শিক্ষামূলক উদ্দেশ্যে নির্মিত।</p>
+        </footer>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            const activeButton = document.querySelector(`.tab-button[onclick="showTab('${tabId}')"]`);
+            activeButton.classList.add('active');
+        }
+
+        const ctx = document.getElementById('mahrChart').getContext('2d');
+        const mahrChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['রাসূল (ﷺ) এর সময়ের আদর্শ মোহরানা', 'সাধারণ আধুনিক দাবি', 'অতিরিক্ত আধুনিক দাবি'],
+                datasets: [{
+                    label: 'মোহরানার পরিমাণ (আনুমানিক দিরহাম)',
+                    data: [500, 30000, 50000],
+                    backgroundColor: [
+                        'rgba(22, 163, 74, 0.7)',
+                        'rgba(202, 138, 4, 0.7)',
+                        'rgba(220, 38, 38, 0.7)'
+                    ],
+                    borderColor: [
+                        '#16a34a',
+                        '#ca8a04',
+                        '#dc2626'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#9ca3af',
+                            callback: function(value, index, values) {
+                                return value.toLocaleString('bn-BD') + ' দিরহাম';
+                            },
+                             font: {
+                                family: "'Hind Siliguri', sans-serif"
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(156, 163, 175, 0.1)'
+                        }
+                    },
+                    y: {
+                       ticks: {
+                            color: '#d1d5db',
+                            font: {
+                                family: "'Hind Siliguri', sans-serif",
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(156, 163, 175, 0.1)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#d1d5db',
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.x !== null) {
+                                    label += context.parsed.x.toLocaleString('bn-BD') + ' দিরহাম (আনুমানিক)';
+                                }
+                                return label;
+                            }
+                        },
+                         bodyFont: {
+                            family: "'Hind Siliguri', sans-serif"
+                        },
+                        titleFont: {
+                             family: "'Hind Siliguri', sans-serif"
+                        }
+                    }
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showTab('media');
+        });
+    </script>
+
+</body>
+</html>

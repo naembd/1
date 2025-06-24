@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মু'তার যুদ্ধ: একটি ইন্টারেক্টিভ বিশ্লেষণ (নিয়ন সংস্করণ)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Neon Glow on Dark Stone -->
+    <!-- Application Structure Plan: The SPA is designed with a thematic, non-linear structure to enhance user engagement. It starts with a compelling hero section, followed by an interactive dashboard for the Battle of Mu'tah. This dashboard includes key stats (visualized with Chart.js), a clickable timeline of battle phases, and profiles of key commanders. This approach allows users to explore the narrative at their own pace. A "Lessons & Reflections" section contrasts the past with the present, fulfilling the sermon's core message. This structure transforms a passive text into an active learning experience, making the historical and spiritual insights more accessible and impactful. -->
+    <!-- Visualization & Content Choices: 
+        1.  Report Info: Army Sizes (3k vs 200k). Goal: Compare overwhelming odds. Viz: Horizontal Bar Chart (Chart.js). Interaction: Tooltips on hover. Justification: Best for direct quantitative comparison.
+        2.  Report Info: Battle Narrative. Goal: Organize events chronologically. Viz: Clickable Timeline (HTML/CSS). Interaction: Click to show corresponding text. Justification: Provides clear structure and non-linear exploration.
+        3.  Report Info: Key Commanders. Goal: Detail their roles. Viz: Interactive Cards. Interaction: Click to open modal/reveal info. Justification: Organizes content cleanly, avoiding clutter.
+        4.  Report Info: Khalid's Strategy. Goal: Explain the military tactic. Viz: Diagram with styled divs. Interaction: Toggle button to switch views. Justification: Visuals are more effective than text alone for spatial concepts.
+        5.  Report Info: Then vs. Now. Goal: Contrast historical and modern behavior. Viz: Two-column layout. Interaction: Static. Justification: Direct comparison is impactful.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #1c1917; /* stone-900 */
+            color: #d6d3d1; /* stone-300 */
+        }
+        .text-glow {
+            color: #f97316; /* orange-500 */
+            text-shadow: 0 0 5px rgba(249, 115, 22, 0.7), 0 0 10px rgba(249, 115, 22, 0.5);
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+            color: #e7e5e4; /* stone-200 */
+        }
+        .nav-button.active, .nav-button:hover {
+            color: #f97316; /* orange-500 */
+            border-bottom-color: #f97316;
+            text-shadow: 0 0 8px rgba(249, 115, 22, 0.7);
+        }
+        .card {
+            background-color: #292524; /* stone-800 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #44403c; /* stone-700 */
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px 0px rgba(249, 115, 22, 0.5), 0 0 5px 0px rgba(249, 115, 22, 0.8);
+            border-color: #f97316;
+        }
+        .timeline-btn {
+             background-color: #292524; /* stone-800 */
+             border-left-color: #57534e; /* stone-600 */
+             transition: all 0.3s ease;
+        }
+        .timeline-btn.active {
+            border-left-color: #f97316; /* orange-500 */
+            box-shadow: -4px 0 15px -3px rgba(249, 115, 22, 0.4);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-stone-900/50 backdrop-blur-sm sticky top-0 z-50 shadow-lg shadow-black/10">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-glow">মু'তার যুদ্ধ</h1>
+            <div class="flex items-center space-x-4 text-sm md:text-base">
+                <a href="#overview" class="nav-button font-medium">সংক্ষিপ্ত বিবরণ</a>
+                <a href="#timeline" class="nav-button font-medium">ঘটনাপ্রবাহ</a>
+                <a href="#leaders" class="nav-button font-medium">সেনাপতিগণ</a>
+                <a href="#lessons" class="nav-button font-medium">শিক্ষা</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+
+        <section id="hero" class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 text-stone-100">"আপনি আমার হৃদয়কে ভেঙে দিয়েছেন এবং রক্তাক্ত করেছেন"</h2>
+            <p class="text-lg md:text-xl text-stone-400 max-w-3xl mx-auto">শেখ খালেদ আল-রাশেদের এই মর্মস্পর্শী বক্তৃতার আলোকে, ঈমানের বলে বলীয়ান এক ছোট দলের অসম সাহসিকতার কাহিনী অন্বেষণ করুন, যা ইতিহাসের গতিপথকে প্রভাবিত করেছিল।</p>
+        </section>
+
+        <section id="overview" class="mb-16 scroll-mt-20">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8 text-glow">এক নজরে যুদ্ধ পরিস্থিতি</h3>
+            <p class="text-center text-stone-400 mb-8 max-w-3xl mx-auto">এই বিভাগে মু'তার যুদ্ধের প্রাথমিক পরিসংখ্যান এবং প্রেক্ষাপট তুলে ধরা হয়েছে। একটি ইন্টারেক্টিভ চার্টের মাধ্যমে মুসলিম ও রোমান বাহিনীর মধ্যকার সংখ্যার বিশাল পার্থক্যটি দেখুন, যা এই যুদ্ধের অসম প্রকৃতিকে স্পষ্ট করে। এটি সাহাবীদের অটল ঈমান ও সাহসিকতার এক দারুণ দৃষ্টান্ত।</p>
+            <div class="bg-stone-800 rounded-lg shadow-lg p-4 md:p-8 border border-stone-700">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h4 class="font-bold text-xl text-stone-100 mb-2">বাহিনীর তুলনা</h4>
+                        <p class="text-stone-400 mb-4">তিন হাজার মুসলিম সৈন্যের একটি দল মুখোমুখি হয়েছিল দুই লক্ষ সুসজ্জিত রোমান ও তাদের মিত্র বাহিনীর। সংখ্যার এই বিশাল ব্যবধান সত্ত্বেও, মুসলিম বাহিনী ঈমানের শক্তিতে অটল ছিল।</p>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center bg-stone-900 p-3 rounded-md">
+                                <span class="font-semibold text-stone-200">মুসলিম বাহিনী</span>
+                                <span class="font-bold text-orange-500">৩,০০০</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-stone-900 p-3 rounded-md">
+                                <span class="font-semibold text-stone-200">রোমান ও মিত্র বাহিনী</span>
+                                <span class="font-bold text-stone-300">২,০০,০০০</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="battleChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="timeline" class="mb-16 scroll-mt-20">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8 text-glow">যুদ্ধের ঘটনাপ্রবাহ</h3>
+            <p class="text-center text-stone-400 mb-12 max-w-3xl mx-auto">এই ইন্টারেক্টিভ টাইমলাইনের মাধ্যমে মু'তার যুদ্ধের মূল পর্যায়গুলো অন্বেষণ করুন। প্রতিটি পর্যায়ে ক্লিক করে সেই সময়ের ঘটনা, সিদ্ধান্ত এবং বীরত্বপূর্ণ মুহূর্তগুলো সম্পর্কে বিস্তারিত জানুন। এটি আপনাকে যুদ্ধের শুরু থেকে শেষ পর্যন্ত একটি পরিষ্কার চিত্র দেবে।</p>
+
+            <div class="flex flex-col md:flex-row justify-center items-start md:items-center gap-4 md:gap-8 mb-8" id="timeline-controls">
+                <button data-id="cause" class="timeline-btn active text-left w-full md:w-auto p-3 rounded-lg shadow-md cursor-pointer border-l-4">
+                    <span class="font-bold text-stone-100">১. যুদ্ধের কারণ</span><br><span class="text-sm text-stone-400">দূতের হত্যাকাণ্ড</span>
+                </button>
+                <button data-id="commanders" class="timeline-btn text-left w-full md:w-auto p-3 rounded-lg shadow-md cursor-pointer border-l-4">
+                    <span class="font-bold text-stone-100">২. সেনাপতিদের শাহাদাত</span><br><span class="text-sm text-stone-400">অটল বীরত্ব</span>
+                </button>
+                <button data-id="khalid" class="timeline-btn text-left w-full md:w-auto p-3 rounded-lg shadow-md cursor-pointer border-l-4">
+                    <span class="font-bold text-stone-100">৩. খালিদের রণকৌশল</span><br><span class="text-sm text-stone-400">সাইফুল্লাহর আগমন</span>
+                </button>
+                <button data-id="return" class="timeline-btn text-left w-full md:w-auto p-3 rounded-lg shadow-md cursor-pointer border-l-4">
+                    <span class="font-bold text-stone-100">৪. মদিনায় প্রত্যাবর্তন</span><br><span class="text-sm text-stone-400">বিজয় না পলায়ন?</span>
+                </button>
+            </div>
+            
+            <div id="timeline-content" class="bg-stone-800 rounded-lg shadow-lg p-6 md:p-8 min-h-[250px] border border-stone-700">
+            </div>
+        </section>
+
+        <section id="leaders" class="mb-16 scroll-mt-20">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8 text-glow">যাঁদের রক্তে লেখা ইতিহাস</h3>
+            <p class="text-center text-stone-400 mb-12 max-w-3xl mx-auto">মু'তার যুদ্ধের মহান সেনাপতিদের সম্পর্কে জানুন। রাসূল (সাঃ) কর্তৃক নিযুক্ত তিনজন সেনাপতি এবং সংকটময় মুহূর্তে নেতৃত্ব গ্রহণকারী খালিদ বিন ওয়ালিদ (রাঃ)-এর বীরত্ব ও আত্মত্যাগের কাহিনী এখানে তুলে ধরা হয়েছে। তাঁদের জীবন ও শাহাদাত এই উম্মাহর জন্য চিরন্তন অনুপ্রেরণার উৎস।</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="card p-6 rounded-lg shadow text-center">
+                    <h4 class="text-xl font-bold mb-2 text-stone-100">যায়েদ ইবনে হারিসা (রাঃ)</h4>
+                    <p class="text-stone-400">রাসূল (সাঃ) এর প্রিয় সাহাবী ও প্রথম সেনাপতি, যিনি বীরত্বের সাথে যুদ্ধ করে শাহাদাত বরণ করেন।</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow text-center">
+                    <h4 class="text-xl font-bold mb-2 text-stone-100">জাফর ইবনে আবি তালিব (রাঃ)</h4>
+                    <p class="text-stone-400">যিনি 'আকাশে উড়ন্ত জাফর' নামে পরিচিত। দুই হাত হারানোর পরও পতাকা বুকে আগলে রেখে শহীদ হন।</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow text-center">
+                    <h4 class="text-xl font-bold mb-2 text-stone-100">আব্দুল্লাহ ইবনে রাওয়াহা (রাঃ)</h4>
+                    <p class="text-stone-400">একজন কবি ও বীর যোদ্ধা। জান্নাতের জন্য তাঁর আকুতি ও সাহসিকতা তাঁকে শাহাদাতের পথে নিয়ে যায়।</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow text-center">
+                    <h4 class="text-xl font-bold mb-2 text-stone-100">খালিদ বিন ওয়ালিদ (রাঃ)</h4>
+                    <p class="text-stone-400">'সাইফুল্লাহ' বা আল্লাহর তরবারি। তাঁর অসাধারণ রণকৌশলে মুসলিম বাহিনী নিশ্চিত ধ্বংসের হাত থেকে রক্ষা পায়।</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="lessons" class="scroll-mt-20">
+            <h3 class="text-2xl md:text-3xl font-bold text-center mb-8 text-glow">অতীত ও বর্তমান: কিছু ভাবনা</h3>
+            <p class="text-center text-stone-400 mb-12 max-w-3xl mx-auto">বক্তৃতার এই অংশে শেখ খালেদ আল-রাশেদ অতীতের মুসলিমদের ঈমানী দৃঢ়তা এবং বর্তমান প্রজন্মের অবস্থার মধ্যে একটি বেদনাদায়ক তুলনা করেছেন। এই তুলনা আমাদের আত্মজিজ্ঞাসার দিকে ঠেলে দেয় এবং উম্মাহর হারানো গৌরব পুনরুদ্ধারের জন্য অনুপ্রাণিত করে।</p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card p-6 rounded-lg shadow">
+                    <h4 class="text-xl font-bold mb-3 border-b-2 border-orange-500/30 pb-2 text-stone-100">তখন: বীরদের অভ্যর্থনা</h4>
+                    <p class="text-stone-400">মু'তার যুদ্ধ থেকে ফেরত সেনাবাহিনীকে মদিনার শিশুরা 'পলাতক' বলে ধিক্কার জানিয়েছিল, কারণ তারা শহীদ না হয়ে ফিরে এসেছিলেন। এটি ছিল তাদের ঈমানী চেতনার গভীরতার পরিচায়ক। নারীরা তাদের স্বামী-সন্তানদের জন্য দরজা বন্ধ করে দিয়েছিলেন, কারণ তারা আল্লাহর পথে জীবন উৎসর্গ করেননি।</p>
+                </div>
+                <div class="card p-6 rounded-lg shadow">
+                    <h4 class="text-xl font-bold mb-3 border-b-2 border-stone-600 pb-2 text-stone-100">এখন: তারকাদের অভ্যর্থনা</h4>
+                    <p class="text-stone-400">আজকের দিনে আমাদের যুবকরা খেলোয়াড় বা গায়কদের ফুল দিয়ে বিমানবন্দরে স্বাগত জানায়। আমাদের আদর্শ ও মূল্যবোধের কী বিশাল পরিবর্তন! এই বৈপরীত্য আমাদের জন্য এক গভীর আত্মজিজ্ঞাসার বিষয়।</p>
+                </div>
+            </div>
+             <div class="mt-8 bg-orange-900/20 border-l-4 border-orange-500 text-orange-300 p-4 rounded-r-lg" role="alert">
+                <p class="font-bold text-orange-400">বিজয়ের মূলমন্ত্র</p>
+                <p>ঈমান, তাকওয়া এবং আল্লাহর প্রতি আনুগত্যই ছিল সাহাবীদের বিজয়ের মূল চাবিকাঠি। যখন আমাদের জীবন থেকে এই গুণাবলী দুর্বল হয়ে যায়, তখনই আমরা আমাদের গৌরব ও শক্তি হারিয়ে ফেলি।真正的 বিজয় সংখ্যা বা অস্ত্রে নয়, বরং আল্লাহর প্রতি অবিচল বিশ্বাসে নিহিত।</p>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-stone-800 text-center py-4 mt-12 border-t border-stone-700">
+        <p class="text-stone-500">শেখ খালেদ আল-রাশেদের বক্তৃতার আলোকে নির্মিত।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const timelineData = {
+                cause: {
+                    title: "যুদ্ধের প্রেক্ষাপট ও কারণ",
+                    content: "রাসূল (সাঃ) এর প্রেরিত দূত হারিস ইবনে উমাইর (রাঃ)-কে বসরার শাসক শুরাহবিল ইবনে আমর আল-গাসসানি অন্যায়ভাবে হত্যা করে। দূত হত্যা তৎকালীন সকল আন্তর্জাতিক আইনের পরিপন্থী ছিল। এই বিশ্বাসঘাতকতার সমুচিত জবাব দিতে এবং ইসলামের সম্মান রক্ষা করতে রাসূল (সাঃ) তিন হাজার সৈন্যের একটি বাহিনী প্রস্তুত করার নির্দেশ দেন।"
+                },
+                commanders: {
+                    title: "তিন সেনাপতির বীরত্ব ও শাহাদাত",
+                    content: "যুদ্ধক্ষেত্রে রাসূল (সাঃ) কর্তৃক নিযুক্ত তিনজন সেনাপতিই অসামান্য বীরত্ব প্রদর্শন করেন। প্রথমে যায়েদ ইবনে হারিসা (রাঃ) শহীদ হন। এরপর জাফর ইবনে আবি তালিব (রাঃ) পতাকা ধারণ করেন। তাঁর উভয় হাত কেটে ফেলার পরও তিনি বুক দিয়ে পতাকা আগলে রাখেন এবং শহীদ হন। সবশেষে, আব্দুল্লাহ ইবনে রাওয়াহা (রাঃ) কিছুটা দ্বিধার পর ঈমানী বলে বলীয়ান হয়ে যুদ্ধে ঝাঁপিয়ে পড়েন এবং শাহাদাতের অমীয় সুধা পান করেন।"
+                },
+                khalid: {
+                    title: "খালিদ বিন ওয়ালিদের আগমন ও রণকৌশল",
+                    content: "তিনজন সেনাপতির শাহাদাতের পর মুসলিম বাহিনী যখন নেতৃত্বহীন ও বিশৃঙ্খল, তখন খালিদ বিন ওয়ালিদ (রাঃ) নেতৃত্ব গ্রহণ করেন। ইসলাম গ্রহণের মাত্র তিন মাস পরেই তিনি এই কঠিন দায়িত্ব নেন। রাতের আঁধারে তিনি সেনাবাহিনীর বিন্যাস পুরোপুরি বদলে দেন। সৈন্যদের অবস্থান পরিবর্তন এবং নতুন দলের আগমনের অভিনয় করে রোমানদের মনে এই ধারণা দেন যে, মদিনা থেকে নতুন সাহায্যকারী বাহিনী এসেছে। এই অসাধারণ রণকৌশলে ভীত হয়ে রোমানরা ছত্রভঙ্গ হয়ে পড়ে।"
+                },
+                return: {
+                    title: "কৌশলগত প্রত্যাবর্তন ও মদিনাবাসীর প্রতিক্রিয়া",
+                    content: "খালিদ (রাঃ) তার brilliant রণকৌশলের মাধ্যমে শত্রুদের মনে ভয় ঢুকিয়ে দিয়ে মুসলিম সেনাবাহিনীকে প্রায় কোনো ক্ষয়ক্ষতি ছাড়াই নিরাপদে ফিরিয়ে আনেন। এটি একটি অসাধারণ সামরিক বিজয় ছিল। কিন্তু মদিনার কিছু লোক, যারা যুদ্ধের প্রকৃত পরিস্থিতি সম্পর্কে অবগত ছিলেন না, তারা এই প্রত্যাবর্তনকে 'পলায়ন' মনে করে সেনাবাহিনীকে তিরস্কার করেন। তখন রাসূল (সাঃ) তাদের রক্ষা করেন এবং বলেন, 'তারা পলাতক নয়, বরং তারা আক্রমণকারী, ইনশাআল্লাহ।' তিনি খালিদকে 'সাইফুল্লাহ' বা 'আল্লাহর তরবারি' উপাধিতে ভূষিত করেন।"
+                }
+            };
+
+            const timelineContentEl = document.getElementById('timeline-content');
+            const timelineControls = document.getElementById('timeline-controls');
+            const timelineButtons = timelineControls.querySelectorAll('.timeline-btn');
+
+            function updateContent(id) {
+                const data = timelineData[id];
+                timelineContentEl.innerHTML = `
+                    <h4 class="text-xl font-bold mb-3 text-orange-500">${data.title}</h4>
+                    <p class="text-stone-400 leading-relaxed">${data.content}</p>
+                `;
+                timelineButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.id === id) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            timelineControls.addEventListener('click', function(e) {
+                const button = e.target.closest('.timeline-btn');
+                if (button) {
+                    const id = button.dataset.id;
+                    updateContent(id);
+                }
+            });
+
+            updateContent('cause');
+
+            const ctx = document.getElementById('battleChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['মুসলিম বাহিনী', 'রোমান ও মিত্র বাহিনী'],
+                    datasets: [{
+                        label: 'সৈন্য সংখ্যা',
+                        data: [3000, 200000],
+                        backgroundColor: [
+                            'rgba(249, 115, 22, 0.6)',
+                            'rgba(120, 113, 108, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(251, 146, 60, 1)',
+                            'rgba(168, 162, 158, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1c1917',
+                            titleColor: '#e7e5e4',
+                            bodyColor: '#d6d3d1',
+                            borderColor: '#44403c',
+                            borderWidth: 1,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        label += new Intl.NumberFormat('bn-BD').format(context.parsed.x);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                           beginAtZero: true,
+                           grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                           ticks: {
+                                color: '#a8a29e', /* stone-400 */
+                                callback: function(value, index, values) {
+                                    if (value >= 1000) {
+                                        return (value / 1000) + ' হাজার';
+                                    }
+                                    return value;
+                                }
+                            }
+                        },
+                        y: {
+                           grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                           ticks: { color: '#a8a29e' /* stone-400 */ }
+                        }
+                    }
+                }
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

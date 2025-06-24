@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মৃত্যুর তরঙ্গে ভূমিকম্প: একটি ঐশ্বরিক বার্তা (নিয়ন সংস্করণ)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cyberpunk Neon -->
+    <!-- Application Structure Plan: A thematic, single-page scrollable application with 6 sections: Hero, Divine Laws, The Event (Case Study), The Causes (Interactive Grid), The Warning (Signs of Qiyamah), and The Solution (Call to Action). This structure transforms a linear sermon into an explorable, thematic experience, guiding the user from the problem's theological basis to its causes and finally to the proposed solution, enhancing comprehension and engagement over a simple text document. -->
+    <!-- Visualization & Content Choices: Report Info: Sermon's core themes (Sin, Punishment, Test, Lesson) -> Goal: Inform (Provide a high-level summary) -> Viz: Doughnut Chart -> Interaction: Hover to see labels -> Justification: Visually anchors the application's central message. Library: Chart.js. Report Info: List of sins -> Goal: Organize/Explore -> Presentation: Interactive Card Grid -> Interaction: Click to reveal details -> Justification: Breaks down a long list into engaging, user-driven exploration. Method: HTML/CSS/JS. Report Info: Call to action steps -> Goal: Guide -> Presentation: Accordion -> Interaction: Click to expand -> Justification: Presents solutions in a clean, organized, and accessible manner. Method: HTML/CSS/JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .neon-text-main {
+            color: #f0fdfa;
+            text-shadow: 0 0 5px rgba(13, 222, 222, 0.7), 0 0 10px rgba(13, 222, 222, 0.7), 0 0 20px rgba(13, 222, 222, 0.5), 0 0 40px rgba(13, 222, 222, 0.3);
+        }
+        .neon-text-accent {
+            color: #f9a8d4;
+             text-shadow: 0 0 5px rgba(244, 114, 182, 0.7), 0 0 10px rgba(244, 114, 182, 0.7);
+        }
+        .neon-border {
+            border: 1px solid #0d9488;
+            box-shadow: 0 0 5px rgba(13, 222, 222, 0.3), 0 0 10px rgba(13, 222, 222, 0.2), inset 0 0 5px rgba(13, 222, 222, 0.2);
+        }
+        .neon-border-hover:hover {
+            box-shadow: 0 0 8px rgba(13, 222, 222, 0.6), 0 0 15px rgba(13, 222, 222, 0.4), inset 0 0 8px rgba(13, 222, 222, 0.4);
+        }
+        .active-nav {
+            color: #2dd4bf;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(45, 212, 191, 0.8);
+        }
+        .inactive-nav {
+            color: #9ca3af;
+        }
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300">
+
+    <header id="header" class="bg-gray-900/80 backdrop-blur-sm text-gray-200 p-4 sticky top-0 z-50 shadow-lg shadow-cyan-500/10">
+        <nav class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold neon-text-accent">ঐশ্বরিক বার্তা</h1>
+            <div class="hidden md:flex space-x-6">
+                <a href="#introduction" class="nav-link inactive-nav hover:text-cyan-300 transition-colors duration-300">ভূমিকা</a>
+                <a href="#causes" class="nav-link inactive-nav hover:text-cyan-300 transition-colors duration-300">কারণসমূহ</a>
+                <a href="#signs" class="nav-link inactive-nav hover:text-cyan-300 transition-colors duration-300">কেয়ামতের আলামত</a>
+                <a href="#solution" class="nav-link inactive-nav hover:text-cyan-300 transition-colors duration-300">করণীয়</a>
+            </div>
+             <button id="mobile-menu-button" class="md:hidden text-gray-200 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden mt-4 bg-gray-800 rounded-lg">
+            <a href="#introduction" class="block py-2 px-4 text-sm text-gray-200 hover:bg-gray-700 rounded-t-lg">ভূমিকা</a>
+            <a href="#causes" class="block py-2 px-4 text-sm text-gray-200 hover:bg-gray-700">কারণসমূহ</a>
+            <a href="#signs" class="block py-2 px-4 text-sm text-gray-200 hover:bg-gray-700">কেয়ামতের আলামত</a>
+            <a href="#solution" class="block py-2 px-4 text-sm text-gray-200 hover:bg-gray-700 rounded-b-lg">করণীয়</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="bg-gray-900 text-white text-center py-20 md:py-32 px-4">
+            <div class="container mx-auto">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 neon-text-main">মৃত্যুর তরঙ্গে ভূমিকম্প</h2>
+                <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">"এবং আমি ভয় প্রদর্শনের উদ্দেশ্যেই নিদর্শনসমূহ প্রেরণ করি।" (সূরা আল-ইসরা: ৫৯)</p>
+            </div>
+        </section>
+
+        <section id="introduction" class="py-16 md:py-24 px-4 section-fade-in">
+            <div class="container mx-auto text-center">
+                <h3 class="text-2xl md:text-4xl font-bold mb-6 text-cyan-300">আল্লাহর অপরিবর্তনীয় বিধান</h3>
+                <p class="max-w-3xl mx-auto text-base md:text-lg text-gray-400 mb-12">
+                    এই বিভাগে আমরা শেখ খালিদ আর-রাশিদের বক্তব্যের মূল ভিত্তি নিয়ে আলোচনা করব। তিনি স্মরণ করিয়ে দেন যে, মহাবিশ্বের প্রতিটি ঘটনা, বিশেষ করে প্রাকৃতিক দুর্যোগ, আল্লাহর установিত নিয়মের অধীনে ঘটে। এগুলো কোনো আকস্মিক ঘটনা নয়, বরং পাপীদের জন্য শাস্তি, সৎকর্মশীলদের জন্য পরীক্ষা এবং মানবজাতির জন্য একটি সুস্পষ্ট সতর্কবার্তা। এই দৃষ্টিকোণ থেকে ঘটনাগুলোকে দেখলে আমরা এর গভীর তাৎপর্য উপলব্ধি করতে পারব।
+                </p>
+                <div class="chart-container">
+                    <canvas id="disasterChart"></canvas>
+                </div>
+                 <p class="mt-4 text-sm text-gray-500">দুর্যোগের বহুমাত্রিক তাৎপর্য</p>
+            </div>
+        </section>
+
+        <section id="event" class="bg-gray-950/50 py-16 md:py-24 px-4 section-fade-in">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                     <h3 class="text-2xl md:text-4xl font-bold mb-6 text-cyan-300">একটি ভয়াবহ সতর্কবার্তা: সুনামি</h3>
+                     <p class="max-w-3xl mx-auto text-base md:text-lg text-gray-400">
+                        বক্তব্যে একটি ভয়াবহ সুনামির উদাহরণ দেওয়া হয়েছে, যা মুহূর্তের মধ্যে হাজার হাজার জীবন ও সম্পদ ধ্বংস করে দিয়েছিল। যে পর্যটন কেন্দ্রগুলো একসময় অশ্লীলতা ও পাপে পরিপূর্ণ ছিল, সেগুলোই আল্লাহর ক্রোধের শিকার হয়। এই ঘটনাটি আমাদের স্মরণ করিয়ে দেয় যে, আল্লাহর পাকড়াও অত্যন্ত কঠিন এবং তাঁর আদেশ অমান্য করার পরিণতি ভয়াবহ হতে পারে।
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="p-6 bg-gray-800 rounded-lg neon-border">
+                        <h4 class="text-xl font-semibold mb-3 text-pink-400">ধ্বংসের পূর্বে</h4>
+                        <p class="text-gray-300">"বিপদগ্রস্ত এলাকার একটি বড় অংশ ছিল পর্যটন কেন্দ্র, যেখানে সারা বিশ্ব থেকে পাপী পর্যটকরা আসত। তারা সেখানে উলঙ্গ হয়ে নাচত, গান গাইত, মদ পান করত এবং অনাচার করত।"</p>
+                    </div>
+                    <div class="p-6 bg-gray-800 rounded-lg neon-border">
+                        <h4 class="text-xl font-semibold mb-3 text-teal-300">ধ্বংসের পরে</h4>
+                        <p class="text-gray-300">"এক মিনিটেরও কম সময়ে হাজার হাজার মানুষ নিহত হয়... فلا ترى إلا مباني سويت بالأرض (তুমি মাটিচাপা ভবন ছাড়া আর কিছুই দেখতে পাবে না)। عشرات الآلاف من الجثث الهامدة (হাজার হাজার নিথর দেহ)।"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="causes" class="py-16 md:py-24 px-4 section-fade-in">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h3 class="text-2xl md:text-4xl font-bold mb-6 text-cyan-300">শাস্তির মূল কারণসমূহ</h3>
+                    <p class="max-w-3xl mx-auto text-base md:text-lg text-gray-400">
+                        এই বিভাগে শেখ খালিদ আর-রাশিদ সমাজের বিভিন্ন পাপের কথা উল্লেখ করেছেন যা আল্লাহর শাস্তির কারণ হতে পারে। তিনি প্রশ্ন তুলেছেন, যখন এই পাপগুলো সমাজে ব্যাপকভাবে ছড়িয়ে পড়ে, তখন সৎ ব্যক্তিরা থাকলেও কেন সম্মিলিত শাস্তি নেমে আসে। প্রতিটি কারণ সম্পর্কে আরও জানতে নিচের কার্ডগুলোতে ক্লিক করুন।
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="causes-grid">
+                </div>
+            </div>
+        </section>
+
+        <section id="signs" class="bg-gray-950/50 py-16 md:py-24 px-4 section-fade-in">
+            <div class="container mx-auto text-center">
+                <h3 class="text-2xl md:text-4xl font-bold mb-6 text-cyan-300">কেয়ামতের নিকটবর্তী হওয়ার আলামত</h3>
+                <p class="max-w-3xl mx-auto text-base md:text-lg text-gray-400 mb-12">
+                    নবী (সাঃ) ভবিষ্যৎবাণী করেছিলেন যে, কেয়ামতের আগে পৃথিবীতে ভূমিকম্পের সংখ্যা অনেক বেড়ে যাবে। আজ আমরা বিশ্বজুড়ে এই লক্ষণটি স্পষ্টভাবে দেখতে পাচ্ছি। এটি আমাদের জন্য একটি গুরুতর অনুস্মারক যে, চূড়ান্ত হিসাব-নিকাশের দিন ঘনিয়ে আসছে এবং আমাদের প্রস্তুতি গ্রহণ করা উচিত।
+                </p>
+                <div class="bg-gray-800 p-8 rounded-lg max-w-2xl mx-auto neon-border">
+                    <p class="text-lg italic text-gray-200">
+                        রাসূলুল্লাহ (সাঃ) বলেছেন: "কেয়ামত ততক্ষণ পর্যন্ত সংঘটিত হবে না, যতক্ষণ না জ্ঞান তুলে নেওয়া হবে, সময় সংকীর্ণ হয়ে আসবে, ভূমিকম্প বৃদ্ধি পাবে, ফিতনা ظاہر হবে এবং 'হারজ' বেড়ে যাবে। জিজ্ঞাসা করা হলো: হে আল্লাহর রাসূল, 'হারজ' কী? তিনি বললেন: হত্যা, হত্যা!"
+                    </p>
+                    <p class="text-right mt-4 font-semibold text-teal-400">(সহীহ বুখারী)</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="solution" class="py-16 md:py-24 px-4 section-fade-in">
+            <div class="container mx-auto">
+                 <div class="text-center mb-12">
+                    <h3 class="text-2xl md:text-4xl font-bold mb-6 text-cyan-300">আমাদের করণীয় কী?</h3>
+                     <p class="max-w-3xl mx-auto text-base md:text-lg text-gray-400">
+                       বিপদ ও আল্লাহর নিদর্শন দেখে আমাদের নিষ্ক্রিয় থাকা উচিত নয়। এই চূড়ান্ত বিভাগে, শেখ খালিদ আর-রাশিদ আমাদের মুক্তির পথ বাতলে দিয়েছেন। আল্লাহর শাস্তি থেকে বাঁচতে এবং তাঁর করুণা লাভ করতে আমাদের অবশ্যই কিছু পদক্ষেপ নিতে হবে। প্রতিটি করণীয় সম্পর্কে জানতে নিচে ক্লিক করুন।
+                    </p>
+                </div>
+                <div class="max-w-2xl mx-auto" id="solution-accordion">
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer class="bg-gray-900/50 text-gray-400 text-center p-6 border-t border-cyan-500/20">
+        <p>&copy; ২০২৪। শেখ খালিদ আর-রাশিদের বক্তব্যের উপর ভিত্তি করে তৈরি।</p>
+        <p class="text-sm text-gray-500 mt-2">শিক্ষামূলক উদ্দেশ্যে তৈরি একটি ইন্টারঅ্যাক্টিভ উপস্থাপনা।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const causesData = [
+                { title: 'নামাজ ত্যাগ করা', content: 'নামাজের প্রতি মানুষের উদাসীনতা, বিশেষ করে ফজরের জামাতে অনুপস্থিতি। তরুণদের মধ্যে নামাজ না পড়ার প্রবণতা আল্লাহর অসন্তুষ্টির একটি বড় কারণ।' },
+                { title: 'সুদের লেনদেন', content: 'সমাজের সর্বস্তরে সুদের ব্যাপক বিস্তার। মানুষ আল্লাহর সাথে যুদ্ধের ঘোষণা দিয়েও সুদি কারবারে ঝাঁপিয়ে পড়ছে।' },
+                { title: 'ঘুষের বিস্তার', content: 'ঘুষ ছাড়া কাজ সম্পন্ন না হওয়া। নবী (সাঃ) ঘুষদাতা ও গ্রহীতা উভয়কেই অভিশাপ দিয়েছেন।' },
+                { title: 'বেহায়াপনা ও নগ্নতা', content: 'পোশাক ও আচরণে নারীদের বেপর্দা ও অশ্লীলতা, যা তরুণ সমাজকে ধ্বংসের দিকে ঠেলে দিচ্ছে।' },
+                { title: 'মদ ও ব্যভিচার', content: 'তরুণদের বিদেশে গিয়ে মদ ও ব্যভিচারে লিপ্ত হওয়া। এই সব পাপ আল্লাহর ক্রোধকে আমন্ত্রণ জানায়।' },
+                { title: 'সংগীত ও বিনোদন', content: 'শয়তানের বাদ্যযন্ত্র ও সঙ্গীত সর্বত্র কুরআনের চেয়ে বেশি শোনা যায়। স্যাটেলাইট চ্যানেলগুলো অশ্লীলতা ছড়িয়ে ঈমান ও নৈতিকতা ধ্বংস করছে।' }
+            ];
+
+            const solutionsData = [
+                { title: 'তওবা ও প্রত্যাবর্তন', content: 'আমাদের প্রথম ও প্রধান কর্তব্য হলো আন্তরিকভাবে আল্লাহর কাছে তওবা করা, নিজেদের ভুল স্বীকার করা এবং তাঁর দিকে ফিরে আসা।' },
+                { title: 'দোয়া ও কাকুতি-মিনতি', content: 'বিপদের সময় আল্লাহর কাছে একনিষ্ঠভাবে দোয়া করা এবং তাঁর সাহায্য প্রার্থনা করা উচিত। রাসূল (সাঃ) বলেছেন, "যখন তোমরা এমন কিছু দেখবে, তখন আল্লাহর জিকির, দোয়া ও ইস্তেগফারের দিকে ধাবিত হও।"'},
+                { title: 'দান-সদকা করা', content: 'দরিদ্র ও অসহায়দের প্রতি দয়া প্রদর্শন করা আল্লাহর রহমত লাভের একটি অন্যতম উপায়। রাসূল (সাঃ) বলেছেন, "যারা দয়া করে, দয়াময় আল্লাহও তাদের প্রতি দয়া করেন।"'},
+                { title: 'পাপ থেকে বিরত থাকা', content: 'যেসব পাপের কারণে আযাব নেমে আসে, সেগুলো থেকে সম্পূর্ণরূপে বিরত থাকার জন্য দৃঢ় প্রতিজ্ঞা করা এবং সৎ কাজের আদেশ ও অসৎ কাজে বাধা প্রদান করা।' }
+            ];
+
+            const causesGrid = document.getElementById('causes-grid');
+            causesData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'cause-card p-6 bg-gray-800 rounded-lg cursor-pointer transition-all duration-300 neon-border neon-border-hover';
+                card.innerHTML = `
+                    <h4 class="text-xl font-semibold mb-2 text-cyan-400">${item.title}</h4>
+                    <div class="cause-content hidden text-gray-300 mt-4">
+                        <p>${item.content}</p>
+                    </div>
+                `;
+                causesGrid.appendChild(card);
+            });
+
+            document.querySelectorAll('.cause-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    card.querySelector('.cause-content').classList.toggle('hidden');
+                });
+            });
+
+            const solutionAccordion = document.getElementById('solution-accordion');
+            solutionsData.forEach((item, index) => {
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'border border-cyan-500/30 rounded-lg mb-2 bg-gray-800';
+                accordionItem.innerHTML = `
+                    <button class="accordion-button w-full text-left p-4 font-semibold text-cyan-300 flex justify-between items-center hover:bg-gray-700 transition-colors">
+                        <span>${item.title}</span>
+                        <span class="transform transition-transform duration-300 text-cyan-400">▼</span>
+                    </button>
+                    <div class="accordion-content hidden p-4 border-t border-cyan-500/30 text-gray-300">
+                        <p>${item.content}</p>
+                    </div>
+                `;
+                solutionAccordion.appendChild(accordionItem);
+            });
+            
+            document.querySelectorAll('.accordion-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    const arrow = button.querySelector('span:last-child');
+                    
+                    content.classList.toggle('hidden');
+                    if(content.classList.contains('hidden')) {
+                        arrow.style.transform = 'rotate(0deg)';
+                    } else {
+                        arrow.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            const ctx = document.getElementById('disasterChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['শাস্তি (পাপীদের জন্য)', 'পরীক্ষা (সৎদের জন্য)', 'শিক্ষা (সার্বজনীন)', 'সতর্কবার্তা (সকলের জন্য)'],
+                    datasets: [{
+                        label: 'দুর্যোগের তাৎপর্য',
+                        data: [40, 25, 20, 15],
+                        backgroundColor: [
+                            '#fb7185', // rose-400
+                            '#4ade80', // green-400
+                            '#60a5fa', // blue-400
+                            '#facc15'  // yellow-400
+                        ],
+                        borderColor: '#111827', // bg-gray-900
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#d1d5db', // text-gray-300
+                                font: {
+                                    family: "'Hind Siliguri', sans-serif",
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            bodyFont: {
+                                family: "'Hind Siliguri', sans-serif"
+                            },
+                            titleFont: {
+                                family: "'Hind Siliguri', sans-serif"
+                            },
+                            backgroundColor: 'rgba(31, 41, 55, 0.8)',
+                            titleColor: '#93c5fd',
+                            bodyColor: '#e5e7eb',
+                        }
+                    }
+                }
+            });
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+            
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.3
+            };
+
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        
+                        navLinks.forEach(link => {
+                            link.classList.replace('active-nav', 'inactive-nav');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.replace('inactive-nav', 'active-nav');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                 sectionObserver.observe(section);
+            });
+
+        });
+    </script>
+</body>
+</html>

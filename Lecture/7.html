@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আবেদীনের পথ | The Path of the Devout</title>
+    <!-- Chosen Palette: Sacred Grove (Warm Neutrals with Muted Green/Teal Accents) -->
+    <!-- Application Structure Plan: The SPA is designed as a single-page narrative journey that translates the spiritual lecture into an interactive experience. The structure is thematic, not linear, starting with the "Why" (the modern spiritual need) to create immediate relevance. It then defines the "Who" (qualities of the devout) using an interactive card grid. The core of the app is dedicated to the ultimate exemplar, Prophet Muhammad (ﷺ), using a tabbed interface to explore different facets of his worship. This is followed by an interactive horizontal-scrolling gallery of "Echoes of Devotion" from pious predecessors, making the many stories digestible. The application concludes by bringing the message to the present day with a "Call to Action" for youth and a relatable modern story, culminating in the ultimate purpose and a final prayer. This structure was chosen to guide the user from intellectual understanding to heartfelt inspiration and personal action, using interactivity to maintain engagement with dense, narrative content. Gemini API features for personal dua generation and story analysis are added to deepen engagement. -->
+    <!-- Visualization & Content Choices: Report Info: Qualities of the devout -> Goal: Organize/Inform -> Viz/Presentation: Interactive HTML grid with icons -> Interaction: Hover effects to highlight each quality -> Justification: Breaks down the core definition into clear, digestible parts. / Report Info: Different aspects of the Prophet's (ﷺ) worship -> Goal: Organize/Compare -> Viz/Presentation: Tabbed content sections -> Interaction: Click to switch between facets of his devotion -> Justification: Allows focused exploration of a dense topic without overwhelming the user. / Report Info: Stories of pious predecessors -> Goal: Organize/Change -> Viz/Presentation: Horizontal scroll-snap gallery of cards -> Interaction: Scroll to navigate through stories, with a Gemini-powered button to generate lessons -> Justification: Presents a large number of anecdotes in a compact, engaging, and non-linear format, with an added layer of AI-powered reflection. All icons are Unicode characters, and layouts are built with Tailwind, confirming NO SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .scroll-snap-x {
+            scroll-snap-type: x mandatory;
+        }
+        .scroll-snap-align-center {
+            scroll-snap-align: center;
+        }
+        .tab-active {
+            border-color: #047857; /* emerald-600 */
+            color: #047857;
+            background-color: #d1fae5; /* emerald-100 */
+        }
+        .tab-inactive {
+            border-color: transparent;
+            color: #4b5563; /* gray-600 */
+        }
+        .loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #d1fae5; /* emerald-100 */
+            border-bottom-color: #065f46; /* emerald-800 */
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-gray-800">
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold text-emerald-800 mb-4">আবেদীনের পথ</h1>
+            <p class="text-lg text-gray-600">আল্লাহর একনিষ্ঠ উপাসকদের জীবনের প্রতিচ্ছবি</p>
+            <div class="mt-6 text-xl md:text-2xl text-center max-w-3xl mx-auto text-stone-700 italic">
+                <p>"আমাদের ইবাদতের প্রয়োজনীয়তা ঠিক তেমন, যেমন পৃথিবীর জন্য বৃষ্টির প্রয়োজন; অন্তর্দৃষ্টির জ্ঞানীর স্মরণ ছাড়া অন্তর বেঁচে থাকে না।"</p>
+            </div>
+        </header>
+
+        <!-- Section 1: The Foundation -->
+        <section id="foundation" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-emerald-700">ভিত্তি: আবেদীন কারা?</h2>
+                <p class="mt-2 text-gray-600">এই বিভাগটি আবেদীন বা একনিষ্ঠ উপাসকদের পরিচয় এবং তাদের সংজ্ঞায়িত বৈশিষ্ট্য তুলে ধরে।</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1: Detachment -->
+                <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-emerald-500 hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">👐</span>
+                        <h3 class="text-xl font-semibold text-emerald-800">দুনিয়া বিমুখতা</h3>
+                    </div>
+                    <p class="text-gray-700">তাঁরা এই পৃথিবীর চাকচিক্য এবং মোহ থেকে নিজেদের মুখ ফিরিয়ে নেন। তাঁদের অন্তর জাগতিক বস্তুর প্রতি আসক্ত থাকে না।</p>
+                </div>
+                <!-- Card 2: Connection to Mosques -->
+                <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-emerald-500 hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🕌</span>
+                        <h3 class="text-xl font-semibold text-emerald-800">মসজিদের সাথে সংযোগ</h3>
+                    </div>
+                    <p class="text-gray-700">তাঁদের হৃদয় মসজিদের সাথে জুড়ে থাকে। মিহরাবে সিজদা এবং ক্ষমা প্রার্থনা তাঁদের জীবনের সবচেয়ে গুরুত্বপূর্ণ অংশ।</p>
+                </div>
+                <!-- Card 3: High Character -->
+                <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-emerald-500 hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">⚖️</span>
+                        <h3 class="text-xl font-semibold text-emerald-800">উচ্চ চরিত্র</h3>
+                    </div>
+                    <p class="text-gray-700">উত্তম আচরণ, মহৎ সঙ্গ, অসাধারণ ধৈর্য এবং সহনশীলতা তাঁদের চরিত্রের ভূষণ।</p>
+                </div>
+                <!-- Card 4: Humility & Gratitude -->
+                <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-emerald-500 hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🙏</span>
+                        <h3 class="text-xl font-semibold text-emerald-800">নম্রতা ও কৃতজ্ঞতা</h3>
+                    </div>
+                    <p class="text-gray-700">অল্পেতে তাঁরা ধৈর্যশীল এবং বেশিতে তাঁরা কৃতজ্ঞ। প্রশংসা বা নিন্দা তাঁদের কাছে সমান।</p>
+                </div>
+                <!-- Card 5: Rarity & Value -->
+                <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-emerald-500 hover:shadow-xl transition-shadow duration-300">
+                     <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">💎</span>
+                        <h3 class="text-xl font-semibold text-emerald-800">বিরলতা ও মূল্য</h3>
+                    </div>
+                    <p class="text-gray-700">তাঁরা সমাজে দুর্লভ মুদ্রার মতো। একশত উটের মধ্যে যেমন একটি নিখুঁত বাহন খুঁজে পাওয়া কঠিন, তাঁরাও তেমনি বিরল ও মূল্যবান।</p>
+                </div>
+                 <!-- Card 6: Tears of Remembrance -->
+                <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-emerald-500 hover:shadow-xl transition-shadow duration-300">
+                     <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">💧</span>
+                        <h3 class="text-xl font-semibold text-emerald-800">স্মরণের অশ্রু</h3>
+                    </div>
+                    <p class="text-gray-700">তাঁদের কান্না জাগতিক দুঃখের জন্য নয়, বরং আল্লাহর ভয়ে এবং আখেরাতের স্মরণে।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Ultimate Exemplar -->
+        <section id="exemplar" class="mb-20 bg-emerald-50/50 rounded-lg p-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-emerald-700">সর্বশ্রেষ্ঠ আদর্শ: নবী মুহাম্মদ (ﷺ)-এর ইবাদত</h2>
+                <p class="mt-2 text-gray-600">আবেদীনের গুণাবলীর নিখুঁত প্রতিচ্ছবি ছিলেন আমাদের প্রিয় নবী (ﷺ)। এই বিভাগে তাঁর ইবাদতের কয়েকটি দিক তুলে ধরা হলো, যা আমাদের জন্য অনুপ্রেরণার উৎস।</p>
+            </div>
+            <div>
+                <div class="border-b border-gray-200 mb-6">
+                    <nav id="tabs" class="-mb-px flex justify-center space-x-2 sm:space-x-8" aria-label="Tabs">
+                        <button data-tab="tab1" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base tab-active">
+                            অবিরাম সালাত
+                        </button>
+                        <button data-tab="tab2" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base tab-inactive">
+                            ক্রন্দনরত হৃদয়
+                        </button>
+                        <button data-tab="tab3" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm sm:text-base tab-inactive">
+                            অবিচল অঙ্গীকার
+                        </button>
+                    </nav>
+                </div>
+                <div id="tab-content" class="mt-8">
+                    <!-- Tab 1 Content -->
+                    <div id="tab1" class="tab-pane">
+                        <h3 class="text-2xl font-semibold text-center text-emerald-800 mb-4">কৃতজ্ঞ বান্দার প্রার্থনা</h3>
+                        <p class="text-center max-w-2xl mx-auto text-gray-700">রাসূলুল্লাহ (ﷺ) এত দীর্ঘ সময় ধরে নামাজে দাঁড়াতেন যে তাঁর পা ফুলে যেত। যখন তাঁকে জিজ্ঞেস করা হলো কেন তিনি এত কষ্ট করেন, অথচ আল্লাহ তাঁর সমস্ত গুনাহ ক্ষমা করে দিয়েছেন, তিনি উত্তর দিলেন:</p>
+                        <blockquote class="text-center text-2xl font-semibold text-emerald-600 italic my-6 p-4 bg-emerald-100 rounded-lg">
+                            "أفلا أكون عبداً شكوراً؟" <br> (আমি কি একজন কৃতজ্ঞ বান্দা হব না?)
+                        </blockquote>
+                        <p class="text-center max-w-2xl mx-auto text-gray-700">তাঁর ইবাদত ছিল ভয় বা বাধ্যবাধকতা থেকে নয়, বরং আল্লাহর প্রতি অসীম ভালোবাসা এবং কৃতজ্ঞতার প্রকাশ।</p>
+                    </div>
+                    <!-- Tab 2 Content -->
+                    <div id="tab2" class="tab-pane hidden">
+                         <h3 class="text-2xl font-semibold text-center text-emerald-800 mb-4">গলিত হৃদয়ের কান্না</h3>
+                        <p class="text-center max-w-2xl mx-auto text-gray-700">তাঁর ইবাদতে আবেগ এতটাই গভীর ছিল যে তা শারীরিকভাবে প্রকাশ পেত। একজন সাহাবী বর্ণনা করেন:</p>
+                         <blockquote class="text-center text-xl font-medium text-emerald-600 italic my-6 p-4 bg-emerald-100 rounded-lg">
+                            "আমি রাসূলুল্লাহ (ﷺ)-এর কাছে এলাম যখন তিনি নামাজ পড়ছিলেন, এবং কান্নার কারণে তাঁর বুক থেকে ফুটন্ত পাত্রের মতো শব্দ হচ্ছিল।"
+                        </blockquote>
+                        <p class="text-center max-w-2xl mx-auto text-gray-700">এটি ছিল আল্লাহর উপস্থিতিতে সম্পূর্ণরূপে নিমগ্ন একটি হৃদয়ের প্রতিচ্ছবি, যা কেবল ভয়ে নয়, বরং মহব্বতে ক্রন্দনরত ছিল।</p>
+                    </div>
+                    <!-- Tab 3 Content -->
+                    <div id="tab3" class="tab-pane hidden">
+                        <h3 class="text-2xl font-semibold text-center text-emerald-800 mb-4">সর্বাবস্থায় ইবাদত</h3>
+                        <p class="text-center max-w-2xl mx-auto text-gray-700">তাঁর নিষ্ঠা কোনো অবস্থাতেই কমেনি। যুদ্ধক্ষেত্র থেকে শুরু করে মৃত্যুশয্যা পর্যন্ত, ইবাদত ছিল তাঁর اولین অগ্রাধিকার।</p>
+                        <div class="grid md:grid-cols-2 gap-6 mt-6">
+                            <div class="bg-white p-4 rounded-lg border border-emerald-200">
+                                <h4 class="font-bold text-emerald-700">যুদ্ধের ময়দানে</h4>
+                                <p class="text-sm text-gray-600">ভয়ঙ্কর যুদ্ধের সময়ও তিনি জামাতে 'সালাতুল খাউফ' (ভয়ের নামাজ) আদায় করার ব্যবস্থা করেছিলেন, যা প্রমাণ করে যে কোনো পরিস্থিতিতেই নামাজ ত্যাগযোগ্য নয়।</p>
+                            </div>
+                             <div class="bg-white p-4 rounded-lg border border-emerald-200">
+                                <h4 class="font-bold text-emerald-700">মৃত্যুশয্যায়</h4>
+                                <p class="text-sm text-gray-600">শেষ অসুস্থতার সময় প্রচণ্ড জ্বরে বারবার অজ্ঞান হয়ে যাওয়ার পরেও তিনি জিজ্ঞেস করতেন মানুষ নামাজ পড়েছে কিনা। অবশেষে, তাঁকে দুজন সাহাবীর কাঁধে ভর করে মসজিদে নিয়ে যাওয়া হয়েছিল, যখন ব্যথায় তাঁর পা মাটিতে হেঁচড়ে যাচ্ছিল।</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Section 3: Echoes of Devotion -->
+        <section id="echoes" class="mb-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-emerald-700">নিষ্ঠার প্রতিধ্বনি</h2>
+                <p class="mt-2 text-gray-600 max-w-3xl mx-auto">নবী (ﷺ)-এর আদর্শে অনুপ্রাণিত হয়ে পুণ্যবান পূর্বসূরীরা ইবাদতে এমন সব দৃষ্টান্ত স্থাপন করেছেন যা আমাদের কল্পনাকেও হার মানায়। তাঁদের গল্পগুলো আমাদের জন্য আধ্যাত্মিক বাতিঘর।</p>
+            </div>
+            <div class="relative">
+                <div class="flex overflow-x-auto scroll-snap-x pb-4 -mx-4 px-4 gap-6">
+                    <!-- Story 1 -->
+                    <div class="flex-shrink-0 w-11/12 sm:w-1/2 lg:w-1/3 scroll-snap-align-center">
+                        <div class="bg-white rounded-lg shadow-lg p-6 h-full flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-lg font-bold text-emerald-700 mb-2">অব্যর্থ সালাত</h4>
+                                <p class="text-gray-600 text-sm mb-4 story-text">সা'ঈদ ইবনুল মুসাইয়িব (রহঃ) বলেন, "পঞ্চাশ বছর ধরে আমার প্রথম তাকবীর ছুটে যায়নি এবং আমি পঞ্চাশ বছর ধরে নামাজে কারো পিঠের দিকে তাকাইনি।"</p>
+                                <div class="text-right font-medium text-emerald-800 mb-4">~ সা'ঈদ ইবনুল মুসাইয়িব</div>
+                                <div class="story-lessons mt-4"></div>
+                            </div>
+                            <button class="generate-lesson-btn mt-4 w-full bg-emerald-50 text-emerald-700 font-semibold py-2 px-4 rounded-lg hover:bg-emerald-100 transition-colors duration-300 flex items-center justify-center space-x-2">
+                                <span>✨ গল্প থেকে শিক্ষা</span>
+                                <span class="loader hidden"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Story 2 -->
+                    <div class="flex-shrink-0 w-11/12 sm:w-1/2 lg:w-1/3 scroll-snap-align-center">
+                         <div class="bg-white rounded-lg shadow-lg p-6 h-full flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-lg font-bold text-emerald-700 mb-2">ক্লান্তিহীন সিজদা</h4>
+                                <p class="text-gray-600 text-sm mb-4 story-text">মাসরুক (রহঃ)-এর স্ত্রী বলেন, তিনি রাতে এত দীর্ঘ নামাজ পড়তেন যে তাঁর পা ফুলে যেত এবং নামাজ শেষে দুর্বলতার কারণে উটের মতো হামাগুড়ি দিয়ে চলতে হতো।</p>
+                                <div class="text-right font-medium text-emerald-800 mb-4">~ মাসরুক (রহঃ)</div>
+                                <div class="story-lessons mt-4"></div>
+                            </div>
+                            <button class="generate-lesson-btn mt-4 w-full bg-emerald-50 text-emerald-700 font-semibold py-2 px-4 rounded-lg hover:bg-emerald-100 transition-colors duration-300 flex items-center justify-center space-x-2">
+                                <span>✨ গল্প থেকে শিক্ষা</span>
+                                <span class="loader hidden"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Story 3 -->
+                    <div class="flex-shrink-0 w-11/12 sm:w-1/2 lg:w-1/3 scroll-snap-align-center">
+                        <div class="bg-white rounded-lg shadow-lg p-6 h-full flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-lg font-bold text-emerald-700 mb-2">মৃত্যুশয্যায় সালাত</h4>
+                                <p class="text-gray-600 text-sm mb-4 story-text">মৃত্যুশয্যায় থাকা আবু আবদ আল-রহমান আল-সুলামিকে যখন ঘরে নিয়ে যাওয়ার প্রস্তাব দেওয়া হলো, তিনি প্রত্যাখ্যান করে বললেন, "আমি আমার মসজিদেই মরতে চাই," কারণ ফেরেশতারা নামাজীর জন্য দোয়া করেন।</p>
+                                <div class="text-right font-medium text-emerald-800 mb-4">~ আবু আবদ আল-রহমান আল-সুলামি</div>
+                                <div class="story-lessons mt-4"></div>
+                            </div>
+                            <button class="generate-lesson-btn mt-4 w-full bg-emerald-50 text-emerald-700 font-semibold py-2 px-4 rounded-lg hover:bg-emerald-100 transition-colors duration-300 flex items-center justify-center space-x-2">
+                                <span>✨ গল্প থেকে শিক্ষা</span>
+                                <span class="loader hidden"></span>
+                            </button>
+                        </div>
+                    </div>
+                     <!-- Story 4 -->
+                    <div class="flex-shrink-0 w-11/12 sm:w-1/2 lg:w-1/3 scroll-snap-align-center">
+                        <div class="bg-white rounded-lg shadow-lg p-6 h-full flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-lg font-bold text-emerald-700 mb-2">সহস্র রাকাতের নামাজী</h4>
+                                <p class="text-gray-600 text-sm mb-4 story-text">মুররাহ আল-হামদানি প্রতিদিন এক হাজার রাকাত নামাজ পড়তেন। তাঁর সিজদার স্থানটি উটের বিশ্রামের স্থানের মতো ক্ষয়ে গিয়েছিল।</p>
+                                <div class="text-right font-medium text-emerald-800 mb-4">~ মুররাহ আল-হামদানি</div>
+                                <div class="story-lessons mt-4"></div>
+                            </div>
+                             <button class="generate-lesson-btn mt-4 w-full bg-emerald-50 text-emerald-700 font-semibold py-2 px-4 rounded-lg hover:bg-emerald-100 transition-colors duration-300 flex items-center justify-center space-x-2">
+                                <span>✨ গল্প থেকে শিক্ষা</span>
+                                <span class="loader hidden"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Call to Action -->
+        <section id="call-to-action" class="mb-20">
+             <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-emerald-700">আমাদের সময়ের জন্য আমন্ত্রণ</h2>
+                <p class="mt-2 text-gray-600">অতীতের উদাহরণগুলো আমাদের জন্য प्रेरणा, কিন্তু এই পথ আমাদের যুগেও খোলা আছে।</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-bold text-emerald-800 mb-4">যুবকদের প্রতি আহ্বান</h3>
+                    <p class="text-gray-700 mb-4">যৌবন হলো ইবাদতের শক্তি ও সামর্থ্যের সময়। এটি এক ক্ষণস্থায়ী অতিথি। রাসূলুল্লাহ (ﷺ) বলেছেন:</p>
+                    <blockquote class="border-l-4 border-emerald-500 pl-4 italic text-gray-600 my-4">
+                        "পাঁচটি জিনিসকে পাঁচটি জিনিসের আগে غنیمت মনে করো: তোমার যৌবনকে বার্ধক্যের আগে, সুস্থতাকে অসুস্থতার আগে, সচ্ছলতাকে দারিদ্র্যের আগে, অবসরকে ব্যস্ততার আগে এবং জীবনকে মৃত্যুর আগে।"
+                    </blockquote>
+                    <p class="text-gray-700">এখনই সময় ভিত্তি স্থাপন করার, পরে আফসোস করার আগে।</p>
+                </div>
+                <div class="bg-emerald-100 p-8 rounded-lg border border-emerald-200">
+                    <h3 class="text-2xl font-bold text-emerald-800 mb-4">এক শিশুর বিশ্বাস: একটি আধুনিক গল্প</h3>
+                    <p class="text-gray-700">আমাদের সময়ে, মুসফির নামে পাঁচ বছরের একটি শিশু প্রচণ্ড জ্বরে অসুস্থ ছিল। সে মসজিদে যাওয়ার জন্য জিদ ধরে বাবাকে বলল:</p>
+                     <blockquote class="text-center font-semibold text-emerald-700 my-4">
+                        "আমি মসজিদে যাব, আর আল্লাহ আমাকে সুস্থ করে দেবেন, কারণ আল্লাহ নামাজিদের ভালোবাসেন।"
+                    </blockquote>
+                    <p class="text-gray-700">এই গল্পটি আমাদের শেখায় যে ইবাদতের মূল ভিত্তি হলো শিশুর মতো সরল, বিশুদ্ধ এবং অটল বিশ্বাস। নিষ্ঠার যাত্রা শুরু হয় এখান থেকেই।</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Gemini API Section: Personal Dua Generator -->
+        <section id="gemini-dua" class="mb-20 bg-emerald-50/50 rounded-lg p-8">
+            <div class="text-center mb-8">
+                 <h2 class="text-3xl font-bold text-emerald-700">আপনার ব্যক্তিগত দোয়া</h2>
+                 <p class="mt-2 text-gray-600 max-w-2xl mx-auto">আপনার মনের কথা বা পরিস্থিতি এখানে লিখুন, এবং আপনার জন্য একটি আন্তরিক দোয়া তৈরি করতে সাহায্য করব।</p>
+            </div>
+            <div class="max-w-2xl mx-auto">
+                <textarea id="dua-prompt" class="w-full p-4 border border-emerald-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" rows="3" placeholder="যেমন: আমি আমার পরীক্ষার জন্য চিন্তিত..."></textarea>
+                <button id="generate-dua-btn" class="mt-4 w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-700 transition-colors duration-300 flex items-center justify-center space-x-2 disabled:bg-emerald-300">
+                    <span>✨ দোয়া তৈরি করুন</span>
+                    <span id="dua-loader" class="loader hidden"></span>
+                </button>
+                <div id="dua-result" class="mt-6 p-6 bg-white rounded-lg border border-emerald-200 min-h-[100px] text-gray-700 leading-relaxed whitespace-pre-wrap hidden"></div>
+            </div>
+        </section>
+
+        <!-- Section 5: Final Destination -->
+        <footer class="text-center pt-10 border-t border-gray-200">
+            <h2 class="text-3xl font-bold text-emerald-700">প্রকৃত বিশ্রাম</h2>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto">ইমাম আহমদ ইবনে হাম্বল (রহঃ)-কে জিজ্ঞেস করা হয়েছিল, "বান্দা কখন বিশ্রামের স্বাদ পাবে?" তিনি উত্তর দিলেন:</p>
+            <blockquote class="text-2xl md:text-3xl font-bold text-emerald-800 my-8">
+                "জান্নাতে প্রথম পা রাখার সাথে সাথে।"
+            </blockquote>
+            <p class="text-gray-700 mb-8">দুনিয়া হলো সংগ্রামের ক্ষেত্র, আর জান্নাত হলো অনন্ত বিশ্রামের স্থান।</p>
+            <div class="bg-emerald-700 text-white p-8 rounded-lg">
+                <p class="text-lg mb-4">আসুন, আমরা এই দোয়া করি:</p>
+                <p class="text-3xl font-semibold" style="direction: rtl; font-family: 'Amiri', serif;">اللهم حبب إلينا الإيمان، وزينه في قلوبنا</p>
+                <p class="mt-2 text-emerald-200">(হে আল্লাহ, আমাদের কাছে ঈমানকে প্রিয় করে দিন এবং তা আমাদের অন্তরে সুশোভিত করে দিন।)</p>
+            </div>
+             <p class="mt-8 text-xs text-gray-500">শাইখ খালিদ আল-রাশেদের 'আহওয়াল আল-আবেদীন' লেকচারের উপর ভিত্তি করে তৈরি।</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // Tab functionality
+        const tabs = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-pane');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.getAttribute('data-tab');
+
+                tabs.forEach(t => {
+                    t.classList.remove('tab-active');
+                    t.classList.add('tab-inactive');
+                });
+
+                tab.classList.add('tab-active');
+                tab.classList.remove('tab-inactive');
+
+                tabContents.forEach(content => {
+                    if (content.id === target) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // Gemini API functionality
+        const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4"; // API Key will be handled by the environment.
+
+        // Dua Generator Elements
+        const generateDuaBtn = document.getElementById('generate-dua-btn');
+        const duaPromptInput = document.getElementById('dua-prompt');
+        const duaResultDiv = document.getElementById('dua-result');
+        const duaLoader = document.getElementById('dua-loader');
+
+        // Story Lesson Elements
+        const generateLessonBtns = document.querySelectorAll('.generate-lesson-btn');
+
+        // --- Gemini API Call Function ---
+        async function callGemini(prompt) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{
+                    parts: [{
+                        text: prompt
+                    }]
+                }]
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    return "দুঃখিত, একটি প্রতিক্রিয়া তৈরি করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।";
+                }
+            } catch (error) {
+                console.error("Gemini API call failed:", error);
+                return "ত্রুটি ঘটেছে। আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন এবং আবার চেষ্টা করুন।";
+            }
+        }
+
+
+        // --- Personal Dua Generator Logic ---
+        generateDuaBtn.addEventListener('click', async () => {
+            const userInput = duaPromptInput.value.trim();
+            if (!userInput) {
+                duaResultDiv.textContent = "অনুগ্রহ করে আপনার অনুভূতি বা পরিস্থিতি বর্ণনা করুন।";
+                duaResultDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Disable button and show loader
+            generateDuaBtn.disabled = true;
+            duaLoader.classList.remove('hidden');
+            duaResultDiv.classList.add('hidden');
+            
+            const prompt = `You are a wise and empathetic Islamic scholar. A person is feeling '${userInput}'. Based on this feeling, compose a short, personal, and heartfelt prayer (dua) in Bengali that they can use to talk to Allah. The dua should be original, full of hope and humility, and avoid complex theological terms. Start with 'হে আল্লাহ,' (O Allah,) and maintain a gentle, comforting tone. Make sure the output is only the prayer text.`;
+
+            const generatedDua = await callGemini(prompt);
+
+            // Display result
+            duaResultDiv.textContent = generatedDua;
+            duaResultDiv.classList.remove('hidden');
+
+            // Re-enable button and hide loader
+            generateDuaBtn.disabled = false;
+            duaLoader.classList.add('hidden');
+        });
+
+        // --- Story Lesson Generator Logic ---
+        generateLessonBtns.forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const card = btn.closest('.flex-shrink-0 > div');
+                const storyText = card.querySelector('.story-text').textContent;
+                const lessonsDiv = card.querySelector('.story-lessons');
+                const loader = btn.querySelector('.loader');
+
+                if (lessonsDiv.innerHTML.trim() !== "") { // If lessons are already loaded
+                    lessonsDiv.innerHTML = ""; // Hide them
+                    return;
+                }
+
+                // Disable button and show loader
+                btn.disabled = true;
+                loader.classList.remove('hidden');
+
+                const prompt = `Analyze the following short story about a devout Muslim: '${storyText}'. In simple Bengali, extract 2-3 key practical and spiritual lessons from this story that a person can apply in their modern life to improve their own worship and character. Present the lessons as a short, bulleted list (using '•' as the bullet). The tone should be encouraging and insightful.`;
+
+                const generatedLessons = await callGemini(prompt);
+
+                // Display result
+                lessonsDiv.innerHTML = `<h5 class="font-semibold text-emerald-700 mb-2">শিক্ষা:</h5><div class="text-sm text-gray-600 space-y-2">${generatedLessons.replace(/\•/g, '<span class="text-emerald-600 mr-2">•</span>')}</div>`;
+
+                // Re-enable button and hide loader
+                btn.disabled = false;
+                loader.classList.add('hidden');
+            });
+        });
+
+    </script>
+</body>
+</html>

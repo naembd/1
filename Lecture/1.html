@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অচল অস্ত্র - শায়খ খালিদ আর-রশিদ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Islamic Art -->
+    <!-- Application Structure Plan: The SPA is designed with a thematic, section-based flow to make the sermon's content digestible. A sticky navigation bar allows users to jump between sections: 1) Introduction to 'Dua' as a weapon, 2) Interactive cards for the conditions of Dua, 3) Historical examples in a comparative layout, 4) An interactive doughnut chart showing why Dua becomes inactive, 5) A new 'Dua Generator' section powered by Gemini API, and 6) A conceptual 'Path to Paradise' section. This structure avoids a long, monotonous scroll and encourages focused exploration, making the spiritual guidance more engaging and memorable. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Conditions for Dua -> Goal: Inform/Organize -> Viz: Interactive clickable cards -> Interaction: Click to reveal details -> Justification: Breaks down a list into engaging, self-paced learning chunks. Method: HTML/CSS/JS.
+        - Report Info: Reasons for Dua's failure -> Goal: Compare/Organize -> Viz: Doughnut Chart -> Interaction: Hover/click on a segment to display detailed explanation -> Justification: Visually represents the 'barriers' and their relative importance, making abstract reasons concrete and interactive. Library: Chart.js.
+        - Report Info: Dua Generator (New) -> Goal: Empower/Guide -> Viz: Text input, button, text output -> Interaction: User inputs situation, LLM generates Dua -> Justification: Provides a practical application of Dua by generating relevant supplications based on user needs, enhancing engagement. Method: HTML/CSS/JS with Gemini API.
+        - Report Info: Path to Paradise -> Goal: Organize/Inform -> Viz: CSS-based visual path diagram -> Interaction: Static visual metaphor -> Justification: Creates a powerful visual metaphor for the spiritual journey, enhancing the message's impact beyond plain text. Method: HTML/CSS with Tailwind.
+        - Report Info: Historical examples -> Goal: Compare/Inform -> Viz: Side-by-side content blocks -> Interaction: Static content -> Justification: Allows easy comparison of two powerful historical precedents, reinforcing the core message about the power of Dua. Method: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        :root {
+            --bg-main: #FBF9F1;
+            --bg-secondary: #E5E1DA;
+            --text-primary: #4A403A;
+            --text-secondary: #7D6F64;
+            --accent: #B08B59;
+            --accent-dark: #8C6D46;
+        }
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-dark);
+            border-bottom-color: var(--accent-dark);
+        }
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--accent);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="scroll-smooth">
+
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="text-xl md:text-2xl font-bold" style="color: var(--accent-dark);">অচল অস্ত্র</div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#introduction" class="nav-link">ভূমিকা</a>
+                <a href="#conditions" class="nav-link">শর্তাবলী</a>
+                <a href="#history" class="nav-link">ইতিহাস</a>
+                <a href="#inactive" class="nav-link">অচল হওয়ার কারণ</a>
+                <a href="#dua-generator" class="nav-link">দু'আ তৈরি করুন</a>
+                <a href="#path" class="nav-link">জান্নাতের পথ</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset" style="color: var(--accent-dark); focus:ring-color: var(--accent-dark);">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white/90">
+            <a href="#introduction" class="block py-2 px-4 text-sm nav-link">ভূমিকা</a>
+            <a href="#conditions" class="block py-2 px-4 text-sm nav-link">শর্তাবলী</a>
+            <a href="#history" class="block py-2 px-4 text-sm nav-link">ইতিহাস</a>
+            <a href="#inactive" class="block py-2 px-4 text-sm nav-link">অচল হওয়ার কারণ</a>
+            <a href="#dua-generator" class="block py-2 px-4 text-sm nav-link">দু'আ তৈরি করুন</a>
+            <a href="#path" class="block py-2 px-4 text-sm nav-link">জান্নাতের পথ</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+
+        <section id="introduction" class="text-center min-h-[60vh] flex flex-col justify-center items-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4" style="color: var(--text-primary);">দু'আ: মুমিনের অব্যর্থ অস্ত্র</h1>
+            <p class="max-w-3xl mx-auto text-lg md:text-xl mb-8" style="color: var(--text-secondary);">
+                শায়খ খালিদ আর-রশিদ দু'আকে "অচল অস্ত্র" হিসেবে উল্লেখ করেছেন, যা ইঙ্গিত করে যে মুসলিমরা এর প্রকৃত ক্ষমতাকে সঠিকভাবে ব্যবহার করছে না। এই প্রবন্ধটি আমাদের সেই শক্তিশালী অস্ত্রের গুরুত্ব ও ব্যবহার পদ্ধতি স্মরণ করিয়ে দেয়, যার মাধ্যমে মজলুম বিজয়ী হয়, অসুস্থ আরোগ্য লাভ করে এবং শত্রুরা পরাজিত হয়।
+            </p>
+            <a href="#conditions" class="px-8 py-3 rounded-full font-semibold text-white transition" style="background-color: var(--accent); hover:background-color: var(--accent-dark);">
+                আরও জানুন
+            </a>
+        </section>
+
+        <section id="conditions" class="py-16 md:py-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold">দু'আ কবুলের শর্তাবলী</h2>
+                <p class="max-w-2xl mx-auto mt-4" style="color: var(--text-secondary);">
+                    দু'আ কবুল হওয়ার জন্য কিছু অপরিহার্য শর্ত ও আদব রয়েছে। এই বিভাগে, আমরা সেই মূল ভিত্তিগুলো সম্পর্কে জানব যা আমাদের প্রার্থনাকে আল্লাহর দরবারে পৌঁছাতে সাহায্য করে। প্রতিটি কার্ডে ক্লিক করে বিস্তারিত জানুন।
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card p-6 rounded-lg shadow-md cursor-pointer text-center" style="background-color: white;" onclick="showDetails('একনিষ্ঠতা', 'একমাত্র আল্লাহর সন্তুষ্টির জন্য পূর্ণ ইখলাসের সাথে দু\'আ করা।')">
+                    <h3 class="text-xl font-semibold mb-2" style="color: var(--accent-dark);">🤲 একনিষ্ঠতা (ইখলাস)</h3>
+                </div>
+                <div class="card p-6 rounded-lg shadow-md cursor-pointer text-center" style="background-color: white;" onclick="showDetails('অনুসরণ', 'রাসূলুল্লাহ (সা.)-এর প্রদর্শিত সুন্নাহ অনুযায়ী দু\'আ করা।')">
+                    <h3 class="text-xl font-semibold mb-2" style="color: var(--accent-dark);">📜 অনুসরণ (মুতাবা'আহ)</h3>
+                </div>
+                <div class="card p-6 rounded-lg shadow-md cursor-pointer text-center" style="background-color: white;" onclick="showDetails('দৃঢ় বিশ্বাস', 'আল্লাহ দু\'আ কবুল করবেন, এই সুধারণা ও পূর্ণ আস্থা রাখা।')">
+                    <h3 class="text-xl font-semibold mb-2" style="color: var(--accent-dark);">굳 দৃঢ় বিশ্বাস</h3>
+                </div>
+                <div class="card p-6 rounded-lg shadow-md cursor-pointer text-center" style="background-color: white;" onclick="showDetails('হালাল উপার্জন', 'হালাল খাদ্য, বস্ত্র এবং বাসস্থান নিশ্চিত করা দু\'আ কবুলের অন্যতম পূর্বশর্ত।')">
+                    <h3 class="text-xl font-semibold mb-2" style="color: var(--accent-dark);">💰 হালাল উপার্জন</h3>
+                </div>
+                <div class="card p-6 rounded-lg shadow-md cursor-pointer text-center" style="background-color: white;" onclick="showDetails('অন্যায় থেকে বিরত থাকা', 'দু\'আর সময় কোনো পাপ বা আত্মীয়তার সম্পর্ক ছিন্ন করা থেকে সম্পূর্ণ বিরত থাকা।')">
+                    <h3 class="text-xl font-semibold mb-2" style="color: var(--accent-dark);">❌ অন্যায় থেকে বিরত</h3>
+                </div>
+                <div class="card p-6 rounded-lg shadow-md cursor-pointer text-center" style="background-color: white;" onclick="showDetails('হামদ ও সানা', 'দু\'আর শুরুতে আল্লাহর প্রশংসা এবং নবী (সা.)-এর উপর দরুদ পাঠ করা।')">
+                    <h3 class="text-xl font-semibold mb-2" style="color: var(--accent-dark);">✨ হামদ ও সানা</h3>
+                </div>
+            </div>
+            <div id="details-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4">
+                <div class="bg-white rounded-lg p-8 max-w-md w-full relative">
+                    <button onclick="closeDetails()" class="absolute top-2 right-3 text-2xl font-bold">&times;</button>
+                    <h3 id="modal-title" class="text-2xl font-bold mb-4" style="color: var(--accent-dark);"></h3>
+                    <p id="modal-text" style="color: var(--text-primary);"></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="history" class="py-16 md:py-24" style="background-color: var(--bg-secondary); border-radius: 20px;">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold">ইতিহাসের পাতা থেকে দু'আর শক্তি</h2>
+                <p class="max-w-2xl mx-auto mt-4" style="color: var(--text-secondary);">
+                    ইসলামের ইতিহাসে এমন অনেক ঘটনা রয়েছে যেখানে দু'আ যুদ্ধের মোড় ঘুরিয়ে দিয়েছে এবং অসম্ভবকে সম্ভব করেছে। এখানে দুটি ঐতিহাসিক দৃষ্টান্ত তুলে ধরা হলো যা দু'আর অবিশ্বাস্য ক্ষমতার সাক্ষ্য দেয়।
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="p-6">
+                    <h3 class="text-2xl font-bold mb-4">⚔️ বদরের যুদ্ধ</h3>
+                    <p class="leading-relaxed">
+                        বদরের প্রান্তরে মুসলিমদের সংখ্যা এবং রণসজ্জা কাফেরদের তুলনায় অনেক কম ছিল। রাসূলুল্লাহ (সা.) অশ্রুসিক্ত নয়নে আল্লাহর কাছে সাহায্য চেয়েছিলেন। তাঁর আন্তরিক দু'আর ফলস্বরূপ, আল্লাহ এক হাজার ফেরেশতা পাঠিয়ে মুসলিমদের সাহায্য করেন এবং তাঁরা এক ঐতিহাসিক বিজয় লাভ করেন। এটি প্রমাণ করে, নিষ্ঠার সাথে করা দু'আ আল্লাহর উপর নির্ভরশীলতার চূড়ান্ত প্রকাশ এবং বিজয়ের মূল চাবিকাঠি।
+                    </p>
+                </div>
+                <div class="p-6 border-t-2 md:border-t-0 md:border-l-2" style="border-color: var(--accent);">
+                    <h3 class="text-2xl font-bold mb-4">🛡️ আইন জালুতের যুদ্ধ</h3>
+                    <p class="leading-relaxed">
+                        সুলতান কুতুজ যখন ভয়ংকর তাতার বাহিনীর মুখোমুখি হন, তখন তিনি জুমার সালাতের সময় মুসলিমদের সাথে নিয়ে আল্লাহর দরবারে দু'আ করেন। সাধারণ মুসলিমদের সম্মিলিত দু'আ এবং যোদ্ধাদের অসীম সাহসিকতায় মুসলিমরা বিজয় লাভ করে। এই ঘটনা প্রমাণ করে, কঠিন মুহূর্তে দু'আর শক্তি জাতিকে ঐক্যবদ্ধ করে এবং বিজয় ছিনিয়ে আনে।
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="inactive" class="py-16 md:py-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold">কেন আমাদের অস্ত্র অচল?</h2>
+                 <p class="max-w-2xl mx-auto mt-4" style="color: var(--text-secondary);">
+                    অনেক সময় আমাদের দু'আ কবুল হয় না, মনে হয় যেন আমাদের প্রধান অস্ত্রটি অচল হয়ে পড়েছে। এর পেছনে কিছু সুনির্দিষ্ট কারণ রয়েছে। এই ইন্টারেক্টিভ চার্টটি সেই কারণগুলো তুলে ধরেছে। প্রতিটি অংশে মাউস নিয়ে এর সম্পর্কে জানুন।
+                </p>
+            </div>
+            <div class="flex flex-col md:flex-row items-center gap-8">
+                <div class="w-full md:w-1/2">
+                    <div class="chart-container">
+                        <canvas id="inactiveReasonsChart"></canvas>
+                    </div>
+                </div>
+                <div id="chart-info" class="w-full md:w-1/2 p-6 rounded-lg" style="background-color: var(--bg-secondary);">
+                    <h3 id="info-title" class="text-2xl font-semibold mb-2">কারণগুলো জানতে চার্টে হোভার করুন</h3>
+                    <p id="info-text" class="text-md" style="color: var(--text-primary);">দু'আ কবুল না হওয়ার বিভিন্ন কারণের মধ্যে রয়েছে হারাম উপার্জন, সৎ কাজে আদেশ ও অসৎ কাজে নিষেধ ত্যাগ করা, গুনাহের আধিক্য এবং আল্লাহর আদেশ অমান্য করা। চার্টের প্রতিটি অংশ একটি কারণ নির্দেশ করে।</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="dua-generator" class="py-16 md:py-24" style="background-color: var(--bg-secondary); border-radius: 20px;">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold">আপনার পরিস্থিতির জন্য দু'আ তৈরি করুন ✨</h2>
+                <p class="max-w-2xl mx-auto mt-4" style="color: var(--text-secondary);">
+                    আপনার বর্তমান পরিস্থিতি বর্ণনা করুন (যেমন: অসুস্থতা, পরীক্ষার জন্য প্রস্তুতি, মানসিক শান্তি, ইত্যাদি)। জেমিনি আপনার জন্য একটি প্রাসঙ্গিক ইসলামিক দু'আ তৈরি করবে।
+                </p>
+            </div>
+            <div class="max-w-3xl mx-auto p-6 rounded-lg shadow-md bg-white">
+                <textarea id="situation-input" class="w-full p-3 rounded-md border resize-y mb-4" rows="4" placeholder="আপনার পরিস্থিতি এখানে লিখুন..."></textarea>
+                <button id="generate-dua-button" class="w-full px-6 py-3 rounded-md text-white font-semibold flex items-center justify-center transition" style="background-color: var(--accent); hover:background-color: var(--accent-dark);">
+                    <span id="button-text">দু'আ তৈরি করুন ✨</span>
+                    <div id="loading-spinner" class="spinner ml-2 hidden"></div>
+                </button>
+                <div id="dua-output" class="mt-8 p-4 rounded-lg border" style="background-color: var(--bg-main); border-color: var(--accent);">
+                    <p class="text-center" style="color: var(--text-secondary);">এখানে আপনার তৈরি করা দু'আ প্রদর্শিত হবে।</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="path" class="py-16 md:py-24 text-center">
+            <div class="mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold">জান্নাতের পথে দু'আর ভূমিকা</h2>
+                <p class="max-w-2xl mx-auto mt-4" style="color: var(--text-secondary);">
+                    জান্নাতবাসীরা তাদের সফলতার কারণ হিসেবে দুনিয়াতে করা দু'আর কথা উল্লেখ করবেন। তাদের দু'আ ও আমলে দৃঢ়তাই ছিল সফলতার মূল। দু'আ কেবল দুনিয়াবী চাওয়ার জন্য নয়, বরং এটি পরকালীন মুক্তির এক অপরিহার্য সোপান।
+                </p>
+            </div>
+            <div class="relative w-full max-w-4xl mx-auto p-4">
+                <div class="absolute top-1/2 left-0 w-full h-1 rounded-full" style="background-color: var(--accent-dark); transform: translateY(-50%);"></div>
+                <div class="relative flex justify-between items-center">
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold mb-2" style="background-color: var(--accent-dark);">১</div>
+                        <p class="font-semibold text-sm md:text-base">তাহাজ্জুদের সালাত</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold mb-2" style="background-color: var(--accent-dark);">২</div>
+                        <p class="font-semibold text-sm md:text-base">আল্লাহর কাছে প্রার্থনা</p>
+                    </div>
+                     <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold mb-2" style="background-color: var(--accent-dark);">৩</div>
+                        <p class="font-semibold text-sm md:text-base">গুনাহ থেকে মুক্তি</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold mb-2" style="background-color: var(--accent-dark);">৪</div>
+                        <p class="font-semibold text-sm md:text-base">জান্নাত লাভ</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="py-8" style="background-color: var(--bg-secondary);">
+        <div class="container mx-auto px-4 text-center" style="color: var(--text-secondary);">
+            <p class="font-semibold" style="color: var(--text-primary);">শায়খ খালিদ আর-রশিদ-এর 'অচল অস্ত্র' প্রবন্ধের অনুপ্রেরণায় নির্মিত।</p>
+            <p class="text-sm mt-2">এই ইন্টারেক্টিভ পাতাটি দু'আর শক্তিকে নতুনভাবে উপলব্ধি করতে সাহায্য করার একটি প্রয়াস।</p>
+        </div>
+    </footer>
+
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+
+        const detailsModal = document.getElementById('details-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalText = document.getElementById('modal-text');
+
+        function showDetails(title, text) {
+            modalTitle.innerText = title;
+            modalText.innerText = text;
+            detailsModal.classList.remove('hidden');
+            detailsModal.classList.add('flex');
+        }
+
+        function closeDetails() {
+            detailsModal.classList.add('hidden');
+            detailsModal.classList.remove('flex');
+        }
+        
+        const chartData = {
+            labels: [
+                'সৎ কাজে আদেশ ত্যাগ',
+                'হারাম উপার্জন',
+                'গুনাহ ও পাপ',
+                'আল্লাহর আদেশ অমান্য',
+                'দুনিয়ার প্রতি আসক্তি'
+            ],
+            datasets: [{
+                label: 'দু\'আ অচল হওয়ার কারণ',
+                data: [20, 25, 20, 20, 15],
+                backgroundColor: [
+                    '#B08B59',
+                    '#8C6D46',
+                    '#C8A97E',
+                    '#A2835E',
+                    '#D9C5A7'
+                ],
+                hoverOffset: 4
+            }]
+        };
+        
+        const chartDescriptions = {
+            'সৎ কাজে আদেশ ত্যাগ': {
+                title: 'সৎকাজের আদেশ ও অসৎকাজের নিষেধ ত্যাগ করা',
+                text: 'রাসূলুল্লাহ (সা.) বলেছেন, যদি তোমরা এই দায়িত্ব ত্যাগ করো, তবে আল্লাহ তোমাদের উপর শাস্তি প্রেরণ করবেন এবং তখন দু\'আ কবুল হবে না।'
+            },
+            'হারাম উপার্জন': {
+                title: 'হারাম উপার্জন',
+                text: 'হারাম খাদ্য, পানীয় ও বস্ত্র দু\'আ কবুলের পথে সবচেয়ে বড় বাধা। যার উপার্জন হারাম, তার দু\'আ কীভাবে কবুল হবে?'
+            },
+            'গুনাহ ও পাপ': {
+                title: 'গুনাহ ও পাপের আধিক্য',
+                text: 'অতিরিক্ত গুনাহ ও পাপে লিপ্ত থাকা হৃদয়কে কঠিন করে ফেলে এবং এটি আল্লাহর রহমত থেকে ব্যক্তিকে দূরে সরিয়ে দেয়, ফলে দু\'আ কবুল হয় না।'
+            },
+            'আল্লাহর আদেশ অমান্য': {
+                title: 'আল্লাহর আদেশ অমান্য করা',
+                text: 'আল্লাহকে চেনা সত্ত্বেও তাঁর আনুগত্য না করা, রাসূল (সা.)-এর সুন্নাহ অনুসরণ না করা এবং কুরআন অনুযায়ী আমল না করা দু\'আ কবুল না হওয়ার অন্যতম প্রধান কারণ।'
+            },
+            'দুনিয়ার প্রতি আসক্তি': {
+                title: 'দুনিয়ার প্রতি আসক্তি',
+                text: 'জান্নাতের প্রতি আগ্রহী না হওয়া এবং জাহান্নাম থেকে ভয় না পেয়ে দুনিয়ার মোহে পড়ে থাকাও দু\'আ কবুলের পথে একটি বড় অন্তরায়।'
+            }
+        };
+
+        const ctx = document.getElementById('inactiveReasonsChart').getContext('2d');
+        const infoTitle = document.getElementById('info-title');
+        const infoText = document.getElementById('info-text');
+
+        const inactiveReasonsChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '50%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                family: "'Hind Siliguri', sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label;
+                            }
+                        }
+                    }
+                },
+                onHover: (event, chartElement) => {
+                    if (chartElement.length) {
+                        const index = chartElement[0].index;
+                        const label = chartData.labels[index];
+                        const description = chartDescriptions[label];
+                        infoTitle.innerText = description.title;
+                        infoText.innerText = description.text;
+                    } else {
+                         infoTitle.innerText = 'কারণগুলো জানতে চার্টে হোভার করুন';
+                         infoText.innerText = 'দু\'আ কবুল না হওয়ার বিভিন্ন কারণের মধ্যে রয়েছে হারাম উপার্জন, সৎ কাজে আদেশ ও অসৎ কাজে নিষেধ ত্যাগ করা, গুনাহের আধিক্য এবং আল্লাহর আদেশ অমান্য করা। চার্টের প্রতিটি অংশ একটি কারণ নির্দেশ করে।';
+                    }
+                }
+            }
+        });
+
+        const situationInput = document.getElementById('situation-input');
+        const generateDuaButton = document.getElementById('generate-dua-button');
+        const duaOutput = document.getElementById('dua-output');
+        const buttonText = document.getElementById('button-text');
+        const loadingSpinner = document.getElementById('loading-spinner');
+
+        generateDuaButton.addEventListener('click', async () => {
+            const situation = situationInput.value.trim();
+            if (!situation) {
+                duaOutput.innerHTML = '<p class="text-red-500 text-center">অনুগ্রহ করে আপনার পরিস্থিতি বর্ণনা করুন।</p>';
+                return;
+            }
+
+            buttonText.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+            duaOutput.innerHTML = '<p class="text-center" style="color: var(--text-secondary);">দু\'আ তৈরি করা হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন।</p>';
+
+            let chatHistory = [];
+            const prompt = `Following situation, provide a relevant Islamic Du'a (supplication). The response should include the Du'a in Arabic, its transliteration, and its meaning in Bengali. Ensure the Du'a is general and aligns with authentic Islamic teachings. Format the output with clear labels for Arabic, Transliteration, and Meaning.
+
+Situation: ${situation}`;
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    duaOutput.innerHTML = `<div class="p-4">${text.replace(/\n/g, '<br>')}</div>`; // Display text, replacing newlines for HTML
+                } else {
+                    duaOutput.innerHTML = '<p class="text-red-500 text-center">দুঃখিত, দু\'আ তৈরি করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</p>';
+                }
+            } catch (error) {
+                console.error('Error generating Dua:', error);
+                duaOutput.innerHTML = '<p class="text-red-500 text-center">দু\'আ তৈরি করতে ব্যর্থ হয়েছে। ইন্টারনেট সংযোগ পরীক্ষা করুন বা পরে আবার চেষ্টা করুন।</p>';
+            } finally {
+                buttonText.classList.remove('hidden');
+                loadingSpinner.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

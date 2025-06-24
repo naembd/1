@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কেয়ামতের ভয়াবহতা: একটি ইন্টারেক্টিভ বিবরণ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Desert Dawn -->
+    <!-- Application Structure Plan: The application is designed as a single-page, vertical scrolling narrative. This structure was chosen to guide the user chronologically through the profound and sequential events of the Day of Judgement as described in the source text. The flow starts with the core concept of Faith, moves through the cataclysmic events, the desperate search for intercession, the final judgement, and concludes with a call to action. This narrative path is the most intuitive way to present this specific content, fostering reflection and understanding through a step-by-step journey rather than a fragmented dashboard. Key interactions include a clickable timeline for the "Path of Intercession" to actively engage the user in the central narrative point. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Importance of Faith -> Goal: Inform -> Method: Large, impactful typography in the hero section -> Interaction: Static, to set a solemn tone.
+        - Report Info: Horrors of Qiyamat (mountains crumbling, etc.) -> Goal: Organize/Inform -> Method: A grid of themed cards -> Interaction: Hover effect to reveal more details, making the information digestible without being overwhelming.
+        - Report Info: The search for intercession -> Goal: Organize/Illustrate a Process -> Method: An interactive, clickable flowchart/timeline built with HTML/CSS -> Interaction: User clicks on each prophet to see their response. This is the core interactive element, chosen to make the long narrative engaging and to highlight the climax of the story. Library: Vanilla JS.
+        - Report Info: The Final Judgement -> Goal: Compare Fates -> Method: A clear, side-by-side comparison using HTML/CSS -> Interaction: Minimal, visual distinction to clearly communicate the two outcomes.
+        - Report Info: Call to Action -> Goal: Motivate -> Method: A clean, conclusive text block -> Interaction: Static, providing a clear final message.
+        - Justification: Since the source is purely narrative, traditional charts are irrelevant. The chosen methods focus on interactive storytelling to make the qualitative information engaging and memorable.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #0d1a26;
+            color: #eaf0f2;
+        }
+        .section-title {
+            color: #58c6ff;
+            text-shadow: 0 0 5px rgba(88, 198, 255, 0.5), 0 0 10px rgba(88, 198, 255, 0.4);
+        }
+        .card {
+            background-color: #1a2f40;
+            border: 1px solid #2a4a63;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(88, 198, 255, 0.3);
+        }
+        .text-gray-400 { color: #b0c4de; }
+        .text-gray-300 { color: #d3e0f0; }
+        .text-gray-200 { color: #eaf0f2; }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2.5rem;
+            padding-left: 2.5rem;
+            border-left: 2px solid #2a4a63;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .timeline-item:last-child {
+            border-left: 2px solid transparent;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: -0.7rem;
+            top: 0;
+            height: 1.25rem;
+            width: 1.25rem;
+            border-radius: 9999px;
+            background-color: #1a2f40;
+            border: 2px solid #58c6ff;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .timeline-item.active .timeline-dot {
+            background-color: #90ee90;
+            border-color: #90ee90;
+            box-shadow: 0 0 12px #90ee90;
+        }
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .nav-link {
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .nav-link:hover {
+            color: #58c6ff;
+            text-shadow: 0 0 8px rgba(88, 198, 255, 0.7);
+        }
+        .header-bg {
+             background-color: rgba(13, 26, 38, 0.8);
+        }
+        .judgement-card-green {
+            border-color: #2e7d32;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+        }
+        .judgement-card-red {
+            border-color: #c62828;
+            box-shadow: 0 0 20px rgba(244, 67, 54, 0.4);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="header-bg backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-black/20">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold section-title">কেয়ামতের দিন</h1>
+            <ul class="flex space-x-4 md:space-x-6 text-sm md:text-base">
+                <li><a href="#introduction" class="nav-link pb-1 text-gray-200">ভূমিকা</a></li>
+                <li><a href="#horrors" class="nav-link pb-1 text-gray-200">ভয়াবহতা</a></li>
+                <li><a href="#intercession" class="nav-link pb-1 text-gray-200">সুপারিশ</a></li>
+                <li><a href="#judgement" class="nav-link pb-1 text-gray-200">বিচার</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-12">
+
+        <!-- Section 1: Introduction -->
+        <section id="introduction" class="text-center min-h-[60vh] flex flex-col justify-center items-center fade-in-section">
+            <h2 class="text-4xl md:text-6xl font-bold section-title mb-4">ঈমানই জীবন</h2>
+            <p class="max-w-3xl text-lg md:text-xl text-gray-300 leading-relaxed">
+                এই আলোচনাটি ঈমানের অপরিহার্য গুরুত্ব এবং পরকালের ভয়াবহতা নিয়ে। বক্তা শেখ খালেদ আল-রাশেদ অন্তরকে একটি শুষ্ক ভূমির সাথে তুলনা করেছেন, যার জন্য ঈমান হলো বৃষ্টির মতো। ঈমান ছাড়া অন্তর মৃত এবং জীবন অর্থহীন। কিয়ামতের প্রতি বিশ্বাস ঈমানের এক অন্যতম প্রধান স্তম্ভ।
+            </p>
+        </section>
+
+        <!-- Section 2: Horrors -->
+        <section id="horrors" class="py-16 md:py-24 fade-in-section">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold section-title">কিয়ামতের ভয়াবহ দৃশ্য</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-gray-400">
+                    কুরআনের আলোকে, সেই মহাদিনের কিছু চিত্র তুলে ধরা হলো যা আমাদের চিন্তার জগতে আলোড়ন সৃষ্টি করে। প্রতিটি ঘটনা হবে কল্পনাতীত এবং ভয়ংকর। ব্যবহারকারী হিসেবে, আপনি প্রতিটি কার্ডের উপর হোভার করে সংশ্লিষ্ট বিষয় সম্পর্কে আরও জানতে পারবেন।
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card p-6 rounded-lg text-center">
+                    <div class="text-5xl mb-4" style="text-shadow: 0 0 10px #ffcc80;">⛰️</div>
+                    <h3 class="text-xl font-semibold mb-2 text-amber-200">পর্বতমালার অবস্থা</h3>
+                    <p class="text-gray-400">বিশাল পর্বতমালা সেদিন ধূনিত রঙিন পশমের মতো উড়তে থাকবে। তাদের দৃঢ়তা ও কাঠিন্য কিছুই অবশিষ্ট থাকবে না।</p>
+                </div>
+                <div class="card p-6 rounded-lg text-center">
+                    <div class="text-5xl mb-4" style="text-shadow: 0 0 10px #80d8ff;">🌌</div>
+                    <h3 class="text-xl font-semibold mb-2 text-cyan-200">আকাশের বিদারণ</h3>
+                    <p class="text-gray-400">যে আকাশকে আমরা এক অটুট ছাদ হিসেবে দেখি, তা সেদিন বিদীর্ণ হয়ে যাবে এবং তার শৃঙ্খলা চূর্ণবিচূর্ণ হয়ে পড়বে।</p>
+                </div>
+                <div class="card p-6 rounded-lg text-center">
+                    <div class="text-5xl mb-4" style="text-shadow: 0 0 10px #f8bbd0;">👥</div>
+                    <h3 class="text-xl font-semibold mb-2 text-pink-200">মানুষের উত্থান</h3>
+                    <p class="text-gray-400">মানুষেরা ভীত-সন্ত্রস্ত হয়ে বিক্ষিপ্ত পঙ্গপালের মতো কবর থেকে উঠে আসবে এবং বিচারের জন্য এক বিশাল ময়দানে একত্রিত হবে।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: The Path of Intercession -->
+        <section id="intercession" class="py-16 md:py-24 fade-in-section">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold section-title">মহা সুপারিশের খোঁজে</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-gray-400">
+                    বিচার দিবসের অসহনীয় কষ্ট থেকে মুক্তির আশায় মানবজাতি সুপারিশের জন্য নবী-রাসূলদের কাছে ছুটে যাবে। এই বিভাগটি সেই যাত্রার একটি ইন্টারেক্টিভ উপস্থাপনা। প্রতিটি ধাপে ক্লিক করে দেখুন নবীদের প্রতিক্রিয়া কী ছিল এবং শেষ পর্যন্ত কে মানবজাতির জন্য সুপারিশ করতে এগিয়ে আসেন।
+                </p>
+            </div>
+            <div class="flex flex-col lg:flex-row gap-8 lg:gap-16 items-start">
+                <div class="w-full lg:w-1/3">
+                    <div id="timeline-container">
+                        <!-- Timeline items will be generated by JS -->
+                    </div>
+                </div>
+                <div class="w-full lg:w-2/3 sticky top-28">
+                    <div id="intercession-details" class="p-8 rounded-lg min-h-[250px] bg-slate-800/50 backdrop-blur-sm border border-slate-700 transition-all duration-500">
+                        <h3 id="prophet-name" class="text-2xl font-bold mb-4" style="color: #90ee90; text-shadow: 0 0 8px rgba(144, 238, 144, 0.5);">নবীকে নির্বাচন করুন</h3>
+                        <p id="prophet-response" class="text-lg text-gray-300 leading-relaxed">বাম পাশের তালিকা থেকে একজন নবীকে নির্বাচন করুন তাঁর প্রতিক্রিয়া জানতে।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: The Judgement -->
+        <section id="judgement" class="py-16 md:py-24 fade-in-section">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold section-title"> চূড়ান্ত বিচার ও প্রতিদান</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-gray-400">
+                    নবী (সাঃ)-এর সুপারিশের পর আল্লাহ বিচার শুরু করবেন। মানুষের সামনে তাদের আমলনামা পেশ করা হবে, যা তাদের ভাগ্য নির্ধারণ করবে। এই বিভাগটি দুটি ভিন্ন পরিণতির চিত্র তুলে ধরে।
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
+                <div class="card judgement-card-green p-8 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center" style="color: #90ee90; text-shadow: 0 0 8px rgba(144, 238, 144, 0.7);">
+                        <span class="mr-3 text-3xl">😊</span>
+                        ডান হাতে আমলনামা
+                    </h3>
+                    <p class="text-gray-300">যারা নেককার, তাদের ডান হাতে আমলনামা দেওয়া হবে। তারা চরম আনন্দিত হয়ে অন্যদের ডেকে বলবে, "এই নাও, আমার আমলনামা পড়ো।" তাদের জন্য অপেক্ষা করছে চিরস্থায়ী জান্নাত।</p>
+                </div>
+                <div class="card judgement-card-red p-8 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center" style="color: #ff8a80; text-shadow: 0 0 8px rgba(255, 138, 128, 0.7);">
+                        <span class="mr-3 text-3xl">😞</span>
+                        বাম হাতে আমলনামা
+                    </h3>
+                    <p class="text-gray-300">আর যারা পাপী, তাদের বাম হাতে আমলনামা দেওয়া হবে। তারা হতাশ ও লজ্জিত হয়ে বলবে, "হায়! আমাকে যদি আমার আমলনামা দেওয়াই না হতো!" তাদের পরিণতি হবে যন্ত্রণাদায়ক জাহান্নাম।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Conclusion -->
+        <section id="conclusion" class="text-center py-16 md:py-24 fade-in-section">
+            <h2 class="text-3xl md:text-4xl font-bold section-title mb-4">উপসংহার ও আমাদের করণীয়</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-300 leading-relaxed">
+                দুনিয়ার জীবন একটি পরীক্ষাক্ষেত্র এবং প্রতারণার সামগ্রী ছাড়া আর কিছুই নয়। আসল সফলতা হলো কিয়ামতের দিন জাহান্নামের আগুন থেকে মুক্তি পেয়ে জান্নাতে প্রবেশ করা। তাই আমাদের উচিত সেই কঠিন দিনের জন্য প্রস্তুতি গ্রহণ করা, আল্লাহর আনুগত্য করা এবং সকল প্রকার পাপ থেকে বিরত থাকা। এই ক্ষণস্থায়ী দুনিয়ার মোহে পড়ে অনন্ত পরকালের জীবনকে ভুলে যাওয়া বুদ্ধিমানের কাজ নয়।
+            </p>
+        </section>
+    </main>
+
+    <footer class="bg-black/30 text-white text-center p-6">
+        <p>&copy; ২০২৪। শেখ খালেদ আল-রাশেদের বক্তৃতার উপর ভিত্তি করে নির্মিত।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const intercessionData = [
+                {
+                    name: "আদম (আঃ)",
+                    response: "আমার রব আজ এমন ক্রুদ্ধ হয়েছেন যা আগে কখনো হননি এবং পরেও হবেন না। তিনি আমাকে একটি গাছের কাছে যেতে নিষেধ করেছিলেন, কিন্তু আমি অবাধ্য হয়েছি। আমি নিজের চিন্তায় উদ্বিগ্ন! (নাফসি, নাফসি)। তোমরা অন্য কারো কাছে যাও।"
+                },
+                {
+                    name: "নূহ (আঃ)",
+                    response: "আমার রব আজ এমন ক্রুদ্ধ হয়েছেন যা আগে কখনো হননি। আমার একটি দোয়া ছিল যা আমি আমার কওমের বিরুদ্ধে ব্যবহার করে ফেলেছি। আমি নিজের চিন্তায় উদ্বিগ্ন! (নাফসি, নাফসি)। তোমরা ইব্রাহিমের কাছে যাও।"
+                },
+                {
+                    name: "ইব্রাহিম (আঃ)",
+                    response: "আমার রব আজ এমন ক্রুদ্ধ হয়েছেন যা আগে কখনো হননি। আমি তিনটি (আপাতদৃষ্টিতে) অসত্য কথা বলেছিলাম। আমি নিজের চিন্তায় উদ্বিগ্ন! (নাফসি, নাফসি)। তোমরা মূসার কাছে যাও।"
+                },
+                {
+                    name: "মূসা (আঃ)",
+                    response: "আমার রব আজ এমন ক্রুদ্ধ হয়েছেন যা আগে কখনো হননি। আমি এমন একজনকে হত্যা করেছিলাম যার জন্য আমাকে আদেশ করা হয়নি। আমি নিজের চিন্তায় উদ্বিগ্ন! (নাফসি, নাফসি)। তোমরা ঈসার কাছে যাও।"
+                },
+                {
+                    name: "ঈসা (আঃ)",
+                    response: "আমার রব আজ এমন ক্রুদ্ধ হয়েছেন যা আগে কখনো হননি। তিনি কোনো পাপের কথা উল্লেখ করবেন না, কিন্তু বলবেন: আমি নিজের চিন্তায় উদ্বিগ্ন! (নাফসি, নাফসি)। তোমরা মুহাম্মাদ (ﷺ) এর কাছে যাও।"
+                },
+                {
+                    name: "মুহাম্মাদ (ﷺ)",
+                    response: "অবশেষে মানবজাতি আমার কাছে আসবে। আমিই এর জন্য যোগ্য! আমি আল্লাহর আরশের নিচে সিজদায় পড়ে যাবো। তখন আমাকে বলা হবে, 'হে মুহাম্মাদ! আপনার মাথা তুলুন। চান, আপনাকে দেওয়া হবে। সুপারিশ করুন, আপনার সুপারিশ গ্রহণ করা হবে।' তখন আমি বলব, 'হে আমার রব! আমার উম্মত! আমার উম্মত!'"
+                }
+            ];
+
+            const timelineContainer = document.getElementById('timeline-container');
+            const prophetNameEl = document.getElementById('prophet-name');
+            const prophetResponseEl = document.getElementById('prophet-response');
+
+            intercessionData.forEach((prophet, index) => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                item.dataset.index = index;
+
+                const dot = document.createElement('div');
+                dot.className = 'timeline-dot';
+
+                const content = document.createElement('div');
+                const name = document.createElement('h4');
+                name.className = 'text-lg font-semibold mb-1 text-gray-200';
+                name.textContent = prophet.name;
+
+                const title = document.createElement('p');
+                title.className = 'text-sm text-gray-400';
+                title.textContent = index < intercessionData.length - 1 ? 'তিনি অপারগতা প্রকাশ করবেন' : 'চূড়ান্ত সুপারিশকারী';
+
+                content.appendChild(name);
+                content.appendChild(title);
+                item.appendChild(dot);
+                item.appendChild(content);
+
+                timelineContainer.appendChild(item);
+
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.timeline-item').forEach(el => el.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    prophetNameEl.textContent = prophet.name;
+                    prophetResponseEl.textContent = prophet.response;
+                });
+            });
+
+            const fadeSections = document.querySelectorAll('.fade-in-section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            fadeSections.forEach(section => {
+                observer.observe(section);
+            });
+
+            const firstTimelineItem = document.querySelector('.timeline-item');
+            if(firstTimelineItem) {
+                 firstTimelineItem.click();
+            }
+        });
+    </script>
+</body>
+</html>

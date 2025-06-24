@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>শেখ খালিদ আল-রাশেদের একটি ভাষণ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Neon Cyan on Dark -->
+    <!-- Application Structure Plan: A tab-based navigation SPA. Themes: Introduction, Life After Death, Proof of Resurrection, Judgment Day, and Preparation. This structure breaks down the long sermon into user-selectable, digestible themes, enhancing navigation and focus compared to a linear scroll. Key interactions include tab switching for main content and an accordion for the five resurrection proofs to manage information density. -->
+    <!-- Visualization & Content Choices: Report Info: Sermon on Afterlife -> Goal: Inform/Organize -> Viz/Presentation: Thematically organized text blocks, accordions for lists, styled blockquotes for scripture/poetry -> Interaction: Tab switching, accordion expansion -> Justification: Improves readability and user control over a long, qualitative text. No quantitative data present, so no charts are used. Library/Method: Vanilla JS for interactions, Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .neon-text {
+            color: #67e8f9;
+            text-shadow:
+                0 0 5px rgba(103, 232, 249, 0.7),
+                0 0 10px rgba(103, 232, 249, 0.7),
+                0 0 20px rgba(103, 232, 249, 0.5),
+                0 0 40px rgba(103, 232, 249, 0.3),
+                0 0 80px rgba(103, 232, 249, 0.2);
+        }
+        .tab-btn.active {
+            color: #67e8f9;
+            border-color: #67e8f9;
+            background-color: #1f2937;
+            box-shadow: 0 0 10px rgba(103, 232, 249, 0.5);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .accordion-button.active {
+             color: #67e8f9;
+             background-color: #374151;
+        }
+        .accordion-button.active .accordion-arrow {
+            transform: rotate(180deg);
+        }
+        .accordion-arrow {
+            transition: transform 0.3s ease;
+        }
+        blockquote {
+            border-left: 4px solid #22d3ee;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-5xl font-bold neon-text mb-2">শেখ খালিদ আল-রাশেদের একটি ভাষণ</h1>
+            <p class="text-lg text-gray-400">জীবন, মৃত্যু এবং পরকালের বাস্তবতা</p>
+        </header>
+
+        <div class="bg-gray-800 rounded-lg shadow-2xl shadow-cyan-500/10 p-4 sm:p-6 border border-gray-700">
+            <nav class="flex flex-wrap border-b border-gray-700 mb-6 -mx-4 px-4">
+                <button class="tab-btn py-3 px-4 text-sm md:text-base font-semibold border-b-2 border-transparent text-gray-400 hover:text-cyan-400 transition-colors duration-300 active" onclick="openTab('tab1')">ভূমিকা ও জীবনের বাস্তবতা</button>
+                <button class="tab-btn py-3 px-4 text-sm md:text-base font-semibold border-b-2 border-transparent text-gray-400 hover:text-cyan-400 transition-colors duration-300" onclick="openTab('tab2')">মৃত্যু পরবর্তী জীবন</button>
+                <button class="tab-btn py-3 px-4 text-sm md:text-base font-semibold border-b-2 border-transparent text-gray-400 hover:text-cyan-400 transition-colors duration-300" onclick="openTab('tab3')">পুনরুত্থানের প্রমাণ</button>
+                <button class="tab-btn py-3 px-4 text-sm md:text-base font-semibold border-b-2 border-transparent text-gray-400 hover:text-cyan-400 transition-colors duration-300" onclick="openTab('tab4')">হাশর ও হিসাব</button>
+                <button class="tab-btn py-3 px-4 text-sm md:text-base font-semibold border-b-2 border-transparent text-gray-400 hover:text-cyan-400 transition-colors duration-300" onclick="openTab('tab5')">প্রস্তুতি ও দোয়া</button>
+            </nav>
+
+            <div id="tab1" class="tab-content active">
+                <h2 class="text-2xl font-bold neon-text mb-4">ভূমিকা: দুনিয়া একটি ক্ষণস্থায়ী আবাস</h2>
+                <div class="prose max-w-none text-gray-300 leading-relaxed">
+                    <p>এই বিভাগে বক্তৃতার সূচনা এবং দুনিয়ার জীবনের অস্থায়ী প্রকৃতি সম্পর্কে আলোচনা করা হয়েছে। এখানে আমাদের স্মরণ করিয়ে দেওয়া হয়েছে যে, এই জীবন পরকালের জন্য একটি প্রস্তুতি মাত্র।</p>
+                    <p>দুনিয়া একটি ক্ষণস্থায়ী আবাস, এর উপর যা কিছু আছে সবই নশ্বর। প্রত্যেকেই তার রবের সাথে মিলিত হবে এবং নিজের আমল দেখতে পাবে। বুদ্ধিমান তো সেই, যে হিসাবের জন্য প্রস্তুতি গ্রহণ করে, তার রবের কাছে তওবা করে এবং জ্ঞানীদের পথ অনুসরণ করে।</p>
+                    <h3 class="font-semibold text-cyan-400 mt-4">দুনিয়া একটি ক্ষণস্থায়ী আবাস</h3>
+                    <p>নিশ্চয়ই সমস্ত প্রশংসা আল্লাহর জন্য। আমরা তাঁরই প্রশংসা করি, তাঁরই সাহায্য চাই, তাঁরই কাছে ক্ষমা প্রার্থনা করি এবং তাঁরই হেদায়েত কামনা করি। আমরা আমাদের নফসের অনিষ্ট এবং আমাদের মন্দ আমল থেকে আল্লাহর কাছে আশ্রয় চাই। আল্লাহ যাকে হেদায়েত দেন, তাকে কেউ পথভ্রষ্ট করতে পারে না, আর যাকে তিনি পথভ্রষ্ট করেন, তার জন্য কোনো হেদায়েতকারী নেই।</p>
+                    <blockquote>"হে ঈমানদারগণ! তোমরা আল্লাহকে যথাযথভাবে ভয় কর এবং মুসলিম না হয়ে মৃত্যুবরণ করো না।" (সূরা আলে ইমরান: ১০২)</blockquote>
+                    <p>অতঃপর, সবচেয়ে সত্য বাণী হলো আল্লাহর কিতাব, আর সর্বোত্তম পথ হলো মুহাম্মদ (সাঃ) এর পথ। সবচেয়ে নিকৃষ্ট বিষয় হলো (দ্বীনে) নব আবিষ্কৃত বিষয়, প্রত্যেক নব আবিষ্কৃত বিষয় বিদ'আত, প্রত্যেক বিদ'আত পথভ্রষ্টতা এবং প্রত্যেক পথভ্রষ্টতার পরিণাম জাহান্নাম।</p>
+                </div>
+            </div>
+
+            <div id="tab2" class="tab-content">
+                <h2 class="text-2xl font-bold neon-text mb-4">মৃত্যু পরবর্তী জীবন</h2>
+                 <div class="prose max-w-none text-gray-300 leading-relaxed">
+                    <p>এখানে মৃত্যু, কবর এবং পুনরুত্থান সম্পর্কে আলোচনা করা হয়েছে। এই জীবনের পর যে অনন্ত জীবন রয়েছে, তার বিভিন্ন পর্যায় তুলে ধরা হয়েছে।</p>
+                    <p>হে আল্লাহর বান্দাগণ! যে বিষয়টি আমাদের অবশ্যই ভোলা উচিত নয়, তা হলো আমরা এই দুনিয়াতে অতিথি। আমরা এই জীবনে বেঁচে আছি অনন্ত জীবনের জন্য প্রস্তুতি নিতে। আমাদের জানতে ও বুঝতে হবে যে, জীবন যতই দীর্ঘ হোক না কেন, তা সংক্ষিপ্ত। আর এই জীবন যতই মহান মনে হোক না কেন, আল্লাহর কাছে তা তুচ্ছ, একটি মশার ডানার সমানও এর মূল্য নেই।</p>
+                    <blockquote>"প্রত্যেক প্রাণীকে মৃত্যুর স্বাদ গ্রহণ করতে হবে। আর কিয়ামতের দিন তোমাদেরকে তোমাদের প্রতিফল পুরোপুরি দেওয়া হবে।" (সূরা আলে ইমরান: ১৮৫)</blockquote>
+                    <p>আমাদের জানতে ও বুঝতে হবে যে কবরের পরে পুনরুত্থান আছে, যা হলো কিয়ামতের দিন মৃতদেরকে তাদের হিসাব ও বিচারের জন্য জীবিত করা। আল্লাহ তা'আলা বলেন: "কাফিররা ধারণা করে যে, তাদেরকে কখনো পুনরুত্থিত করা হবে না। বলুন, হ্যাঁ, আমার রবের কসম! তোমাদেরকে অবশ্যই পুনরুত্থিত করা হবে, অতঃপর তোমরা যা করতে, সে সম্পর্কে তোমাদেরকে অবহিত করা হবে। আর এটা আল্লাহর জন্য খুবই সহজ।" (সূরা আত-তাগাবুন: ৭)</p>
+                 </div>
+            </div>
+
+            <div id="tab3" class="tab-content">
+                <h2 class="text-2xl font-bold neon-text mb-4">মৃতদের জীবিত করার বিষয়ে আল্লাহর ক্ষমতার নিদর্শন</h2>
+                 <div class="prose max-w-none text-gray-300 leading-relaxed">
+                    <p>আল্লাহ যে মৃতদের পুনরায় জীবিত করতে সক্ষম, তার প্রমাণস্বরূপ পবিত্র কুরআন থেকে পাঁচটি ঘটনা এখানে বিস্তারিতভাবে বর্ণনা করা হয়েছে। প্রতিটি ঘটনায় ক্লিক করে তার বিবরণ দেখুন।</p>
+                    <div class="space-y-4 mt-6">
+                        <div class="accordion-item border border-gray-700 rounded-lg overflow-hidden">
+                            <button class="accordion-button w-full text-left p-4 bg-gray-700 hover:bg-gray-600 focus:outline-none transition-colors flex justify-between items-center" onclick="toggleAccordion(this)">
+                                <span class="font-semibold text-gray-200">প্রথম উদাহরণ: মূসা (আঃ) এর কওম</span>
+                                <span class="accordion-arrow transform transition-transform">▼</span>
+                            </button>
+                            <div class="accordion-content bg-gray-800">
+                                <p class="p-4 border-t border-gray-700">আল্লাহ মূসা (আঃ) এর কওম সম্পর্কে বলেন: "এবং যখন তোমরা বলেছিলে, হে মূসা! আমরা তোমাকে কখনো বিশ্বাস করব না, যতক্ষণ না আমরা আল্লাহকে প্রকাশ্যে দেখি। ফলে বজ্র তোমাদেরকে পাকড়াও করল যখন তোমরা দেখছিলে। অতঃপর তোমাদের মৃত্যুর পর আমি তোমাদেরকে পুনর্জীবিত করলাম, যাতে তোমরা কৃতজ্ঞতা প্রকাশ কর।" (সূরা আল-বাকারাহ: ৫৫-৫৬) বজ্রপাতের পর আল্লাহ তাদের জীবিত করেছিলেন।</p>
+                            </div>
+                        </div>
+                         <div class="accordion-item border border-gray-700 rounded-lg overflow-hidden">
+                            <button class="accordion-button w-full text-left p-4 bg-gray-700 hover:bg-gray-600 focus:outline-none transition-colors flex justify-between items-center" onclick="toggleAccordion(this)">
+                                <span class="font-semibold text-gray-200">দ্বিতীয় উদাহরণ: বনী ইসরাইলের হত্যাকান্ড</span>
+                                 <span class="accordion-arrow transform transition-transform">▼</span>
+                            </button>
+                            <div class="accordion-content bg-gray-800">
+                                <p class="p-4 border-t border-gray-700">বনী ইসরাইলের সময়ে মূসা (আঃ) এর যুগে একটি হত্যাকান্ডের ঘটনায় যখন তারা বিবাদে লিপ্ত হয়। আল্লাহ তাদের একটি গাভী জবাই করে তার কিছু অংশ দিয়ে মৃত ব্যক্তিকে আঘাত করতে আদেশ দেন, যাতে সে হত্যাকারীর নাম বলে দেয়। তারা তাই করল, আল্লাহ তাকে জীবিত করলেন এবং সে হত্যাকারীর নাম বলে দিল।</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item border border-gray-700 rounded-lg overflow-hidden">
+                            <button class="accordion-button w-full text-left p-4 bg-gray-700 hover:bg-gray-600 focus:outline-none transition-colors flex justify-between items-center" onclick="toggleAccordion(this)">
+                                <span class="font-semibold text-gray-200">তৃতীয় উদাহরণ: মৃত্যুর ভয়ে পলায়নকারী জাতি</span>
+                                 <span class="accordion-arrow transform transition-transform">▼</span>
+                            </button>
+                            <div class="accordion-content bg-gray-800">
+                                <p class="p-4 border-t border-gray-700">সেই জাতির কাহিনীতে: "যারা তাদের ঘর থেকে হাজারে হাজারে বেরিয়ে পড়েছিল মৃত্যুর ভয়ে। অতঃপর আল্লাহ তাদের বললেন, 'তোমরা মরে যাও'। তারপর তিনি তাদের জীবিত করলেন। নিশ্চয়ই আল্লাহ মানুষের প্রতি অনুগ্রহশীল, কিন্তু অধিকাংশ মানুষ কৃতজ্ঞতা প্রকাশ করে না।" (সূরা আল-বাকারাহ: ২৪৩)</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item border border-gray-700 rounded-lg overflow-hidden">
+                            <button class="accordion-button w-full text-left p-4 bg-gray-700 hover:bg-gray-600 focus:outline-none transition-colors flex justify-between items-center" onclick="toggleAccordion(this)">
+                                <span class="font-semibold text-gray-200">চতুর্থ উদাহরণ: মৃত গ্রামের পথচারী</span>
+                                 <span class="accordion-arrow transform transition-transform">▼</span>
+                            </button>
+                            <div class="accordion-content bg-gray-800">
+                                <p class="p-4 border-t border-gray-700">সেই ব্যক্তির গল্পে যিনি একটি মৃত গ্রামের পাশ দিয়ে যাচ্ছিলেন এবং আল্লাহর পক্ষে তা পুনরুজ্জীবিত করা অসম্ভব মনে করেছিলেন। আল্লাহ তাকে একশ বছরের জন্য মৃত অবস্থায় রেখেছিলেন এবং তারপর পুনরুত্থিত করেছিলেন।</p>
+                            </div>
+                        </div>
+                        <div class="accordion-item border border-gray-700 rounded-lg overflow-hidden">
+                            <button class="accordion-button w-full text-left p-4 bg-gray-700 hover:bg-gray-600 focus:outline-none transition-colors flex justify-between items-center" onclick="toggleAccordion(this)">
+                                <span class="font-semibold text-gray-200">পঞ্চম উদাহরণ: ইব্রাহিম (আঃ) এর পাখি</span>
+                                 <span class="accordion-arrow transform transition-transform">▼</span>
+                            </button>
+                            <div class="accordion-content bg-gray-800">
+                                <p class="p-4 border-t border-gray-700">ইব্রাহিম (আঃ) এর ঘটনায়, যখন তিনি আল্লাহকে দেখাতে বলেছিলেন কীভাবে তিনি মৃতদের জীবিত করেন। আল্লাহ তাকে চারটি পাখি নিয়ে সেগুলোকে পোষ মানাতে এবং পাহাড়ে তাদের অংশ রাখতে বলেন। তারপর ডাক দিলে তারা দৌড়ে আসে।</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab4" class="tab-content">
+                <h2 class="text-2xl font-bold neon-text mb-4">হাশর ও হিসাব</h2>
+                <div class="prose max-w-none text-gray-300 leading-relaxed">
+                    <p>এই বিভাগে হাশরের ময়দানের ভয়াবহতা, বিচারের দিনের নিয়মাবলী এবং যে প্রশ্নগুলোর সম্মুখীন হতে হবে, সে সম্পর্কে আলোকপাত করা হয়েছে।</p>
+                    <h3 class="font-semibold text-cyan-400 mt-4">হাশর ও হিসাবের ধারণা</h3>
+                    <p>হে আল্লাহর বান্দাগণ! যখন আমরা জানলাম যে পুনরুত্থান আছে, তখন জেনে রাখুন - যে হাশরও আছে। এটি হলো কিয়ামতের দিন হিসাব ও বিচারের জন্য সমস্ত সৃষ্টিকে একত্রিত করা।</p>
+                    <blockquote>"এবং পৃথিবী তার রবের নূরে আলোকিত হবে এবং কিতাব স্থাপন করা হবে।" (সূরা আয-যুমার: ৬৯)</blockquote>
+                     <h3 class="font-semibold text-cyan-400 mt-4">হিসাবের দিনের প্রশ্নাবলী</h3>
+                     <p>রাসূলুল্লাহ (সাঃ) বলেছেন: "কিয়ামতের দিন আদম সন্তানের পা তার রবের কাছ থেকে সরবে না যতক্ষণ না তাকে পাঁচটি বিষয় সম্পর্কে জিজ্ঞাসা করা হবে:</p>
+                     <ul class="list-disc list-inside space-y-2 mt-4 bg-gray-900 p-4 rounded-md border border-gray-700">
+                        <li>তার জীবন সম্পর্কে, সে তা কিসে ব্যয় করেছে;</li>
+                        <li>তার যৌবন সম্পর্কে, সে তা কিসে শেষ করেছে;</li>
+                        <li>তার সম্পদ সম্পর্কে, সে তা কোথা থেকে অর্জন করেছে;</li>
+                        <li>এবং কিসে ব্যয় করেছে;</li>
+                        <li>এবং সে যা জেনেছে, সে অনুযায়ী কী আমল করেছে।</li>
+                     </ul>
+                </div>
+            </div>
+            
+            <div id="tab5" class="tab-content">
+                <h2 class="text-2xl font-bold neon-text mb-4">প্রস্তুতি ও দোয়া</h2>
+                 <div class="prose max-w-none text-gray-300 leading-relaxed">
+                    <p>শেষ অংশে, আমাদের নিজেদের হিসাব নেওয়ার এবং পরকালের জন্য প্রস্তুতি গ্রহণের আহ্বান জানানো হয়েছে। গাফিলতি পরিহার করে আল্লাহর দিকে ফিরে আসার গুরুত্ব তুলে ধরা হয়েছে এবং একটি মর্মস্পর্শী দোয়ার মাধ্যমে বক্তৃতা শেষ হয়েছে।</p>
+                    <h3 class="font-semibold text-cyan-400 mt-4">হিসাবের দিনের জন্য প্রস্তুতি</h3>
+                    <p>নিজেকে কল্পনা করুন যখন কিতাবগুলো উড়ে যাবে, মীযান স্থাপন করা হবে, এবং আপনাকে আপনার নামে সমস্ত সৃষ্টির সামনে ডাকা হবে, কোথায় অমুকের পুত্র অমুক? আল্লাহর সামনে দাঁড়ানোর জন্য প্রস্তুত হোন, আল্লাহর কাছে পেশ করার জন্য আসুন।</p>
+                    <p>হে আল্লাহর বান্দাগণ! নিজেদের হিসাব নিন এবং মহান আল্লাহর সামনে পেশ করার জন্য প্রস্তুত হোন। ... আর কতকাল গাফিলতিতে থাকবেন!</p>
+                    <h3 class="font-semibold text-cyan-400 mt-4">দোয়া</h3>
+                    <p>হে আল্লাহ, আমরা আপনার কাছে মৃত্যুর আগে খাঁটি তওবা, মৃত্যুর সময় শাহাদাত এবং মৃত্যুর পরে রহমত প্রার্থনা করছি, হে বিশ্বজগতের রব।</p>
+                    <p>হে আল্লাহ, সেদিন আমাদের গোপন বিষয়গুলো ঢেকে রাখুন, আমাদের ভয়কে নিরাপত্তায় পরিণত করুন, আমাদের মীযান ভারী করুন, আমাদের আগুন থেকে দূরে রাখুন এবং আমাদের জান্নাতে প্রবেশ করান, হে বিশ্বজগতের রব।</p>
+                 </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function openTab(tabId) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function toggleAccordion(button) {
+            button.classList.toggle('active');
+            const content = button.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            openTab('tab1');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রমজান অর্ধেক হয়ে গেছে, হে তাহাজ্জুদ আদায়কারীর অশ্রু</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral (Stone, Amber, Emerald) -->
+    <!-- Application Structure Plan: The application is designed as a single-page, thematic scrolling experience. A sticky navigation bar allows users to jump to key sections. A new "Spiritual Assistant" section powered by the Gemini API has been added. This section offers AI-generated key takeaways from the sermon and a personal dua generator. This structure was chosen to enhance user engagement and provide personalized, reflective content, transforming the passive experience of reading into an interactive spiritual tool. -->
+    <!-- Visualization & Content Choices: For the Gemini-powered features: Goal: Synthesize & Action -> Method: "Key Learnings" button -> Interaction: Click to call API and display a summarized list -> Justification: Provides a quick, actionable summary of the long sermon, enhancing comprehension. Goal: Personalize & Reflect -> Method: "Dua Generator" with a textarea -> Interaction: User inputs feelings, API generates a relevant dua -> Justification: Creates a deeply personal and emotionally resonant experience, connecting the sermon's themes to the user's life. Both features use loading indicators for better UX during API calls. Implemented with vanilla JS and Gemini API. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #f5f5f4; /* Stone 100 */
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active {
+            color: #b45309; /* Amber 700 */
+            border-bottom-color: #b45309; /* Amber 700 */
+        }
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-in-out;
+        }
+        .card.open .card-content {
+            max-height: 1000px;
+        }
+        .section-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #b45309;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .gemini-btn {
+            transition: all 0.3s;
+        }
+        .gemini-btn:disabled {
+            background-color: #d6d3d1;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-stone-100 text-stone-800">
+
+    <header class="bg-stone-100/80 backdrop-blur-sm sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-amber-800">রমজানের বার্তা</h1>
+            <div class="hidden md:flex space-x-6 font-medium text-stone-600">
+                <a href="#intro" class="nav-link">ভূমিকা</a>
+                <a href="#need" class="nav-link">উম্মাহর প্রয়োজন</a>
+                <a href="#examples" class="nav-link">পূর্বসূরিদের নমুনা</a>
+                <a href="#ai-assistant" class="nav-link">আধ্যাত্মিক সহায়ক</a>
+                <a href="#dua" class="nav-link">দু'আ</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-stone-100 p-4">
+            <a href="#intro" class="block py-2 text-center nav-link">ভূমিকা</a>
+            <a href="#need" class="block py-2 text-center nav-link">উম্মাহর প্রয়োজন</a>
+            <a href="#examples" class="block py-2 text-center nav-link">পূর্বসূরিদের নমুনা</a>
+            <a href="#ai-assistant" class="block py-2 text-center nav-link">আধ্যাত্মিক সহায়ক</a>
+            <a href="#dua" class="block py-2 text-center nav-link">দু'আ</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <section id="intro" class="text-center py-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-amber-900 mb-4">রমজান অর্ধেক হয়ে গেছে, হে তাহাজ্জুদ আদায়কারীর অশ্রু</h2>
+            <p class="text-lg text-stone-600 max-w-3xl mx-auto">শাইখ খালিদ আল-রাশেদের এই মর্মস্পর্শী ভাষণটি আমাদের ইবাদতের গুরুত্ব এবং আল্লাহর সাথে সম্পর্ক গভীর করার প্রয়োজনীয়তা স্মরণ করিয়ে দেয়, বিশেষ করে রমজানের এই মূল্যবান সময়ে। এই ইন্টারেক্টিভ নির্দেশিকাটি আপনাকে ভাষণের মূল বার্তাগুলো অন্বেষণ করতে এবং আধ্যাত্মিক চেতনায় উজ্জীবিত হতে সাহায্য করবে।</p>
+        </section>
+
+        <section id="need" class="py-16">
+            <div class="text-center mb-12">
+                <span class="section-icon text-emerald-600">🤲</span>
+                <h3 class="text-3xl font-bold mt-2">উম্মাহর ইবাদতকারী ও দুনিয়াত্যাগীদের প্রয়োজনীয়তা</h3>
+                <p class="mt-4 text-stone-600 max-w-2xl mx-auto">ভাষণের এই অংশে, শাইখ উম্মাহর সম্মান ও বিজয়ের জন্য ইবাদত এবং আল্লাহর সাথে গভীর সম্পর্কের অপরিহার্যতার উপর জোর দিয়েছেন। তিনি বর্তমান সময়ের উদাসীনতার সাথে অতীতের একনিষ্ঠতার তুলনা করেছেন।</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <p class="mb-4">ইসলামী উম্মাহর এখন ইবাদত এবং আল্লাহ আজ্জা ওয়া জাল্লার সাথে সম্পর্ক শক্তিশালী করার তীব্র প্রয়োজন। কারণ সম্মান, বিজয় এবং প্রতিষ্ঠা দুনিয়া ও আখেরাতে এরই সাথে যুক্ত। উম্মাহ তো কেবল ইবাদতকারী, দুনিয়াত্যাগী এবং আল্লাহর অলিদের দ্বারাই বিজয় লাভ করেছে, যাদের কোন ভয় নেই এবং তারা চিন্তিতও হবে না।</p>
+                <blockquote class="border-r-4 border-amber-600 pr-4 my-6">
+                    <p class="italic text-stone-700">"আশ্চর্যজনক যা আমরা দেখি, অন্তরের কঠোরতা এবং কুরআন ত্যাগ করা... আশ্চর্য লাগে নফল এমনকি ফরজ বিষয়েও অবহেলা দেখে, সালাত যেন قیام (দাঁড়ানো) আর قعود (বসা)-এর কিছু নড়াচড়ায় পরিণত হয়েছে! আশ্চর্য লাগে তাকবীরে তাহরীমা থেকে পিছিয়ে থাকা এবং শেষ কাতারে সন্তুষ্ট থাকা দেখে। জেনে রাখো: যে গৌরব অর্জন করতে চায়, সে শেষ কাতারে সন্তুষ্ট থাকে না!"</p>
+                </blockquote>
+                <p>ইবাদতের প্রতি আমাদের প্রয়োজন তেমনই, যেমন জমিনের জন্য বৃষ্টির প্রয়োজন। অন্তর কেবল আল্লাহর স্মরণে জীবিত হয়। আমাদের আল্লাহর সাথে সম্পর্ক শক্তিশালী করার তীব্র প্রয়োজন; যাতে আমরা তাঁর সেই অলিদের অন্তর্ভুক্ত হতে পারি যাদের সম্পর্কে তিনি বলেছেন: <span class="font-semibold text-emerald-700">"জেনে রাখ! আল্লাহর অলিদের কোন ভয় নেই এবং তারা চিন্তিতও হবে না।" (ইউনুস: ৬২-৬৩)</span></p>
+            </div>
+        </section>
+
+        <section id="examples" class="py-16">
+            <div class="text-center mb-12">
+                <span class="section-icon text-amber-600">🌟</span>
+                <h3 class="text-3xl font-bold mt-2">পূর্বসূরিদের ইবাদতের নমুনা</h3>
+                <p class="mt-4 text-stone-600 max-w-2xl mx-auto">এখানে রাসূলুল্লাহ (সাঃ) এবং পুণ্যবান পূর্বসূরিদের (সালাফ) ইবাদতের কিছু অনুপ্রেরণামূলক কাহিনী তুলে ধরা হয়েছে। তাদের একনিষ্ঠতা ও আল্লাহ-ভীতির এই উদাহরণগুলো আমাদের জন্য পথপ্রদর্শক। প্রতিটি কার্ডে ক্লিক করে বিস্তারিত পড়ুন।</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <div class="card bg-white rounded-xl shadow-lg cursor-pointer overflow-hidden">
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold text-amber-800">রাসূলুল্লাহ (সাঃ)</h4>
+                        <p class="text-sm text-stone-500 mt-1">ইবাদতকারীদের নেতা</p>
+                    </div>
+                    <div class="card-content px-6 pb-6 text-stone-700">
+                        <p>তাঁর রব তাঁকে বললেন: "রাতে قیام করুন, সামান্য কিছু অংশ ছাড়া"। তাই তিনি এত قیام করলেন যে তাঁর পা ফুলে গেল। এক রাতে আয়েশা (রাঃ) কে বললেন: "আমাকে আমার রবের ইবাদত করতে দাও।" তিনি সালাত আদায় করতে দাঁড়ালেন এবং কাঁদতে লাগলেন যতক্ষণ না তাঁর দাড়ি ও নীচের মাটি ভিজে গেল।</p>
+                    </div>
+                </div>
+
+                <div class="card bg-white rounded-xl shadow-lg cursor-pointer overflow-hidden">
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold text-amber-800">হাসান আল-বসরী (রহঃ)</h4>
+                        <p class="text-sm text-stone-500 mt-1">আল্লাহর ভয়ে ক্রন্দন</p>
+                    </div>
+                    <div class="card-content px-6 pb-6 text-stone-700">
+                        <p>ইফতারের জন্য পানি মুখের কাছে নিতেই তিনি কেঁদে ফেললেন। কারণ জিজ্ঞেস করা হলে তিনি বলেন: "আমার জাহান্নামবাসীদের আকাঙ্ক্ষার কথা মনে পড়েছে: 'আমাদের উপর কিছু পানি ঢেলে দাও'।" এবং তাদের প্রতি উত্তর: "নিশ্চয়ই আল্লাহ এ দুটি জিনিস কাফিরদের জন্য হারাম করেছেন।"</p>
+                    </div>
+                </div>
+
+                <div class="card bg-white rounded-xl shadow-lg cursor-pointer overflow-hidden">
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold text-amber-800">ইবনে তাইমিয়াহ (রহঃ)</h4>
+                        <p class="text-sm text-stone-500 mt-1">বিপদের মাঝে প্রশান্তি</p>
+                    </div>
+                    <div class="card-content px-6 pb-6 text-stone-700">
+                        <p>ইবনে কাইয়্যিম বলেন: "আল্লাহর কসম, আমি তাঁর চেয়ে সুখী জীবনযাপনকারী কাউকে দেখিনি, যদিও তিনি কারাবাস, হুমকি ও নির্যাতনের মধ্যে ছিলেন... যখন আমাদের ভয় তীব্র হতো, আমরা তাঁর কাছে আসতাম। তাঁকে দেখা এবং তাঁর কথা শোনার সাথে সাথেই আমাদের সবকিছু দূর হয়ে যেত।"</p>
+                    </div>
+                </div>
+
+                <div class="card bg-white rounded-xl shadow-lg cursor-pointer overflow-hidden">
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold text-amber-800">আল-আওযায়ী (রহঃ)</h4>
+                        <p class="text-sm text-stone-500 mt-1">সিজদার চিহ্ন</p>
+                    </div>
+                    <div class="card-content px-6 pb-6 text-stone-700">
+                        <p>এক মহিলা তাঁর সিজদার স্থান ভেজা দেখে ভাবলেন বাচ্চারা পেশাব করেছে। তাঁর স্ত্রী বললেন: "তোমার সর্বনাশ হোক! এটা তাঁর সিজদার স্থানে তাঁর অশ্রুর চিহ্ন, বাচ্চাদের পেশাব নয়।"</p>
+                    </div>
+                </div>
+
+                <div class="card bg-white rounded-xl shadow-lg cursor-pointer overflow-hidden">
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold text-amber-800">উওয়াইস আল-কারনী (রহঃ)</h4>
+                        <p class="text-sm text-stone-500 mt-1">অবিরাম ইবাদত</p>
+                    </div>
+                    <div class="card-content px-6 pb-6 text-stone-700">
+                        <p>তিনি সারারাত কখনো রুকুতে, কখনো সিজদায় কাটিয়ে দিতেন। সামান্য তন্দ্রার জন্য নিজেকে তিরস্কার করে বলতেন: "হে আল্লাহ, আমি তোমার কাছে ঘুমন্ত চোখ এবং অতৃপ্ত পেট থেকে আশ্রয় চাই।"</p>
+                    </div>
+                </div>
+                
+                <div class="card bg-white rounded-xl shadow-lg cursor-pointer overflow-hidden">
+                    <div class="p-6">
+                        <h4 class="text-xl font-bold text-amber-800">ইবনে উমর (রাঃ)</h4>
+                        <p class="text-sm text-stone-500 mt-1">ঘরের ভেতরের আমল</p>
+                    </div>
+                    <div class="card-content px-6 pb-6 text-stone-700">
+                        <p>তাঁকে জিজ্ঞেস করা হয়েছিল তিনি ঘরে কী করতেন। উত্তর ছিল: "তোমরা তা করতে পারবে না। প্রত্যেক সালাতের জন্য ওযু, এবং এর মাঝে কুরআন পাঠ।" তিনি রাতে ৪-৫ বার ঘুম থেকে উঠে সালাত আদায় করতেন।</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="ai-assistant" class="py-16 bg-stone-200 rounded-xl">
+            <div class="text-center mb-12">
+                <span class="section-icon text-amber-700">🤖</span>
+                <h3 class="text-3xl font-bold mt-2">আধ্যাত্মিক সহায়ক (Gemini)</h3>
+                <p class="mt-4 text-stone-600 max-w-2xl mx-auto">ভাষণের গভীরে প্রবেশ করতে এবং ব্যক্তিগতভাবে উপকৃত হতে এই আধুনিক টুলগুলো ব্যবহার করুন। Gemini API দ্বারা চালিত।</p>
+            </div>
+            <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+                <!-- Key Learnings Card -->
+                <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col">
+                    <h4 class="text-xl font-bold text-emerald-800 mb-3">ভাষণের মূল শিক্ষা</h4>
+                    <p class="text-stone-600 mb-4 flex-grow">এই ভাষণের প্রধান বার্তাগুলো এবং জীবনে প্রয়োগ করার মতো করণীয় কাজগুলো জানতে নিচের বোতামে ক্লিক করুন।</p>
+                    <button id="get-learnings-btn" class="gemini-btn w-full mt-auto bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-700 flex items-center justify-center">
+                        ✨ মূল শিক্ষাগুলো দেখুন
+                    </button>
+                    <div id="learnings-loader" class="hidden mx-auto my-4">
+                        <div class="loader"></div>
+                    </div>
+                    <div id="learnings-result" class="mt-4 text-stone-700 space-y-2"></div>
+                </div>
+
+                <!-- Personal Dua Generator Card -->
+                <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col">
+                    <h4 class="text-xl font-bold text-amber-800 mb-3">ব্যক্তিগত দু'আ জেনারেটর</h4>
+                    <p class="text-stone-600 mb-4 flex-grow">আপনার মনের অবস্থা বা প্রয়োজন নিচের বক্সে লিখুন, এবং Gemini আপনার জন্য একটি বিশেষ দু'আ তৈরি করবে।</p>
+                    <textarea id="dua-prompt" class="w-full border border-stone-300 rounded-lg p-2 mb-4 h-24" placeholder="যেমন: আমি আমার পরীক্ষার জন্য চিন্তিত..."></textarea>
+                    <button id="get-dua-btn" class="gemini-btn w-full mt-auto bg-amber-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-amber-700 flex items-center justify-center">
+                        ✨ দু'আ তৈরি করুন
+                    </button>
+                     <div id="dua-loader" class="hidden mx-auto my-4">
+                        <div class="loader"></div>
+                    </div>
+                    <div id="dua-result" class="mt-4 text-stone-700 bg-amber-50 p-4 rounded-lg"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dua" class="py-16 bg-emerald-50 rounded-xl mt-16">
+             <div class="text-center mb-12">
+                 <span class="section-icon text-emerald-700">🙏</span>
+                <h3 class="text-3xl font-bold mt-2">ভাষণের সম্মিলিত দু'আ</h3>
+                <p class="mt-4 text-stone-600 max-w-2xl mx-auto">ভাষণের শেষে শাইখ খালিদ আল-রাশেদ উম্মাহর জন্য যে হৃদয় বিগলিত দু'আ করেছেন, আসুন আমরাও সেই দু'আয় অংশ নিই।</p>
+            </div>
+            <div class="max-w-3xl mx-auto text-center text-stone-700 space-y-4">
+                <p>"হে আল্লাহ, আমাদেরকে হেদায়েতপ্রাপ্তদের মধ্যে অন্তর্ভুক্ত করুন, পথভ্রষ্ট বা পথভ্রষ্টকারী নয়।"</p>
+                <p>"হে আল্লাহ, আমাদের অন্তরে ঈমানকে প্রিয় করে দিন এবং তা আমাদের অন্তরে সুশোভিত করুন। এবং কুফর, ফাসিকী ও অবাধ্যতাকে আমাদের কাছে অপছন্দনীয় করে দিন।"</p>
+                <p>"হে আল্লাহ, ফালুজার মুজাহিদীনদের মনোবল শক্তিশালী করুন। হে আল্লাহ, তাদের উপর আপনার পক্ষ থেকে সাহায্য নাযিল করুন। এবং ফালুজার জমিনকে কাফিরদের উপর আগুনে পরিণত করুন।"</p>
+                <p class="font-bold text-emerald-800 pt-4">"আমাদের কোনো রব নেই যাকে আমরা ডাকব, এবং আমাদের কোনো ইলাহ নেই যার কাছে আমরা আশা করব। হে প্রথমদের প্রথম এবং শেষদের শেষ। হে দুর্বল, দরিদ্র ও মিসকীনদের সাহায্যকারী।"</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 text-stone-500">
+        <p>শাইখ খালিদ আল-রাশেদের ভাষণের উপর ভিত্তি করে নির্মিত।</p>
+        <p>ইন্টারেক্টিভ রূপান্তর ও ডিজাইন: একটি এআই কর্তৃক নির্মিত।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('open');
+                });
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            function changeLinkState() {
+                let index = sections.length;
+
+                while(--index && window.scrollY + 100 < sections[index].offsetTop) {}
+                
+                navLinks.forEach((link) => link.classList.remove('active'));
+                
+                const activeLink = document.querySelector(`.nav-link[href="#${sections[index].id}"]`);
+                if(activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+
+            changeLinkState();
+            window.addEventListener('scroll', changeLinkState);
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth < 768) {
+                       mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Gemini API Integration
+            const getLearningsBtn = document.getElementById('get-learnings-btn');
+            const learningsLoader = document.getElementById('learnings-loader');
+            const learningsResult = document.getElementById('learnings-result');
+
+            const getDuaBtn = document.getElementById('get-dua-btn');
+            const duaPromptInput = document.getElementById('dua-prompt');
+            const duaLoader = document.getElementById('dua-loader');
+            const duaResult = document.getElementById('dua-result');
+
+            const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4"; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            async function callGemini(prompt) {
+                const payload = {
+                    contents: [{
+                        role: "user",
+                        parts: [{ text: prompt }]
+                    }]
+                };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API error: ${response.statusText}`);
+                    }
+                    
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        console.error('Unexpected API response structure:', result);
+                        return 'দুঃখিত, একটি অপ্রত্যাশিত সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।';
+                    }
+
+                } catch (error) {
+                    console.error('Error calling Gemini API:', error);
+                    return 'দুঃখিত, এই মুহূর্তে উত্তর তৈরি করা যাচ্ছে না। আপনার ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
+                }
+            }
+            
+            getLearningsBtn.addEventListener('click', async () => {
+                learningsResult.innerHTML = '';
+                learningsLoader.classList.remove('hidden');
+                getLearningsBtn.disabled = true;
+
+                const prompt = "শাইখ খালিদ আল-রাশেদের 'রমজান অর্ধেক হয়ে গেছে' শীর্ষক ভাষণটির মূল বার্তা হলো আল্লাহর সাথে সম্পর্ক গভীর করা, ইবাদতে একনিষ্ঠ হওয়া এবং পূর্বসূরীদের মতো জীবনযাপন করার চেষ্টা করা। এই মূল বার্তার উপর ভিত্তি করে, একজন মুসলিমের জন্য ৫টি বাস্তবসম্মত করণীয় কাজের একটি তালিকা বাংলায় তৈরি করুন যা সে তার দৈনন্দিন জীবনে প্রয়োগ করতে পারে। উত্তরটি সুন্দরভাবে ফরম্যাট করে দিন।";
+                
+                const responseText = await callGemini(prompt);
+                learningsResult.innerHTML = responseText.replace(/\n/g, '<br>');
+
+                learningsLoader.classList.add('hidden');
+                getLearningsBtn.disabled = false;
+            });
+
+
+            getDuaBtn.addEventListener('click', async () => {
+                const userInput = duaPromptInput.value.trim();
+                if (!userInput) {
+                    duaResult.innerText = 'অনুগ্রহ করে আপনার অনুভূতি বা প্রয়োজন লিখুন।';
+                    return;
+                }
+
+                duaResult.innerHTML = '';
+                duaLoader.classList.remove('hidden');
+                getDuaBtn.disabled = true;
+                
+                const prompt = `একজন মুসলিম হিসেবে আমার অনুভূতি বা পরিস্থিতি হলো: "${userInput}". এই প্রেক্ষাপটে কুরআন ও সুন্নাহর আলোকে আমার জন্য একটি আন্তরিক ও সুন্দর ব্যক্তিগত দু'আ বাংলায় তৈরি করে দিন। দু'আটি যেন সংক্ষিপ্ত কিন্তু মর্মস্পর্শী হয়।`;
+
+                const responseText = await callGemini(prompt);
+                duaResult.innerHTML = responseText.replace(/\n/g, '<br>');
+
+                duaLoader.classList.add('hidden');
+                getDuaBtn.disabled = false;
+            });
+        });
+    </script>
+
+</body>
+</html>

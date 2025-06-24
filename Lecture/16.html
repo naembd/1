@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Chosen Palette: Earthen Harmony -->
+    <!-- Application Structure Plan: The application uses a tab-based navigation to break down the linear sermon into thematic sections: The Context, A Tale of Two Journeys, The Miraculous Events, Aftermath, Lessons, and a distinct section on Rajab's Innovations. This non-linear, thematic structure allows users to explore specific aspects of the event at their own pace, making the dense information more digestible. Key interactions include a visual comparison layout, an interactive timeline, and an AI-powered Q&A section using the Gemini API to provide dynamic, context-aware answers to user queries, significantly enhancing user engagement and learning. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Ta'if vs. Isra journey details. -> Goal: Compare. -> Viz/Method: Two-column responsive grid (HTML/Tailwind). -> Interaction: Visual side-by-side layout. -> Justification: Directly visualizes the stark contrast highlighted in the sermon, making the point more impactful. -> Library: Tailwind CSS.
+        - Report Info: The sequence of events in the Night Journey. -> Goal: Organize. -> Viz/Method: Vertical timeline with styled cards (HTML/Tailwind). -> Interaction: Content is segmented into clear, chronological steps. -> Justification: Breaks down the long narrative into a clear, easy-to-follow sequence, improving retention. -> Library: Tailwind CSS.
+        - Report Info: User questions about the sermon. -> Goal: Explain/Interact. -> Viz/Method: Text input and response display area. -> Interaction: User types a question, clicks a button, and receives a generated answer. -> Justification: Transforms the static app into an interactive learning tool, allowing for deeper exploration. -> Library: Gemini API via Vanilla JS fetch.
+        - Report Info: List of innovations in Rajab. -> Goal: Inform/Warn. -> Viz/Method: Styled list with Unicode icons (❌). -> Interaction: Strong visual cues. -> Justification: Clearly distinguishes prohibited practices. -> Library: N/A.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <title>ইসরা ও মিরাজ - একটি ইন্টারেক্টিভ উপস্থাপনা</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .tab-active {
+            border-color: #4A5568;
+            background-color: #4A5568;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .tab-inactive {
+            border-color: #CBD5E0;
+            background-color: #F7FAFC;
+            color: #4A5568;
+        }
+        .tab-ai-active {
+            border-color: #6366F1;
+            background-color: #6366F1;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .tab-ai-inactive {
+            border-color: #C7D2FE;
+            background-color: #EEF2FF;
+            color: #4338CA;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-active {
+            display: block;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6366F1;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-stone-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-5xl font-bold text-gray-700">ইসরা ও মি'রাজ</h1>
+            <p class="text-lg md:text-xl text-gray-500 mt-2">শাইখ খালিদ আল-রাশেদের আলোচনার উপর ভিত্তি করে একটি ইন্টারেক্টিভ উপস্থাপনা</p>
+        </header>
+
+        <main>
+            <div id="tabs" class="flex flex-wrap justify-center gap-2 mb-8 border-b-2 border-stone-200 pb-4">
+                <button data-tab="context" class="tab tab-active px-4 py-2 text-sm md:text-base rounded-md border-b-4 transition-all duration-300"> প্রেক্ষাপট</button>
+                <button data-tab="comparison" class="tab tab-inactive px-4 py-2 text-sm md:text-base rounded-md border-b-4 transition-all duration-300">দুই যাত্রার তুলনা</button>
+                <button data-tab="events" class="tab tab-inactive px-4 py-2 text-sm md:text-base rounded-md border-b-4 transition-all duration-300">অলৌকিক ঘটনাবলী</button>
+                <button data-tab="reactions" class="tab tab-inactive px-4 py-2 text-sm md:text-base rounded-md border-b-4 transition-all duration-300">প্রতিক্রিয়া</button>
+                <button data-tab="lessons" class="tab tab-inactive px-4 py-2 text-sm md:text-base rounded-md border-b-4 transition-all duration-300">শিক্ষা</button>
+                <button data-tab="bidah" class="tab tab-inactive px-4 py-2 text-sm md:text-base rounded-md border-b-4 transition-all duration-300 bg-red-100 border-red-200 text-red-700 hover:bg-red-200">রজব মাসের বিদআত</button>
+                <button data-tab="qa" class="tab tab-ai-inactive px-4 py-2 text-sm md:text-base rounded-md border-b-4 transition-all duration-300">✨ প্রশ্ন ও উত্তর</button>
+            </div>
+
+            <div id="tab-content">
+                <section id="context" class="content-section content-active bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-700">যাত্রার প্রেক্ষাপট</h2>
+                    <p class="mb-6 text-gray-600">ইসরা ও মি'রাজের অলৌকিক ঘটনাটি এমন এক সময়ে সংঘটিত হয়েছিল যখন রাসূলুল্লাহ (ﷺ) কঠিন পরীক্ষার মধ্য দিয়ে যাচ্ছিলেন। এই অধ্যায়ে আমরা সেই পটভূমি এবং এই যাত্রার মূল তাৎপর্য সম্পর্কে জানব, যা ছিল একদিকে সান্ত্বনা এবং অন্যদিকে ঈমানের এক কঠিন পরীক্ষা।</p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                            <h3 class="text-xl font-semibold mb-2 text-gray-700">কঠিন সময়ের পর সান্ত্বনা</h3>
+                            <p class="text-gray-600">শি'আবে আবি তালিবে তিন বছরের অবরোধ, প্রিয়তমা স্ত্রী খাদিজা (রা) ও চাচা আবু তালিবের ইন্তেকাল এবং তায়েফবাসীর দ্বারা চরম অপমান ও প্রত্যাখ্যানের মতো ধারাবাহিক দুঃখ ও কষ্টের পর এই মহিমান্বিত ভ্রমণ ছিল রাসূল (ﷺ)-এর জন্য আল্লাহর পক্ষ থেকে এক বিশাল সান্ত্বনা ও পুরস্কার।</p>
+                        </div>
+                        <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                            <h3 class="text-xl font-semibold mb-2 text-gray-700">ঈমানের এক কঠিন পরীক্ষা</h3>
+                            <p class="text-gray-600">এই ঘটনাটি ছিল মুমিনদের জন্য এক বিরাট পরীক্ষা। যারা দৃঢ় ঈমানদার ছিলেন, তারা বিনা প্রশ্নে এটি বিশ্বাস করেন, যেমন আবু বকর (রা)। অন্যদিকে, দুর্বল ঈমানের অধিকারীরা সন্দেহে পতিত হয় এবং কেউ কেউ ইসলাম ত্যাগও করে। এটি ছিল সত্যবাদী ও মিথ্যাবাদীদের মধ্যে পার্থক্যকারী এক ফিতনা।</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="comparison" class="content-section bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold mb-4 text-center text-gray-700">দুই যাত্রার তুলনা</h2>
+                    <p class="mb-6 text-center text-gray-600 max-w-3xl mx-auto">রাসূলুল্লাহ (ﷺ)-এর জীবনের দুটি গুরুত্বপূর্ণ যাত্রার মধ্যে পার্থক্য অনুধাবন করলে ইসরা ও মি'রাজের মর্যাদা আরও স্পষ্ট হয়। একটি ছিল মানবীয় প্রত্যাখ্যানের বেদনাদায়ক অভিজ্ঞতা, অন্যটি ছিল ঐশী সম্মান ও অভ্যর্থনার এক অবিশ্বাস্য নিদর্শন।</p>
+                    <div class="grid md:grid-cols-2 gap-4 mt-6">
+                        <div class="bg-red-50 p-6 rounded-lg border-l-4 border-red-500">
+                            <h3 class="text-xl font-bold text-red-800 mb-3 text-center">তায়েফের সফর</h3>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start"><span class="text-red-500 font-bold mr-2">→</span><span>পায়ে হেঁটে ভ্রমণ করেছিলেন।</span></li>
+                                <li class="flex items-start"><span class="text-red-500 font-bold mr-2">→</span><span>তায়েফবাসী তাঁকে উপহাস ও প্রত্যাখ্যান করে।</span></li>
+                                <li class="flex items-start"><span class="text-red-500 font-bold mr-2">→</span><span>রক্তাক্ত ও অপমানিত হয়েছিলেন।</span></li>
+                                <li class="flex items-start"><span class="text-red-500 font-bold mr-2">→</span><span>আশ্রয় দেওয়ার মতো কাউকে পাননি।</span></li>
+                                <li class="flex items-start"><span class="text-red-500 font-bold mr-2">→</span><span>মানবীয় সমর্থনের খোঁজে গিয়েছিলেন।</span></li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-lg border-l-4 border-green-500">
+                             <h3 class="text-xl font-bold text-green-800 mb-3 text-center">ইসরা ও মি'রাজের সফর</h3>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start"><span class="text-green-500 font-bold mr-2">→</span><span>বোরাকে চড়ে ভ্রমণ করেছিলেন।</span></li>
+                                <li class="flex items-start"><span class="text-green-500 font-bold mr-2">→</span><span>নবী ও ফেরেশতারা তাঁকে স্বাগত জানান।</span></li>
+                                <li class="flex items-start"><span class="text-green-500 font-bold mr-2">→</span><span>সর্বোচ্চ সম্মান ও মর্যাদা লাভ করেন।</span></li>
+                                <li class="flex items-start"><span class="text-green-500 font-bold mr-2">→</span><span>সপ্ত আসমান তাঁকে আতিথেয়তা প্রদান করে।</span></li>
+                                <li class="flex items-start"><span class="text-green-500 font-bold mr-2">→</span><span>স্বয়ং আল্লাহ তাঁকে সম্মানিত করেন।</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="events" class="content-section bg-white p-6 rounded-lg shadow-md">
+                     <h2 class="text-2xl font-bold mb-4 text-center text-gray-700">অলৌকিক ঘটনাবলীর ধারাক্রম</h2>
+                     <p class="mb-8 text-center text-gray-600 max-w-3xl mx-auto">এই অলৌকিক সফরটি ছিল বিভিন্ন স্তরে বিভক্ত। এখানে আমরা সেই রাতের অবিশ্বাস্য ঘটনাক্রমকে ধাপে ধাপে তুলে ধরছি, যা মক্কার মসজিদুল হারাম থেকে শুরু হয়ে ঊর্ধ্বাকাশের সিদরাতুল মুনতাহা পর্যন্ত বিস্তৃত ছিল।</p>
+                    <div class="relative border-l-2 border-stone-300 ml-4 md:ml-0">
+                        <div class="mb-8 pl-8 relative">
+                            <div class="absolute -left-5 top-1 w-8 h-8 bg-gray-700 rounded-full border-4 border-white text-white flex items-center justify-center font-bold">১</div>
+                            <h3 class="text-xl font-semibold text-gray-700">ইসরা: মসজিদুল আকসায় যাত্রা</h3>
+                            <p class="text-gray-600 mt-1">জিবরাইল (আঃ) বোরাক নামক এক ঐশী বাহন নিয়ে আসেন। রাসূল (ﷺ) তাতে আরোহণ করে মক্কার মসজিদুল হারাম থেকে জেরুজালেমের মসজিদুল আকসা পর্যন্ত রাতের একটি অংশে ভ্রমণ করেন।</p>
+                        </div>
+                        <div class="mb-8 pl-8 relative">
+                             <div class="absolute -left-5 top-1 w-8 h-8 bg-gray-700 rounded-full border-4 border-white text-white flex items-center justify-center font-bold">২</div>
+                            <h3 class="text-xl font-semibold text-gray-700">মি'রাজ: ঊর্ধ্বাকাশে আরোহণ</h3>
+                            <p class="text-gray-600 mt-1">মসজিদুল আকসা থেকে 'মি'রাজ' নামক এক বিশেষ সিঁড়ির মাধ্যমে তিনি ঊর্ধ্বাকাশের দিকে যাত্রা করেন। প্রতিটি আসমানে তিনি পূর্ববর্তী নবীদের সাথে সাক্ষাৎ করেন, যেমন আদম, ঈসা, মুসা ও ইবরাহিম (আঃ)।</p>
+                        </div>
+                         <div class="mb-8 pl-8 relative">
+                            <div class="absolute -left-5 top-1 w-8 h-8 bg-gray-700 rounded-full border-4 border-white text-white flex items-center justify-center font-bold">৩</div>
+                            <h3 class="text-xl font-semibold text-gray-700">সিদরাতুল মুনতাহা ও ঐশী নির্দেশ</h3>
+                            <p class="text-gray-600 mt-1">তিনি সৃষ্টির শেষ সীমা 'সিদরাতুল মুনতাহা' পর্যন্ত পৌঁছেন, যেখানে তিনি আল্লাহর সান্নিধ্য লাভ করেন। সেখানেই তাঁর উম্মতের জন্য প্রথমে ৫০ ওয়াক্ত সালাত ফরজ করা হয়।</p>
+                        </div>
+                        <div class="mb-8 pl-8 relative">
+                            <div class="absolute -left-5 top-1 w-8 h-8 bg-gray-700 rounded-full border-4 border-white text-white flex items-center justify-center font-bold">৪</div>
+                             <h3 class="text-xl font-semibold text-gray-700">সালাত নির্ধারণ</h3>
+                             <p class="text-gray-600 mt-1">ফেরার পথে মুসা (আঃ)-এর পরামর্শে তিনি বারবার আল্লাহর কাছে সালাতের সংখ্যা কমানোর আবেদন করেন। অবশেষে তা কমিয়ে ৫ ওয়াক্ত করা হয়, তবে সওয়াব ৫০ ওয়াক্তের সমান রাখা হয়। এটি উম্মতের জন্য আল্লাহর এক বিশেষ রহমত।</p>
+                         </div>
+                        <div class="mb-0 pl-8 relative">
+                            <div class="absolute -left-5 top-1 w-8 h-8 bg-gray-700 rounded-full border-4 border-white text-white flex items-center justify-center font-bold">৫</div>
+                             <h3 class="text-xl font-semibold text-gray-700">প্রত্যাবর্তন ও নবীদের ইমামতি</h3>
+                            <p class="text-gray-600 mt-1">ফিরে এসে তিনি মসজিদুল আকসায় সকল নবীর ইমামতি করে সালাত আদায় করেন, যা তাঁকে 'ইমামুল মুরসালিন' বা রাসূলগণের নেতা হিসেবে প্রতিষ্ঠা করে। এরপর তিনি বোরাকে চড়ে রাতের মধ্যেই মক্কায় ফিরে আসেন।</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="reactions" class="content-section bg-white p-6 rounded-lg shadow-md">
+                     <h2 class="text-2xl font-bold mb-4 text-center text-gray-700">ঘটনার পরের দিনের প্রতিক্রিয়া</h2>
+                     <p class="mb-8 text-center text-gray-600 max-w-3xl mx-auto">পরদিন সকালে যখন রাসূলুল্লাহ (ﷺ) এই অবিশ্বাস্য ঘটনার কথা প্রকাশ করেন, তখন মক্কার সমাজে তীব্র আলোড়ন সৃষ্টি হয়। এই ঘটনাটি মানুষের ঈমানের গভীরতা পরিমাপের এক মানদণ্ডে পরিণত হয়। আসুন দেখি, বিভিন্ন শ্রেণীর মানুষ কীভাবে এই খবরের প্রতিক্রিয়া জানিয়েছিল।</p>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="border border-red-200 bg-red-50 p-4 rounded-lg text-center">
+                            <h3 class="text-xl font-semibold text-red-800">কাফির ও মুশরিক</h3>
+                            <p class="text-gray-700 mt-2">তারা এই ঘটনাকে অসম্ভব ও荒唐 বলে উপহাস করে। আবু জাহল এটিকে রাসূল (ﷺ)-কে হেয় করার একটি সুযোগ হিসেবে ব্যবহার করে এবং মানুষকে একত্রিত করে বিদ্রূপ করতে থাকে।</p>
+                        </div>
+                        <div class="border border-green-200 bg-green-50 p-4 rounded-lg text-center">
+                            <h3 class="text-xl font-semibold text-green-800">আবু বকর (রা) - 'সিদ্দিক'</h3>
+                            <p class="text-gray-700 mt-2">যখন তাঁকে এ খবর দেওয়া হয়, তিনি এক মুহূর্তের জন্যও সন্দেহ করেননি। তিনি বলেন, "যদি তিনি বলে থাকেন, তবে অবশ্যই সত্য বলেছেন। আমি তো এর চেয়েও দূরের বিষয়ে, আসমানের খবরে তাঁকে বিশ্বাস করি।" এই ঘটনার পরই তিনি 'আস-সিদ্দিক' বা 'পরম সত্যবাদী' উপাধি লাভ করেন।</p>
+                        </div>
+                        <div class="border border-yellow-300 bg-yellow-50 p-4 rounded-lg text-center">
+                             <h3 class="text-xl font-semibold text-yellow-800">দুর্বল ঈমানদার</h3>
+                            <p class="text-gray-700 mt-2">যাদের ঈমান তখনও গভীরে প্রোথিত হয়নি, তারা এই অলৌকিক ঘটনায় দ্বিধাগ্রস্ত হয়ে পড়ে। তাদের কেউ কেউ এতটাই বিচলিত হয় যে, তারা ইসলাম ত্যাগ করে মুরতাদ হয়ে যায়। এটি ছিল তাদের জন্য এক কঠিন পরীক্ষা।</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="lessons" class="content-section bg-white p-6 rounded-lg shadow-md">
+                     <h2 class="text-2xl font-bold mb-4 text-center text-gray-700">ইসরা ও মি'রাজ থেকে প্রাপ্ত শিক্ষা</h2>
+                     <p class="mb-8 text-center text-gray-600 max-w-3xl mx-auto">ইসরা ও মি'রাজের সফরটি কেবল একটি অলৌকিক ঘটনাই নয়, এটি মুসলিম উম্মাহর জন্য অগণিত শিক্ষায় পরিপূর্ণ। এই অধ্যায়ে আমরা সেইসব গভীর তাৎপর্য ও শিক্ষাগুলো অন্বেষণ করব যা এই মহিমান্বিত যাত্রা থেকে আমরা লাভ করতে পারি।</p>
+                    <div class="space-y-4">
+                        <div class="bg-stone-50 border-l-4 border-gray-600 p-4 rounded-r-lg">
+                            <h3 class="font-bold text-lg text-gray-700">১. আল্লাহর অসীম ক্ষমতার প্রমাণ</h3>
+                            <p class="text-gray-600">এই ঘটনা প্রমাণ করে যে, আল্লাহর ক্ষমতা স্থান ও কালের ঊর্ধ্বে। তিনি যখন কোনো কিছু করতে চান, তখন শুধু বলেন 'হও' আর তা হয়ে যায়। এটি মুমিনদের অন্তরে আল্লাহর কুদরতের উপর বিশ্বাসকে আরও দৃঢ় করে।</p>
+                        </div>
+                         <div class="bg-stone-50 border-l-4 border-gray-600 p-4 rounded-r-lg">
+                            <h3 class="font-bold text-lg text-gray-700">২. ইসলামের বিশ্বজনীনতা ও নেতৃত্ব</h3>
+                            <p class="text-gray-600">মসজিদুল আকসায় সকল নবীর ইমামতি করার মাধ্যমে আল্লাহ এটা স্পষ্ট করে দেন যে, মুহাম্মদ (ﷺ) হলেন সকল নবীর নেতা এবং তাঁর আনীত দ্বীন ইসলাম পূর্ববর্তী সকল আসমানী ধর্মের পূর্ণতা দানকারী। এটি ইসলামের বিশ্বজনীন বার্তা ঘোষণা করে।</p>
+                        </div>
+                         <div class="bg-stone-50 border-l-4 border-gray-600 p-4 rounded-r-lg">
+                            <h3 class="font-bold text-lg text-gray-700">৩. সালাতের গুরুত্ব</h3>
+                             <p class="text-gray-600">ইসলামের অন্য সকল বিধান জমিনে অবতীর্ণ হলেও সালাতের বিধান আল্লাহ তাঁর রাসূল (ﷺ)-কে নিজের কাছে ডেকে এনে উপহার হিসেবে দিয়েছেন। এটি সালাতের সর্বোচ্চ গুরুত্ব ও মর্যাদাকে প্রমাণ করে। সালাত হলো মুমিনের জন্য মি'রাজস্বরূপ।</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="bidah" class="content-section bg-white p-6 rounded-lg shadow-md border-2 border-red-300">
+                    <h2 class="text-2xl font-bold mb-4 text-center text-red-700">রজব মাস ও প্রচলিত বিদআতসমূহ</h2>
+                    <p class="mb-6 text-center text-gray-600 max-w-3xl mx-auto">রজব মাস চারটি সম্মানিত মাসের একটি। তবে এই মাসকে কেন্দ্র করে এবং ইসরা ও মি'রাজের ঘটনার সাথে জড়িয়ে কিছু ভিত্তিহীন আমল ও বিশ্বাস সমাজে প্রচলিত হয়েছে, যা বিদআত (দ্বীনে নতুন উদ্ভাবন) হিসেবে গণ্য। এই অধ্যায়ে সে সম্পর্কে সতর্ক করা হয়েছে।</p>
+                    <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold text-red-800 mb-4">যেসব আমলের কোনো সহিহ ভিত্তি নেই:</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-red-600 font-bold mr-3 text-2xl">❌</span>
+                                <div>
+                                    <strong class="text-red-700">সালাতুর রাগায়েব:</strong> রজবের প্রথম বৃহস্পতিবার মাগরিব ও এশার মাঝে বিশেষ ১২ রাকাত সালাত, যার হাদিসকে মুহাদ্দিসগণ জাল বা ভিত্তিহীন বলেছেন।
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-600 font-bold mr-3 text-2xl">❌</span>
+                                <div>
+                                    <strong class="text-red-700">মি'রাজের রাত উদযাপন:</strong> ইসরা ও মি'রাজের নির্দিষ্ট কোনো তারিখ সহিহ সূত্রে প্রমাণিত নয়। তাই ২৭শে রজবকে নির্দিষ্ট করে কোনো অনুষ্ঠান বা ইবাদত করা একটি নব-উদ্ভাবিত প্রথা।
+                                </div>
+                            </li>
+                             <li class="flex items-start">
+                                <span class="text-red-600 font-bold mr-3 text-2xl">❌</span>
+                                <div>
+                                    <strong class="text-red-700">রজব মাসে বিশেষ রোজা বা উমরা:</strong> রজব মাসকে রোজা বা উমরার জন্য বিশেষভাবে নির্দিষ্ট করার কোনো সহিহ দলিল নেই। অন্য মাসের মতোই স্বাভাবিক নেক আমল করা যাবে।
+                                </div>
+                            </li>
+                             <li class="flex items-start">
+                                <span class="text-red-600 font-bold mr-3 text-2xl">❌</span>
+                                <div>
+                                    <strong class="text-red-700">বিশেষ দোয়া ও শুভেচ্ছা:</strong> "আল্লাহুম্মা বারিক লানা ফি রজাবা ওয়া শা'বান..." এই দোয়া সম্বলিত হাদিসটি দুর্বল। এই মাস উপলক্ষে বিশেষ শুভেচ্ছা বিনিময়েরও কোনো ভিত্তি নেই।
+                                </div>
+                            </li>
+                        </ul>
+                        <p class="mt-6 text-center bg-yellow-100 text-yellow-800 p-3 rounded-md">
+                            <strong>উপসংহার:</strong> সর্বোত্তম পথ হলো রাসূলুল্লাহ (ﷺ) ও তাঁর সাহাবাদের পথ। দ্বীনের মধ্যে কোনো কিছু নতুন করে যুক্ত বা বিয়োগ করার অধিকার কারো নেই। সকল প্রকার বিদআত থেকে বেঁচে থাকা আবশ্যক।
+                        </p>
+                    </div>
+                </section>
+                 <section id="qa" class="content-section bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold mb-2 text-center text-indigo-700">✨ জিজ্ঞাসা ও জ্ঞান অন্বেষণ</h2>
+                    <p class="mb-6 text-center text-gray-600 max-w-3xl mx-auto">ইসরা ও মি'রাজ সম্পর্কে আপনার মনে কোনো প্রশ্ন আছে? এখানে জিজ্ঞাসা করুন। আপনাকে একটি উত্তর প্রদান করা হবে।</p>
+                    <div class="max-w-2xl mx-auto">
+                        <div class="mb-4">
+                            <label for="user-question" class="block mb-2 text-sm font-medium text-gray-700">আপনার প্রশ্নটি এখানে লিখুন:</label>
+                            <textarea id="user-question" rows="4" class="w-full p-2.5 text-gray-900 bg-stone-50 rounded-lg border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" placeholder="যেমন: সালাত কেন আসমানে ফরজ করা হলো?"></textarea>
+                        </div>
+                        <button id="ask-gemini-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center">
+                            ✨ উত্তর জেনারেট করুন
+                        </button>
+                        <div id="loader" class="hidden">
+                            <div class="loader"></div>
+                            <p class="text-center text-gray-600">অনুগ্রহ করে অপেক্ষা করুন...</p>
+                        </div>
+                        <div id="gemini-answer" class="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200 min-h-[100px] text-gray-800 whitespace-pre-wrap">
+                           আপনার উত্তর এখানে প্রদর্শিত হবে।
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        const contentSections = document.querySelectorAll('.content-section');
+        const askButton = document.getElementById('ask-gemini-btn');
+        const userQuestionInput = document.getElementById('user-question');
+        const geminiAnswerDiv = document.getElementById('gemini-answer');
+        const loader = document.getElementById('loader');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetId = tab.dataset.tab;
+
+                tabs.forEach(t => {
+                    if (t.dataset.tab.includes('qa')) {
+                         t.classList.remove('tab-ai-active');
+                         t.classList.add('tab-ai-inactive');
+                    } else {
+                        t.classList.remove('tab-active');
+                        t.classList.add('tab-inactive');
+                    }
+                });
+
+                if (tab.dataset.tab.includes('qa')) {
+                    tab.classList.add('tab-ai-active');
+                    tab.classList.remove('tab-ai-inactive');
+                } else {
+                    tab.classList.add('tab-active');
+                    tab.classList.remove('tab-inactive');
+                }
+                
+                contentSections.forEach(section => {
+                    section.classList.remove('content-active');
+                    if (section.id === targetId) {
+                        section.classList.add('content-active');
+                    }
+                });
+            });
+        });
+
+        askButton.addEventListener('click', async () => {
+            const userQuestion = userQuestionInput.value.trim();
+            if (!userQuestion) {
+                geminiAnswerDiv.textContent = 'অনুগ্রহ করে একটি প্রশ্ন লিখুন।';
+                return;
+            }
+
+            loader.style.display = 'block';
+            geminiAnswerDiv.style.display = 'none';
+            askButton.disabled = true;
+
+            let sermonContext = '';
+            document.querySelectorAll('.content-section').forEach(section => {
+                if(section.id !== 'qa') {
+                    sermonContext += section.innerText + '\n\n';
+                }
+            });
+
+            const prompt = `শেখ খালিদ আল-রাশেদের ইসরা ও মি'রাজ সম্পর্কিত আলোচনার উপর ভিত্তি করে এই প্রশ্নের একটি বিস্তারিত এবং তথ্যপূর্ণ উত্তর বাংলায় প্রদান করুন। উত্তরটি আলোচনার মূল ভাব এবং সুরের সাথে সঙ্গতিপূর্ণ হতে হবে।\n\nপ্রশ্ন: "${userQuestion}"\n\nআলোচনার প্রেক্ষাপট:\n${sermonContext}`;
+
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4"; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    geminiAnswerDiv.textContent = text;
+                } else {
+                    geminiAnswerDiv.textContent = 'দুঃখিত, একটি অপ্রত্যাশিত উত্তর পাওয়া গেছে। অনুগ্রহ করে আবার চেষ্টা করুন।';
+                }
+            } catch (error) {
+                console.error('Gemini API call failed:', error);
+                geminiAnswerDiv.textContent = 'দুঃখিত, উত্তর তৈরি করতে একটি সমস্যা হয়েছে। অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
+            } finally {
+                loader.style.display = 'none';
+                geminiAnswerDiv.style.display = 'block';
+                askButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

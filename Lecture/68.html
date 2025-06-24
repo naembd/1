@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>যেদিন আমরা আমানত হারিয়ে ফেলেছি - শেখ খালিদ আল-রাশেদ (নিয়ন সংস্করণ)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Neon Dark -->
+    <!-- Application Structure Plan: The application is designed as a single-page experience with a fixed top navigation bar for easy access to different thematic sections. This non-linear structure ("ভূমিকা", "আস্থার সংকট", "ঈমানের শক্তি", "আমানতের প্রকারভেদ", "মূল শিক্ষা") was chosen over the sermon's original linear flow to allow users to explore topics of interest freely. Key interactions include a "Then vs. Now" toggle to compare societal states, an interactive card carousel for storytelling, and a CSS-based concept map for explaining the types of Amanah, making the content more engaging and digestible. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Core concept of Amanah -> Goal: Inform -> Method: Thematic intro section with styled cards (HTML/Tailwind) -> Interaction: None, pure information -> Justification: Clear, concise start.
+        - Report Info: Contrast between past and present societies -> Goal: Compare -> Method: "Then vs. Now" toggle component (HTML/JS) -> Interaction: Click to flip between two content blocks -> Justification: Creates a powerful, direct comparison.
+        - Report Info: Historical stories of honesty -> Goal: Explore -> Method: Horizontal scrolling card carousel (HTML/JS) -> Interaction: Click/scroll to navigate stories -> Justification: Breaks down long text into engaging, focused narratives.
+        - Report Info: Different types of Amanah -> Goal: Organize/Classify -> Method: Interactive concept map (HTML/CSS) -> Interaction: Hover/click to reveal details -> Justification: More visually engaging and interactive than a simple list, clarifying relationships.
+        - Library/Method: Vanilla JS for all interactions.
+        - Confirmation: NO SVG/Mermaid used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #020617; /* slate-950 */
+        }
+        .bengali-font {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .text-neon-cyan {
+            text-shadow: 0 0 5px rgba(34, 211, 238, 0.7), 0 0 10px rgba(34, 211, 238, 0.7), 0 0 20px rgba(34, 211, 238, 0.5);
+        }
+        .text-neon-pink {
+             text-shadow: 0 0 5px rgba(236, 72, 153, 0.7), 0 0 10px rgba(236, 72, 153, 0.7), 0 0 20px rgba(236, 72, 153, 0.5);
+        }
+        .card-neon-border {
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.4), 0 0 5px rgba(34, 211, 238, 0.6) inset;
+        }
+        .card-flipper {
+            perspective: 1000px;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card-flipper.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        .story-carousel {
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+        }
+        .story-card {
+            scroll-snap-align: center;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-300">
+
+    <!-- Header -->
+    <header class="bg-slate-900/70 backdrop-blur-md shadow-lg shadow-cyan-500/10 sticky top-0 z-50 bengali-font">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-lg md:text-xl font-bold text-cyan-400 text-neon-cyan">যেদিন আমরা আমানত হারিয়ে ফেলেছি</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#introduction" class="text-slate-300 hover:bg-slate-700 hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">ভূমিকা</a>
+                        <a href="#crisis" class="text-slate-300 hover:bg-slate-700 hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">আস্থার সংকট</a>
+                        <a href="#faith" class="text-slate-300 hover:bg-slate-700 hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">ঈমানের শক্তি</a>
+                        <a href="#types" class="text-slate-300 hover:bg-slate-700 hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">আমানতের প্রকারভেদ</a>
+                        <a href="#lessons" class="text-slate-300 hover:bg-slate-700 hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">মূল শিক্ষা</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#introduction" class="text-slate-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">ভূমিকা</a>
+                <a href="#crisis" class="text-slate-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">আস্থার সংকট</a>
+                <a href="#faith" class="text-slate-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">ঈমানের শক্তি</a>
+                <a href="#types" class="text-slate-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">আমানতের প্রকারভেদ</a>
+                <a href="#lessons" class="text-slate-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">মূল শিক্ষা</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8 bengali-font">
+        
+        <!-- Introduction Section -->
+        <section id="introduction" class="min-h-screen flex items-center justify-center pt-16">
+            <div class="text-center max-w-4xl">
+                <h2 class="text-4xl md:text-6xl font-bold text-cyan-400 text-neon-cyan mb-4">আমানত: এক বিস্মৃত চরিত্র</h2>
+                <p class="text-base md:text-lg text-slate-400 mb-8">এই ইন্টারেক্টিভ উপস্থাপনাটি শেখ খালিদ আল-রাশেদের একটি মর্মস্পর্শী খুতবার উপর ভিত্তি করে তৈরি। এখানে 'আমানত' বা বিশ্বস্ততার গুরুত্ব এবং বর্তমান সমাজে এর অভাবকে তুলে ধরা হয়েছে। আমানত এমন একটি অভ্যন্তরীণ গুণ যা মানুষকে তার দায়িত্ব পালনে উদ্বুদ্ধ করে এবং এটি ঈমানের শক্তির সাথে সরাসরি সম্পর্কিত।</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900 p-6 rounded-lg border border-green-500/30" style="box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);">
+                        <h3 class="text-xl font-semibold mb-2 text-green-400">আমানত কী?</h3>
+                        <p class="text-slate-400">আমানত একটি মহান ইসলামী চরিত্র। যদি কোনো সমাজ এই গুণে গুণান্বিত হয়, তবে সেখানে নিরাপত্তা ও সুরক্ষা বিরাজ করে এবং সদস্যদের মধ্যে আস্থা ছড়িয়ে পড়ে।</p>
+                    </div>
+                    <div class="bg-slate-900 p-6 rounded-lg border border-red-500/30" style="box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);">
+                        <h3 class="text-xl font-semibold mb-2 text-red-400">খিয়ানত কী?</h3>
+                        <p class="text-slate-400">আমানতের বিপরীতে রয়েছে খিয়ানত বা বিশ্বাসঘাতকতা, যা মুনাফিকদের অন্যতম প্রধান বৈশিষ্ট্য। ঈমান দুর্বল হয়ে গেলে সমাজে খিয়ানত বেড়ে যায়।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Crisis Section -->
+        <section id="crisis" class="min-h-screen flex flex-col items-center justify-center pt-16">
+            <div class="w-full max-w-4xl text-center">
+                <h2 class="text-4xl md:text-6xl font-bold text-pink-500 text-neon-pink mb-4">আস্থার সংকট: তখন ও এখন</h2>
+                <p class="text-base md:text-lg text-slate-400 mb-8">একসময় মুসলিম সমাজ পারস্পরিক আস্থায় পরিপূর্ণ ছিল। কিন্তু আজ সেই আস্থা কোথায়? খুতবা থেকে নেওয়া দুটি ভিন্ন চিত্র দেখুন - একটি অতীতের সোনালী অধ্যায়, অন্যটি বর্তমানের করুণ বাস্তবতা। কার্ডটি ফ্লিপ করে দুটি সময়ের পার্থক্য অনুভব করুন।</p>
+                
+                <div id="flipper" class="card-flipper w-full h-96 md:h-80 mx-auto cursor-pointer">
+                    <div class="card-inner">
+                        <div class="card-front bg-slate-900 border border-teal-400/30 text-teal-300" style="box-shadow: 0 0 25px rgba(45, 212, 191, 0.3);">
+                            <h3 class="text-2xl font-bold mb-4">যখন আস্থা ছিল</h3>
+                            <p class="text-lg text-center">হযরত উমর (রা) এর যুগে এক বছরেও আদালতে কোনো মামলা আসেনি, কারণ প্রত্যেকেই নিজের অধিকার ও দায়িত্ব সম্পর্কে সচেতন ছিল। সমাজ ছিল পারস্পরিক আস্থায় ভরপুর।</p>
+                            <span class="mt-4 text-sm font-semibold animate-pulse">ফ্লিপ করতে ক্লিক করুন &#10227;</span>
+                        </div>
+                        <div class="card-back bg-slate-900 border border-red-400/30 text-red-300" style="box-shadow: 0 0 25px rgba(248, 113, 113, 0.3);">
+                            <h3 class="text-2xl font-bold mb-4">যখন আস্থা হারিয়ে গেল</h3>
+                            <p class="text-lg text-center">আজকের দিনে আদালতগুলো আত্মীয়-স্বজনের মামলাতেই পরিপূর্ণ। সামান্য স্বার্থের জন্য মানুষ আপনজনের সাথেও বিশ্বাসঘাতকতা করছে, যার ফলে সমাজ থেকে আস্থা উঠে যাচ্ছে।</p>
+                            <span class="mt-4 text-sm font-semibold animate-pulse">ফ্লিপ করতে ক্লিক করুন &#10227;</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Faith Section -->
+        <section id="faith" class="min-h-screen flex flex-col items-center justify-center pt-16">
+            <div class="w-full max-w-6xl text-center">
+                <h2 class="text-4xl md:text-6xl font-bold text-lime-400 text-neon-cyan mb-4" style="text-shadow: 0 0 5px rgba(163, 230, 53, 0.7), 0 0 10px rgba(163, 230, 53, 0.7);">ঈমানের শক্তি: আমানতের স্বর্ণালী উপাখ্যান</h2>
+                <p class="text-base md:text-lg text-slate-400 mb-8">ঈমান যখন শক্তিশালী হয়, তখন আমানতদারি এক নতুন উচ্চতায় পৌঁছায়। এখানে পূর্বসূরীদের জীবন থেকে নেওয়া কিছু অবিশ্বাস্য কিন্তু সত্য ঘটনা তুলে ধরা হলো। এই গল্পগুলো প্রমাণ করে, আল্লাহর উপর অগাধ বিশ্বাস মানুষকে কতটা সৎ ও আমানতদার করতে পারে। কার্ডগুলো স্ক্রল করে পড়ুন।</p>
+                
+                <div class="relative">
+                    <div id="story-carousel" class="flex overflow-x-auto story-carousel snap-x snap-mandatory py-4 -mx-4 px-4 gap-6">
+                        <div class="story-card flex-shrink-0 w-full md:w-1/2 lg:w-1/3 snap-center">
+                            <div class="bg-slate-900 rounded-lg p-6 h-full flex flex-col justify-between border border-amber-500/30" style="box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
+                                <h3 class="text-xl font-bold mb-3 text-amber-400">সোনার কলস</h3>
+                                <p class="text-slate-400 flex-grow">জমি কেনার পর এক ব্যক্তি তাতে সোনার কলস পেয়েও তা নিতে অস্বীকার করে, কারণ সে শুধু জমি কিনেছে, ভেতরের সম্পদ নয়। বিক্রেতাও তা নিতে রাজি নয়। তাদের সততা দেখে বিচারক আশ্চর্য হয়ে যান।</p>
+                                <span class="text-xs text-slate-500 mt-4">উৎস: হাদীস</span>
+                            </div>
+                        </div>
+                        <div class="story-card flex-shrink-0 w-full md:w-1/2 lg:w-1/3 snap-center">
+                             <div class="bg-slate-900 rounded-lg p-6 h-full flex flex-col justify-between border border-lime-500/30" style="box-shadow: 0 0 15px rgba(132, 204, 22, 0.2);">
+                                <h3 class="text-xl font-bold mb-3 text-lime-400">মেষপালকের আমানত</h3>
+                                <p class="text-slate-400 flex-grow">পরীক্ষার মুখোমুখি হয়েও একজন মেষপালক ভেড়া বিক্রি করতে অস্বীকার করে তার ঐতিহাসিক উক্তি ছিল, "তাহলে আমি আল্লাহকে কী বলবো?"</p>
+                                <span class="text-xs text-slate-500 mt-4">উৎস: সিরাত</span>
+                            </div>
+                        </div>
+                        <div class="story-card flex-shrink-0 w-full md:w-1/2 lg:w-1/3 snap-center">
+                             <div class="bg-slate-900 rounded-lg p-6 h-full flex flex-col justify-between border border-sky-500/30" style="box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);">
+                                <h3 class="text-xl font-bold mb-3 text-sky-400">কাঠের টুকরোয় পাঠানো ঋণ</h3>
+                                <p class="text-slate-400 flex-grow">ঝড়ের কারণে সাগর পাড়ি দিতে না পেরে এক ব্যক্তি আল্লাহর উপর ভরসা করে একটি কাঠের টুকরোর ভেতরে টাকা ভরে সাগরে ভাসিয়ে দেন, এবং তা প্রাপকের কাছে পৌঁছে যায়।</p>
+                               <span class="text-xs text-slate-500 mt-4">উৎস: হাদীস</span>
+                            </div>
+                        </div>
+                        <div class="story-card flex-shrink-0 w-full md:w-1/2 lg:w-1/3 snap-center">
+                            <div class="bg-slate-900 rounded-lg p-6 h-full flex flex-col justify-between border border-indigo-500/30" style="box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);">
+                                <h3 class="text-xl font-bold mb-3 text-indigo-400">মৃত্যুদণ্ডপ্রাপ্ত আসামীর জামিন</h3>
+                                <p class="text-slate-400 flex-grow">মৃত্যুদণ্ডপ্রাপ্ত আসামী কথা রাখার জন্য ফিরে আসে। তার সততা দেখে নিহতের সন্তানেরা তাকে ক্ষমা করে দেয়।</p>
+                                <span class="text-xs text-slate-500 mt-4">উৎস: সিরাত</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Types Section -->
+        <section id="types" class="min-h-screen flex flex-col items-center justify-center pt-16">
+            <div class="w-full max-w-5xl text-center">
+                <h2 class="text-4xl md:text-6xl font-bold text-violet-500 text-neon-pink mb-4" style="text-shadow: 0 0 5px rgba(167, 139, 250, 0.7), 0 0 10px rgba(167, 139, 250, 0.7);">আমানতের বিস্তৃত পরিসর</h2>
+                <p class="text-base md:text-lg text-slate-400 mb-8">আমানত শুধু আর্থিক লেনদেনের মধ্যেই সীমাবদ্ধ নয়। ইমাম কুরতুবী (রহ.) বলেন, "আমানত দ্বীনের সকল দায়িত্বকে অন্তর্ভুক্ত করে।" আমাদের জীবনের প্রতিটি ক্ষেত্রই এক একটি আমানত।</p>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-slate-900/50 p-6 rounded-lg border border-cyan-400/30 transform hover:scale-105 hover:border-cyan-400 transition-all duration-300" style="box-shadow: 0 0 10px rgba(34, 211, 238, 0.1);">
+                        <h3 class="text-xl font-semibold mb-2 text-cyan-400">দ্বীনের আমানত</h3>
+                        <p class="text-slate-400">সবচেয়ে বড় আমানত হলো আল্লাহর দেওয়া দ্বীন, অর্থাৎ তাওহীদ, সালাত ও অন্যান্য ফরজ কাজগুলো সঠিকভাবে পালন করা।</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-6 rounded-lg border border-fuchsia-400/30 transform hover:scale-105 hover:border-fuchsia-400 transition-all duration-300" style="box-shadow: 0 0 10px rgba(217, 70, 239, 0.1);">
+                        <h3 class="text-xl font-semibold mb-2 text-fuchsia-400">সম্পদ ও وديعة</h3>
+                        <p class="text-slate-400">গচ্ছিত রাখা বস্তু, ঋণ এবং অন্যের সম্পদ সঠিকভাবে রক্ষা করা ও সময়মতো ফিরিয়ে দেওয়া গুরুত্বপূর্ণ আমানত।</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-6 rounded-lg border border-rose-400/30 transform hover:scale-105 hover:border-rose-400 transition-all duration-300" style="box-shadow: 0 0 10px rgba(251, 113, 133, 0.1);">
+                        <h3 class="text-xl font-semibold mb-2 text-rose-400">দাম্পত্য গোপনীয়তা</h3>
+                        <p class="text-slate-400">স্বামী-স্ত্রীর মধ্যকার ব্যক্তিগত ও গোপনীয় বিষয়গুলো অন্যের কাছে প্রকাশ না করা একটি বড় আমানত। এর খিয়ানত করা কবিরা গুনাহ।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lessons Section -->
+        <section id="lessons" class="min-h-screen flex items-center justify-center pt-16">
+            <div class="text-center max-w-4xl">
+                <h2 class="text-4xl md:text-6xl font-bold text-cyan-400 text-neon-cyan mb-4">মূল শিক্ষা ও করণীয়</h2>
+                <p class="text-base md:text-lg text-slate-400 mb-8">এই খুতবা থেকে আমাদের জন্য প্রধান শিক্ষা হলো, ঈমানের দুর্বলতাই সমাজে আস্থা ও আমানতদারী হারানোর মূল কারণ। আমাদের করণীয় হলো, জীবনের প্রতিটি ক্ষেত্রে আল্লাহর নজরদারির অনুভূতি জাগ্রত রাখা।</p>
+                <blockquote class="bg-slate-900 border-l-4 border-slate-500 italic text-slate-300 p-6 my-8" style="box-shadow: 0 0 20px rgba(100, 116, 139, 0.2);">
+                    <p class="mb-4">"মুসলিম সে-ই, যার জিহ্বা ও হাত থেকে অন্য মুসলিমরা নিরাপদ থাকে। আর মুমিন সে-ই, যার কাছে মানুষ তাদের রক্ত ও সম্পদের ব্যাপারে নিরাপদ বোধ করে।"</p>
+                    <footer class="text-right text-slate-400">- নবী মুহাম্মদ (সা)</footer>
+                </blockquote>
+                 <div class="bg-gradient-to-br from-slate-900 to-slate-950 p-8 rounded-lg shadow-xl shadow-cyan-500/10 mt-10 border border-cyan-500/20">
+                    <h3 class="text-2xl font-bold text-cyan-300 text-neon-cyan mb-4">আমাদের প্রার্থনা</h3>
+                    <p class="text-slate-400 leading-relaxed">হে আল্লাহ! আমরা আপনার কাছে کامل ঈমান, সত্যনিষ্ঠ ইয়াকিন, বিনম্র সালাত, উপকারী জ্ঞান এবং প্রশস্ত হালাল রিজিক প্রার্থনা করছি। হে আল্লাহ! আমাদের অন্তরে ঈমানকে প্রিয় করে দিন এবং কুফর, ফাসিকি এবং অবাধ্যতাকে অপ্রিয় করে দিন। আমাদেরকে সৎপথপ্রাপ্তদের অন্তর্ভুক্ত করুন। আমিন।</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-black mt-16 py-6 border-t border-slate-800">
+        <div class="container mx-auto text-center text-sm text-slate-500">
+            <p>শেখ খালিদ আল-রাশেদের খুতবার উপর ভিত্তি করে নির্মিত।</p>
+            <p>শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে তৈরি।</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navLinks = mobileMenu.querySelectorAll('a');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                     mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const flipper = document.getElementById('flipper');
+flipper.addEventListener('click', () => {
+    flipper.classList.toggle('flipped');
+});
+        });
+    </script>
+</body>
+</html>

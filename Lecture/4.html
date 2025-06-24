@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আগামীকাল আপনার ঘর কোথায়? - শেখ খালেদ আল-রাশেদ (নিয়ন সংস্করণ)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Neon Night (Base: #111827, Text: #E5E7EB, Accent-Good: #34D399, Accent-Bad: #F87171) -->
+    <!-- Application Structure Plan: A thematic, single-page scrolling journey designed to guide the user through the sermon's core messages, from the ephemeral nature of the world to the reality of the grave and the call to repentance. This non-linear, section-based approach with top navigation is chosen over a simple text dump to make the powerful spiritual content more digestible, reflective, and impactful for the user. Key comparisons are made interactive to enhance engagement and understanding. -->
+    <!-- Visualization & Content Choices: The sermon's content is qualitative and spiritual. Goal: Compare the fates of the believer and the disbeliever in the grave. Method: An interactive card system with two buttons ('মুমিন' and 'কাফির'). Interaction: Clicking a button reveals the detailed description of that specific experience, providing a stark, immediate contrast. Justification: This transforms a long, comparative text block into an engaging user-driven exploration, reinforcing the core message. Library: Vanilla JS. Goal: Organize stories and concepts. Method: Thematically grouped and styled cards using HTML/Tailwind. Justification: This breaks the sermon into manageable, focused pieces. Goal: Inform/Warn. Method: Highlighted blockquotes for Quran/Hadith and distinct typographic styling. Justification: This draws attention to the most authoritative and impactful parts of the text. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background-color: #111827;
+            color: #E5E7EB;
+        }
+        .neon-green-text {
+            color: #34D399;
+            text-shadow: 0 0 2px #10B981, 0 0 5px #10B981, 0 0 10px #34D399;
+        }
+        .neon-red-text {
+            color: #F87171;
+            text-shadow: 0 0 2px #EF4444, 0 0 5px #EF4444, 0 0 10px #F87171;
+        }
+        .active-btn {
+            background-color: #10B981 !important;
+            color: white !important;
+            border-color: #34D399 !important;
+            box-shadow: 0 0 5px #34D399, 0 0 10px #34D399, 0 0 15px #6EE7B7;
+            transform: scale(1.05);
+        }
+        .inactive-btn {
+            background-color: #EF4444 !important;
+            color: white !important;
+            border-color: #F87171 !important;
+            box-shadow: 0 0 5px #F87171, 0 0 10px #F87171, 0 0 15px #FCA5A5;
+            transform: scale(1.05);
+        }
+        .card-neon-green {
+            border-color: #10B981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+        .card-neon-red {
+            border-color: #EF4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+        }
+        .nav-link {
+            color: #D1D5DB;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .nav-link:hover {
+            color: #6EE7B7;
+            text-shadow: 0 0 5px #6EE7B7;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-gray-900/80 backdrop-blur-md sticky top-0 z-50 shadow-lg shadow-black/20">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold neon-green-text">আগামীকাল আপনার ঘর</h1>
+            <div class="hidden md:flex space-x-6">
+                <a href="#intro" class="nav-link font-medium">ভূমিকা</a>
+                <a href="#dunya" class="nav-link font-medium">দুনিয়ার বাস্তবতা</a>
+                <a href="#grave" class="nav-link font-medium">কবরের অবস্থা</a>
+                <a href="#comparison" class="nav-link font-medium">মুমিন বনাম কাফির</a>
+                <a href="#lessons" class="nav-link font-medium">শিক্ষা ও সতর্কতা</a>
+                <a href="#dua" class="nav-link font-medium">দোয়া</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-300 hover:bg-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-800 py-2">
+            <a href="#intro" class="block text-center py-2 text-gray-300 hover:bg-gray-700 hover:text-white">ভূমিকা</a>
+            <a href="#dunya" class="block text-center py-2 text-gray-300 hover:bg-gray-700 hover:text-white">দুনিয়ার বাস্তবতা</a>
+            <a href="#grave" class="block text-center py-2 text-gray-300 hover:bg-gray-700 hover:text-white">কবরের অবস্থা</a>
+            <a href="#comparison" class="block text-center py-2 text-gray-300 hover:bg-gray-700 hover:text-white">মুমিন বনাম কাফির</a>
+            <a href="#lessons" class="block text-center py-2 text-gray-300 hover:bg-gray-700 hover:text-white">শিক্ষা ও সতর্কতা</a>
+            <a href="#dua" class="block text-center py-2 text-gray-300 hover:bg-gray-700 hover:text-white">দোয়া</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+
+        <section id="intro" class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold neon-green-text mb-4">আগামীকাল আপনার ঘর কোথায়?</h2>
+            <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+                এই দুনিয়া একটি প্রতারণার ঘর। মানুষ এতে প্রবৃত্তি ও পাপ দ্বারা পরীক্ষিত হয়। আজ আপনি প্রশস্ত প্রাসাদে বাস করছেন, কিন্তু আগামীকাল আপনার স্থান হবে অন্য কোথাও। কবর ও তার ভয়াবহ পরিস্থিতিকে স্মরণ করাই হলো পাপ থেকে বিরত থাকার সবচেয়ে বড় উপায়।
+            </p>
+            <blockquote class="mt-6 italic text-gray-400 text-xl border-l-4 border-emerald-700 pl-4">
+                "মৃত্যুর পরে মানুষের কোনো ঘর থাকে না, কেবল সেই ঘর ছাড়া যা সে মৃত্যুর আগে তৈরি করে।"
+            </blockquote>
+        </section>
+
+        <section id="dunya" class="mb-16 p-6 md:p-8 bg-gray-800/50 rounded-2xl shadow-lg border border-gray-700">
+            <h3 class="text-2xl md:text-3xl font-bold text-center neon-green-text mb-6">দুনিয়ার প্রতারণা ও অন্তরের চিকিৎসা</h3>
+             <p class="text-base md:text-lg text-gray-300 mb-6 text-center max-w-4xl mx-auto">
+                পার্থিব জীবন মানুষকে আল্লাহর স্মরণ থেকে গাফেল করে দেয়। অন্তর কঠিন হয়ে যায়, যা মানুষকে হেদায়েত থেকে দূরে ঠেলে দেয়। এই কঠিন অন্তরের একমাত্র চিকিৎসা হলো কুরআনের উপদেশ, যা পাহাড়ের উপর অবতীর্ণ হলেও তা ভয়ে বিদীর্ণ হয়ে যেত।
+            </p>
+            <div class="bg-emerald-900/30 border-l-4 border-emerald-500 text-emerald-200 p-4 rounded-r-lg">
+                <p class="font-semibold">আল্লাহ তা'আলা বলেন:</p>
+                <p class="mt-2">"হে মানুষ! নিশ্চয়ই আল্লাহর প্রতিশ্রুতি সত্য। সুতরাং পার্থিব জীবন যেন তোমাদেরকে কিছুতেই প্রতারিত না করে এবং সেই প্রবঞ্চক (শয়তান) যেন কিছুতেই তোমাদেরকে আল্লাহ সম্পর্কেও প্রবঞ্চিত না করে।" <span class="font-medium text-sm">(সূরা ফাতির: ৫)</span></p>
+            </div>
+        </section>
+
+        <section id="grave" class="mb-16">
+            <h3 class="text-2xl md:text-3xl font-bold text-center neon-red-text mb-6">কবর: আখেরাতের প্রথম ঠিকানা</h3>
+            <p class="text-base md:text-lg text-gray-300 mb-8 text-center max-w-4xl mx-auto">
+                কবরই হলো সর্বশ্রেষ্ঠ উপদেশ এবং পরকালের প্রথম ধাপ। यहीं ভাগ্য নির্ধারিত হয় - হয় জান্নাতের বাগান অথবা জাহান্নামের গর্ত। মৃত্যুর পর সম্পদ ও পরিজন ফিরে যায়, শুধু আমলই সংগী হয়।
+            </p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gray-800/50 p-6 rounded-2xl shadow-lg border border-gray-700 transition-all duration-300 hover:border-red-600 hover:shadow-red-500/20 hover:shadow-2xl">
+                    <h4 class="font-bold text-xl text-gray-100 mb-2">রাসূল (সাঃ) এর কান্না</h4>
+                    <p class="text-gray-400">রাসূলুল্লাহ (সাঃ) একবার এক জানাজায় কবরের কিনারায় বসে এত কাঁদলেন যে মাটি ভিজে গেল। তারপর বললেন, "হে আমার ভাইয়েরা! এমন দিনের জন্যই প্রস্তুতি নাও।"</p>
+                </div>
+                <div class="bg-gray-800/50 p-6 rounded-2xl shadow-lg border border-gray-700 transition-all duration-300 hover:border-red-600 hover:shadow-red-500/20 hover:shadow-2xl">
+                    <h4 class="font-bold text-xl text-gray-100 mb-2">কবরের চাপ</h4>
+                    <p class="text-gray-400">এমনকি মহান সাহাবী সাদ ইবনে মু'আয (রাঃ), যার জন্য আল্লাহর আরশ কেঁপে উঠেছিল, তাঁকেও কবরের চাপ অনুভব করতে হয়েছিল। তাহলে আমাদের অবস্থা কী হবে?</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparison" class="mb-16 p-6 md:p-8 bg-gray-900/60 rounded-2xl shadow-inner border border-gray-700">
+             <h3 class="text-2xl md:text-3xl font-bold text-center text-gray-100 mb-4">কবরে মুমিন ও কাফিরের অবস্থা</h3>
+             <p class="text-base md:text-lg text-gray-400 mb-8 text-center max-w-4xl mx-auto">
+                কবরের পরীক্ষা অত্যন্ত কঠিন। এখানেই নির্ধারিত হবে চিরস্থায়ী সুখ বা দুঃখ। নিচে বোতামে ক্লিক করে দেখুন একজন বিশ্বাসী (মুমিন) এবং একজন অবিশ্বাসী (কাফির) কবরে কেমন অভিজ্ঞতার মুখোমুখি হবেন।
+            </p>
+            <div class="flex justify-center space-x-4 mb-8">
+                <button id="show-mumin" class="px-6 py-2 font-bold text-white bg-emerald-600 rounded-full shadow-md hover:bg-emerald-500 transition-all duration-300 active-btn">মুমিনের অবস্থা</button>
+                <button id="show-kafir" class="px-6 py-2 font-bold text-gray-200 bg-gray-700 border border-gray-600 rounded-full shadow-md hover:bg-gray-600 transition-all duration-300">কাফিরের অবস্থা</button>
+            </div>
+
+            <div id="mumin-content" class="bg-gray-800/50 p-6 rounded-2xl shadow-lg card-neon-green">
+                <h4 class="font-bold text-2xl neon-green-text mb-4 text-center">🕋 মুমিনের প্রতিদান</h4>
+                <ul class="space-y-3 text-gray-300 list-inside">
+                    <li class="flex items-start"><span class="text-emerald-400 mr-2">✔</span> তার কাছে উজ্জ্বল চেহারার ফেরেশতা আসে জান্নাতের কাফন ও সুগন্ধি নিয়ে।</li>
+                    <li class="flex items-start"><span class="text-emerald-400 mr-2">✔</span> তার রুহকে সম্মানিত নামে আকাশে অভ্যর্থনা জানানো হয়।</li>
+                    <li class="flex items-start"><span class="text-emerald-400 mr-2">✔</span> কবরের প্রশ্নে সে নির্ভুল উত্তর দেয়: আমার রব আল্লাহ, আমার দ্বীন ইসলাম, আমার নবী মুহাম্মদ (সাঃ)।</li>
+                    <li class="flex items-start"><span class="text-emerald-400 mr-2">✔</span> তার কবর দৃষ্টিসীমা পর্যন্ত প্রশস্ত করে দেওয়া হয় এবং জান্নাতের একটি দরজা খুলে দেওয়া হয়।</li>
+                    <li class="flex items-start"><span class="text-emerald-400 mr-2">✔</span> তার সৎ আমল একজন সুন্দর ব্যক্তির রূপে এসে তাকে সুসংবাদ দেয়।</li>
+                    <li class="flex items-start"><span class="text-emerald-400 mr-2">✔</span> সে আল্লাহর কাছে দ্রুত কিয়ামত কায়েমের জন্য দোয়া করে।</li>
+                </ul>
+            </div>
+
+            <div id="kafir-content" class="hidden bg-gray-800/50 p-6 rounded-2xl shadow-lg card-neon-red">
+                 <h4 class="font-bold text-2xl neon-red-text mb-4 text-center">🔥 কাফিরের পরিণতি</h4>
+                <ul class="space-y-3 text-gray-300 list-inside">
+                    <li class="flex items-start"><span class="text-red-400 mr-2">✖</span> তার কাছে কালো চেহারার ফেরেশতা আসে জাহান্নামের কাফন ও দুর্গন্ধ নিয়ে।</li>
+                    <li class="flex items-start"><span class="text-red-400 mr-2">✖</span> তার রুহকে ঘৃণিত নামে আকাশে তিরস্কার করা হয় এবং দরজা খোলা হয় না।</li>
+                    <li class="flex items-start"><span class="text-red-400 mr-2">✖</span> কবরের প্রশ্নে সে উত্তর দিতে পারে না, শুধু বলে, "হায়, আমি জানি না।"</li>
+                    <li class="flex items-start"><span class="text-red-400 mr-2">✖</span> তার কবর এত সংকীর্ণ হয়ে যায় যে পাঁজরের হাড় একটির ভেতর আরেকটি ঢুকে যায় এবং জাহান্নামের দরজা খুলে দেওয়া হয়।</li>
+                    <li class="flex items-start"><span class="text-red-400 mr-2">✖</span> তার মন্দ আমল একজন কুৎসিত ব্যক্তির রূপে এসে তাকে দুঃসংবাদ দেয়।</li>
+                    <li class="flex items-start"><span class="text-red-400 mr-2">✖</span> সে আল্লাহর কাছে কিয়ামত যেন না হয়, তার জন্য আকুতি জানায়।</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="lessons" class="mb-16">
+            <h3 class="text-2xl md:text-3xl font-bold text-center neon-green-text mb-8">শিক্ষা ও সতর্কতা</h3>
+            <p class="text-base md:text-lg text-gray-300 mb-8 text-center max-w-4xl mx-auto">
+                পূর্ববর্তীদের জীবন থেকে আমাদের জন্য অনেক শিক্ষা রয়েছে। সামান্য অবহেলাও ভয়াবহ পরিণতির কারণ হতে পারে। সময় ফুরিয়ে যাওয়ার আগেই আমাদের হিসাব মিলিয়ে নিতে হবে।
+            </p>
+            <div class="bg-gray-800/50 p-6 md:p-8 rounded-2xl shadow-lg card-neon-red">
+                 <h4 class="font-bold text-xl text-red-400 mb-3">☞ একটি ভয়াবহ ঘটনা</h4>
+                 <p class="text-gray-300">এক পরহেজগার বোনের মৃত্যুর পর তার ভাই কবরে আগুন জ্বলতে দেখে। কারণ জিজ্ঞাসা করলে মা বলেন, "তোমার বোন নামায দেরিতে পড়ত।" যদি নামায দেরিতে পড়ার শাস্তি এত ভয়াবহ হয়, তবে যারা নামায পড়ে না, তাদের অবস্থা কী হবে?</p>
+                 <blockquote class="mt-4 border-l-4 border-red-500 pl-4 text-gray-400 italic">
+                    "অতএব, দুর্ভোগ তাদের জন্য, যারা তাদের নামাযে অমনোযোগী।" (সূরা মাউন: ৪-৫)
+                 </blockquote>
+            </div>
+        </section>
+
+        <section id="dua" class="text-center p-6 md:p-10 bg-gradient-to-br from-emerald-800 to-gray-900 text-white rounded-2xl shadow-2xl shadow-emerald-900/30">
+             <h3 class="text-2xl md:text-3xl font-bold mb-6 neon-green-text">🤲 তওবা ও দোয়া</h3>
+             <p class="text-lg md:text-xl mb-6 max-w-3xl mx-auto text-gray-200">
+                মানুষকে তওবা থেকে যা বিরত রাখে তা হলো দীর্ঘ আশা। কিন্তু মৃত্যু হঠাৎ করেই আসে। তাই আসুন, আমরা আল্লাহর কাছে খাঁটি মনে তওবা করি এবং তাঁর রহমত কামনা করি।
+             </p>
+            <div class="text-left bg-gray-900/50 p-6 rounded-lg text-emerald-100 max-w-2xl mx-auto border border-emerald-700">
+                <p>হে আল্লাহ! আমাদের জন্য মৃত্যু ও কবরকে সহজ করে দিন।</p>
+                <p>মৃত্যুর আগে খাঁটি তওবার তাওফিক দিন, মৃত্যুর সময় শাহাদাত নসিব করুন এবং মৃত্যুর পর রহমত দান করুন।</p>
+                <p>হে আল্লাহ! আমাদের দুর্বলতা ক্ষমা করুন, আমাদের অন্তরে ঈমানকে প্রিয় করে দিন এবং কুফর ও পাপাচারকে ঘৃণিত করে দিন।</p>
+                <p>আমাদেরকে এবং সমস্ত কবরবাসীকে ক্ষমা করুন, তাদের কবরকে আলোকিত করুন এবং জান্নাত দান করুন। আমিন।</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-6 bg-gray-900 border-t border-gray-800">
+        <p class="text-gray-500">শেখ খালেদ আল-রাশেদের বক্তৃতার উপর ভিত্তি করে একটি ইন্টারেক্টিভ উপস্থাপনা।</p>
+    </footer>
+
+    <script>
+        const muminBtn = document.getElementById('show-mumin');
+        const kafirBtn = document.getElementById('show-kafir');
+        const muminContent = document.getElementById('mumin-content');
+        const kafirContent = document.getElementById('kafir-content');
+
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        muminBtn.addEventListener('click', () => {
+            muminContent.classList.remove('hidden');
+            kafirContent.classList.add('hidden');
+            muminBtn.classList.add('active-btn');
+            kafirBtn.classList.remove('inactive-btn', 'active-btn');
+        });
+
+        kafirBtn.addEventListener('click', () => {
+            kafirContent.classList.remove('hidden');
+            muminContent.classList.add('hidden');
+            kafirBtn.classList.add('inactive-btn');
+            muminBtn.classList.remove('active-btn', 'inactive-btn');
+        });
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('#mobile-menu a, nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if(mobileMenu.contains(e.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

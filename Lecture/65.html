@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>যার অন্তর আছে তার জন্য - একটি ইন্টারেক্টিভ জার্নি</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Neon Dark (Gray-900, Cyan-400) -->
+    <!-- Application Structure Plan: The application is designed as a single-page, vertical scrolling journey, mirroring the sermon's chronological narrative of the Last Day. A sticky top navigation allows users to jump between the key stages (Introduction, Proofs, Horrors, Gathering, Intercession, Reckoning, The Bridge, Final Destination). This structure was chosen to guide the user through the profound and sequential events in an immersive and easy-to-follow manner, enhancing understanding and reflection rather than presenting it as a static report. -->
+    <!-- Visualization & Content Choices: Report Info: Sermon on the Last Day -> Goal: Educate & Inspire Reflection -> Viz/Presentation: Interactive cards, process flows (HTML/CSS), and bar charts (Chart.js) with a neon aesthetic. -> Interaction: Clicks to reveal details, smooth scrolling, and hover effects. Justification: To make the dense, emotional text more digestible and engaging. The charts for 'Sweat Levels' and 'Crossing the Sirat' visually quantify abstract descriptions, making them more impactful. The 'Intercession' process flow clarifies a complex sequence. All choices are designed to support the sermon's spiritual and cautionary goals with a modern, impactful visual style. Library/Method: Vanilla JS, Tailwind CSS, Chart.js. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+        .nav-item.active {
+            color: #22d3ee; /* cyan-400 */
+            border-bottom: 2px solid #22d3ee;
+            text-shadow: 0 0 8px #22d3ee;
+            transform: scale(1.1);
+        }
+        .neon-text {
+            color: #67e8f9; /* cyan-300 */
+            text-shadow: 0 0 5px #22d3ee, 0 0 10px #22d3ee, 0 0 15px #0891b2;
+        }
+        .neon-border {
+            border-color: #0891b2; /* cyan-700 */
+            box-shadow: 0 0 10px #22d3ee, inset 0 0 5px #22d3ee;
+        }
+        .neon-timeline-dot {
+             background-color: #22d3ee;
+             border: 3px solid #172554;
+             box-shadow: 0 0 10px #22d3ee;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300">
+
+    <!-- Header -->
+    <header id="header" class="bg-gray-900/80 backdrop-blur-sm shadow-lg shadow-cyan-500/10 sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-2 flex justify-center items-center">
+            <div class="flex space-x-2 sm:space-x-4 overflow-x-auto pb-2">
+                 <a href="#intro" class="nav-item text-sm sm:text-base font-medium text-gray-400 hover:text-cyan-400 p-2 whitespace-nowrap">ভূমিকা</a>
+                 <a href="#proofs" class="nav-item text-sm sm:text-base font-medium text-gray-400 hover:text-cyan-400 p-2 whitespace-nowrap">প্রমাণ</a>
+                 <a href="#horrors" class="nav-item text-sm sm:text-base font-medium text-gray-400 hover:text-cyan-400 p-2 whitespace-nowrap">ভয়াবহতা</a>
+                 <a href="#gathering" class="nav-item text-sm sm:text-base font-medium text-gray-400 hover:text-cyan-400 p-2 whitespace-nowrap">হাশর</a>
+                 <a href="#intercession" class="nav-item text-sm sm:text-base font-medium text-gray-400 hover:text-cyan-400 p-2 whitespace-nowrap">শাফা'আত</a>
+                 <a href="#reckoning" class="nav-item text-sm sm:text-base font-medium text-gray-400 hover:text-cyan-400 p-2 whitespace-nowrap">হিসাব</a>
+                 <a href="#sirat" class="nav-item text-sm sm:text-base font-medium text-gray-400 hover:text-cyan-400 p-2 whitespace-nowrap">পুলসিরাত</a>
+                 <a href="#destination" class="nav-item text-sm sm:text-base font-medium text-gray-400 hover:text-cyan-400 p-2 whitespace-nowrap">শেষ গন্তব্য</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <!-- Section: Introduction -->
+        <section id="intro" class="min-h-screen flex flex-col justify-center items-center text-center py-20">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 neon-text">যার অন্তর আছে তার জন্য</h1>
+            <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto mb-8">
+                শেষ দিবস বা আখেরাত নিয়ে আলোচনা ঘুমন্তকে তার নিদ্রা থেকে জাগ্রত করে, গাফেলকে তার উদাসীনতা থেকে সতর্ক করে এবং অন্তরে ঈমানকে পুনরুজ্জীবিত করে।
+            </p>
+            <blockquote class="border-r-4 border-cyan-500 pr-4 text-right text-lg italic text-gray-300 max-w-2xl mx-auto">
+                "বস্তুত চোখ তো অন্ধ হয় না, বরং অন্ধ হয় বক্ষস্থিত অন্তর।" <br> <span class="text-sm not-italic">(আল-হাজ: ৪৬)</span>
+            </blockquote>
+        </section>
+
+        <!-- Section: Proofs of Hereafter -->
+        <section id="proofs" class="py-20">
+            <h2 class="text-3xl font-bold text-center mb-4 neon-text">আখেরাত প্রমাণের দলিল</h2>
+            <p class="text-center text-gray-400 max-w-3xl mx-auto mb-12">কুরআনুল কারিম আখেরাতের অস্তিত্ব প্রমাণের জন্য বহু যৌক্তিক ও সুস্পষ্ট দলিল পেশ করেছে, যা চিন্তাশীল অন্তরকে আল্লাহর প্রতি বিশ্বাসে দৃঢ় করে। এই разделе এমন কিছু প্রমাণ তুলে ধরা হয়েছে যা অস্বীকার করার কোনো সুযোগ নেই।</p>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center transform hover:scale-105 transition-transform border border-cyan-700/50 hover:border-cyan-500 hover:shadow-cyan-500/20">
+                    <div class="text-5xl mb-4 text-cyan-400">👤</div>
+                    <h3 class="text-xl font-semibold mb-2 text-white">প্রথম সৃষ্টি</h3>
+                    <p class="text-gray-400">যিনি মানুষকে প্রথমবার মাটি, শুক্রবিন্দু ও রক্তপিণ্ড থেকে বিভিন্ন পর্যায়ে সৃষ্টি করতে পারেন, তাঁর জন্য দ্বিতীয়বার সৃষ্টি করা আরও অনেক সহজ।</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center transform hover:scale-105 transition-transform border border-cyan-700/50 hover:border-cyan-500 hover:shadow-cyan-500/20">
+                     <div class="text-5xl mb-4 text-cyan-400">🌱</div>
+                    <h3 class="text-xl font-semibold mb-2 text-white">মৃত ভূমির পুনরুজ্জীবন</h3>
+                    <p class="text-gray-400">আল্লাহ যেমন বৃষ্টি দ্বারা শুষ্ক ও মৃত ভূমিকে পুনরুজ্জীবিত করে তাতে প্রাণের সঞ্চার করেন, তেমনি তিনি মৃত মানুষকেও পুনরুজ্জীবিত করতে সক্ষম।</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg text-center transform hover:scale-105 transition-transform border border-cyan-700/50 hover:border-cyan-500 hover:shadow-cyan-500/20">
+                    <div class="text-5xl mb-4 text-cyan-400">⚖️</div>
+                    <h3 class="text-xl font-semibold mb-2 text-white">ঐশী প্রজ্ঞা ও ন্যায়বিচার</h3>
+                    <p class="text-gray-400">আল্লাহ মানুষকে উদ্দেশ্যহীনভাবে সৃষ্টি করেননি। ভালো ও মন্দের প্রতিদান দেওয়ার জন্য একটি বিচার দিবস থাকা তাঁর প্রজ্ঞা ও ন্যায়বিচারেরই দাবী।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Horrors of Qiyamah -->
+        <section id="horrors" class="py-20 bg-gray-900/50 rounded-lg">
+            <h2 class="text-3xl font-bold text-center mb-4 neon-text">কিয়ামতের ভয়াবহ চিত্র</h2>
+             <p class="text-center text-gray-400 max-w-3xl mx-auto mb-12">কিয়ামত এমন এক ভয়ংকর দিন যার ঘটনাপ্রবাহ মানব কল্পনাকে হার মানায়। সেদিন আসমান-জমিন, পাহাড়-পর্বত সবকিছুই ধ্বংস হয়ে যাবে। এই বিভাগে সেই মহাপ্রলয়ের কিছু চিত্র তুলে ধরা হয়েছে যা প্রতিটি জীবন্ত অন্তরকে ভীত করে তোলে।</p>
+            <div class="space-y-8">
+                <div class="p-6 bg-gray-800 rounded-lg shadow-lg border-l-4 border-cyan-500">
+                    <h3 class="text-2xl font-semibold mb-2 text-cyan-400">শিঙায় ফুঁ এবং মহাপ্রলয়</h3>
+                    <p class="text-gray-400">একটিমাত্র ফুঁৎকারে কিয়ামত শুরু হবে। সেদিন প্রত্যেক স্তন্যদায়ী মা তার দুধের শিশুকে ভুলে যাবে, প্রত্যেক গর্ভবতী তার গর্ভপাত করে ফেলবে এবং মানুষকে মাতালের মতো দেখাবে, যদিও তারা মাতাল নয়।</p>
+                </div>
+                <div class="p-6 bg-gray-800 rounded-lg shadow-lg border-l-4 border-cyan-500">
+                    <h3 class="text-2xl font-semibold mb-2 text-cyan-400">আসমান, জমিন ও পাহাড়ের অবস্থা</h3>
+                    <p class="text-gray-400">সূর্য আলোহীন হয়ে যাবে, নক্ষত্ররাজি খসে পড়বে, পাহাড়গুলো ধূলিকণায় পরিণত হয়ে উড়ে যাবে এবং সমুদ্রগুলো অগ্নিতে পরিণত হবে।</p>
+                </div>
+                <div class="p-6 bg-gray-800 rounded-lg shadow-lg border-l-4 border-cyan-500">
+                    <h3 class="text-2xl font-semibold mb-2 text-cyan-400">কবর থেকে উত্থান</h3>
+                    <p class="text-gray-400">দ্বিতীয় ফুঁৎকারের পর সকল মানুষ কবর থেকে দ্রুতবেগে বের হয়ে হাশরের মাঠের দিকে ছুটতে থাকবে। তাদের দৃষ্টি থাকবে অবনমিত এবং অপমান তাদের আচ্ছন্ন করে ফেলবে।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: The Gathering -->
+        <section id="gathering" class="py-20">
+            <h2 class="text-3xl font-bold text-center mb-4 neon-text">হাশরের ময়দানে মানুষের অবস্থা</h2>
+            <p class="text-center text-gray-400 max-w-3xl mx-auto mb-12">কবর থেকে উত্থিত হওয়ার পর সকল মানুষকে এক বিশাল ময়দানে সমবেত করা হবে, যা হাশরের ময়দান নামে পরিচিত। সেদিন মানুষের অবস্থা হবে অত্যন্ত করুণ ও ভয়াবহ। এই অংশে আমরা সেই কঠিন মুহূর্তের কিছু চিত্র দেখব।</p>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-cyan-400 font-bold text-xl mr-3">✔</span>
+                            <span><strong class="font-semibold text-white">নগ্ন ও খালি পায়ে:</strong> মানুষকে নগ্ন, খালি পায়ে এবং খতনাবিহীন অবস্থায় সমবেত করা হবে। পরিস্থিতি এত ভয়াবহ হবে যে কেউ কারো দিকে তাকানোর ফুরসত পাবে না।</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-cyan-400 font-bold text-xl mr-3">✔</span>
+                            <span><strong class="font-semibold text-white">সূর্য মাথার কাছে:</strong> সূর্য মানুষের মাথার মাত্র এক মাইল উপরে থাকবে। মানুষ নিজ নিজ আমল অনুযায়ী ঘামের মধ্যে ডুবে থাকবে।</span>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="text-cyan-400 font-bold text-xl mr-3">✔</span>
+                            <span><strong class="font-semibold text-white">জাহান্নামের আগমন:</strong> সেদিন জাহান্নামকে সামনে আনা হবে। মানুষ তার কৃতকর্ম স্মরণ করে আফসোস করবে, কিন্তু তা কোনো কাজে আসবে না।</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="chart-container">
+                        <canvas id="sweatChart"></canvas>
+                    </div>
+                     <p class="text-center text-sm text-gray-500 mt-2">ঘামে ডুবে থাকার স্তর (হাদীস অনুসারে)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: The Great Intercession -->
+        <section id="intercession" class="py-20 bg-gray-900/50 rounded-lg">
+            <h2 class="text-3xl font-bold text-center mb-4 neon-text">মহা শাফা'আত (সুপারিশ)</h2>
+            <p class="text-center text-gray-400 max-w-3xl mx-auto mb-12">হাশরের ময়দানের ভয়াবহতা যখন চরমে পৌঁছাবে এবং মানুষ অসহনীয় কষ্ট ভোগ করতে থাকবে, তখন তারা একজন সুপারিশকারীর খোঁজ করবে যিনি আল্লাহর কাছে তাদের জন্য হিসাব শুরু করার আবেদন করবেন। এই পর্যায়টি মহা শাফা'আত নামে পরিচিত।</p>
+            <div class="relative w-full max-w-2xl mx-auto mt-8">
+                <div class="border-l-2 border-cyan-800 absolute h-full top-0 left-4"></div>
+                <div class="space-y-8">
+                    <div class="pl-12 relative">
+                        <div class="absolute top-1/2 -translate-y-1/2 -left-0.5 w-5 h-5 neon-timeline-dot"></div>
+                        <h3 class="text-xl font-semibold text-white">১. আদম (আঃ)</h3>
+                        <p class="text-gray-400">মানুষ প্রথমে আদম (আঃ)-এর কাছে যাবে, কিন্তু তিনি আল্লাহর ভয়ে অপারগতা প্রকাশ করে নূহ (আঃ)-এর কাছে যেতে বলবেন।</p>
+                    </div>
+                    <div class="pl-12 relative">
+                        <div class="absolute top-1/2 -translate-y-1/2 -left-0.5 w-5 h-5 neon-timeline-dot"></div>
+                        <h3 class="text-xl font-semibold text-white">২. নূহ, ইবরাহিম, মূসা ও ঈসা (আঃ)</h3>
+                        <p class="text-gray-400">তারা প্রত্যেকেই পূর্ববর্তী নবীদের কাছে যাবে, কিন্তু নূহ, ইবরাহিম, মূসা এবং ঈসা (আলাইহিমুস সালাম) প্রত্যেকেই আল্লাহর ভয়ে অপারগতা প্রকাশ করবেন।</p>
+                    </div>
+                    <div class="pl-12 relative">
+                        <div class="absolute top-1/2 -translate-y-1/2 -left-0.5 w-5 h-5 bg-yellow-400 rounded-full ring-2 ring-yellow-400 border-4 border-gray-900" style="box-shadow: 0 0 10px #facc15;"></div>
+                        <h3 class="text-xl font-bold text-yellow-300" style="text-shadow: 0 0 8px #facc15;">৩. মুহাম্মদ (ﷺ)</h3>
+                        <p class="text-gray-300 font-medium">অবশেষে, মানুষ শেষ নবী মুহাম্মদ (ﷺ)-এর কাছে আসবে। তিনি বলবেন, "আমিই এর জন্য।" অতঃপর তিনি আরশের নিচে সিজদায় পড়ে যাবেন এবং আল্লাহর অনুমতিতে তাঁর উম্মতের জন্য সুপারিশ করবেন।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: The Reckoning -->
+        <section id="reckoning" class="py-20">
+            <h2 class="text-3xl font-bold text-center mb-4 neon-text">হিসাব ও প্রতিদান</h2>
+            <p class="text-center text-gray-400 max-w-3xl mx-auto mb-12">মহা শাফা'আতের পর আল্লাহ তা'আলা বিচার শুরু করবেন। সেদিন প্রতিটি কাজের পুঙ্খানুপুঙ্খ হিসাব নেওয়া হবে এবং প্রত্যেকের আমলনামা তাদের হাতে দেওয়া হবে। এই বিভাগটি সেই বিচার দিবসের বিভিন্ন দিক তুলে ধরে।</p>
+            <div class="max-w-4xl mx-auto">
+                <div class="space-y-4" id="accordion">
+                    <div class="bg-gray-800 border border-cyan-700/30 rounded-lg">
+                        <button class="w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-white accordion-header">
+                            আমলনামা প্রদান
+                            <span class="accordion-icon text-cyan-400">▼</span>
+                        </button>
+                        <div class="accordion-content p-5 pt-0">
+                            <p class="text-gray-400">যাদের আমলনামা ডান হাতে দেওয়া হবে, তারা আনন্দে চিৎকার করে বলবে, "নাও, আমার আমলনামা পড়ো"। আর যাদের বাম হাতে দেওয়া হবে, তারা আফসোস করে বলবে, "হায়! আমাকে যদি আমার আমলনামা দেওয়াই না হতো"।</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800 border border-cyan-700/30 rounded-lg">
+                        <button class="w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-white accordion-header">
+                            অঙ্গ-প্রত্যঙ্গের সাক্ষ্য
+                            <span class="accordion-icon text-cyan-400">▶</span>
+                        </button>
+                        <div class="accordion-content hidden p-5 pt-0">
+                            <p class="text-gray-400">সেদিন মুখকে সীল করে দেওয়া হবে। মানুষের কান, চোখ, হাত, পা এবং ত্বক তাদের কৃতকর্মের বিরুদ্ধে সাক্ষ্য দেবে। তারা বলবে, "যিনি সবকিছুকে বাকশক্তি দিয়েছেন, তিনিই আমাদের বাকশক্তি দিয়েছেন।"</p>
+                        </div>
+                    </div>
+                     <div class="bg-gray-800 border border-cyan-700/30 rounded-lg">
+                        <button class="w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-white accordion-header">
+                            আল্লাহর সাথে কথোপকথন
+                            <span class="accordion-icon text-cyan-400">▶</span>
+                        </button>
+                        <div class="accordion-content hidden p-5 pt-0">
+                            <p class="text-gray-400">আল্লাহ প্রতিটি বান্দার সাথে সরাসরি কথা বলবেন, কোনো অনুবাদক থাকবে না। তিনি তার কৃতকর্ম সম্পর্কে জিজ্ঞাসা করবেন। মু'মিনের পাপ তিনি গোপনে ক্ষমা করে দেবেন, আর কাফির ও মুনাফিকদেরকে সকলের সামনে অপমানিত করা হবে।</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: The Sirat Bridge -->
+        <section id="sirat" class="py-20 bg-gray-900/50 rounded-lg">
+            <h2 class="text-3xl font-bold text-center mb-4 neon-text">পুলসিরাত পার হওয়া</h2>
+             <p class="text-center text-gray-400 max-w-3xl mx-auto mb-12">হিসাব-নিকাশের পর মানুষকে পুলসিরাত পার হওয়ার আদেশ দেওয়া হবে। এটি জাহান্নামের উপর স্থাপিত একটি সেতু, যা চুলের চেয়েও চিকন এবং তরবারির চেয়েও ধারালো। এই ভয়ঙ্কর সেতু পার হওয়া জান্নাতে প্রবেশের চূড়ান্ত পরীক্ষা।</p>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                 <div>
+                    <div class="chart-container">
+                        <canvas id="siratChart"></canvas>
+                    </div>
+                     <p class="text-center text-sm text-gray-500 mt-2">পুলসিরাত পার হওয়ার গতি (হাদীস অনুসারে)</p>
+                </div>
+                <div class="p-6 bg-gray-800 rounded-lg shadow-inner border border-cyan-700/30">
+                   <h3 class="text-xl font-semibold mb-3 text-white">সেতুর বর্ণনা ও মানুষের অবস্থা</h3>
+                   <ul class="space-y-3 text-gray-400">
+                       <li> ➤ এটি চুলের চেয়ে চিকন এবং তরবারির চেয়ে ধারালো। এর দুই পাশে থাকবে ধারালো আংটা।</li>
+                       <li> ➤ মানুষ নিজ নিজ আমল অনুযায়ী তা পার হবে। রাসূলগণ দোয়া করতে থাকবেন, "আল্লাহুম্মা সাল্লিম, সাল্লিম" (হে আল্লাহ! রক্ষা কর, রক্ষা কর)।</li>
+                        <li> ➤ কেউ অক্ষত অবস্থায় নাজাত পাবে, কেউ ক্ষতবিক্ষত হয়ে পার হবে, আর কেউ জাহান্নামে নিক্ষিপ্ত হবে।</li>
+                   </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Final Destination -->
+        <section id="destination" class="py-20">
+            <h2 class="text-3xl font-bold text-center mb-4 neon-text">শেষ গন্তব্য: জান্নাত অথবা জাহান্নাম</h2>
+            <p class="text-center text-gray-400 max-w-3xl mx-auto mb-12">পুলসিরাত পার হওয়ার পর মানুষের জন্য থাকবে দুটি চূড়ান্ত গন্তব্য। যারা সফল হবে, তারা চিরস্থায়ী শান্তির আবাসে প্রবেশ করবে। আর যারা ব্যর্থ হবে, তারা প্রবেশ করবে যন্ত্রণাদায়ক শাস্তির স্থানে।</p>
+            <div class="grid md:grid-cols-2 gap-8 mt-12">
+                <div class="border-2 p-8 rounded-lg neon-border bg-gray-800/50">
+                    <h3 class="text-3xl font-bold text-cyan-400 mb-4" style="text-shadow: 0 0 8px #22d3ee;">জান্নাত (চিরস্থায়ী শান্তি)</h3>
+                    <p class="text-gray-300 mb-4">যারা তাদের রবকে ভয় করত, তাদের দলে দলে জান্নাতের দিকে নিয়ে যাওয়া হবে। সেখানে তাদের অভ্যর্থনা জানিয়ে বলা হবে, "তোমাদের প্রতি সালাম, তোমরা সুখী হও। স্থায়ীভাবে এখানে প্রবেশ কর।"</p>
+                     <blockquote class="border-r-4 border-cyan-500 pr-4 text-right italic text-gray-300">
+                        "তারা বলবে, সমস্ত প্রশংসা আল্লাহর, যিনি আমাদের প্রতি তাঁর প্রতিশ্রুতি সত্য করেছেন।"<br><span class="text-sm not-italic">(আয-যুমার: ৭৪)</span>
+                    </blockquote>
+                </div>
+                <div class="border-2 border-red-500 p-8 rounded-lg bg-gray-800/50" style="box-shadow: 0 0 10px #ef4444, inset 0 0 5px #ef4444;">
+                    <h3 class="text-3xl font-bold text-red-500 mb-4" style="text-shadow: 0 0 8px #ef4444;">জাহান্নাম (চিরস্থায়ী শাস্তি)</h3>
+                    <p class="text-gray-300 mb-4">আর কাফিরদের দলে দলে জাহান্নামের দিকে হাঁকিয়ে নিয়ে যাওয়া হবে। জাহান্নামের দরজা খোলার পর রক্ষীরা বলবে, "তোমাদের কাছে কি কোনো রাসূল আসেননি?" তারা বলবে, "হ্যাঁ," কিন্তু তখন অনেক দেরি হয়ে যাবে।</p>
+                    <blockquote class="border-r-4 border-red-500 pr-4 text-right italic text-gray-300">
+                        "বলা হবে, জাহান্নামের দরজা দিয়ে প্রবেশ কর, সেখানে তোমরা স্থায়ী হবে। অহংকারীদের বাসস্থান কতই না নিকৃষ্ট!"<br><span class="text-sm not-italic">(আয-যুমার: ৭২)</span>
+                    </blockquote>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 bg-gray-900 border-t border-cyan-900">
+        <p class="text-gray-400">আল্লাহ আমাদের সবাইকে সেই কঠিন দিনে তাঁর রহমতের ছায়ায় আশ্রয় দান করুন এবং আমাদের হিসাব সহজ করুন।</p>
+        <p class="mt-1 font-bold text-lg text-cyan-400">আমীন।</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // Accordion Logic
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('.accordion-icon');
+                    const isOpening = !content.style.maxHeight;
+
+                    // Close all others
+                    accordionHeaders.forEach(otherHeader => {
+                        const otherContent = otherHeader.nextElementSibling;
+                        const otherIcon = otherHeader.querySelector('.accordion-icon');
+                         if (otherHeader !== header) {
+                            otherContent.style.maxHeight = null;
+                            if (!otherContent.classList.contains('hidden')) {
+                                otherContent.classList.add('hidden');
+                            }
+                            otherIcon.textContent = '▶';
+                        }
+                    });
+
+                    // Open the clicked one
+                    if (isOpening) {
+                         if (content.classList.contains('hidden')) {
+                             content.classList.remove('hidden');
+                         }
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        icon.textContent = '▼';
+                    } else {
+                        content.style.maxHeight = null;
+                        setTimeout(() => { // wait for transition to finish
+                             content.classList.add('hidden');
+                        }, 200);
+                        icon.textContent = '▶';
+                    }
+                });
+            });
+
+            // Navigation Active State Logic
+            const sections = document.querySelectorAll('section');
+            const navItems = document.querySelectorAll('.nav-item');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navItems.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: "-30% 0px -70% 0px" });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Chart.js Implementations with Neon Theme
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                     tooltip: {
+                        backgroundColor: 'rgba(17, 24, 39, 0.8)',
+                        titleColor: '#22d3ee',
+                        bodyColor: '#d1d5db',
+                        borderColor: '#0891b2',
+                        borderWidth: 1,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#9ca3af' // gray-400
+                        },
+                         grid: {
+                            color: 'rgba(55, 65, 81, 0.5)' // gray-700
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#9ca3af'
+                        },
+                         grid: {
+                            display: false
+                        }
+                    }
+                }
+            };
+            
+            Chart.defaults.font.family = "'Hind Siliguri', sans-serif";
+
+            // Sweat Chart
+            const sweatCtx = document.getElementById('sweatChart').getContext('2d');
+            new Chart(sweatCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['গোড়ালি পর্যন্ত', 'হাঁটু পর্যন্ত', 'কোমর পর্যন্ত', 'ঘামে নিমজ্জিত'],
+                    datasets: [{
+                        label: 'ঘামের স্তর',
+                        data: [25, 50, 75, 100],
+                        backgroundColor: 'rgba(34, 211, 238, 0.4)',
+                        borderColor: 'rgba(34, 211, 238, 1)',
+                        borderWidth: 2,
+                        borderRadius: 4,
+                        hoverBackgroundColor: 'rgba(34, 211, 238, 0.7)',
+                        hoverBorderColor: 'rgba(103, 232, 249, 1)',
+                    }]
+                },
+                options: chartOptions
+            });
+
+            // Sirat Chart
+            const siratCtx = document.getElementById('siratChart').getContext('2d');
+            new Chart(siratCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['চোখের পলকে', 'বিদ্যুৎ গতিতে', 'বাতাসের বেগে', 'দ্রুতগামী ঘোড়া', 'দৌড়ে', 'হেঁটে', 'হামাগুড়ি দিয়ে'],
+                    datasets: [{
+                        label: 'পার হওয়ার গতি',
+                        data: [100, 95, 90, 80, 60, 40, 20],
+                         backgroundColor: 'rgba(34, 211, 238, 0.4)',
+                        borderColor: 'rgba(34, 211, 238, 1)',
+                        borderWidth: 2,
+                        borderRadius: 4,
+                        hoverBackgroundColor: 'rgba(34, 211, 238, 0.7)',
+                        hoverBorderColor: 'rgba(103, 232, 249, 1)',
+                    }]
+                },
+                options: chartOptions
+            });
+        });
+    </script>
+
+</body>
+</html>

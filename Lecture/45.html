@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>তারা ছিল যুবক যারা তাদের রবের প্রতি ঈমান এনেছিল</title>
+    <!-- Chosen Palette: Warm Neutrals (Beige, Soft Brown, Muted Gold) -->
+    <!-- Application Structure Plan: A single-page, thematic scrolling application with a sticky navigation bar for direct access to key sections. The structure follows the sermon's narrative arc but enhances it with interactive elements. Key interactions include clickable hero stories, a conceptual comparison chart, and two new Gemini API-powered features: a personalized action plan generator and a Q&A section. This structure transforms a linear sermon into an engaging, explorable, and personalized digital narrative. -->
+    <!-- Visualization & Content Choices: Report Info: Sermon concepts. -> Goal: Personalize & Advise -> Viz/Presentation: Dropdown + Button -> Interaction: Select topic & click to generate plan (Gemini API). -> Justification: Provides actionable, AI-generated guidance based on the sermon's themes. | Report Info: User questions. -> Goal: Clarify & Inform -> Viz/Presentation: Input + Button -> Interaction: Ask question & get answer (Gemini API). -> Justification: Allows users to resolve doubts and deepen understanding dynamically. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            height: 40vh;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            max-height: 400px;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #D97706; /* amber-600 */
+            border-bottom-color: #D97706;
+        }
+        .hero-tab.active {
+            background-color: #92400E; /* amber-800 */
+            color: white;
+        }
+        .content-card {
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+        }
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .gemini-button {
+            transition: all 0.3s ease;
+        }
+        .gemini-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #D97706;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header id="navbar" class="bg-slate-100/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-lg md:text-xl font-bold text-amber-700">ঈমানদীপ্ত তারুণ্য</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#intro" class="nav-link px-3 py-2 rounded-md text-sm font-medium">ভূমিকা</a>
+                        <a href="#knowledge" class="nav-link px-3 py-2 rounded-md text-sm font-medium">জ্ঞানার্জন</a>
+                        <a href="#heroism" class="nav-link px-3 py-2 rounded-md text-sm font-medium">বীরত্ব</a>
+                        <a href="#current-state" class="nav-link px-3 py-2 rounded-md text-sm font-medium">বর্তমান অবস্থা</a>
+                        <a href="#action-plan" class="nav-link px-3 py-2 rounded-md text-sm font-medium">কর্মপরিকল্পনা</a>
+                        <a href="#conclusion" class="nav-link px-3 py-2 rounded-md text-sm font-medium">উপসংহার</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <select id="mobile-nav" class="bg-slate-200 border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5">
+                        <option value="#intro">ভূমিকা</option>
+                        <option value="#knowledge">জ্ঞানার্জন</option>
+                        <option value="#worship">রাতের ইবাদত</option>
+                        <option value="#honor">মুমিনের সম্মান</option>
+                        <option value="#heroism">বীরত্ব</option>
+                        <option value="#current-state">বর্তমান অবস্থা</option>
+                        <option value="#action-plan">কর্মপরিকল্পনা</option>
+                        <option value="#conclusion">উপসংহার</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        
+        <section id="intro" class="text-center py-16">
+            <h2 class="text-3xl md:text-5xl font-bold text-amber-800 mb-4">তারা ছিল যুবক যারা তাদের রবের প্রতি ঈমান এনেছিল</h2>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto">শেখ খালিদ আল-রাশেদের এই বক্তৃতায় মুসলিম উম্মাহর গৌরবের পেছনে ঈমানদার যুবকদের আত্মত্যাগের কাহিনী তুলে ধরা হয়েছে। ঈমান কীভাবে যুবকদের শক্তিশালী করে, সঠিক পথে পরিচালিত করে এবং তাদের মর্যাদা দান করে—তা আসহাবে কাহাফের উদাহরণ দিয়ে বর্ণনা করা হয়েছে।</p>
+        </section>
+
+        <section id="knowledge" class="py-12 md:py-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-800">প্রথম পত্র: যুবক এবং জ্ঞানার্জন</h3>
+                <p class="mt-2 text-slate-600 max-w-2xl mx-auto">ঈমানদার যুবকদের অন্যতম বৈশিষ্ট্য হলো তারা জ্ঞানার্জনে আগ্রহী হয়। ইলম বা জ্ঞানের মাধ্যমেই আল্লাহর পরিচয় ও মহত্ত্ব বোঝা যায়।</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md content-card">
+                    <h4 class="text-xl font-bold text-amber-700 mb-2">উচ্চাকাঙ্ক্ষা</h4>
+                    <p class="text-slate-600">তারা দুনিয়াবী বিষয়ে নির্লিপ্ত থেকে ইলম অর্জনে সর্বোচ্চ ত্যাগ স্বীকার করতেন।</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md content-card">
+                    <h4 class="text-xl font-bold text-amber-700 mb-2">সময়ের মূল্য</h4>
+                    <p class="text-slate-600">অনর্থক কাজ থেকে বিরত থেকে প্রতিটি মুহূর্তকে তারা জ্ঞানার্জনের কাজে লাগাতেন।</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md content-card">
+                    <h4 class="text-xl font-bold text-amber-700 mb-2">জ্ঞানের সাথে আমল</h4>
+                    <p class="text-slate-600">অর্জিত জ্ঞান অনুযায়ী জীবন পরিচালনা করাকে তারা সর্বোচ্চ গুরুত্ব দিতেন।</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="heroism" class="py-12 md:py-16 bg-slate-100 rounded-lg">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-800">যুদ্ধের ময়দানে বীরত্ব</h3>
+                <p class="mt-2 text-slate-600 max-w-2xl mx-auto">ইয়ামামার প্রান্তরে মুসলিম যুবকদের অবিস্মরণীয় বীরত্ব ও শাহাদাতের ত্যাগের কাহিনী। নিচের নামগুলোতে ক্লিক করে তাদের সাহসিকতার গল্প জানুন।</p>
+            </div>
+            <div class="max-w-4xl mx-auto">
+                <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+                    <button class="hero-tab px-4 py-2 text-sm md:text-base font-semibold rounded-full bg-white shadow-md transition duration-300" data-hero="thabit">ছাবিত বিন কায়স (রাঃ)</button>
+                    <button class="hero-tab px-4 py-2 text-sm md:text-base font-semibold rounded-full bg-white shadow-md transition duration-300" data-hero="zayd">যায়েদ বিন খাত্তাব (রাঃ)</button>
+                    <button class="hero-tab px-4 py-2 text-sm md:text-base font-semibold rounded-full bg-white shadow-md transition duration-300" data-hero="bara">বারা ইবনে মালিক (রাঃ)</button>
+                </div>
+                <div id="hero-content" class="bg-white p-6 md:p-8 rounded-lg shadow-lg min-h-[200px]">
+                    <div id="thabit" class="hero-info hidden">
+                        <h4 class="text-2xl font-bold text-amber-700 mb-2">ছাবিত বিন কায়স (রাঃ)</h4>
+                        <p class="text-slate-600">আনসারদের পতাকাবাহী ছাবিত (রাঃ) নিজের জন্য কবরের মতো গর্ত খুঁড়ে তাতে অর্ধেক শরীর ডুবিয়ে আমৃত্যু যুদ্ধ করেন এবং শাহাদাত বরণ করেন।</p>
+                    </div>
+                    <div id="zayd" class="hero-info hidden">
+                        <h4 class="text-2xl font-bold text-amber-700 mb-2">যায়েদ বিন খাত্তাব (রাঃ)</h4>
+                        <p class="text-slate-600">উমর (রাঃ) এর ভাই যায়েদ (রাঃ) মুসলিমদের উদ্দেশ্যে বলেন, "আল্লাহর কসম, মুসায়লামাকে পরাজিত না করা পর্যন্ত অথবা আল্লাহর সাথে মিলিত না হওয়া পর্যন্ত আমি কথা বলব না।" এই বলে তিনি যুদ্ধ করে শহীদ হন।</p>
+                    </div>
+                     <div id="bara" class="hero-info hidden">
+                        <h4 class="text-2xl font-bold text-amber-700 mb-2">বারা ইবনে মালিক (রাঃ)</h4>
+                        <p class="text-slate-600">তিনি মুসলিমদের বলেন, "আমাকে একটি ঢালে তুলে বর্শা দিয়ে শত্রুদের বাগানের ভেতরে নিক্ষেপ করো।" তাকে নিক্ষেপ করা হলে তিনি একাই দশজনকে হত্যা করে দরজা খুলে দেন, যখন তার শরীরে আশিটিরও বেশি আঘাত ছিল। এই বীরত্বপূর্ণ কাজের মাধ্যমে মুসলিমদের বিজয় নিশ্চিত হয়।</p>
+                    </div>
+                    <div id="default-hero-text">
+                        <p class="text-slate-500 text-center pt-12">বীরদের সম্পর্কে জানতে তাদের নামে ক্লিক করুন।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="current-state" class="py-12 md:py-16">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-800">অতীত ও বর্তমান</h3>
+                <p class="mt-2 text-slate-600 max-w-2xl mx-auto">শেখ এখানে মুসলিম উম্মাহর অধঃপতনের কারণ বিশ্লেষণ করেছেন। যখন যুবকরা তাদের মূল দায়িত্ব থেকে সরে গিয়ে অনর্থক কাজে লিপ্ত হয়েছে, তখনই উম্মাহর পতন হয়েছে।</p>
+            </div>
+            <div class="chart-container">
+                <canvas id="comparisonChart"></canvas>
+            </div>
+        </section>
+        
+        <section id="action-plan" class="py-12 md:py-16 bg-amber-50 rounded-lg">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-amber-800">✨ ঈমানদীপ্ত কর্মপরিকল্পনা</h3>
+                <p class="mt-2 text-slate-600 max-w-2xl mx-auto">বক্তৃতাটি থেকে অনুপ্রাণিত? আপনার জীবনের কোন দিকটি উন্নত করতে চান তা নির্বাচন করুন এবং আমরা আপনাকে একটি ব্যক্তিগত কর্মপরিকল্পনা তৈরিতে সহায়তা করব।</p>
+            </div>
+            <div class="max-w-xl mx-auto">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <div class="mb-4">
+                        <label for="plan-topic" class="block mb-2 text-sm font-medium text-slate-700">আমি উন্নতি করতে চাই:</label>
+                        <select id="plan-topic" class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5">
+                            <option value="জ্ঞানার্জন বৃদ্ধি করা">জ্ঞানার্জন বৃদ্ধি করায়</option>
+                            <option value="ইবাদতে মনোযোগী হওয়া">ইবাদতে মনোযোগী হওয়ায়</option>
+                            <option value="সময়ের সদ্ব্যবহার করা">সময়ের সদ্ব্যবহার করায়</option>
+                            <option value="ঈমানি দৃঢ়তা অর্জন">ঈমানি দৃঢ়তা অর্জনে</option>
+                        </select>
+                    </div>
+                    <button id="generate-plan-btn" class="gemini-button w-full bg-amber-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-amber-800 disabled:bg-slate-400">
+                        ✨ আমার জন্য পরিকল্পনা তৈরি করুন
+                    </button>
+                    <div id="plan-loader" class="hidden mx-auto mt-6 loader"></div>
+                    <div id="plan-result" class="mt-6 text-slate-700 bg-slate-50 p-4 rounded-md"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion" class="py-12 md:py-16">
+            <div class="text-center max-w-3xl mx-auto px-4">
+                <h3 class="text-3xl font-bold text-slate-800">উপসংহার ও আপনার জিজ্ঞাসা</h3>
+                <p class="mt-4 text-slate-600">এই বক্তৃতা আমাদের পূর্বসূরিদের ত্যাগের কথা স্মরণ করিয়ে দেয় এবং ভবিষ্যতের জন্য পথ দেখায়। মুসলিম বোনদের ভূমিকা এখানে বিশেষভাবে গুরুত্বপূর্ণ, কারণ তারাই বীরদের মা।</p>
+                <div class="mt-12 bg-white p-8 rounded-lg shadow-xl border border-amber-200">
+                     <h4 class="text-2xl font-bold text-amber-800 mb-4">✨ প্রশ্ন করুন</h4>
+                     <p class="text-slate-600 mb-4">বক্তৃতা সম্পর্কে আপনার কোন প্রশ্ন আছে? নিচে জিজ্ঞাসা করুন।</p>
+                     <div class="flex flex-col gap-4">
+                        <input type="text" id="qa-question" class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full p-2.5" placeholder="আপনার প্রশ্ন এখানে লিখুন...">
+                        <button id="ask-question-btn" class="gemini-button bg-amber-700 text-white font-bold py-2 px-4 rounded-lg hover:bg-amber-800 disabled:bg-slate-400">
+                            ✨ উত্তর খুঁজুন
+                        </button>
+                        <div id="qa-loader" class="hidden mx-auto mt-4 loader"></div>
+                        <div id="qa-result" class="mt-4 text-slate-700 bg-slate-50 p-4 rounded-md"></div>
+                     </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 py-6 text-center">
+        <p>শেখ খালিদ আল-রাশেদের বক্তৃতার উপর ভিত্তি করে নির্মিত।</p>
+        <p>&copy; ২০২৪। একটি ইন্টারেক্টিভ উপস্থাপনা।</p>
+    </footer>
+    
+    <!-- Error Modal -->
+    <div id="error-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+        <div class="bg-white p-8 rounded-lg shadow-2xl max-w-sm w-full text-center">
+            <h3 class="text-2xl font-bold text-red-600 mb-4">একটি সমস্যা হয়েছে</h3>
+            <p id="error-message" class="text-slate-700 mb-6">কিছু একটা সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।</p>
+            <button id="close-modal-btn" class="bg-red-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-600">বন্ধ করুন</button>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scrolling for nav links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Mobile navigation
+            document.getElementById('mobile-nav').addEventListener('change', function(e) {
+                const target = e.target.value;
+                if (target) {
+                    document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
+            // Active nav link highlighting on scroll
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('#navbar .nav-link');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === id);
+                        });
+                        document.querySelector(`#mobile-nav option[value="#${id}"]`).selected = true;
+                    }
+                });
+            }, { rootMargin: '-50% 0px -50% 0px' });
+            sections.forEach(section => observer.observe(section));
+
+
+            // Hero tabs functionality
+            const heroTabs = document.querySelectorAll('.hero-tab');
+            const heroInfos = document.querySelectorAll('.hero-info');
+            const defaultText = document.getElementById('default-hero-text');
+            heroTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const hero = this.dataset.hero;
+                    heroTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    heroInfos.forEach(info => info.classList.add('hidden'));
+                    if (defaultText) defaultText.classList.add('hidden');
+                    const activeInfo = document.getElementById(hero);
+                    if (activeInfo) activeInfo.classList.remove('hidden');
+                });
+            });
+            if (heroTabs.length > 0) heroTabs[0].click();
+
+            // Comparison Chart
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['ঈমান ও তাকওয়া', 'জ্ঞানার্জন', 'বীরত্ব ও ত্যাগ', 'দুনিয়াবী ভোগ'],
+                    datasets: [{
+                        label: 'পূর্বসূরি যুবক',
+                        data: [90, 85, 95, 20],
+                        backgroundColor: 'rgba(146, 64, 14, 0.7)',
+                        borderColor: 'rgba(146, 64, 14, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'বর্তমান প্রেক্ষিত (সাধারণ)',
+                        data: [50, 60, 40, 80],
+                        backgroundColor: 'rgba(100, 116, 139, 0.7)',
+                        borderColor: 'rgba(100, 116, 139, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 100, ticks: { callback: (value) => value + '%' } } },
+                    plugins: {
+                        title: { display: true, text: 'পূর্বসূরি ও বর্তমান যুবকদের গুণাবলীর ধারণাগত তুলনা', font: { size: 16 }, color: '#334155' },
+                        tooltip: { callbacks: { label: (context) => `${context.dataset.label || ''}: ${context.parsed.y}% (ধারণাগত)` } }
+                    }
+                }
+            });
+            
+            // Gemini API functionality
+            const planBtn = document.getElementById('generate-plan-btn');
+            const planTopic = document.getElementById('plan-topic');
+            const planLoader = document.getElementById('plan-loader');
+            const planResult = document.getElementById('plan-result');
+            
+            const qaBtn = document.getElementById('ask-question-btn');
+            const qaQuestion = document.getElementById('qa-question');
+            const qaLoader = document.getElementById('qa-loader');
+            const qaResult = document.getElementById('qa-result');
+            
+            const errorModal = document.getElementById('error-modal');
+            const errorMessage = document.getElementById('error-message');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            
+            closeModalBtn.addEventListener('click', () => errorModal.classList.add('hidden'));
+
+            async function generateContent(prompt, loaderElement, resultElement, buttonElement) {
+                loaderElement.classList.remove('hidden');
+                resultElement.innerHTML = '';
+                buttonElement.disabled = true;
+
+                try {
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = "AIzaSyBdOPNV9QsLtaDuiIAkfB3yBHvwyeAoHb4";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API অনুরোধ ব্যর্থ হয়েছে, স্ট্যাটাস: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        resultElement.innerHTML = text.replace(/\n/g, '<br>');
+                    } else {
+                        throw new Error("API থেকে কোনো বৈধ উত্তর পাওয়া যায়নি।");
+                    }
+                } catch (error) {
+                    console.error("Gemini API Error:", error);
+                    errorMessage.textContent = `একটি ত্রুটি ঘটেছে: ${error.message}. অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন এবং আবার চেষ্টা করুন।`;
+                    errorModal.classList.remove('hidden');
+                    resultElement.innerHTML = `<p class="text-red-500">একটি ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন।</p>`;
+                } finally {
+                    loaderElement.classList.add('hidden');
+                    buttonElement.disabled = false;
+                }
+            }
+
+            planBtn.addEventListener('click', () => {
+                const topic = planTopic.value;
+                const prompt = `শেখ খালিদ আল-রাশেদের "তারা ছিল যুবক যারা তাদের রবের প্রতি ঈমান এনেছিল" বক্তৃতার আলোকে, বাংলাদেশের একজন যুবকের জন্য "${topic}" বিষয়ে ঈমান বৃদ্ধির জন্য ৩টি সহজ ও বাস্তবসম্মত পদক্ষেপ দিন। উত্তরটি বাংলায় দিন।`;
+                generateContent(prompt, planLoader, planResult, planBtn);
+            });
+
+            qaBtn.addEventListener('click', () => {
+                const question = qaQuestion.value;
+                if (!question.trim()) {
+                    qaResult.innerHTML = `<p class="text-red-500">অনুগ্রহ করে একটি প্রশ্ন লিখুন।</p>`;
+                    return;
+                }
+                const prompt = `শেখ খালিদ আল-রাশেদের "তারা ছিল যুবক যারা তাদের রবের প্রতি ঈমান এনেছিল" বক্তৃতার প্রেক্ষাপটে, এই প্রশ্নের উত্তর দিন: "${question}"। উত্তরটি সহজ বাংলায় দিন এবং বক্তৃতার মূল চেতনার সাথে মিল রাখুন।`;
+                generateContent(prompt, qaLoader, qaResult, qaBtn);
+            });
+        });
+    </script>
+</body>
+</html>
